@@ -1,32 +1,21 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/http/http.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '易药通',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primaryColor: ThemeColor.primaryColor,
         buttonTheme: ButtonThemeData(buttonColor: ThemeColor.primaryColor),
         iconTheme: IconThemeData(color: ThemeColor.primaryColor),
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
@@ -100,6 +89,17 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            RaisedButton(
+                child: Text('请求测试'),
+                onPressed: () async {
+                  Response response = await http.post('/user/login-by-pwd',
+                      data: {
+                        'mobile': '18866660000',
+                        'password': '111111',
+                        'system': 'DOCTOR'
+                      });
+                  print(response.data.toString());
+                }),
             Text(
               'You have pushed the button this many times:',
             ),
