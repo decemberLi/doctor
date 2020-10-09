@@ -6,6 +6,10 @@ class SessionManager {
   static final SessionManager _instance = SessionManager._internal();
   factory SessionManager() => _instance;
 
+  static Future init() async {
+    return await _instance._initSP();
+  }
+
   SharedPreferences sp;
 
   String session;
@@ -13,9 +17,13 @@ class SessionManager {
   SessionManager._internal() {
     this._initSP();
   }
+
   _initSP() async {
-    sp = await SharedPreferences.getInstance();
-    this.session = sp.getString(SESSION_KEY);
+    if (sp == null) {
+      sp = await SharedPreferences.getInstance();
+      this.session = sp.getString(SESSION_KEY);
+    }
+    return sp;
   }
 
   /// 获取session

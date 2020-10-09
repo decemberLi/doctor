@@ -1,3 +1,5 @@
+import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 
 class UserPage extends StatelessWidget {
@@ -5,7 +7,11 @@ class UserPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('个人中心'),
+        child: AceButton(
+            onPressed: () {
+              Navigator.pushNamed(context, RouteManager.TEST);
+            },
+            text: '测试页'),
       ),
     );
   }

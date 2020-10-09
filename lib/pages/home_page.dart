@@ -1,6 +1,6 @@
+import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/worktop/worktop_page.dart';
 import 'package:doctor/pages/user/user_page.dart';
 
@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  final List<Widget> _children = [TestPage(), WorktopPage(), UserPage()];
+  final List<Widget> _children = [WorktopPage(), UserPage()];
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -24,25 +24,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Text('易药通'),
-      ),
       body: _children[_currentIndex], // new
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         unselectedItemColor: Colors.grey,
         selectedItemColor: ThemeColor.primaryColor,
         onTap: onTabTapped, // new
         currentIndex: _currentIndex, // new
         items: [
-          new BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/images/learn.png',
-              width: 24,
-              height: 24,
-            ),
-            title: Text('测试'),
-          ),
           new BottomNavigationBarItem(
             icon: Image.asset(
               'assets/images/learn.png',

@@ -1,9 +1,10 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:doctor/http/result_data.dart';
 import 'package:doctor/http/servers.dart';
 import 'package:doctor/http/session_manager.dart';
+import 'package:doctor/route/navigation_service.dart';
+import 'package:doctor/route/route_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 Map<String, String> msgMap = {
@@ -47,6 +48,7 @@ class HttpManager {
   Future get(String path,
       {Map<String, dynamic> params,
       showLoading = true,
+      loadingText,
       ignoreSession = false,
       ignoreErrorTips = false,
       Options options}) {
@@ -62,6 +64,7 @@ class HttpManager {
   Future post(String path,
       {Map<String, dynamic> params,
       showLoading = true,
+      loadingText,
       ignoreSession = false,
       ignoreErrorTips = false,
       Options options}) {
@@ -78,11 +81,12 @@ class HttpManager {
       {Map<String, dynamic> params,
       Map<String, dynamic> query,
       showLoading = true,
+      loadingText = '加载中...',
       ignoreSession = false,
       ignoreErrorTips = false,
       Options options}) async {
     if (showLoading) {
-      EasyLoading.show(status: '加载中...');
+      EasyLoading.show(status: loadingText);
     }
     Response response;
     try {
@@ -101,9 +105,6 @@ class HttpManager {
       }
       response = await dio.request(path,
           queryParameters: query, data: params, options: _options);
-      if (showLoading) {
-        EasyLoading.dismiss();
-      }
       if (response.statusCode < 200 || response.statusCode >= 300) {
         EasyLoading.showToast(msgMap['httpError']);
         return new ResultData('ERROR', '-1', msgMap['httpError'], {});
@@ -116,25 +117,35 @@ class HttpManager {
           if (outLoginCodes.indexOf(data.errorCode) != -1) {
             // TODO: 跳转到登录页
             EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-            return data;
+            NavigationService().pushNamedAndRemoveUntil(
+                RouteManager.LOGIN, (Route<dynamic> route) => false);
+            return {};
           }
           // 需更新session
           if (authFailCodes.indexOf(data.errorCode) != -1) {
             // TODO: 更新session
             EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-            return data;
+            NavigationService().pushNamedAndRemoveUntil(
+                RouteManager.LOGIN, (Route<dynamic> route) => false);
+            return {};
           }
           // 错误
           if (authErrorCodes.indexOf(data.errorCode) != -1) {
             // TODO: 错误处理
             EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-            return data;
+            NavigationService().navigateTo(RouteManager.LOGIN);
+            return {};
           }
         }
         if (!ignoreErrorTips) {
-          EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-          return data;
+          EasyLoading.showToast(data.errorMsg ?? msgMap['dataError'],
+              duration: Duration(milliseconds: 1500));
+          return {};
         }
+      }
+
+      if (showLoading) {
+        EasyLoading.dismiss();
       }
 
       dynamic content = data.content ?? data;
@@ -144,7 +155,7 @@ class HttpManager {
       if (showLoading) {
         EasyLoading.dismiss();
       }
-      print(e);
+      print('error: $e');
       EasyLoading.showToast(msgMap['networkError']);
       return {};
     }

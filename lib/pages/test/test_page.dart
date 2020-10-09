@@ -1,5 +1,7 @@
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/http/session_manager.dart';
+import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 
 class TestPage extends StatefulWidget {
@@ -32,18 +34,43 @@ class _TestPageState extends State<TestPage> {
     setState(() {
       userInfo = response;
     });
+    HttpManager http2 = HttpManager('server');
+    dynamic response2 = await http2.post('/learn-plan/list', params: {
+      'searchStatus': 'LEARNING',
+      'taskTemplate': ['SALON', 'DEPART'],
+      'ps': 10,
+      'pn': 1
+    });
+    print('learn-plan/list: $response2');
+    // dynamic response3 = await http2.post('/learn-plan/status-count', params: {
+    //   'taskTemplate': ['SALON', 'DEPART'],
+    // });
+    // print('status-count: $response3');
   }
 
   @override
   Widget build(BuildContext context) {
     SessionManager();
     return Scaffold(
-      body: Center(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text('测试页'),
+      ),
+      body: Container(
+        margin: EdgeInsets.only(top: 40),
+        height: 200,
+        alignment: Alignment.center,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            RaisedButton(child: Text('登录'), onPressed: login),
-            RaisedButton(child: Text('获取用户信息'), onPressed: getUserInfo),
+            AceButton(onPressed: login, text: '登录'),
+            AceButton(
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, RouteManager.LOGIN, (route) => false);
+                },
+                text: '退出登录'),
+            AceButton(onPressed: getUserInfo, text: '获取用户信息'),
             Container(
               child: Text(userInfo != null ? userInfo['doctorName'] : ''),
             )
