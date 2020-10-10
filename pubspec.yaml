@@ -33,6 +33,11 @@ dependencies:
   pull_to_refresh: ^1.6.1
   # State
   provider: ^4.3.2+2
+  # 常用工具 https://github.com/Sky24n/common_utils
+  common_utils: ^1.2.1
+
+  # 进度条 https://pub.dev/packages/percent_indicator
+  percent_indicator: ^2.1.7+4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

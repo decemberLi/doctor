@@ -44,7 +44,7 @@ class _LearnListPageState extends State<LearnListPage>
               padding: EdgeInsets.all(16),
               itemBuilder: (context, index) {
                 LearnListItem item = model.list[index];
-                return LearnListItemWiget(item);
+                return LearnListItemWiget(item, widget.learnStatus);
               }),
         );
       },
