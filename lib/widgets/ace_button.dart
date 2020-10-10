@@ -1,6 +1,7 @@
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 
+/// 通用业务按钮
 class AceButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;

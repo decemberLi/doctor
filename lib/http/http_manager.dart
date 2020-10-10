@@ -41,6 +41,63 @@ class HttpManager {
       BaseOptions _baseOptions =
           BaseOptions(baseUrl: baseUrl, connectTimeout: 10000);
       dio = Dio(_baseOptions);
+      dio.interceptors
+          .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
+        debugPrint('request--->url--> ${options.baseUrl}${options.path}');
+        Map extra = options.extra;
+        if (!extra['ignoreSession']) {
+          String session = SessionManager().getSession();
+          if (session == null) {
+            // 锁定所有请求
+            // dio.lock();
+            // TODO: 获取session
+          }
+          options.headers['_ticketObject'] = session;
+        }
+        return options;
+      }, onResponse: (Response response) async {
+        // 网络错误
+        if (response.statusCode < 200 || response.statusCode >= 300) {
+          EasyLoading.showToast(msgMap['httpError']);
+          return dio.reject(response);
+        }
+        Options options = response.request;
+        Map extra = options.extra;
+        ResultData data = ResultData.fromJson(response.data);
+        if (data.status.toUpperCase() == 'ERROR') {
+          if (!extra['ignoreSession']) {
+            // 会话过期，重新登录
+            if (outLoginCodes.indexOf(data.errorCode) != -1) {
+              // TODO: 跳转到登录页
+              EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
+              // NavigationService().pushNamedAndRemoveUntil(
+              //     RouteManager.LOGIN, (Route<dynamic> route) => false);
+              return dio.reject(response);
+            }
+            // 需更新session
+            if (authFailCodes.indexOf(data.errorCode) != -1) {
+              // TODO: 更新session
+              EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
+              // NavigationService().pushNamedAndRemoveUntil(
+              //     RouteManager.LOGIN, (Route<dynamic> route) => false);
+              return dio.reject(response);
+            }
+            // 错误
+            if (authErrorCodes.indexOf(data.errorCode) != -1) {
+              // TODO: 错误处理
+              EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
+              // NavigationService().navigateTo(RouteManager.LOGIN);
+              return dio.reject(response);
+            }
+          }
+          if (!extra['ignoreErrorTips']) {
+            EasyLoading.showToast(data.errorMsg ?? msgMap['dataError'],
+                duration: Duration(milliseconds: 1500));
+            return dio.reject(response);
+          }
+        }
+        return dio.resolve(response);
+      }));
     }
   }
 
@@ -91,63 +148,20 @@ class HttpManager {
     Response response;
     try {
       Options _options = options ?? Options(method: method);
+      _options.extra = {
+        'ignoreSession': ignoreSession,
+        'ignoreErrorTips': ignoreErrorTips
+      };
       if (_options.method == null) {
         _options.method = method;
       }
-      if (!ignoreSession) {
-        String session = SessionManager().getSession();
-        if (session == null) {
-          // 锁定所有请求
-          // dio.lock();
-          // TODO: 获取session
-        }
-        _options.headers['_ticketObject'] = session;
-      }
       response = await dio.request(path,
           queryParameters: query, data: params, options: _options);
-      if (response.statusCode < 200 || response.statusCode >= 300) {
-        EasyLoading.showToast(msgMap['httpError']);
-        return new ResultData('ERROR', '-1', msgMap['httpError'], {});
-      }
 
       ResultData data = ResultData.fromJson(response.data);
-      if (data.status.toUpperCase() == 'ERROR') {
-        if (!ignoreSession) {
-          // 会话过期，重新登录
-          if (outLoginCodes.indexOf(data.errorCode) != -1) {
-            // TODO: 跳转到登录页
-            EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-            NavigationService().pushNamedAndRemoveUntil(
-                RouteManager.LOGIN, (Route<dynamic> route) => false);
-            return {};
-          }
-          // 需更新session
-          if (authFailCodes.indexOf(data.errorCode) != -1) {
-            // TODO: 更新session
-            EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-            NavigationService().pushNamedAndRemoveUntil(
-                RouteManager.LOGIN, (Route<dynamic> route) => false);
-            return {};
-          }
-          // 错误
-          if (authErrorCodes.indexOf(data.errorCode) != -1) {
-            // TODO: 错误处理
-            EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-            NavigationService().navigateTo(RouteManager.LOGIN);
-            return {};
-          }
-        }
-        if (!ignoreErrorTips) {
-          EasyLoading.showToast(data.errorMsg ?? msgMap['dataError'],
-              duration: Duration(milliseconds: 1500));
-          return {};
-        }
-      }
-
       if (showLoading) {
         EasyLoading.dismiss();
       }
-
       dynamic content = data.content ?? data;
 
       return content;
@@ -156,8 +170,7 @@ class HttpManager {
         EasyLoading.dismiss();
       }
       print('error: $e');
-      EasyLoading.showToast(msgMap['networkError']);
-      return {};
+      return e;
     }
   }
 }

@@ -1,4 +1,4 @@
-import 'package:doctor/pages/worktop/learn/learn_list_view.dart';
+import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -40,8 +40,8 @@ class WorktopPage extends StatelessWidget {
           color: ThemeColor.colorFFF3F5F8,
           child: TabBarView(
             children: [
-              LearnList(),
-              Icon(Icons.directions_transit),
+              LearnListPage('LEARNING'),
+              LearnListPage('HISTORY'),
             ],
           ),
         ),
