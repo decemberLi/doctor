@@ -1,5 +1,6 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -199,10 +200,15 @@ class LearnListItemWiget extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
-                width: 108,
-                child: circleRender(),
-              )
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed(RouteManager.LEARN_DETAIL);
+                },
+                child: Container(
+                  width: 108,
+                  child: circleRender(),
+                ),
+              ),
             ],
           )
         ],

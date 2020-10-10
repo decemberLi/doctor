@@ -17,7 +17,6 @@ class LearnListViewModel extends ViewStateRefreshListModel {
       'ps': 10,
       'pn': pageNum
     });
-    print(list['records']);
     return list['records']
         .map<LearnListItem>((item) => LearnListItem.fromJson(item))
         .toList();
