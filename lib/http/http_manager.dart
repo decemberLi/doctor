@@ -2,8 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:doctor/http/result_data.dart';
 import 'package:doctor/http/servers.dart';
 import 'package:doctor/http/session_manager.dart';
-import 'package:doctor/route/navigation_service.dart';
-import 'package:doctor/route/route_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -68,25 +66,21 @@ class HttpManager {
           if (!extra['ignoreSession']) {
             // 会话过期，重新登录
             if (outLoginCodes.indexOf(data.errorCode) != -1) {
-              // TODO: 跳转到登录页
               EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-              // NavigationService().pushNamedAndRemoveUntil(
-              //     RouteManager.LOGIN, (Route<dynamic> route) => false);
+              SessionManager.loginOutHandler();
               return dio.reject(response);
             }
             // 需更新session
             if (authFailCodes.indexOf(data.errorCode) != -1) {
               // TODO: 更新session
               EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-              // NavigationService().pushNamedAndRemoveUntil(
-              //     RouteManager.LOGIN, (Route<dynamic> route) => false);
+              SessionManager.loginOutHandler();
               return dio.reject(response);
             }
             // 错误
             if (authErrorCodes.indexOf(data.errorCode) != -1) {
               // TODO: 错误处理
               EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-              // NavigationService().navigateTo(RouteManager.LOGIN);
               return dio.reject(response);
             }
           }
@@ -166,9 +160,9 @@ class HttpManager {
 
       return content;
     } on DioError catch (e) {
-      if (showLoading) {
-        EasyLoading.dismiss();
-      }
+      // if (showLoading) {
+      //   EasyLoading.dismiss();
+      // }
       print('error: $e');
       return e;
     }

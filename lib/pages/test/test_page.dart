@@ -66,8 +66,7 @@ class _TestPageState extends State<TestPage> {
             AceButton(onPressed: login, text: '登录'),
             AceButton(
                 onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, RouteManager.LOGIN, (route) => false);
+                  SessionManager.loginOutHandler();
                 },
                 text: '退出登录'),
             AceButton(onPressed: getUserInfo, text: '获取用户信息'),

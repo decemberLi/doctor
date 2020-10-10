@@ -3,6 +3,7 @@ const NAME = 'DOCTOR';
 const APP_NAME = '易学术';
 
 const SESSION_KEY = '$NAME-ticket';
+const LAST_PHONE = '$NAME-last-phone';
 
 /// 任务类型
 const Map<String, String> TASK_TEMPLATE = {

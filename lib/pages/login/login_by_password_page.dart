@@ -1,3 +1,4 @@
+import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/pages/login/service.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -24,7 +25,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
       form.save();
       var response = await loginByPassword(
           {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
-      loginHandler(
+      SessionManager.loginHandler(
           response['ticket'], LoginUser.fromJson(response['loginUser']));
     }
   }
@@ -58,6 +59,8 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                   margin: EdgeInsets.only(bottom: 30),
                   child: TextFormField(
                     autofocus: true,
+                    initialValue:
+                        SessionManager().sp.getString(LAST_PHONE) ?? '',
                     decoration: InputDecoration(hintText: '请输入手机号'),
                     validator: (val) => val.length < 1 ? '手机号不能为空' : null,
                     onSaved: (val) => _mobile = val,
