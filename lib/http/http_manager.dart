@@ -164,7 +164,7 @@ class HttpManager {
       //   EasyLoading.dismiss();
       // }
       print('error: $e');
-      return e;
+      return {};
     }
   }
 }
