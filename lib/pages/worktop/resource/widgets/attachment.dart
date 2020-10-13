@@ -9,32 +9,36 @@ class Attacement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(
-          MyIcons.icon_article,
-          size: 80,
-        ),
-        SizedBox(
-          height: 16,
-        ),
-        Text(
-          name,
-          style: TextStyle(
-            color: ThemeColor.colorFF444444,
-            fontSize: 16,
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.only(top: 100),
+      child: Column(
+        children: [
+          Icon(
+            MyIcons.icon_article,
+            size: 80,
           ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        AceButton(
-          onPressed: () {
-            print(111);
-          },
-          text: '在线阅读',
-        ),
-      ],
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            name,
+            style: TextStyle(
+              color: ThemeColor.colorFF444444,
+              fontSize: 16,
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          AceButton(
+            onPressed: () {
+              print(111);
+            },
+            text: '在线阅读',
+          ),
+        ],
+      ),
     );
   }
 }

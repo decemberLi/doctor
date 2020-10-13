@@ -1,25 +1,46 @@
+import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
+import 'package:doctor/pages/worktop/resource/view_model.dart/resource_view_model.dart';
+import 'package:doctor/pages/worktop/resource/widgets/article.dart';
 import 'package:doctor/pages/worktop/resource/widgets/attachment.dart';
+import 'package:doctor/provider/provider_widget.dart';
+import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class ResourceDetailPage extends StatefulWidget {
-  @override
-  _ResourceDetailPageState createState() => _ResourceDetailPageState();
-}
+class ResourceDetailPage extends StatelessWidget {
+  Widget resourceRender(ResourceModel data) {
+    if (data.contentType == 'RICH_TEXT') {
+      return Article(data);
+    }
+    if (data.contentType == 'ATTACHMENT') {
+      return Attacement(data.title ?? data.resourceName);
+    }
+    return Container();
+  }
 
-class _ResourceDetailPageState extends State<ResourceDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('资料详情'),
-        elevation: 1,
+        elevation: 0,
       ),
-      body: Container(
-        color: ThemeColor.colorFFF3F5F8,
-        alignment: Alignment.center,
-        padding: EdgeInsets.only(top: 100),
-        child: Attacement('测试文档'),
+      body: ProviderWidget<ResourceDetailViewModel>(
+        model: ResourceDetailViewModel(245, 67),
+        onModelReady: (model) => model.initData(),
+        builder: (context, model, child) {
+          if (model.isBusy) {
+            return Container();
+          }
+          if (model.isError || model.isEmpty) {
+            return ViewStateEmptyWidget(onPressed: model.initData);
+          }
+          var data = model.data;
+          return Container(
+            color: ThemeColor.colorFFF3F5F8,
+            child: resourceRender(data),
+          );
+        },
       ),
     );
   }

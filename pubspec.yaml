@@ -27,6 +27,7 @@ dependencies:
     sdk: flutter
   json_annotation: ^3.0.1
   dio: ^3.0.10
+  # https://pub.dev/packages/flutter_easyloading
   flutter_easyloading: ^2.0.0
   shared_preferences: ^0.5.12
   # 下拉刷新
@@ -38,6 +39,17 @@ dependencies:
 
   # 进度条 https://pub.dev/packages/percent_indicator
   percent_indicator: ^2.1.7+4
+
+  # 解析html标签
+  # flutter_html: ^1.0.2
+
+  # third_app
+  # 启动第三方app
+  url_launcher: ^5.7.2
+
+  open_file: ^3.0.1
+
+  webview_flutter: ^1.0.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
