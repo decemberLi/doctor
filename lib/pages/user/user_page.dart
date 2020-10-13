@@ -6,12 +6,28 @@ class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.only(top: 20),
-          child: Text('我的页面'),
-        ),
-      ),
-    );
+        body: SafeArea(
+      child: Center(
+          child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 100),
+            child: AceButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteManager.TEST);
+                },
+                text: '测试页'),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 100),
+            child: AceButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteManager.UPDATE_PWD);
+                },
+                text: '修改密码'),
+          )
+        ],
+      )),
+    ));
   }
 }

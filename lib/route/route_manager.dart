@@ -3,6 +3,8 @@ import 'package:doctor/pages/login/login_by_password_page.dart';
 import 'package:doctor/pages/login/login_page.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart';
+import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
+import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
 import 'package:flutter/material.dart';
 
 class RouteManager {
@@ -11,12 +13,16 @@ class RouteManager {
   static const String HOME = '/home';
   static const String TEST = '/test';
   static const String LEARN_DETAIL = '/learn_detail';
+  static const String RESOURCE_DETAIL = '/resource_detail';
+  static const String UPDATE_PWD = '/update_pwd';
 
   static Map<String, WidgetBuilder> routes = {
     LOGIN: (context) => LoginPage(),
     LOGIN_PWD: (context) => LoginByPasswordPage(),
     HOME: (context) => HomePage(),
     TEST: (context) => TestPage(),
-    LEARN_DETAIL: (context) => LearnDetailPage()
+    LEARN_DETAIL: (context) => LearnDetailPage(),
+    RESOURCE_DETAIL: (context) => ResourceDetailPage(),
+    UPDATE_PWD: (context) => UpdatePwdPage()
   };
 }

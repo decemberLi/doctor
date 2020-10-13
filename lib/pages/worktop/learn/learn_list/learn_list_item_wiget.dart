@@ -202,7 +202,8 @@ class LearnListItemWiget extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pushNamed(RouteManager.LEARN_DETAIL);
+                  // Navigator.of(context).pushNamed(RouteManager.LEARN_DETAIL);
+                  Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL);
                 },
                 child: Container(
                   width: 108,
