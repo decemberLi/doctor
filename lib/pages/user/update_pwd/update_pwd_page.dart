@@ -15,7 +15,6 @@ class UpdatePwdPage extends StatefulWidget {
 }
 
 class _UpdatePwdState extends State<UpdatePwdPage> {
-  Map<String, dynamic> userInfo;
   final _formKey = GlobalKey<FormState>();
   RegExp pwd = new RegExp(r'(\d{6}$)');
   String oldPassword, newPassword, confirmPassword;
@@ -31,7 +30,6 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
       } else {
         changePassword({'oldPassword': oldPassword, 'newPassword': newPassword})
             .then((response) {
-          print(response);
           if (!(response is DioError)) {
             SessionManager.loginOutHandler();
             const timeout = const Duration(seconds: 1);
