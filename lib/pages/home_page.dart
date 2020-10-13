@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
               width: 24,
               height: 24,
             ),
-            title: Text('测试页'),
+            label: '测试页',
           ),
         ],
       ),
