@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/pages/worktop/worktop_page.dart';
 import 'package:doctor/pages/user/user_page.dart';
+import 'package:doctor/pages/test/test_page.dart';
 
 /// 首页
 class HomePage extends StatefulWidget {
@@ -14,7 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  final List<Widget> _children = [WorktopPage(), UserPage()];
+  final List<Widget> _children = [WorktopPage(), UserPage(), TestPage()];
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -47,6 +48,14 @@ class _HomePageState extends State<HomePage> {
               height: 24,
             ),
             title: Text('个人中心'),
+          ),
+          new BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/images/user.png',
+              width: 24,
+              height: 24,
+            ),
+            title: Text('测试页'),
           ),
         ],
       ),

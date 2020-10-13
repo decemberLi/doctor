@@ -7,11 +7,10 @@ class UserPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: AceButton(
-            onPressed: () {
-              Navigator.pushNamed(context, RouteManager.TEST);
-            },
-            text: '测试页'),
+        child: Padding(
+          padding: EdgeInsets.only(top: 20),
+          child: Text('我的页面'),
+        ),
       ),
     );
   }
