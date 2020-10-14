@@ -2,6 +2,7 @@ import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
+import 'package:doctor/provider/view_state_model.dart';
 
 HttpManager http = HttpManager('server');
 
@@ -24,17 +25,27 @@ class LearnListViewModel extends ViewStateRefreshListModel {
   }
 }
 
-class LearnDetailViewModel extends ViewStateRefreshListModel {
-  String learnPlanId = '';
+class LearnDetailViewModel extends ViewStateModel {
+  final int learnPlanId;
+
+  LearnDetailItem data;
 
   LearnDetailViewModel(this.learnPlanId);
-  @override
-  Future<List<LearnDetailItem>> loadData({int pageNum}) async {
-    var list = await http.post('/learn-plan/detail', params: {
-      'learnPlanId': learnPlanId,
+
+  initData() async {
+    setBusy();
+    try {
+      data = await loadData();
+      setIdle();
+    } catch (e, s) {
+      setError(e, s);
+    }
+  }
+
+  Future<LearnDetailItem> loadData() async {
+    var data = await http.post('/learn-plan/detail', params: {
+      'learnPlanId': this.learnPlanId,
     });
-    return list['records']
-        .map<LearnDetailItem>((item) => LearnDetailItem.fromJson(item))
-        .toList();
+    return LearnDetailItem.fromJson(data);
   }
 }
