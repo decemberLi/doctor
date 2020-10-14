@@ -27,7 +27,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
       form.save();
       var response = await loginByCaptCha(
           {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
-      if (!(response is DioError)) {
+      if (response is! DioError) {
         SessionManager.loginHandler(
             response['ticket'], LoginUser.fromJson(response['loginUser']));
       }
@@ -41,7 +41,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
       //获取验证码
       sendSms({'phone': _mobile, 'system': 'DOCTOR', 'type': 'LOGIN'})
           .then((response) {
-        if (!(response is DioError)) {
+        if (response is! DioError) {
           setState(() {
             _maxCount = 60;
           });
