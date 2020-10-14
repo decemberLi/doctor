@@ -1,10 +1,11 @@
+import 'package:doctor/route/route_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
-// import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
+import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
 
 // * @Desc: 计划详情页  */
 class LearnDetailPage extends StatefulWidget {
@@ -22,179 +23,64 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   initState() {
     // super.initState();
     formList = [
-      {"title": '车牌号'},
-      {"title": '车牌号1'},
-      {"title": '车牌号2'},
-      {"title": '车牌号32'},
-      {"title": '车牌号42'},
-      {"title": '车牌号52'},
-      {"title": '车牌号62'},
+      {"title": '车牌号', "type": 'ARTICLE', "color": 'ARTICLE'},
+      {"title": '车牌号1', "type": 'VIDEO', "color": 'VIDEO'},
+      {"title": '车牌号2', "type": 'QUESTIONNAIRE', "color": 'QUESTIONNAIRE'},
     ];
   }
 
-  Widget buildGrid() {
+  Widget typeDecoratedBox(String type) {
+    Color rendColor = ThemeColor.color72c140;
+    if (type == 'VIDEO') {
+      rendColor = ThemeColor.color5d9df7;
+    } else if (type == 'QUESTIONNAIRE') {
+      rendColor = ThemeColor.colorefaf41;
+    }
+    return DecoratedBox(
+        decoration: BoxDecoration(color: rendColor),
+        child: Padding(
+          // 分别指定四个方向的补白
+          padding: const EdgeInsets.fromLTRB(30, 1, 30, 1),
+          child: Text(MAP_RESOURCE_TYPE[type],
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: Colors.white,
+              )),
+        ));
+  }
+
+  // 头部计划信息
+  Widget planTopList() {
     List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
     Widget content; //单独一个widget组件，用于返回需要生成的内容widget
     for (var item in formList) {
       tiles.add(new Container(
-          margin: EdgeInsets.only(bottom: 12),
-          padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.fromLTRB(16, 10, 16, 10),
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            border: Border(
+              bottom: BorderSide(color: ThemeColor.colorFFF3F5F8),
+            ),
           ),
-          child: Stack(
-            alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
-            children: <Widget>[
-              Positioned(
-                left: 0,
-                top: 0,
-                child: Container(
-                  // padding: EdgeInsets.symmetric(vertical: 6),
-                  child: Transform(
-                    //对齐方式
-                    alignment: Alignment.topRight,
-                    //设置扭转值
-                    transform: Matrix4.rotationZ(-0.45),
-                    //设置被旋转的容器
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(color: Colors.orange),
-                      child: Text('文章',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                            color: Colors.white,
-                            backgroundColor: Color(0xff72c140),
-                          )),
-                    ),
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 6),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFDEDEE1),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(4)),
-                                      ),
-                                      padding:
-                                          EdgeInsets.only(left: 4, right: 4),
-                                      margin:
-                                          EdgeInsets.only(right: 4, bottom: 10),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.access_time,
-                                            size: 12,
-                                            color: Colors.white,
-                                          ),
-                                          SizedBox(
-                                            width: 3,
-                                          ),
-                                          Text(
-                                            '待观看',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      )),
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFDEDEE1),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(4)),
-                                      ),
-                                      padding:
-                                          EdgeInsets.only(left: 4, right: 4),
-                                      margin:
-                                          EdgeInsets.only(right: 4, bottom: 10),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.access_time,
-                                            size: 12,
-                                            color: Colors.white,
-                                          ),
-                                          SizedBox(
-                                            width: 3,
-                                          ),
-                                          Text(
-                                            '反馈',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      )),
-                                ],
-                              ),
-                              Text(
-                                item['title'],
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                // textAlign: TextAlign.left,
-                                softWrap: true,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                '2医学信息推广专员医学信息推广专员息推广专员${item['title']}',
-                                style: TextStyle(
-                                    color: Color(0xFF666666), fontSize: 14),
-                                softWrap: true,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ])),
-                  ),
-                  GestureDetector(
-                    // onTap: () {
-                    //   Navigator.of(context).pushNamed(RouteManager.LEARN_DETAIL);
-                    // },
-                    child: Container(
-                      width: 108,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Image.asset(
-                            'assets/images/logo.png',
-                            width: 60,
-                            height: 60,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          )));
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('学习计划名称',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
+                    )),
+                Text('学习计划名称1',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
+                    )),
+              ])));
     }
     content = new Column(
         children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
@@ -217,8 +103,13 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             // mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                child: Card(
-                  margin: EdgeInsets.all(16),
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
                   child: Column(
                     children: [
                       ListTile(
@@ -233,7 +124,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                   color: ThemeColor.primaryColor,
                                 ),
                               ]),
-                          leading: Text(_isExpanded ? '学习计划信息2' : '学习计划信息',
+                          leading: Text('学习计划信息',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
@@ -245,48 +136,33 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                               _isExpanded = !_isExpanded;
                             });
                           }),
-                      ListTile(
-                        title: Text('学习计划名称',
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                            )),
-                        leading: Text('学习计划名称1',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                            )),
-                      ),
-                      Divider(),
-                      ListTile(
-                        title: Text('划类型',
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                            )),
-                        leading: Text('学习计划类型',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                            )),
-                      ),
-                      Divider(),
-                      ListTile(
-                        title: Text('来自企业划类型',
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                            )),
-                        leading: Text('来自企业',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                            )),
-                      ),
-                      Divider(),
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom:
+                                  BorderSide(color: ThemeColor.colorFFF3F5F8),
+                            ),
+                          ),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text('学习计划名称',
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18,
+                                    )),
+                                Text('学习计划名称1',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18,
+                                    )),
+                              ])),
+                      Column(children: _isExpanded ? [planTopList()] : []),
                       ListTile(
                         leading: Text('当前完成度：${'333%'}',
                             style: TextStyle(
@@ -310,19 +186,23 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 ),
               ),
               Container(
-                child: Card(
-                    margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    child: ListTile(
-                        title: Text('资料列表',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20,
-                              color: ThemeColor.primaryColor,
-                            )))),
-              ),
+                  child: Container(
+                      // margin: EdgeInsets.only(bottom: 12),
+                      margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      padding: EdgeInsets.fromLTRB(16, 10, 0, 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                      child: Text('资料列表',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                            color: ThemeColor.primaryColor,
+                          )))),
               Container(
                   margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: buildGrid()),
+                  child: PlanDetailList(formList)),
             ],
           ),
         ));
