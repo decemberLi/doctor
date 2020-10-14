@@ -49,6 +49,8 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
         elevation: 0,
         title: Text('我的资料'),
       ),
+      // 避免键盘弹起时高度错误
+      resizeToAvoidBottomInset: false,
       body: Container(
         margin: EdgeInsets.only(top: 40),
         height: 500,
