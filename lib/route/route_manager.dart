@@ -5,11 +5,13 @@ import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart';
 import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
 import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
+import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:flutter/material.dart';
 
 class RouteManager {
   static const String LOGIN = '/login';
   static const String LOGIN_PWD = '/login_by_password';
+  static const String LOGIN_CAPTCHA = '/login_by_captcha';
   static const String HOME = '/home';
   static const String TEST = '/test';
   static const String LEARN_DETAIL = '/learn_detail';
@@ -19,6 +21,7 @@ class RouteManager {
   static Map<String, WidgetBuilder> routes = {
     LOGIN: (context) => LoginPage(),
     LOGIN_PWD: (context) => LoginByPasswordPage(),
+    LOGIN_CAPTCHA: (context) => LoginByCaptchaPage(),
     HOME: (context) => HomePage(),
     TEST: (context) => TestPage(),
     LEARN_DETAIL: (context) => LearnDetailPage(),
