@@ -42,7 +42,9 @@ class _LoginPageState extends State<LoginPage> {
                     AceButton(
                       type: AceButtonType.grey,
                       text: '输入手机号码登录',
-                      onPressed: () => {print('111')},
+                      onPressed: () => {
+                        Navigator.pushNamed(context, RouteManager.LOGIN_CAPTCHA)
+                      },
                     ),
                     AceButton(
                       type: AceButtonType.grey,

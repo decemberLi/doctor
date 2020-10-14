@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
               width: 24,
               height: 24,
             ),
-            title: Text('工作台'),
+            label: '工作台',
           ),
           new BottomNavigationBarItem(
             icon: Image.asset(
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
               width: 24,
               height: 24,
             ),
-            title: Text('个人中心'),
+            label: '个人中心',
           ),
           new BottomNavigationBarItem(
             icon: Image.asset(
@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
               width: 24,
               height: 24,
             ),
-            title: Text('测试页'),
+            label: '测试页',
           ),
         ],
       ),

@@ -18,3 +18,12 @@ https://juejin.im/post/6844903864852807694
 https://github.com/rrousselGit/provider/blob/master/resources/translations/zh-CN/README.md
 
 https://book.flutterchina.club/chapter3/input_and_form.html
+
+
+## model序列化
+
+https://flutter.cn/docs/development/data-and-backend/json
+
+```bash
+flutter pub run build_runner build
+```

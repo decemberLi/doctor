@@ -151,7 +151,6 @@ class HttpManager {
       }
       response = await dio.request(path,
           queryParameters: query, data: params, options: _options);
-
       ResultData data = ResultData.fromJson(response.data);
       if (showLoading) {
         EasyLoading.dismiss();
@@ -164,7 +163,7 @@ class HttpManager {
       //   EasyLoading.dismiss();
       // }
       print('error: $e');
-      return {};
+      return e;
     }
   }
 }
