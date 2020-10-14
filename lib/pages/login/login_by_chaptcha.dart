@@ -49,7 +49,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
         }
       });
     } else {
-      return EasyLoading.showToast('请输入正确的手机号');
+      EasyLoading.showToast('请输入正确的手机号');
     }
   }
 
