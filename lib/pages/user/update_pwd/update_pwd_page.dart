@@ -30,7 +30,7 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
       } else {
         changePassword({'oldPassword': oldPassword, 'newPassword': newPassword})
             .then((response) {
-          if (!(response is DioError)) {
+          if (response is! DioError) {
             SessionManager.loginOutHandler();
             const timeout = const Duration(seconds: 1);
             Timer(timeout, () {
