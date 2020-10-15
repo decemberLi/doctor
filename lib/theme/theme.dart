@@ -9,7 +9,9 @@ class ThemeColor {
   static const Color colorFFFFFF = const Color(0xffffffff);
   // 黑色
   static const Color colorFF000000 = const Color(0xff000000);
+  static const Color colorFF222222 = const Color(0xff222222);
   static const Color colorFF444444 = const Color(0xff444444);
+  static const Color colorFF666666 = const Color(0xff666666);
   // 灰色
   static const Color colorFFF8F8F8 = const Color(0xFFF8F8F8);
   static const Color colorFF5F6266 = const Color(0xFF5F6266);

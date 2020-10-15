@@ -1,3 +1,4 @@
+import 'package:chewie/chewie.dart';
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/theme/theme.dart';
@@ -15,25 +16,21 @@ class _VideoDetailState extends State<VideoDetail> {
   VideoPlayerController _controller;
   Future<void> _initializeVideoPlayerFuture;
 
-  initData() async {
+  _initData() async {
     var files = await CommonService.getFile({
       'ossIds': [widget.data.attachmentOssId]
     });
-    print(files[0]['tmpUrl']);
-    // _controller = VideoPlayerController.network(
-    //   files[0]['tmpUrl'],
-    // );
-    // _initializeVideoPlayerFuture = _controller.initialize();
+    _controller = VideoPlayerController.network(
+      files[0]['tmpUrl'],
+    );
+    _initializeVideoPlayerFuture = _controller.initialize();
+    setState(() {});
   }
 
   @override
   void initState() {
-    this.initData();
-    _controller = VideoPlayerController.network(
-      'https://oss-dev.e-medclouds.com/Business-attachment/2020-07/100027/21210849-1595337473013.mp4?Expires=1602669459&OSSAccessKeyId=LTAI4G4YMh1PB4BdD6BpC4qU&Signature=cIBMCgX8DPA1FkDLc%2BVtpT8vDxY%3D',
-    );
-    _initializeVideoPlayerFuture = _controller.initialize();
     super.initState();
+    this._initData();
   }
 
   @override
@@ -42,103 +39,116 @@ class _VideoDetailState extends State<VideoDetail> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-        future: _initializeVideoPlayerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the VideoPlayerController has finished initialization, use
-            // the data it provides to limit the aspect ratio of the VideoPlayer.
-            return AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              // Use the VideoPlayer widget to display the video.
-              child: VideoPlayer(_controller),
-            );
-          } else {
-            return Container(
-              alignment: Alignment.center,
-              height: 240,
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Wrap the play or pause in a call to `setState`. This ensures the
-          // correct icon is shown.
-          setState(() {
-            // If the video is playing, pause it.
-            if (_controller.value.isPlaying) {
-              _controller.pause();
-            } else {
-              // If the video is paused, play it.
-              _controller.play();
-            }
-          });
-        },
-        // Display the correct icon depending on the state of the player.
-        child: Icon(
-          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        ),
+  /// 渲染视频区域
+  Widget _renderVideo() {
+    return FutureBuilder(
+      future: _initializeVideoPlayerFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Chewie(
+            controller: ChewieController(
+              videoPlayerController: _controller,
+              aspectRatio: 3 / 2,
+              autoPlay: false,
+              autoInitialize: false,
+            ),
+          );
+        } else {
+          return Container(
+            alignment: Alignment.center,
+            height: 240,
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+
+  /// 渲染视频信息
+  Widget _renderVideoInfo() {
+    TextStyle boldTextStyle = TextStyle(
+      color: ThemeColor.colorFF222222,
+      fontSize: 16.0,
+      fontWeight: FontWeight.w500,
+    );
+    TextStyle lightTextStyle = TextStyle(
+      color: ThemeColor.colorFF666666,
+      fontSize: 14.0,
+    );
+    EdgeInsets commonPadding = EdgeInsets.only(left: 18, right: 18, top: 12);
+    return Container(
+      color: Colors.white,
+      alignment: Alignment.topCenter,
+      child: Column(
+        children: [
+          Container(
+            height: 44.0,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: ThemeColor.colorFFF0EDF1),
+              ),
+            ),
+            child: Text(
+              '资料介绍',
+              style: TextStyle(
+                color: ThemeColor.primaryColor,
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Container(
+            padding: commonPadding,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              widget.data.title,
+              style: boldTextStyle,
+            ),
+          ),
+          Container(
+            padding: commonPadding,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '主讲人：${widget.data.info.presenter}',
+              style: lightTextStyle,
+            ),
+          ),
+          Container(
+            padding: commonPadding,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '内容概要',
+              style: boldTextStyle,
+            ),
+          ),
+          Container(
+            padding: commonPadding,
+            alignment: Alignment.centerLeft,
+            child: SingleChildScrollView(
+              child: Text(
+                '\t\t\t${widget.data.info.summary}',
+                style: lightTextStyle,
+              ),
+            ),
+          ),
+        ],
       ),
     );
-    // return Container(
-    //   alignment: Alignment.topCenter,
-    //   child: Column(
-    //     children: [
-    //       FutureBuilder(
-    //         future: _initializeVideoPlayerFuture,
-    //         builder: (context, snapshot) {
-    //           if (snapshot.connectionState == ConnectionState.done) {
-    //             // If the VideoPlayerController has finished initialization, use
-    //             // the data it provides to limit the aspect ratio of the VideoPlayer.
-    //             return AspectRatio(
-    //               aspectRatio: _controller.value.aspectRatio,
-    //               // Use the VideoPlayer widget to display the video.
-    //               child: VideoPlayer(_controller),
-    //             );
-    //           } else {
-    //             return Container(
-    //               alignment: Alignment.center,
-    //               height: 240,
-    //               child: CircularProgressIndicator(),
-    //             );
-    //           }
-    //         },
-    //       ),
-    //       Expanded(
-    //         child: Container(
-    //           color: Colors.white,
-    //           alignment: Alignment.topCenter,
-    //           child: Column(
-    //             children: [
-    //               Container(
-    //                 height: 44.0,
-    //                 alignment: Alignment.center,
-    //                 decoration: BoxDecoration(
-    //                   border: Border(
-    //                     bottom: BorderSide(color: ThemeColor.colorFFF0EDF1),
-    //                   ),
-    //                 ),
-    //                 child: Text(
-    //                   '资料介绍',
-    //                   style: TextStyle(
-    //                     color: ThemeColor.primaryColor,
-    //                     fontSize: 16.0,
-    //                     fontWeight: FontWeight.bold,
-    //                   ),
-    //                 ),
-    //               ),
-    //               SingleChildScrollView(),
-    //             ],
-    //           ),
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.topCenter,
+      child: Column(
+        children: [
+          _renderVideo(),
+          Expanded(
+            child: _renderVideoInfo(),
+          ),
+        ],
+      ),
+    );
   }
 }
