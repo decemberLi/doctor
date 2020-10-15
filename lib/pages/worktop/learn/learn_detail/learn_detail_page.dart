@@ -1,4 +1,5 @@
 // import 'package:doctor/route/route_manager.dart';
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
@@ -23,12 +24,23 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   // 列表
   List formList;
+
+  List get foList => [
+        {"title": '车牌号', "type": 'ARTICLE', "color": 'ARTICLE'},
+        {"title": '车牌号1', "type": 'VIDEO', "color": 'VIDEO'},
+        {"title": '车牌号2', "type": 'QUESTIONNAIRE', "color": 'QUESTIONNAIRE'},
+      ];
+
   initState() {
     // super.initState();
     formList = [
-      {"title": '车牌号', "type": 'ARTICLE', "color": 'ARTICLE'},
-      {"title": '车牌号1', "type": 'VIDEO', "color": 'VIDEO'},
-      {"title": '车牌号2', "type": 'QUESTIONNAIRE', "color": 'QUESTIONNAIRE'},
+      {'field': 'taskTemplate', 'label': '学习计划类型'},
+      {'field': 'companyName', 'label': '来自企业'},
+      {'field': 'representName', 'label': '医学信息推广专员'},
+      {
+        'field': 'createTime',
+        'label': '收到学习计划日期',
+      }
     ];
   }
 
@@ -57,8 +69,22 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   // 头部计划信息
   Widget planTopList(LearnDetailItem data) {
     List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
-    Widget content; //单独一个widget组件，用于返回需要生成的内容widget
+    Widget content;
+    String fieldText = '开始学习'; //单独一个widget组件，用于返回需要生成的内容widget
     for (var item in formList) {
+      if (item['field'] == 'taskTemplate') {
+        fieldText = TASK_TEMPLATE[data.taskTemplate];
+      }
+      if (item['field'] == 'companyName') {
+        fieldText = data.companyName;
+      }
+      if (item['field'] == 'representName') {
+        fieldText = data.representName;
+      }
+      if (item['field'] == 'createTime') {
+        fieldText =
+            DateUtil.formatDateMs(data.createTime, format: 'yyyy年MM月dd HH:mm');
+      }
       tiles.add(new Container(
           alignment: Alignment.centerLeft,
           margin: EdgeInsets.fromLTRB(16, 10, 16, 10),
@@ -72,17 +98,25 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('学习计划名称',
+                Text(item['label'],
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 18,
                     )),
-                Text('学习计划名称1',
+                SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: Text(
+                    fieldText,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 18,
-                    )),
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ),
               ])));
     }
     content = new Column(
@@ -113,7 +147,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             return ViewStateEmptyWidget(onPressed: model.initData);
           }
           var data = model.data;
-          print('data: $data');
           return Container(
               color: ThemeColor.colorFFF3F5F8,
               child: Container(
@@ -179,17 +212,28 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                             fontWeight: FontWeight.w500,
                                             fontSize: 18,
                                           )),
-                                      Text(data.taskName,
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          data.taskName,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 18,
-                                          )),
+                                          ),
+                                          textAlign: TextAlign.right,
+                                          softWrap: true,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      )
                                     ])),
                             Column(
                                 children:
                                     _isExpanded ? [planTopList(data)] : []),
                             ListTile(
-                              leading: Text('当前完成度：${'333%'}',
+                              leading: Text('当前完成度：${data.learnProgress}%',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 18,
@@ -228,7 +272,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                 )))),
                     Container(
                         margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
-                        child: PlanDetailList(formList)),
+                        child: PlanDetailList(data)),
                   ],
                 ),
               ));

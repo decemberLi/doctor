@@ -6,8 +6,8 @@ part of 'learn_detail_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Resource _$ResourceFromJson(Map<String, dynamic> json) {
-  return Resource(
+Resources _$ResourcesFromJson(Map<String, dynamic> json) {
+  return Resources(
     json['resourceType'] as String,
     json['contentType'] as String,
     json['resourceName'] as String,
@@ -19,14 +19,13 @@ Resource _$ResourceFromJson(Map<String, dynamic> json) {
     json['thumbnailOssId'] as String,
     json['thumbnailUrl'] as String,
     json['feedback'] as String,
-    (json['info'] as List)
-        ?.map(
-            (e) => e == null ? null : Info.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+    json['info'] == null
+        ? null
+        : Info.fromJson(json['info'] as Map<String, dynamic>),
   );
 }
 
-Map<String, dynamic> _$ResourceToJson(Resource instance) => <String, dynamic>{
+Map<String, dynamic> _$ResourcesToJson(Resources instance) => <String, dynamic>{
       'resourceType': instance.resourceType,
       'contentType': instance.contentType,
       'resourceName': instance.resourceName,
@@ -43,13 +42,15 @@ Map<String, dynamic> _$ResourceToJson(Resource instance) => <String, dynamic>{
 
 Info _$InfoFromJson(Map<String, dynamic> json) {
   return Info(
-    json['duration'] as String,
+    json['duration'] as int,
+    json['presenter'] as String,
     json['summary'] as String,
   );
 }
 
 Map<String, dynamic> _$InfoToJson(Info instance) => <String, dynamic>{
       'duration': instance.duration,
+      'presenter': instance.presenter,
       'summary': instance.summary,
     };
 
@@ -59,9 +60,9 @@ LearnDetailItem _$LearnDetailItemFromJson(Map<String, dynamic> json) {
     json['taskDetailId'] as int,
     json['taskTemplate'] as String,
     json['taskName'] as String,
-    (json['resource'] as List)
+    (json['resources'] as List)
         ?.map((e) =>
-            e == null ? null : Resource.fromJson(e as Map<String, dynamic>))
+            e == null ? null : Resources.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     json['companyName'] as String,
     json['representId'] as int,
@@ -82,7 +83,7 @@ Map<String, dynamic> _$LearnDetailItemToJson(LearnDetailItem instance) =>
       'taskDetailId': instance.taskDetailId,
       'taskTemplate': instance.taskTemplate,
       'taskName': instance.taskName,
-      'resource': instance.resource?.map((e) => e?.toJson())?.toList(),
+      'resources': instance.resources?.map((e) => e?.toJson())?.toList(),
       'companyName': instance.companyName,
       'representId': instance.representId,
       'representName': instance.representName,

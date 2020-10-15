@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:doctor/http/session_manager.dart';
-import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/pages/login/service.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
@@ -10,13 +9,17 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'common_style.dart';
 
-class LoginByCaptchaPage extends StatefulWidget {
+class FindPassword extends StatefulWidget {
   @override
-  _LoginByCaptchaPageState createState() => _LoginByCaptchaPageState();
+  _FindPasswordState createState() => _FindPasswordState();
 }
 
-class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
+class _FindPasswordState extends State<FindPassword> {
   final _formKey = GlobalKey<FormState>();
+  RegExp pwd = new RegExp(r'(\d{6}$)');
+  String newPassword, confirmPassword;
+  bool pwdNewVisible = true;
+  bool pwdConfirmVisible = true;
   Timer _timer;
   int _maxCount = 0;
   String _mobile, _captcha;
@@ -25,11 +28,22 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      var response = await loginByCaptCha(
-          {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
-      if (response is! DioError) {
-        SessionManager.loginHandler(
-            response['ticket'], LoginUser.fromJson(response['loginUser']));
+      print('$_mobile,$_captcha,$newPassword');
+      if (newPassword != confirmPassword) {
+        EasyLoading.showToast('两次新密码不一致，请重新输入');
+      } else {
+        var response = await findPwd({
+          'phone': _mobile,
+          'code': _captcha,
+          'newPassword': newPassword,
+          'system': 'DOCTOR',
+        });
+        if (response is! DioError) {
+          SessionManager.loginOutHandler();
+          Timer(Duration(seconds: 1), () {
+            EasyLoading.showToast('修改密码成功，请重新登陆');
+          });
+        }
       }
     }
   }
@@ -39,7 +53,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
     form.save();
     if (captcha.hasMatch(_mobile)) {
       //获取验证码
-      sendSms({'phone': _mobile, 'system': 'DOCTOR', 'type': 'LOGIN'})
+      sendSms({'phone': _mobile, 'system': 'DOCTOR', 'type': 'FORGET_PASSWORD'})
           .then((response) {
         if (response is! DioError) {
           setState(() {
@@ -94,7 +108,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                   margin: EdgeInsets.only(top: 40, bottom: 30),
                   alignment: Alignment.topLeft,
                   child: Text(
-                    '验证码登录',
+                    '找回密码',
                     style: TextStyle(
                         color: ThemeColor.colorFF000000,
                         fontSize: 24,
@@ -145,9 +159,63 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                   ),
                 ),
                 Container(
+                  margin: EdgeInsets.only(bottom: 44),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: '请输入新密码',
+                      suffixIcon: IconButton(
+                        icon: Icon(pwdNewVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        color: Theme.of(context).primaryColor,
+                        onPressed: () => {
+                          setState(() {
+                            pwdNewVisible = !pwdNewVisible;
+                          })
+                        },
+                      ),
+                    ),
+                    validator: (val) => val.length < 6 || !pwd.hasMatch(val)
+                        ? '请输入6位数字密码'
+                        : null,
+                    onSaved: (val) => newPassword = val,
+                    obscureText: pwdNewVisible,
+                    keyboardType: TextInputType.text,
+                    autocorrect: false,
+                    style: loginInputStyle,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 44),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: '再次输入密码',
+                      suffixIcon: IconButton(
+                        icon: Icon(pwdConfirmVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        color: Theme.of(context).primaryColor,
+                        onPressed: () => {
+                          setState(() {
+                            pwdConfirmVisible = !pwdConfirmVisible;
+                          })
+                        },
+                      ),
+                    ),
+                    validator: (val) => val.length < 6 || !pwd.hasMatch(val)
+                        ? '请输入6位数字密码'
+                        : null,
+                    onSaved: (val) => confirmPassword = val,
+                    obscureText: pwdConfirmVisible,
+                    keyboardType: TextInputType.text,
+                    autocorrect: false,
+                    style: loginInputStyle,
+                  ),
+                ),
+                Container(
                   margin: EdgeInsets.only(bottom: 40),
                   child: AceButton(
-                    text: '登录',
+                    text: '确定',
                     onPressed: _submit,
                   ),
                 ),

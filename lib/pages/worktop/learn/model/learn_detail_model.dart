@@ -4,7 +4,7 @@ part 'learn_detail_model.g.dart';
 
 // /// 资源类型
 @JsonSerializable()
-class Resource {
+class Resources {
   String resourceType;
   String contentType;
   String resourceName;
@@ -16,8 +16,8 @@ class Resource {
   String thumbnailOssId;
   String thumbnailUrl;
   String feedback;
-  List<Info> info;
-  Resource(
+  Info info;
+  Resources(
     this.resourceType,
     this.contentType,
     this.resourceName,
@@ -31,17 +31,18 @@ class Resource {
     this.feedback,
     this.info,
   );
-  factory Resource.fromJson(Map<String, dynamic> json) =>
-      _$ResourceFromJson(json);
+  factory Resources.fromJson(Map<String, dynamic> json) =>
+      _$ResourcesFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ResourceToJson(this);
+  Map<String, dynamic> toJson() => _$ResourcesToJson(this);
 }
 
 @JsonSerializable()
 class Info {
-  String duration;
+  int duration;
+  String presenter;
   String summary;
-  Info(this.duration, this.summary);
+  Info(this.duration, this.presenter, this.summary);
   factory Info.fromJson(Map<String, dynamic> json) => _$InfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$InfoToJson(this);
@@ -55,7 +56,7 @@ class LearnDetailItem {
   int taskDetailId;
   String taskTemplate;
   String taskName;
-  List<Resource> resource;
+  List<Resources> resources;
   String companyName;
   int representId;
   String representName;
@@ -71,7 +72,7 @@ class LearnDetailItem {
       this.taskDetailId,
       this.taskTemplate,
       this.taskName,
-      this.resource,
+      this.resources,
       this.companyName,
       this.representId,
       this.representName,

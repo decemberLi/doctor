@@ -1,13 +1,14 @@
+import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 
 /// 渲染列表
 class PlanDetailList extends StatelessWidget {
-  final List formList;
-  PlanDetailList(this.formList);
+  final data;
+
+  PlanDetailList(this.data);
 
   Widget typeDecoratedBox(String type) {
     Color rendColor = ThemeColor.color72c140;
@@ -31,11 +32,57 @@ class PlanDetailList extends StatelessWidget {
         ));
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget learnStatusType(String resourceType, String status, int learnTime) {
+    Color rendColor = ThemeColor.color72c140;
+    String text = '已完成';
+
+    if (resourceType == 'VIDEO') {
+      text = '观看时长：${learnTime}s';
+    } else if (resourceType == 'QUESTIONNAIRE') {
+      text = '已完成';
+    } else if (resourceType == 'ARTICLE') {
+      text = '浏览时长：${learnTime}s';
+    }
+    return Container(
+        decoration: BoxDecoration(
+          color: rendColor,
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        padding: EdgeInsets.only(left: 4, right: 4),
+        margin: EdgeInsets.only(right: 4, bottom: 10),
+        child: Row(
+          children: [
+            Icon(
+              Icons.access_time,
+              size: 12,
+              color: Colors.white,
+            ),
+            SizedBox(
+              width: 3,
+            ),
+            Text(
+              text,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget resourcesList(
+      LearnDetailItem data, Iterable resources, BuildContext context) {
     List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
     Widget content; //单独一个widget组件，用于返回需要生成的内容widget
-    for (var item in formList) {
+    if (resources.isEmpty) {
+      content = new Column(
+          children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
+          );
+      return content;
+    }
+    for (var item in resources) {
+      print(item);
       tiles.add(new Container(
           margin: EdgeInsets.only(bottom: 12),
           // margin: EdgeInsets.only(left: 20, top: 10, bottom: 10),
@@ -57,7 +104,7 @@ class PlanDetailList extends StatelessWidget {
                       //设置扭转值
                       transform: Matrix4.rotationZ(-0.8),
                       //设置被旋转的容器
-                      child: typeDecoratedBox(item['type'])),
+                      child: typeDecoratedBox(item.resourceType)),
                 ),
               ),
               Row(
@@ -72,6 +119,8 @@ class PlanDetailList extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
+                                  learnStatusType(item.resourceType,
+                                      data.status, item.learnTime),
                                   Container(
                                       decoration: BoxDecoration(
                                         color: Color(0xFFDEDEE1),
@@ -93,36 +142,7 @@ class PlanDetailList extends StatelessWidget {
                                             width: 3,
                                           ),
                                           Text(
-                                            '待观看',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      )),
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFDEDEE1),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(4)),
-                                      ),
-                                      padding:
-                                          EdgeInsets.only(left: 4, right: 4),
-                                      margin:
-                                          EdgeInsets.only(right: 4, bottom: 10),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.access_time,
-                                            size: 12,
-                                            color: Colors.white,
-                                          ),
-                                          SizedBox(
-                                            width: 3,
-                                          ),
-                                          Text(
-                                            '反馈',
+                                            '反馈${item.feedback}',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 12,
@@ -133,7 +153,7 @@ class PlanDetailList extends StatelessWidget {
                                 ],
                               ),
                               Text(
-                                item['title'],
+                                item.title,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -147,7 +167,7 @@ class PlanDetailList extends StatelessWidget {
                                 height: 4,
                               ),
                               Text(
-                                '2医学信息推广专员医学信息推广专员息推广专员${item['title']}',
+                                item.info.summary,
                                 style: TextStyle(
                                     color: Color(0xFF666666), fontSize: 14),
                                 softWrap: true,
@@ -170,7 +190,7 @@ class PlanDetailList extends StatelessWidget {
                             height: 10,
                           ),
                           Image.asset(
-                            'assets/images/logo.png',
+                            item.thumbnailUrl,
                             width: 60,
                             height: 60,
                           ),
@@ -190,5 +210,11 @@ class PlanDetailList extends StatelessWidget {
         children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
         );
     return content;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(child: resourcesList(data, data.resources, context));
+    // return Container(child: resourcesList(data.resources,context));
   }
 }
