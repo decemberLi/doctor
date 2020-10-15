@@ -34,6 +34,7 @@ class Resource {
   Map<String, dynamic> toJson() => _$ResourceToJson(this);
 }
 
+@JsonSerializable()
 class Info {
   String duration;
   bool summary;
