@@ -19,6 +19,10 @@ Resource _$ResourceFromJson(Map<String, dynamic> json) {
     json['thumbnailOssId'] as String,
     json['thumbnailUrl'] as String,
     json['feedback'] as String,
+    (json['info'] as List)
+        ?.map(
+            (e) => e == null ? null : Info.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 
@@ -34,6 +38,7 @@ Map<String, dynamic> _$ResourceToJson(Resource instance) => <String, dynamic>{
       'thumbnailOssId': instance.thumbnailOssId,
       'thumbnailUrl': instance.thumbnailUrl,
       'feedback': instance.feedback,
+      'info': instance.info,
     };
 
 Info _$InfoFromJson(Map<String, dynamic> json) {
@@ -58,13 +63,9 @@ LearnDetailItem _$LearnDetailItemFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : Resource.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    (json['info'] as List)
-        ?.map(
-            (e) => e == null ? null : Info.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
     json['companyName'] as String,
     json['representId'] as int,
-    json['representName'] as int,
+    json['representName'] as String,
     json['createTime'] as int,
     json['meetingStartTime'] as int,
     json['meetingEndTime'] as int,
@@ -82,7 +83,6 @@ Map<String, dynamic> _$LearnDetailItemToJson(LearnDetailItem instance) =>
       'taskTemplate': instance.taskTemplate,
       'taskName': instance.taskName,
       'resource': instance.resource?.map((e) => e?.toJson())?.toList(),
-      'info': instance.info?.map((e) => e?.toJson())?.toList(),
       'companyName': instance.companyName,
       'representId': instance.representId,
       'representName': instance.representName,

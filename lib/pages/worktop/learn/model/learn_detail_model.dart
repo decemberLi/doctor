@@ -16,18 +16,21 @@ class Resource {
   String thumbnailOssId;
   String thumbnailUrl;
   String feedback;
+  List<Info> info;
   Resource(
-      this.resourceType,
-      this.contentType,
-      this.resourceName,
-      this.resourceId,
-      this.title,
-      this.needLearnTime,
-      this.learnTime,
-      this.ststus,
-      this.thumbnailOssId,
-      this.thumbnailUrl,
-      this.feedback);
+    this.resourceType,
+    this.contentType,
+    this.resourceName,
+    this.resourceId,
+    this.title,
+    this.needLearnTime,
+    this.learnTime,
+    this.ststus,
+    this.thumbnailOssId,
+    this.thumbnailUrl,
+    this.feedback,
+    this.info,
+  );
   factory Resource.fromJson(Map<String, dynamic> json) =>
       _$ResourceFromJson(json);
 
@@ -53,10 +56,9 @@ class LearnDetailItem {
   String taskTemplate;
   String taskName;
   List<Resource> resource;
-  List<Info> info;
   String companyName;
   int representId;
-  int representName;
+  String representName;
   int createTime;
   int meetingStartTime;
   int meetingEndTime;
@@ -70,7 +72,6 @@ class LearnDetailItem {
       this.taskTemplate,
       this.taskName,
       this.resource,
-      this.info,
       this.companyName,
       this.representId,
       this.representName,

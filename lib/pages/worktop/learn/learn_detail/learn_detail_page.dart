@@ -1,4 +1,5 @@
 // import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
@@ -54,7 +55,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   // 头部计划信息
-  Widget planTopList() {
+  Widget planTopList(LearnDetailItem data) {
     List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
     Widget content; //单独一个widget组件，用于返回需要生成的内容widget
     for (var item in formList) {
@@ -178,14 +179,15 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                             fontWeight: FontWeight.w500,
                                             fontSize: 18,
                                           )),
-                                      Text('学习计划名称1',
+                                      Text(data.taskName,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 18,
                                           )),
                                     ])),
                             Column(
-                                children: _isExpanded ? [planTopList()] : []),
+                                children:
+                                    _isExpanded ? [planTopList(data)] : []),
                             ListTile(
                               leading: Text('当前完成度：${'333%'}',
                                   style: TextStyle(
