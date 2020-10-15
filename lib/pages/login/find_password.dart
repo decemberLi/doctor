@@ -96,6 +96,7 @@ class _FindPasswordState extends State<FindPassword> {
           elevation: 0,
           title: Text(APP_NAME),
         ),
+        resizeToAvoidBottomInset: false,
         body: Container(
           padding: EdgeInsets.only(left: 18, right: 18),
           child: Form(
