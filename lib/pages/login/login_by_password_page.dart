@@ -37,6 +37,8 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
           elevation: 0,
           title: Text(APP_NAME),
         ),
+        // 避免键盘弹起时高度错误
+        resizeToAvoidBottomInset: false,
         body: Container(
           padding: EdgeInsets.only(left: 18, right: 18),
           child: Form(

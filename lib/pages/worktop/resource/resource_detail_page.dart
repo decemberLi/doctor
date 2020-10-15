@@ -1,7 +1,8 @@
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
-import 'package:doctor/pages/worktop/resource/view_model.dart/resource_view_model.dart';
+import 'package:doctor/pages/worktop/resource/view_model/resource_view_model.dart';
 import 'package:doctor/pages/worktop/resource/widgets/article.dart';
 import 'package:doctor/pages/worktop/resource/widgets/attachment.dart';
+import 'package:doctor/pages/worktop/resource/widgets/video.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/theme/theme.dart';
@@ -11,6 +12,9 @@ class ResourceDetailPage extends StatelessWidget {
   Widget resourceRender(ResourceModel data) {
     if (data.contentType == 'RICH_TEXT') {
       return Article(data);
+    }
+    if (data.resourceType == 'VIDEO') {
+      return VideoDetail(data);
     }
     if (data.contentType == 'ATTACHMENT') {
       return Attacement(data.title ?? data.resourceName);
@@ -26,7 +30,7 @@ class ResourceDetailPage extends StatelessWidget {
         elevation: 0,
       ),
       body: ProviderWidget<ResourceDetailViewModel>(
-        model: ResourceDetailViewModel(245, 67),
+        model: ResourceDetailViewModel(106, 518),
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           if (model.isBusy) {

@@ -29,12 +29,15 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: ThemeColor.primaryColor,
           appBarTheme: AppBarTheme(
-              color: Colors.white,
-              textTheme: TextTheme(
-                  headline6: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold))),
+            brightness: Brightness.light,
+            color: Colors.white,
+            textTheme: TextTheme(
+              headline6: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
           scaffoldBackgroundColor: ThemeColor.colorFFFFFF,
           buttonTheme: ButtonThemeData(buttonColor: ThemeColor.primaryColor),
           iconTheme: IconThemeData(color: ThemeColor.primaryColor),

@@ -20,4 +20,5 @@ class ThemeColor {
   static const Color color72c140 = const Color(0xff72c140);
   static const Color color5d9df7 = const Color(0xff5d9df7);
   static const Color colorefaf41 = const Color(0xffefaf41);
+  static const Color colorFFF0EDF1 = const Color(0xFFF0EDF1);
 }

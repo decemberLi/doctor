@@ -25,7 +25,7 @@ class ResourceTypeListWiget extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(4)),
       ),
       padding: EdgeInsets.only(left: 4, right: 4),
-      margin: EdgeInsets.only(right: 4, bottom: 10),
+      margin: EdgeInsets.only(right: 4),
       child: Row(
         children: [
           Icon(
@@ -194,7 +194,7 @@ class LearnListItemWiget extends StatelessWidget {
                       Text(
                         timeRender(),
                         style:
-                            TextStyle(color: Color(0xFF666666), fontSize: 12),
+                            TextStyle(color: Color(0xFF666666), fontSize: 10),
                       ),
                     ],
                   ),
