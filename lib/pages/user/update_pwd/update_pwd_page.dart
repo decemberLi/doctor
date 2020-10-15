@@ -52,11 +52,10 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
       // 避免键盘弹起时高度错误
       resizeToAvoidBottomInset: false,
       body: Container(
-        margin: EdgeInsets.only(top: 40),
         height: 500,
         alignment: Alignment.center,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Container(
               alignment: Alignment.centerLeft,
