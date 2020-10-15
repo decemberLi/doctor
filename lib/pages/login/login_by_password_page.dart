@@ -78,7 +78,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                       hintText: '请输入6位数字密码',
                       suffix: GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, RouteManager.HOME);
+                          Navigator.pushNamed(context, RouteManager.FIND_PWD);
                         },
                         child: Text(
                           '找回密码',

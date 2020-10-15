@@ -11,7 +11,7 @@ class UserPage extends StatelessWidget {
           child: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(top: 100),
+            margin: EdgeInsets.only(top: 40),
             child: AceButton(
                 onPressed: () {
                   Navigator.pushNamed(context, RouteManager.TEST);
@@ -19,12 +19,20 @@ class UserPage extends StatelessWidget {
                 text: '测试页'),
           ),
           Container(
-            margin: EdgeInsets.only(top: 100),
+            margin: EdgeInsets.only(top: 40),
             child: AceButton(
                 onPressed: () {
                   Navigator.pushNamed(context, RouteManager.UPDATE_PWD);
                 },
                 text: '修改密码'),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 40),
+            child: AceButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteManager.ABOUT_US);
+                },
+                text: '关于我们'),
           )
         ],
       )),

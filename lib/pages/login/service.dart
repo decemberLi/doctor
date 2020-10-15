@@ -20,3 +20,10 @@ sendSms(params) {
     ignoreSession: true,
   );
 }
+
+findPwd(params) {
+  return http.post(
+    '/forget/pwd',
+    params: params,
+  );
+}
