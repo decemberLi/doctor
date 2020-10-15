@@ -8,10 +8,10 @@ class Resource {
   String resourceType;
   String contentType;
   String resourceName;
-  String resourceId;
+  int resourceId;
   String title;
-  String needLearnTime;
-  String learnTime;
+  int needLearnTime;
+  int learnTime;
   String ststus;
   String thumbnailOssId;
   String thumbnailUrl;
@@ -37,7 +37,7 @@ class Resource {
 @JsonSerializable()
 class Info {
   String duration;
-  bool summary;
+  String summary;
   Info(this.duration, this.summary);
   factory Info.fromJson(Map<String, dynamic> json) => _$InfoFromJson(json);
 

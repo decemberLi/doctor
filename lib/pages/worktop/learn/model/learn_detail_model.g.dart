@@ -11,10 +11,10 @@ Resource _$ResourceFromJson(Map<String, dynamic> json) {
     json['resourceType'] as String,
     json['contentType'] as String,
     json['resourceName'] as String,
-    json['resourceId'] as String,
+    json['resourceId'] as int,
     json['title'] as String,
-    json['needLearnTime'] as String,
-    json['learnTime'] as String,
+    json['needLearnTime'] as int,
+    json['learnTime'] as int,
     json['ststus'] as String,
     json['thumbnailOssId'] as String,
     json['thumbnailUrl'] as String,
@@ -34,6 +34,18 @@ Map<String, dynamic> _$ResourceToJson(Resource instance) => <String, dynamic>{
       'thumbnailOssId': instance.thumbnailOssId,
       'thumbnailUrl': instance.thumbnailUrl,
       'feedback': instance.feedback,
+    };
+
+Info _$InfoFromJson(Map<String, dynamic> json) {
+  return Info(
+    json['duration'] as String,
+    json['summary'] as String,
+  );
+}
+
+Map<String, dynamic> _$InfoToJson(Info instance) => <String, dynamic>{
+      'duration': instance.duration,
+      'summary': instance.summary,
     };
 
 LearnDetailItem _$LearnDetailItemFromJson(Map<String, dynamic> json) {
