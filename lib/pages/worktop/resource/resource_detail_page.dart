@@ -17,7 +17,7 @@ class ResourceDetailPage extends StatelessWidget {
       return VideoDetail(data);
     }
     if (data.contentType == 'ATTACHMENT') {
-      return Attacement(data.title ?? data.resourceName);
+      return Attacement(data);
     }
     return Container();
   }
@@ -30,7 +30,8 @@ class ResourceDetailPage extends StatelessWidget {
         elevation: 0,
       ),
       body: ProviderWidget<ResourceDetailViewModel>(
-        model: ResourceDetailViewModel(106, 518),
+        // model: ResourceDetailViewModel(106, 518),
+        model: ResourceDetailViewModel(107, 11828),
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           if (model.isBusy) {

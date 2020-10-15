@@ -55,6 +55,11 @@ dependencies:
   video_player: ^0.10.12+5
   chewie: ^0.9.10
 
+  # 文件预览插件
+  flutter_file_preview:
+    git:
+      url: git://github.com/aliyoge/flutter_file_preview.git
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3

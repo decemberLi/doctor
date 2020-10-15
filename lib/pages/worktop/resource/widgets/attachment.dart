@@ -1,11 +1,27 @@
+import 'package:doctor/http/common_service.dart';
+import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/theme/myIcons.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_file_preview/flutter_file_preview.dart';
 
 class Attacement extends StatelessWidget {
-  final String name;
-  Attacement(this.name);
+  final ResourceModel data;
+  Attacement(this.data);
+
+  _openFile() async {
+    var files = await CommonService.getFile({
+      'ossIds': [data.attachmentOssId]
+    });
+    if (files.isEmpty) {
+      EasyLoading.showToast('打开失败');
+    }
+    // TODO: 预览器UI修改
+    FlutterFilePreview.openFile(files[0]['tmpUrl'],
+        title: data.title ?? data.resourceName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +38,7 @@ class Attacement extends StatelessWidget {
             height: 16,
           ),
           Text(
-            name,
+            data.title ?? data.resourceName,
             style: TextStyle(
               color: ThemeColor.colorFF444444,
               fontSize: 16,
@@ -32,9 +48,7 @@ class Attacement extends StatelessWidget {
             height: 20,
           ),
           AceButton(
-            onPressed: () {
-              print(111);
-            },
+            onPressed: _openFile,
             text: '在线阅读',
           ),
         ],
