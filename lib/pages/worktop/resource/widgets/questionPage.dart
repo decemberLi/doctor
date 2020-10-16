@@ -128,7 +128,129 @@ class _QuestionPageState extends State<QuestionPage> {
     return content;
   }
 
-  /
+  // 构建 单选框Radio 单选题选项列表 组件
+  Widget _buildRadioChoiceRow(question) {
+    return new ListView.builder(
+      physics: new NeverScrollableScrollPhysics(), // 禁用选项列表子组件的滚动事件
+      shrinkWrap: true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
+      itemCount: question.options.length,
+      itemBuilder: (context, index) {
+        var optionContent = question.options[index].answerOption;
+        return _radioListItem(question, optionContent, index, optionContent);
+      },
+    );
+  }
+
+  Widget _radioListItem(question, optionContent, optionIndex, radioTitle) {
+    return new Row(
+      children: <Widget>[
+        // 此处也可以使用RadioListTile，但是这个组件不满足我们这边的需求，所以自己后来写了布局
+        new Radio(
+          value: question.options[optionIndex].index, // 该值为string类型
+          groupValue: question.index, // 与value一样是选中
+          onChanged: (val) {
+            // 收起键盘
+            FocusScope.of(context).requestFocus(FocusNode());
+            setState(() {
+              question.index = int.parse(val);
+              print('选中了: ' + val.toString());
+            });
+          },
+        ),
+        Expanded(
+          // Row的子元素Text实现换行 需要加Expanded
+          child: Text(
+            radioTitle,
+            softWrap: true, // 自动换行
+          ),
+        ),
+      ],
+    );
+  }
+
+  // 构建 复选框Checkbox 多选题选项列表 组件
+  Widget _buildCheckboxChoiceRow(question) {
+    return new ListView.builder(
+      physics: new NeverScrollableScrollPhysics(), // 禁用选项列表子组件的滚动事件
+      shrinkWrap: true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
+      itemCount: question.options.length,
+      itemBuilder: (context, index) {
+        var optionContent = question.options[index].answerOption;
+
+        return _checkboxListItem(question, optionContent, index, optionContent);
+      },
+    );
+  }
+
+  Widget _checkboxListItem(
+      question, optionContent, optionIndex, checkboxTitle) {
+    return new Row(
+      children: <Widget>[
+        // 此处也可以使用CheckboxListTile，但是这个组件不满足我们这边的需求，所以后来自己写了布局
+        Checkbox(
+          value: question.options[optionIndex].checked, // 该值为bool类型 false即不选中
+          onChanged: (isCheck) {
+            // 收起键盘
+            FocusScope.of(context).requestFocus(FocusNode());
+            _checkMaxChoise(question, optionIndex, isCheck);
+          },
+        ),
+        Expanded(
+          // Row的子元素Text实现换行 需要加Expanded
+          child: Text(
+            checkboxTitle,
+            softWrap: true, // 自动换行
+          ),
+        ),
+      ],
+    );
+  }
+
+  // 多选题 最多选择项的逻辑
+  void _checkMaxChoise(question, optionIndex, isCheck) {
+    setState(() {
+      var optionId = question.options[optionIndex].index;
+      question.options[optionIndex].checked = isCheck;
+      if (isCheck) {
+        print('选中了: ' + optionId);
+        question['checked'].add(optionId);
+
+        print('选中的: ' + question['checked'].toString());
+      } else {
+        question['checked'].remove(optionId);
+        print('选中的: ' + question['checked'].toString());
+      }
+    });
+  }
+
+  // 构建 输入框行 简答题 组件
+  Widget _buildTextControllerRow(question) {
+    return new Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          color: const Color(0xFFFFFFFF),
+          padding: EdgeInsets.only(left: 8.0),
+          child: _buildTextField(question['textController']),
+        ));
+  }
+
+  // 构建 输入框 组件
+  Widget _buildTextField(controller) {
+    // 文本字段（`TextField`）组件，允许用户使用硬件键盘或屏幕键盘输入文本。
+    return new TextField(
+      cursorColor: const Color(0xFFFE7C30),
+      cursorWidth: 2.0,
+      keyboardType: TextInputType.multiline, //多行
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.all(10.0),
+        // 圆角矩形的边框
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+      controller: controller, // 控制正在编辑的文本
+    );
+  }
 
   int sex = 1;
 
@@ -184,28 +306,41 @@ class _QuestionPageState extends State<QuestionPage> {
                           )),
                     ]),
                     ListView.builder(
-      shrinkWrap: true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
-      physics: new NeverScrollableScrollPhysics(), // 禁用问题列表子组件的滚动事件
-      //itemCount +1 为了显示加载中和暂无数据progressbar
-      itemCount: widget.data.questions.length + 1,
-      itemBuilder: (context, index) {
-        // 列表显示
-        return Container(
-          padding: new EdgeInsets.fromLTRB(10, 5, 10, 5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              widget.data.questions[index]['type'] == 'RADIO'
-                  ? question(widget.data.questions)
-                  : widget.data.questions[index]['type'] == "CHECKBOX"
-                      ? question(widget.data.questions)
-                      : question(widget.data.questions)
-            ],
-          ),
-        );
-      },
-    ),
-                    
+                      shrinkWrap:
+                          true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
+                      physics:
+                          new NeverScrollableScrollPhysics(), // 禁用问题列表子组件的滚动事件
+                      //itemCount +1 为了显示加载中和暂无数据progressbar
+                      itemCount: widget.data.questions.length + 1,
+                      itemBuilder: (context, index) {
+                        // 列表显示
+                        return Container(
+                          padding: new EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                  '${index + 1}、${widget.data.questions[index].question}',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: ThemeColor.colorFF444444,
+                                  )),
+                              widget.data.questions[index].type == 'RADIO'
+                                  ? _buildRadioChoiceRow(
+                                      widget.data.questions[index])
+                                  : widget.data.questions[index].type ==
+                                          "CHECKBOX"
+                                      ? _buildCheckboxChoiceRow(
+                                          widget.data.questions[index])
+                                      : _buildTextControllerRow(
+                                          widget.data.questions[index])
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                     SizedBox(
                       height: 20,
                     ),
