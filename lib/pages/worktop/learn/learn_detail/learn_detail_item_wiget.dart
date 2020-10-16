@@ -181,7 +181,11 @@ class PlanDetailList extends StatelessWidget {
       print(item);
       tiles.add(new GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL);
+            Navigator.of(context)
+                .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
+              "learnPlanId": data.learnPlanId,
+              "resourceId": item.resourceId,
+            });
           },
           child: Container(
               margin: EdgeInsets.only(bottom: 12),

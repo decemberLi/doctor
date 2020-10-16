@@ -33,7 +33,7 @@ class Question {
 @JsonSerializable()
 class QuestionOption {
   String answerOption;
-  int index;
+  String index;
   String checked;
   QuestionOption(this.answerOption, this.index, this.checked);
   factory QuestionOption.fromJson(Map<String, dynamic> json) =>

@@ -22,27 +22,15 @@ class LearnDetailPage extends StatefulWidget {
 class _LearnDetailPageState extends State<LearnDetailPage> {
   bool _isExpanded = true;
 
-  // 列表
-  List formList;
-
-  List get foList => [
-        {"title": '车牌号', "type": 'ARTICLE', "color": 'ARTICLE'},
-        {"title": '车牌号1', "type": 'VIDEO', "color": 'VIDEO'},
-        {"title": '车牌号2', "type": 'QUESTIONNAIRE', "color": 'QUESTIONNAIRE'},
+  List get formList => [
+        {'field': 'taskTemplate', 'label': '学习计划类型'},
+        {'field': 'companyName', 'label': '来自企业'},
+        {'field': 'representName', 'label': '医学信息推广专员'},
+        {
+          'field': 'createTime',
+          'label': '收到学习计划日期',
+        }
       ];
-
-  initState() {
-    // super.initState();
-    formList = [
-      {'field': 'taskTemplate', 'label': '学习计划类型'},
-      {'field': 'companyName', 'label': '来自企业'},
-      {'field': 'representName', 'label': '医学信息推广专员'},
-      {
-        'field': 'createTime',
-        'label': '收到学习计划日期',
-      }
-    ];
-  }
 
   Widget typeDecoratedBox(String type) {
     Color rendColor = ThemeColor.color72c140;
@@ -129,8 +117,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   @override
   Widget build(BuildContext context) {
     int arguments = ModalRoute.of(context).settings.arguments;
-    print('arguments: $arguments');
-    print(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

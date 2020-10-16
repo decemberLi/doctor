@@ -44,7 +44,7 @@ Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
 QuestionOption _$QuestionOptionFromJson(Map<String, dynamic> json) {
   return QuestionOption(
     json['answerOption'] as String,
-    json['index'] as int,
+    json['index'] as String,
     json['checked'] as String,
   );
 }
