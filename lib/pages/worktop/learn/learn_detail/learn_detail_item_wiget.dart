@@ -38,7 +38,7 @@ class PlanDetailList extends StatelessWidget {
     String text = '待浏览';
     IconData icon = Icons.access_time;
 
-    if (item.learnTime >= item.needLearnTime) {
+    if (item.learnTime > 0 && item.learnTime >= item.needLearnTime) {
       icon = Icons.done;
       rendColor = ThemeColor.color72c140;
       if (resourceType == 'VIDEO') {

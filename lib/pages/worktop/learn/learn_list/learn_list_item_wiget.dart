@@ -133,87 +133,87 @@ class LearnListItemWiget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            margin: EdgeInsets.only(bottom: 10),
-            child: Text(
-              TASK_TEMPLATE[item.taskTemplate],
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context)
+            .pushNamed(RouteManager.LEARN_DETAIL, arguments: item.learnPlanId);
+        // Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL);
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 12),
+        padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.only(bottom: 10),
+              child: Text(
+                TASK_TEMPLATE[item.taskTemplate],
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          ResourceTypeListWiget(item.resourceTypeResult),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(vertical: 6),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(color: ThemeColor.colorFFF3F5F8),
+            ResourceTypeListWiget(item.resourceTypeResult),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.symmetric(vertical: 6),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        right: BorderSide(color: ThemeColor.colorFFF3F5F8),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.taskName,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          softWrap: true,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          '医学信息推广专员：${item.representName}',
+                          style:
+                              TextStyle(color: Color(0xFF666666), fontSize: 12),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          timeRender(),
+                          style:
+                              TextStyle(color: Color(0xFF666666), fontSize: 10),
+                        ),
+                      ],
                     ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.taskName,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        softWrap: true,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        '医学信息推广专员：${item.representName}',
-                        style:
-                            TextStyle(color: Color(0xFF666666), fontSize: 12),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        timeRender(),
-                        style:
-                            TextStyle(color: Color(0xFF666666), fontSize: 10),
-                      ),
-                    ],
-                  ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushNamed(RouteManager.LEARN_DETAIL,
-                      arguments: item.learnPlanId);
-                  // Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL);
-                },
-                child: Container(
+                Container(
                   width: 108,
                   child: circleRender(),
                 ),
-              ),
-            ],
-          )
-        ],
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
