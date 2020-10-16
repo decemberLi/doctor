@@ -1,3 +1,4 @@
+import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/theme/theme.dart';
@@ -15,7 +16,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  final List<Widget> _children = [WorktopPage(), UserPage(), TestPage()];
+  final List<Widget> _children = [
+    WorktopPage(),
+    MessagePage(),
+    UserPage(),
+    TestPage()
+  ];
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -32,6 +38,7 @@ class _HomePageState extends State<HomePage> {
         selectedItemColor: ThemeColor.primaryColor,
         onTap: onTabTapped, // new
         currentIndex: _currentIndex, // new
+        type: BottomNavigationBarType.fixed,
         items: [
           new BottomNavigationBarItem(
             icon: Image.asset(
@@ -47,7 +54,15 @@ class _HomePageState extends State<HomePage> {
               width: 24,
               height: 24,
             ),
-            label: '个人中心',
+            label: '消息',
+          ),
+          new BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/images/user.png',
+              width: 24,
+              height: 24,
+            ),
+            label: '我的',
           ),
           new BottomNavigationBarItem(
             icon: Image.asset(
