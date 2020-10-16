@@ -10,8 +10,9 @@ class MessagePage extends StatefulWidget {
 }
 
 class _MessagePageState extends State<MessagePage> {
-  Widget MessageItem(String lable, String img, int msgCount, callBack) {
+  Widget messageItem(String lable, String img, int msgCount, callBack) {
     return Container(
+      margin: EdgeInsets.fromLTRB(6, 0, 6, 0),
       decoration: BoxDecoration(
         border: Border(bottom: Divider.createBorderSide(context)),
       ),
@@ -61,35 +62,36 @@ class _MessagePageState extends State<MessagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
         title: Text('消息中心'),
         elevation: 0,
       ),
       body: Container(
-          color: ThemeColor.colorFFF3F5F8,
-          child: Container(
-            margin: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            child: Column(
-              children: [
-                MessageItem('公告', 'assets/images/learn.png', 10, () {
-                  print('公告');
-                  // TODO: 跳转公告页面
-                }),
-                MessageItem('学习计划', 'assets/images/learn.png', 11, () {
-                  print('学习计划');
-                  // TODO: 跳转学习计划页面
-                }),
-                MessageItem('患者处方', 'assets/images/learn.png', 100, () {
-                  print('患者处方');
-                  // TODO: 跳转患者处方页面
-                }),
-              ],
-            ),
-          )),
+        height: 168,
+        margin: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            messageItem('公告', 'assets/images/learn.png', 10, () {
+              print('公告');
+              // TODO: 跳转公告页面
+            }),
+            messageItem('学习计划', 'assets/images/learn.png', 11, () {
+              print('学习计划');
+              // TODO: 跳转学习计划页面
+            }),
+            messageItem('患者处方', 'assets/images/learn.png', 100, () {
+              print('患者处方');
+              // TODO: 跳转患者处方页面
+            }),
+          ],
+        ),
+      ),
     );
   }
 }
