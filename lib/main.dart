@@ -39,8 +39,16 @@ class MyApp extends StatelessWidget {
             ),
           ),
           scaffoldBackgroundColor: ThemeColor.colorFFFFFF,
-          buttonTheme: ButtonThemeData(buttonColor: ThemeColor.primaryColor),
+          buttonTheme: ButtonThemeData(
+            buttonColor: ThemeColor.primaryColor,
+            padding: EdgeInsets.symmetric(horizontal: 0),
+          ),
           iconTheme: IconThemeData(color: ThemeColor.primaryColor),
+          cardTheme: CardTheme(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            ),
+          ),
           primaryIconTheme: IconThemeData(color: ThemeColor.primaryColor),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),

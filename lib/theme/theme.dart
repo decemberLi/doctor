@@ -3,7 +3,8 @@ import 'dart:ui';
 // flutter 颜色使用ARGB
 class ThemeColor {
   // 主色
-  static const Color primaryColor = Color(0xFF189A8C);
+  // static const Color primaryColor = Color(0xFF189A8C);
+  static const Color primaryColor = Color(0xFF107BFD);
   static const Color colorFF4FD7C8 = const Color(0xFF4FD7C8);
   // 白色
   static const Color colorFFFFFF = const Color(0xffffffff);
