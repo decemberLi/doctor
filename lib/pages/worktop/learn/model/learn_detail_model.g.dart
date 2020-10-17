@@ -60,6 +60,8 @@ LearnDetailItem _$LearnDetailItemFromJson(Map<String, dynamic> json) {
     json['taskDetailId'] as int,
     json['taskTemplate'] as String,
     json['taskName'] as String,
+    json['doctorName'] as String,
+    json['doctorUserId'] as int,
     (json['resources'] as List)
         ?.map((e) =>
             e == null ? null : Resources.fromJson(e as Map<String, dynamic>))
@@ -83,6 +85,8 @@ Map<String, dynamic> _$LearnDetailItemToJson(LearnDetailItem instance) =>
       'taskDetailId': instance.taskDetailId,
       'taskTemplate': instance.taskTemplate,
       'taskName': instance.taskName,
+      'doctorName': instance.doctorName,
+      'doctorUserId': instance.doctorUserId,
       'resources': instance.resources?.map((e) => e?.toJson())?.toList(),
       'companyName': instance.companyName,
       'representId': instance.representId,

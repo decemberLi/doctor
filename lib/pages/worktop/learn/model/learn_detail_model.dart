@@ -56,6 +56,8 @@ class LearnDetailItem {
   int taskDetailId;
   String taskTemplate;
   String taskName;
+  String doctorName;
+  int doctorUserId;
   List<Resources> resources;
   String companyName;
   int representId;
@@ -72,6 +74,8 @@ class LearnDetailItem {
       this.taskDetailId,
       this.taskTemplate,
       this.taskName,
+      this.doctorName,
+      this.doctorUserId,
       this.resources,
       this.companyName,
       this.representId,

@@ -5,6 +5,7 @@ import 'package:doctor/pages/login/login_page.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart';
+import 'package:doctor/pages/worktop/learn/learn_upload_record/learn_upload_record.dart';
 import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
 import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
@@ -18,6 +19,7 @@ class RouteManager {
   static const String HOME = '/home';
   static const String TEST = '/test';
   static const String LEARN_DETAIL = '/learn_detail';
+  static const String LEARN_UPLOAD_RECORD = '/learn_upload_record';
   static const String RESOURCE_DETAIL = '/resource_detail';
   static const String UPDATE_PWD = '/update_pwd';
   static const String ABOUT_US = '/about_us';
@@ -30,6 +32,7 @@ class RouteManager {
     HOME: (context) => HomePage(),
     TEST: (context) => TestPage(),
     LEARN_DETAIL: (context) => LearnDetailPage(),
+    LEARN_UPLOAD_RECORD: (context) => LearnUploadRecordPage(),
     RESOURCE_DETAIL: (context) => ResourceDetailPage(),
     UPDATE_PWD: (context) => UpdatePwdPage(),
     ABOUT_US: (context) => AboutUs(),

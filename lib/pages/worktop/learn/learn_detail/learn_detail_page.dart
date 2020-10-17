@@ -4,6 +4,7 @@ import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/utils/constants.dart';
@@ -114,6 +115,44 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     return content;
   }
 
+  // 提交按钮
+  String _aceText(type, reLearn) {
+    String text = reLearn ? '重传讲课视频' : '提交学习计划';
+    if (type == 'DOCTOR_LECTURE') {
+      text = '上传讲课视频';
+    }
+    return text;
+  }
+
+  // 如何录制讲课视频
+  Widget _buildLookCourse(data) {
+    // 文本字段（`TextField`）组件，允许用户使用硬件键盘或屏幕键盘输入文本。
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Text('当前完成度：${data.learnProgress}%',
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 18,
+            color: ThemeColor.primaryColor,
+          )),
+      if (data.taskTemplate == 'DOCTOR_LECTURE')
+        GestureDetector(
+          child: Text(
+            '如何录制讲课视频？',
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 18,
+                color: ThemeColor.primaryColor,
+                decoration: TextDecoration.underline,
+                decorationStyle: TextDecorationStyle.solid),
+          ),
+          onTap: () {
+            EasyLoading.showToast('如何录制讲课视频？');
+            print('111');
+          },
+        ),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     int arguments = ModalRoute.of(context).settings.arguments;
@@ -218,20 +257,35 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                             Column(
                                 children:
                                     _isExpanded ? [planTopList(data)] : []),
-                            ListTile(
-                              leading: Text('当前完成度：${data.learnProgress}%',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
-                                    color: ThemeColor.primaryColor,
-                                  )),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Column(children: [
+                                _buildLookCourse(data),
+                              ]),
                             ),
                             SizedBox(
                               height: 20,
                             ),
                             AceButton(
-                              text: '提交学习计划',
-                              onPressed: () => {EasyLoading.showToast('暂未开放')},
+                              text: _aceText(data.taskTemplate, data.reLearn),
+                              onPressed: () => {
+                                if (data.taskTemplate == 'DOCTOR_LECTURE')
+                                  {
+                                    Navigator.of(context).pushNamed(
+                                        RouteManager.LEARN_UPLOAD_RECORD,
+                                        arguments: {
+                                          'resourceId': data.resources ??
+                                              data.resources[0].resourceId,
+                                          'learnPlanId': data.learnPlanId,
+                                          'doctorName': data.doctorName,
+                                          'taskName': data.taskName
+                                        })
+                                  }
+                                else
+                                  {EasyLoading.showToast('暂未开放')},
+                              },
                             ),
                             SizedBox(
                               height: 20,
