@@ -14,118 +14,54 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
-  bool _checkboxSelected = true; //维护复选框状态
-  bool _character = true; //维护复选框状态
+  List _questionsInit;
 
-  // String groupValue;
-  // String valueLiu;
-  // String valueZhang;
-  // String valueGuo;
-  // String valueLi;
+  @override
+  void initState() {
+    // 在initState中发出请求
+    _questionsInit = _getQuestionsInit();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   groupValue = "刘德华";
-  //   valueLiu = "刘德华";
-  //   valueZhang = "张学友";
-  //   valueGuo = "郭富城";
-  //   valueLi = "黎明";
-  // }
+    super.initState();
+  }
 
-  // _QuestionPageState();
+  _getQuestionsInit() {
+    Iterable questionsAll = widget.data.questions;
+    var questionsNew = [];
+    for (var item in questionsAll) {
+      if (item.type == 'RADIO') {
+        // item['groupValue'] = -1;
+        questionsNew.add({
+          'index': item.index,
+          'question': item.question,
+          'type': 'RADIO',
+          'groupValue': '-1'
+        });
+      }
+      if (item.type == 'CHECKBOX') {
+        // item.checked = [];
+        questionsNew.add({
+          'index': item.index,
+          'question': item.question,
+          'type': 'CHECKBOX',
+          'checked': []
+        });
+      }
+      if (item.type == 'TEXT') {
+        questionsNew.add({
+          'index': item.index,
+          'question': item.question,
+          'type': 'TEXT',
+          'textField': ''
+        });
+      }
+    }
+    return questionsNew;
+  }
 
   _openFile() async {
-    var files = await CommonService.getFile({
-      'ossIds': [widget.data.attachmentOssId]
-    });
-    if (files.isEmpty) {
-      EasyLoading.showToast('打开失败');
-    }
-    // TODO: 预览器UI修改
-    FlutterFilePreview.openFile(files[0]['tmpUrl'],
-        title: widget.data.title ?? widget.data.resourceName);
-  }
-
-  Widget toOptions(String type, Iterable options) {
-    List<Widget> tiles = [];
-    Widget content;
-    // if (resources.isEmpty) {
-    //   content = new Column(
-    //       children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
-    //       );
-    //   return content;
-    // }
-    for (var item in options) {
-      String charCode = String.fromCharCode(65 + int.parse(item.index));
-      tiles.add(
-        new Container(
-            margin: EdgeInsets.only(bottom: 12),
-            padding: EdgeInsets.only(left: 0, top: 10),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                          child: Text('$charCode、${item.answerOption}',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                                color: ThemeColor.colorFF444444,
-                              ))),
-                    ],
-                  ),
-                ])),
-      );
-    }
-    content = new Column(
-        children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
-        );
-    return content;
-  }
-
-  Widget question(Iterable questions) {
-    List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
-    Widget content; //单独一个widget组件，用于返回需要生成的内容widget
-    // if (resources.isEmpty) {
-    //   content = new Column(
-    //       children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
-    //       );
-    //   return content;
-    // }
-    for (var item in questions) {
-      tiles.add(
-        new Container(
-            margin: EdgeInsets.only(bottom: 12),
-            padding: EdgeInsets.only(left: 0, top: 10),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                          child: Text(
-                              '${item.index + 1}、问卷题目-------》》》》${item.question}',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                color: ThemeColor.colorFF444444,
-                              ))),
-                    ],
-                  ),
-                  toOptions(item.type, item.options),
-                ])),
-      );
-    }
-    content = new Column(
-        children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
-        );
-    return content;
+    // TODO: 提交问卷
+    EasyLoading.showToast('$_questionsInit');
+    print('提交问卷:$_questionsInit');
   }
 
   // 构建 单选框Radio 单选题选项列表 组件
@@ -142,27 +78,30 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   Widget _radioListItem(question, optionContent, optionIndex, radioTitle) {
+    String charCode = String.fromCharCode(65 + optionIndex);
     return new Row(
       children: <Widget>[
+        Expanded(
+          // Row的子元素Text实现换行 需要加Expanded
+          child: Text(
+            '$charCode、$radioTitle',
+            softWrap: true, // 自动换行
+          ),
+        ),
         // 此处也可以使用RadioListTile，但是这个组件不满足我们这边的需求，所以自己后来写了布局
         new Radio(
+          activeColor: ThemeColor.primaryColor, //选中时的颜色
           value: question.options[optionIndex].index, // 该值为string类型
-          groupValue: question.index, // 与value一样是选中
+          groupValue: _questionsInit[question.index]
+              ['groupValue'], // 与value一样是选中
           onChanged: (val) {
             // 收起键盘
             FocusScope.of(context).requestFocus(FocusNode());
             setState(() {
-              question.index = int.parse(val);
-              print('选中了: ' + val.toString());
+              _questionsInit[question.index]['groupValue'] = val;
+              print('选中了: ' + val);
             });
           },
-        ),
-        Expanded(
-          // Row的子元素Text实现换行 需要加Expanded
-          child: Text(
-            radioTitle,
-            softWrap: true, // 自动换行
-          ),
         ),
       ],
     );
@@ -184,23 +123,30 @@ class _QuestionPageState extends State<QuestionPage> {
 
   Widget _checkboxListItem(
       question, optionContent, optionIndex, checkboxTitle) {
+    String charCode = String.fromCharCode(65 + optionIndex);
     return new Row(
       children: <Widget>[
+        Expanded(
+          // Row的子元素Text实现换行 需要加Expanded
+          child: Text(
+            '$charCode、$checkboxTitle',
+            softWrap: true, // 自动换行
+          ),
+        ),
         // 此处也可以使用CheckboxListTile，但是这个组件不满足我们这边的需求，所以后来自己写了布局
         Checkbox(
-          value: question.options[optionIndex].checked, // 该值为bool类型 false即不选中
+          activeColor: ThemeColor.primaryColor, //选中时的颜色
+          checkColor: Colors.white, //选中时里面对号的颜色
+          value: question.options[optionIndex].checked != null &&
+              (question.options[optionIndex].checked ==
+                      int.parse(question.options[optionIndex].index)
+                  ? true
+                  : false), // 该值为bool类型 false即不选中
           onChanged: (isCheck) {
             // 收起键盘
             FocusScope.of(context).requestFocus(FocusNode());
             _checkMaxChoise(question, optionIndex, isCheck);
           },
-        ),
-        Expanded(
-          // Row的子元素Text实现换行 需要加Expanded
-          child: Text(
-            checkboxTitle,
-            softWrap: true, // 自动换行
-          ),
         ),
       ],
     );
@@ -210,15 +156,15 @@ class _QuestionPageState extends State<QuestionPage> {
   void _checkMaxChoise(question, optionIndex, isCheck) {
     setState(() {
       var optionId = question.options[optionIndex].index;
-      question.options[optionIndex].checked = isCheck;
-      if (isCheck) {
-        print('选中了: ' + optionId);
-        question['checked'].add(optionId);
 
-        print('选中的: ' + question['checked'].toString());
+      if (isCheck) {
+        _questionsInit[question.index]['checked'].add(optionId);
+        question.options[optionIndex].checked = optionIndex;
+        print('选中了: ' + optionId);
       } else {
-        question['checked'].remove(optionId);
-        print('选中的: ' + question['checked'].toString());
+        question.options[optionIndex].checked = null;
+        _questionsInit[question.index]['checked'].remove(optionId);
+        print('选中了: ' + optionId);
       }
     });
   }
@@ -226,33 +172,38 @@ class _QuestionPageState extends State<QuestionPage> {
   // 构建 输入框行 简答题 组件
   Widget _buildTextControllerRow(question) {
     return new Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(top: 14),
         child: Container(
           color: const Color(0xFFFFFFFF),
           padding: EdgeInsets.only(left: 8.0),
-          child: _buildTextField(question['textController']),
+          child: _buildTextField(question),
         ));
   }
 
   // 构建 输入框 组件
-  Widget _buildTextField(controller) {
+  Widget _buildTextField(question) {
     // 文本字段（`TextField`）组件，允许用户使用硬件键盘或屏幕键盘输入文本。
     return new TextField(
+      maxLines: 8,
       cursorColor: const Color(0xFFFE7C30),
       cursorWidth: 2.0,
       keyboardType: TextInputType.multiline, //多行
       decoration: InputDecoration(
+        hintText: "请输入",
         contentPadding: EdgeInsets.all(10.0),
         // 圆角矩形的边框
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
       ),
-      controller: controller, // 控制正在编辑的文本
+      onChanged: (text) {
+        _questionsInit[question.index]['textField'] = text;
+
+        print("输入框 组件: $text");
+      },
+      // controller: controller, // 控制正在编辑的文本
     );
   }
-
-  int sex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -311,11 +262,11 @@ class _QuestionPageState extends State<QuestionPage> {
                       physics:
                           new NeverScrollableScrollPhysics(), // 禁用问题列表子组件的滚动事件
                       //itemCount +1 为了显示加载中和暂无数据progressbar
-                      itemCount: widget.data.questions.length + 1,
+                      itemCount: widget.data.questions.length,
                       itemBuilder: (context, index) {
                         // 列表显示
                         return Container(
-                          padding: new EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          padding: new EdgeInsets.fromLTRB(4, 4, 10, 4),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -344,51 +295,6 @@ class _QuestionPageState extends State<QuestionPage> {
                     SizedBox(
                       height: 20,
                     ),
-                    Checkbox(
-                      value: _checkboxSelected,
-                      activeColor: ThemeColor.primaryColor, //选中时的颜色
-                      checkColor: Colors.white, //选中时里面对号的颜色
-                      onChanged: (value) {
-                        setState(() {
-                          _checkboxSelected = value;
-                        });
-                      },
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        RadioListTile(
-                          value: 1,
-                          onChanged: (value) {
-                            setState(() {
-                              this.sex = value;
-                            });
-                          },
-                          groupValue: this.sex,
-                          selected: this.sex == 1,
-                        ),
-                        RadioListTile(
-                          value: 2,
-                          onChanged: (value) {
-                            setState(() {
-                              this.sex = value;
-                            });
-                            ResourceComponentModel()
-                                .changeOptions(widget.data, value);
-                          },
-                          groupValue: this.sex,
-                          selected: this.sex == 2,
-                        ),
-                        TextField(
-                          maxLines: 8,
-                          onSubmitted: (value) {
-                            print(value);
-                          },
-                          decoration: InputDecoration.collapsed(
-                              hintText: "Enter your text here"),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
                 AceButton(
@@ -400,9 +306,4 @@ class _QuestionPageState extends State<QuestionPage> {
       ],
     );
   }
-
-  // void _changed(value) {
-  //   groupValue = value;
-  //   setState(() {});
-  // }
 }
