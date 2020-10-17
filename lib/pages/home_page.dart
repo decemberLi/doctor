@@ -1,3 +1,4 @@
+import 'package:doctor/pages/prescription/prescription_page.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/theme/theme.dart';
@@ -15,7 +16,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  final List<Widget> _children = [WorktopPage(), UserPage(), TestPage()];
+  final List<Widget> _children = [
+    WorktopPage(),
+    PrescriptionPage(),
+    UserPage(),
+    TestPage()
+  ];
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -28,10 +34,11 @@ class _HomePageState extends State<HomePage> {
       body: _children[_currentIndex], // new
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: ThemeColor.primaryColor,
+        unselectedItemColor: Colors.black,
+        // selectedFontSize: 12.0,
         onTap: onTabTapped, // new
-        currentIndex: _currentIndex, // new
+        currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed, // new
         items: [
           new BottomNavigationBarItem(
             icon: Image.asset(
@@ -40,6 +47,14 @@ class _HomePageState extends State<HomePage> {
               height: 24,
             ),
             label: '工作台',
+          ),
+          new BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/images/user.png',
+              width: 24,
+              height: 24,
+            ),
+            label: '开处方',
           ),
           new BottomNavigationBarItem(
             icon: Image.asset(
