@@ -32,17 +32,29 @@ class PlanDetailList extends StatelessWidget {
         ));
   }
 
-  Widget learnStatusType(String resourceType, String status, int learnTime) {
-    Color rendColor = ThemeColor.color72c140;
-    String text = '已完成';
+  // 头部状态
+  Widget learnStatusType(String resourceType, String status, dynamic item) {
+    Color rendColor = Color(0xFFDEDEE1);
+    String text = '待浏览';
+    IconData icon = Icons.access_time;
 
-    if (resourceType == 'VIDEO') {
-      text = '观看时长：${learnTime}s';
-    } else if (resourceType == 'QUESTIONNAIRE') {
-      text = '已完成';
-    } else if (resourceType == 'ARTICLE') {
-      text = '浏览时长：${learnTime}s';
+    if (item.learnTime > 0 && item.learnTime >= item.needLearnTime) {
+      icon = Icons.done;
+      rendColor = ThemeColor.color72c140;
+      if (resourceType == 'VIDEO') {
+        text = '观看时长：${item.learnTime}s';
+      } else if (resourceType == 'QUESTIONNAIRE') {
+        text = '已完成';
+      } else if (resourceType == 'ARTICLE') {
+        text = '浏览时长：${item.learnTime}s';
+      } else {
+        text = '已完成';
+      }
     }
+    if (item.ststus != null && item.ststus == 'FINISHED') {
+      icon = Icons.done;
+    }
+
     return Container(
         decoration: BoxDecoration(
           color: rendColor,
@@ -53,7 +65,7 @@ class PlanDetailList extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              Icons.access_time,
+              icon,
               size: 12,
               color: Colors.white,
             ),
@@ -71,6 +83,90 @@ class PlanDetailList extends StatelessWidget {
         ));
   }
 
+  // 反馈
+  Widget learnFeedback(dynamic item) {
+    Color rendColor = Color(0xFFDEDEE1);
+    String text = '反馈';
+    IconData icon = Icons.access_time;
+
+    if (item.feedback != null) {
+      icon = Icons.done;
+      rendColor = ThemeColor.color72c140;
+    }
+
+    return Container(
+        decoration: BoxDecoration(
+          color: rendColor,
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        padding: EdgeInsets.only(left: 4, right: 4),
+        margin: EdgeInsets.only(right: 4, bottom: 10),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 12,
+              color: Colors.white,
+            ),
+            SizedBox(
+              width: 3,
+            ),
+            Text(
+              text,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ));
+  }
+
+  // 标题
+  Widget learnTitle(String resourceType, dynamic item) {
+    String titleShow = '标题';
+    String summaryShow = '资料中包含一个附件，请在详情中查看';
+    if (item.title == null) {
+      titleShow = item.resourceName;
+    } else {
+      titleShow = item.title;
+    }
+    if (item.info != null && item.info.summary != null) {
+      summaryShow = item.info.summary;
+    }
+    if (resourceType == 'ATTACHMENT') {
+      summaryShow = '资料中包含一个附件，请在详情中查看';
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          titleShow,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+          // textAlign: TextAlign.left,
+          softWrap: true,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        SizedBox(
+          height: 4,
+        ),
+        Text(
+          summaryShow,
+          style: TextStyle(color: Color(0xFF666666), fontSize: 14),
+          softWrap: true,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+      ],
+    );
+  }
+
   Widget resourcesList(
       LearnDetailItem data, Iterable resources, BuildContext context) {
     List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
@@ -83,128 +179,84 @@ class PlanDetailList extends StatelessWidget {
     }
     for (var item in resources) {
       print(item);
-      tiles.add(new Container(
-          margin: EdgeInsets.only(bottom: 12),
-          // margin: EdgeInsets.only(left: 20, top: 10, bottom: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          child: Stack(
-            alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
-            children: <Widget>[
-              Positioned(
-                left: -48,
-                top: -28,
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 6),
-                  child: Transform(
-                      //对齐方式
-                      alignment: Alignment.topRight,
-                      //设置扭转值
-                      transform: Matrix4.rotationZ(-0.8),
-                      //设置被旋转的容器
-                      child: typeDecoratedBox(item.resourceType)),
-                ),
+      tiles.add(new GestureDetector(
+          onTap: () {
+            Navigator.of(context)
+                .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
+              "learnPlanId": data.learnPlanId,
+              "resourceId": item.resourceId,
+            });
+          },
+          child: Container(
+              margin: EdgeInsets.only(bottom: 12),
+              // margin: EdgeInsets.only(left: 20, top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: Stack(
+                alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
                 children: <Widget>[
-                  Expanded(
+                  Positioned(
+                    left: -48,
+                    top: -28,
                     child: Container(
-                        padding: EdgeInsets.only(left: 30, top: 20, bottom: 10),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  learnStatusType(item.resourceType,
-                                      data.status, item.learnTime),
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFDEDEE1),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(4)),
-                                      ),
-                                      padding:
-                                          EdgeInsets.only(left: 4, right: 4),
-                                      margin:
-                                          EdgeInsets.only(right: 4, bottom: 10),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.access_time,
-                                            size: 12,
-                                            color: Colors.white,
-                                          ),
-                                          SizedBox(
-                                            width: 3,
-                                          ),
-                                          Text(
-                                            '反馈${item.feedback}',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      )),
-                                ],
-                              ),
-                              Text(
-                                item.title,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                // textAlign: TextAlign.left,
-                                softWrap: true,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                item.info.summary,
-                                style: TextStyle(
-                                    color: Color(0xFF666666), fontSize: 14),
-                                softWrap: true,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ])),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context)
-                          .pushNamed(RouteManager.RESOURCE_DETAIL);
-                    },
-                    child: Container(
-                      width: 108,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Image.asset(
-                            item.thumbnailUrl,
-                            width: 60,
-                            height: 60,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
+                      padding: EdgeInsets.symmetric(vertical: 6),
+                      child: Transform(
+                          //对齐方式
+                          alignment: Alignment.topRight,
+                          //设置扭转值
+                          transform: Matrix4.rotationZ(-0.8),
+                          //设置被旋转的容器
+                          child: typeDecoratedBox(item.resourceType)),
                     ),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                            padding:
+                                EdgeInsets.only(left: 30, top: 20, bottom: 10),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      learnStatusType(
+                                          item.resourceType, data.status, item),
+                                      learnFeedback(item),
+                                    ],
+                                  ),
+                                  learnTitle(item.resourceType, item),
+                                ])),
+                      ),
+                      Container(
+                        width: 108,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            // TODO:处理图片
+
+                            if (item.thumbnailUrl != null)
+                              Image.asset(
+                                item.thumbnailUrl,
+                                width: 60,
+                                height: 60,
+                              ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
                 ],
-              )
-            ],
-          )));
+              ))));
     }
     content = new Column(
         children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，

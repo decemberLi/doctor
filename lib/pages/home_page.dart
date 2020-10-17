@@ -1,3 +1,4 @@
+import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,9 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _children = [
     WorktopPage(),
     PrescriptionPage(),
+    MessagePage(),
     UserPage(),
-    TestPage()
+    // TestPage()
   ];
   void onTabTapped(int index) {
     setState(() {
@@ -37,8 +39,8 @@ class _HomePageState extends State<HomePage> {
         unselectedItemColor: Colors.black,
         // selectedFontSize: 12.0,
         onTap: onTabTapped, // new
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed, // new
+        currentIndex: _currentIndex, // new
+        type: BottomNavigationBarType.fixed,
         items: [
           new BottomNavigationBarItem(
             icon: Image.asset(
@@ -62,7 +64,7 @@ class _HomePageState extends State<HomePage> {
               width: 24,
               height: 24,
             ),
-            label: '个人中心',
+            label: '消息',
           ),
           new BottomNavigationBarItem(
             icon: Image.asset(
@@ -70,8 +72,16 @@ class _HomePageState extends State<HomePage> {
               width: 24,
               height: 24,
             ),
-            label: '测试页',
+            label: '我的',
           ),
+          // new BottomNavigationBarItem(
+          //   icon: Image.asset(
+          //     'assets/images/user.png',
+          //     width: 24,
+          //     height: 24,
+          //   ),
+          //   label: '测试页',
+          // ),
         ],
       ),
     );

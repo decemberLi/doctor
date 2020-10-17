@@ -29,4 +29,9 @@ class ResourceDetailViewModel extends ViewStateModel {
     });
     return ResourceModel.fromJson(data);
   }
+
+  Future<ResourceModel> changeOptions(params) async {
+    print(data);
+    return null;
+  }
 }
