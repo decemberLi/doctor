@@ -122,6 +122,43 @@ class PlanDetailList extends StatelessWidget {
         ));
   }
 
+  //数字格式化，将 0~9 的时间转换为 00~09
+  formatTime(int timeNum) {
+    return timeNum < 10 ? "0" + timeNum.toString() : timeNum.toString();
+  }
+
+  // 视频时长
+  Widget _durationBox(int duration) {
+    int hour = duration ~/ 3600;
+    int minute = duration % 3600 ~/ 60;
+    int second = duration % 60;
+    return Container(
+        decoration: BoxDecoration(
+          color: Color(0xFF1a3537),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        padding: EdgeInsets.all(2),
+        margin: EdgeInsets.only(right: 4, bottom: 10),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 3,
+            ),
+            Text(
+              formatTime(hour) +
+                  ":" +
+                  formatTime(minute) +
+                  ":" +
+                  formatTime(second),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ));
+  }
+
   // 标题
   Widget learnTitle(String resourceType, dynamic item) {
     String titleShow = '标题';
@@ -232,29 +269,24 @@ class PlanDetailList extends StatelessWidget {
                                   learnTitle(item.resourceType, item),
                                 ])),
                       ),
-                      Container(
-                        width: 108,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 10,
-                            ),
-                            // TODO:处理图片
-
-                            if (item.thumbnailUrl != null)
-                              Image.asset(
-                                item.thumbnailUrl,
-                                width: 60,
-                                height: 60,
-                              ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                          ],
-                        ),
-                      ),
+                      Row(children: [
+                        if (item.thumbnailUrl != null)
+                          Container(
+                            padding: EdgeInsets.only(left: 10, right: 14),
+                            child: Image.network(item.thumbnailUrl,
+                                width: 108, height: 70, fit: BoxFit.cover),
+                          ),
+                      ]),
                     ],
-                  )
+                  ),
+                  if (item.resourceType == 'VIDEO')
+                    Positioned(
+                      right: 14,
+                      bottom: 10,
+                      child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 6),
+                          child: _durationBox(item.info.duration)),
+                    ),
                 ],
               ))));
     }
