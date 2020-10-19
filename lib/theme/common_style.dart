@@ -19,9 +19,19 @@ class MyStyles {
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
+  static const TextStyle inputTextStyle_12 = TextStyle(
+    color: ThemeColor.colorFF222222,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+  );
   static const TextStyle labelTextStyle = TextStyle(
     color: ThemeColor.colorFF444444,
     fontSize: 14,
     fontWeight: FontWeight.w400,
+  );
+  static const TextStyle labelTextStyle_12 = TextStyle(
+    color: Color.fromRGBO(34, 34, 34, 0.46),
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
   );
 }

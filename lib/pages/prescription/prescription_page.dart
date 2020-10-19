@@ -1,41 +1,14 @@
+import 'package:doctor/pages/prescription/widgets/medication_item.dart';
+import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/Radio_row.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:doctor/widgets/form_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class PrescripionCard extends StatelessWidget {
-  final String title;
-  final List<Widget> children;
-  final Widget trailing;
-  PrescripionCard({
-    this.title,
-    this.children = const <Widget>[],
-    this.trailing,
-  });
-  @override
-  Widget build(BuildContext context) {
-    Widget titleWidget = ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
-      title: Text(
-        this.title,
-        style: MyStyles.primaryTextStyle.copyWith(fontWeight: FontWeight.w500),
-      ),
-      trailing: this.trailing,
-    );
-    this.children.insert(0, titleWidget);
-    return Card(
-      child: Container(
-          padding: EdgeInsets.fromLTRB(30, 0, 30, 10),
-          margin: EdgeInsets.only(bottom: 12.0),
-          child: Column(
-            children: this.children,
-          )),
-    );
-  }
-}
-
+/// 开处方主页面
 class PrescriptionPage extends StatefulWidget {
   @override
   _PrescriptionPageState createState() => _PrescriptionPageState();
@@ -43,6 +16,20 @@ class PrescriptionPage extends StatefulWidget {
 
 class _PrescriptionPageState extends State<PrescriptionPage> {
   int _sex = 1;
+  int _visit = 1;
+
+  List medicationList = [1, 2, 3];
+
+  // 显示临床诊断弹窗
+  Future<int> _showModalBottomSheet() {
+    return showModalBottomSheet<int>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(color: Colors.white, height: 350);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +159,7 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: _showModalBottomSheet,
                       minWidth: 60,
                       height: 30,
                       shape: RoundedRectangleBorder(
@@ -181,6 +168,129 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                   ],
                 ))
               ],
+            ),
+            PrescripionCard(
+              title: '药品信息',
+              padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
+              children: [
+                ...this
+                    .medicationList
+                    .map((e) => MedicationItem(
+                          index: this.medicationList.indexOf(e),
+                          onDelete: (int index) {
+                            setState(() {
+                              this.medicationList.removeAt(index);
+                            });
+                          },
+                        ))
+                    .toList(),
+                Container(
+                  width: 295,
+                  height: 42,
+                  child: FlatButton(
+                    onPressed: () {},
+                    color: ThemeColor.primaryColor.withOpacity(0.4),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.add,
+                          size: 16,
+                          color: ThemeColor.primaryColor,
+                        ),
+                        Text(
+                          '添加药品',
+                          style: TextStyle(
+                              color: ThemeColor.primaryColor, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 14),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.circle,
+                        size: 6,
+                        color: Color(0xFFDB1818),
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        '国家规定，对首处患者进行医疗行为时，必须当面诊查。',
+                        style:
+                            MyStyles.labelTextStyle_12.copyWith(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 32),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '价格',
+                        style:
+                            MyStyles.inputTextStyle_12.copyWith(fontSize: 18),
+                      ),
+                      Text(
+                        '￥896',
+                        style: TextStyle(
+                          color: Color(0xFFFE4B40),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+            PrescripionCard(
+              title: '纸质处方图片上传',
+              children: [],
+            ),
+            PrescripionCard(
+              title: '是否为复诊患者',
+              trailing: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  RadioRow(
+                    title: Text(
+                      '是',
+                      style: MyStyles.inputTextStyle,
+                    ),
+                    value: 1,
+                    groupValue: _visit,
+                    onChanged: (int value) {
+                      setState(() {
+                        _visit = value;
+                      });
+                    },
+                  ),
+                  RadioRow(
+                    title: Text(
+                      '否',
+                      style: MyStyles.inputTextStyle,
+                    ),
+                    value: 0,
+                    groupValue: _visit,
+                    onChanged: (int value) {
+                      setState(() {
+                        _visit = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
             ),
           ],
         ),

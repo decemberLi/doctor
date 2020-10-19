@@ -23,6 +23,7 @@ class _VideoDetailState extends State<VideoDetail> {
     _controller = VideoPlayerController.network(
       files[0]['tmpUrl'],
     );
+    print(files[0]['tmpUrl']);
     _initializeVideoPlayerFuture = _controller.initialize();
     setState(() {});
   }

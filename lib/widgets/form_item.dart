@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 class FormItem extends StatelessWidget {
   final Widget child;
   final String label;
+  final EdgeInsetsGeometry padding;
+  final double height;
   FormItem({
     @required this.child,
     this.label,
+    this.padding = const EdgeInsets.all(0),
+    this.height,
   });
 
   Widget _getChild() {
@@ -33,6 +37,8 @@ class FormItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
+      padding: this.padding,
+      height: this.height,
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
