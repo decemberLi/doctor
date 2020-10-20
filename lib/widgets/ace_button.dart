@@ -10,15 +10,17 @@ class AceButton extends StatelessWidget {
   final double height;
   final Color color;
   final double fontSize;
+  final Widget child;
 
   AceButton({
     @required this.onPressed,
-    @required this.text,
+    this.text,
     this.color = ThemeColor.primaryColor,
     this.type = AceButtonType.primary,
     this.width = 310,
     this.height = 44,
     this.fontSize = 16,
+    this.child,
   });
 
   @override
@@ -30,44 +32,77 @@ class AceButton extends StatelessWidget {
       onPressed: onPressed,
       color: color,
       shape: shape,
-      child: Text(
-        text,
-        style: TextStyle(color: Colors.white, fontSize: fontSize),
-      ),
+      child: child ??
+          Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: fontSize,
+            ),
+          ),
     );
     FlatButton greyBtn = FlatButton(
       onPressed: onPressed,
       color: ThemeColor.colorFFF8F8F8,
       shape: shape,
-      child: Text(
-        text,
-        style: TextStyle(color: ThemeColor.colorFF5F6266, fontSize: fontSize),
-      ),
+      child: child ??
+          Text(
+            text,
+            style: TextStyle(
+              color: ThemeColor.colorFF5F6266,
+              fontSize: fontSize,
+            ),
+          ),
     );
 
-    Widget child = primaryBtn;
+    FlatButton secondaryBtn = FlatButton(
+      onPressed: onPressed,
+      color: ThemeColor.primaryColor.withOpacity(0.4),
+      shape: shape,
+      child: child ??
+          Text(
+            text,
+            style: TextStyle(
+              color: ThemeColor.primaryColor,
+              fontSize: fontSize,
+            ),
+          ),
+    );
+
+    Widget btn;
     Decoration decoration = BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(height / 2)),
       boxShadow: [
         BoxShadow(
-          color: Color(0x66189A8C),
+          color: Color(0x663AA7FF),
           offset: Offset(0, 4),
           blurRadius: 10,
         ),
       ],
     );
-    if (type == AceButtonType.grey) {
-      child = greyBtn;
-      decoration = null;
+    switch (type) {
+      case AceButtonType.primary:
+        btn = primaryBtn;
+        break;
+      case AceButtonType.secondary:
+        btn = secondaryBtn;
+        decoration = null;
+        break;
+      case AceButtonType.grey:
+        btn = greyBtn;
+        decoration = null;
+        break;
+      default:
+        btn = primaryBtn;
     }
 
     return Container(
       width: width,
       height: height,
-      child: child,
+      child: btn,
       decoration: decoration,
     );
   }
 }
 
-enum AceButtonType { primary, grey }
+enum AceButtonType { primary, secondary, grey }

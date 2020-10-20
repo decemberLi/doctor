@@ -1,5 +1,6 @@
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/login_page.dart';
+import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/constants.dart';
@@ -67,7 +68,11 @@ class MyApp extends StatelessWidget {
         home: session == null ? LoginPage() : HomePage(),
         builder: (BuildContext context, Widget child) {
           /// 确保 loading 组件能覆盖在其他组件之上.
-          return FlutterEasyLoading(child: child);
+          return FlutterEasyLoading(
+              child: MultiProvider(
+            providers: providers,
+            child: child,
+          ));
         },
       ),
     );

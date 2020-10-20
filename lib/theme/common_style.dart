@@ -19,6 +19,11 @@ class MyStyles {
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
+  static const TextStyle inputTextStyle_16 = TextStyle(
+    color: ThemeColor.colorFF222222,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
   static const TextStyle inputTextStyle_12 = TextStyle(
     color: ThemeColor.colorFF222222,
     fontSize: 12,

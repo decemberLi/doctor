@@ -28,7 +28,7 @@ class PrescripionCard extends StatelessWidget {
     //   trailing: this.trailing,
     // );
     Widget titleWidget = Container(
-      constraints: BoxConstraints(minHeight: 60),
+      constraints: BoxConstraints(minHeight: 46),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [titleText, this.trailing ?? Container()],
