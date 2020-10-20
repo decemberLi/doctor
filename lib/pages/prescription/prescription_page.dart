@@ -1,7 +1,9 @@
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
+import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
 import 'package:doctor/pages/prescription/widgets/medication_item.dart';
 import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
 import 'package:doctor/provider/provider_widget.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/Radio_row.dart';
@@ -9,6 +11,7 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:doctor/widgets/form_item.dart';
+import 'package:doctor/widgets/remove_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,41 +30,15 @@ class _PrescriptionPageState extends State<PrescriptionPage>
   String val = '';
 
   // 显示临床诊断弹窗
-  Future<void> _showClinicalDiagnosisSheet() {
+  Future<void> _showClinicalDiagnosisSheet(Function onSave) {
     return CommonModal.showBottomSheet(
       context,
       title: '临床诊断',
       height: 550,
-      child: Container(
-        alignment: Alignment.topLeft,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              // decoration: InputDecoration(
-              //   border: UnderlineInputBorder(borderSide: BorderSide(color: )),
-              // ),
-              initialValue: '',
-              validator: (val) => val.length < 1 ? '不能为空' : null,
-              onSaved: (val) => {print(val)},
-              onChanged: (String value) {
-                print(value);
-              },
-              obscureText: false,
-              keyboardType: TextInputType.text,
-              style: MyStyles.inputTextStyle,
-            ),
-            SizedBox(height: 10),
-            AceButton(
-              type: AceButtonType.secondary,
-              onPressed: () {},
-              width: 62,
-              height: 30,
-              text: '添加',
-            ),
-          ],
-        ),
-      ),
+      child: ClinicaDiagInput(onSave: (String value) {
+        onSave(value);
+        Navigator.pop(context);
+      }),
     );
   }
 
@@ -188,12 +165,28 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 ),
                 children: [
                   FormItem(
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    child: Row(
+                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 0),
+                    child: Wrap(
+                      spacing: 16.0,
+                      runSpacing: 8.0,
+                      alignment: WrapAlignment.start,
                       children: [
+                        ...model.clinicaList
+                            .map(
+                              (e) => RemoveButton(
+                                text: e,
+                                onPressed: () {
+                                  model.removeClinica(
+                                      model.clinicaList.indexOf(e));
+                                },
+                              ),
+                            )
+                            .toList(),
                         AceButton(
                           type: AceButtonType.secondary,
-                          onPressed: _showClinicalDiagnosisSheet,
+                          onPressed: () {
+                            _showClinicalDiagnosisSheet(model.addClinica);
+                          },
                           text: '添加诊断',
                           width: 60,
                           height: 30,
@@ -230,7 +223,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   ),
                   AceButton(
                     type: AceButtonType.secondary,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushNamed(RouteManager.MEDICATION_LIST);
+                    },
                     width: 295,
                     height: 42,
                     child: Row(
@@ -257,7 +253,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                         Icon(
                           Icons.circle,
                           size: 6,
-                          color: Color(0xFFDB1818),
+                          color: ThemeColor.colorFFFD4B40,
                         ),
                         SizedBox(
                           width: 4,

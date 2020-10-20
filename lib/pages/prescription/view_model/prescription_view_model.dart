@@ -27,6 +27,32 @@ class PrescriptionViewModel extends ViewStateModel {
   //   return ResourceModel.fromJson(data);
   // }
 
+  List<String> get clinicaList => this.data.clinicalDiagnosis?.split(',') ?? [];
+
+  set clinicaList(List<String> value) {
+    if (value.isEmpty) {
+      this.data.clinicalDiagnosis = null;
+    } else {
+      this.data.clinicalDiagnosis = value.join(',');
+    }
+  }
+
+  /// 新增临床诊断
+  addClinica(String value) {
+    List<String> list = this.clinicaList;
+    list.add(value);
+    this.data.clinicalDiagnosis = list.join(',');
+    notifyListeners();
+  }
+
+  /// 删除临床诊断
+  removeClinica(int index) {
+    List<String> list = this.clinicaList;
+    list.removeAt(index);
+    this.clinicaList = list;
+    notifyListeners();
+  }
+
   void changeDataNotify() {
     notifyListeners();
   }

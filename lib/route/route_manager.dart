@@ -2,6 +2,7 @@ import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/find_password.dart';
 import 'package:doctor/pages/login/login_by_password_page.dart';
 import 'package:doctor/pages/login/login_page.dart';
+import 'package:doctor/pages/prescription/medication_page.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart';
@@ -23,6 +24,7 @@ class RouteManager {
   static const String RESOURCE_DETAIL = '/resource_detail';
   static const String UPDATE_PWD = '/update_pwd';
   static const String ABOUT_US = '/about_us';
+  static const String MEDICATION_LIST = '/medication_list';
 
   static Map<String, WidgetBuilder> routes = {
     LOGIN: (context) => LoginPage(),
@@ -36,5 +38,6 @@ class RouteManager {
     RESOURCE_DETAIL: (context) => ResourceDetailPage(),
     UPDATE_PWD: (context) => UpdatePwdPage(),
     ABOUT_US: (context) => AboutUs(),
+    MEDICATION_LIST: (context) => MedicationPage(),
   };
 }

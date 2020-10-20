@@ -39,4 +39,19 @@ class MyStyles {
     fontSize: 12,
     fontWeight: FontWeight.w500,
   );
+  static const TextStyle boldTextStyle = TextStyle(
+    color: Colors.black,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle boldTextStyle_16 = TextStyle(
+    color: Colors.black,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle boldTextStyle_12 = TextStyle(
+    color: Colors.black,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+  );
 }

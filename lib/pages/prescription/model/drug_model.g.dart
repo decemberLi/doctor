@@ -8,20 +8,34 @@ part of 'drug_model.dart';
 
 DrugModel _$DrugModelFromJson(Map<String, dynamic> json) {
   return DrugModel(
-    json['drugId'] as String,
-    json['drugName'] as String,
-    json['drugSize'] as String,
-    json['frequency'] as String,
-    json['singleDose'] as String,
-    json['doseUnit'] as String,
-    json['usePattern'] as String,
-    json['quantity'] as String,
+    drugId: json['drugId'] as String,
+    drugName: json['drugName'] as String,
+    drugNo: json['drugNo'] as String,
+    generalName: json['generalName'] as String,
+    approvalNo: json['approvalNo'] as String,
+    drugType: json['drugType'] as String,
+    drugPrice: json['drugPrice'] as String,
+    producer: json['producer'] as String,
+    pictures: (json['pictures'] as List)?.map((e) => e as String)?.toList(),
+    drugSize: json['drugSize'] as String,
+    frequency: json['frequency'] as String,
+    singleDose: json['singleDose'] as String,
+    doseUnit: json['doseUnit'] as String,
+    usePattern: json['usePattern'] as String,
+    quantity: json['quantity'] as String,
   );
 }
 
 Map<String, dynamic> _$DrugModelToJson(DrugModel instance) => <String, dynamic>{
       'drugId': instance.drugId,
       'drugName': instance.drugName,
+      'drugNo': instance.drugNo,
+      'generalName': instance.generalName,
+      'approvalNo': instance.approvalNo,
+      'drugType': instance.drugType,
+      'drugPrice': instance.drugPrice,
+      'producer': instance.producer,
+      'pictures': instance.pictures,
       'drugSize': instance.drugSize,
       'frequency': instance.frequency,
       'singleDose': instance.singleDose,

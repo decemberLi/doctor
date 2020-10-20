@@ -1,4 +1,5 @@
 import 'package:doctor/theme/common_style.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class FormItem extends StatelessWidget {
@@ -36,13 +37,13 @@ class FormItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
+      alignment: Alignment.centerLeft,
       padding: this.padding,
       height: this.height,
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: Color.fromRGBO(0, 90, 160, 0.1),
+            color: ThemeColor.colorLine,
             style: BorderStyle.solid,
           ),
         ),
