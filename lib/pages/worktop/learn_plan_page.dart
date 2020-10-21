@@ -3,7 +3,7 @@ import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 
-class WorktopPage extends StatelessWidget {
+class LearnPlanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

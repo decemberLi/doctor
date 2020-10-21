@@ -10,6 +10,7 @@ import 'package:doctor/pages/worktop/learn/learn_upload_record/learn_upload_reco
 import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
 import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
+import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:flutter/material.dart';
 
 class RouteManager {
@@ -24,6 +25,7 @@ class RouteManager {
   static const String RESOURCE_DETAIL = '/resource_detail';
   static const String UPDATE_PWD = '/update_pwd';
   static const String ABOUT_US = '/about_us';
+  static const String LEARN_PAGE = '/learn_page';
   static const String MEDICATION_LIST = '/medication_list';
 
   static Map<String, WidgetBuilder> routes = {
@@ -38,6 +40,7 @@ class RouteManager {
     RESOURCE_DETAIL: (context) => ResourceDetailPage(),
     UPDATE_PWD: (context) => UpdatePwdPage(),
     ABOUT_US: (context) => AboutUs(),
+    LEARN_PAGE: (context) => LearnPlanPage(),
     MEDICATION_LIST: (context) => MedicationPage(),
   };
 }
