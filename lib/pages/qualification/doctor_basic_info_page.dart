@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
 import 'package:doctor/pages/qualification/view_model/doctor_qualification_view_model.dart';
@@ -6,7 +5,7 @@ import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/Radio_row.dart';
 import 'package:doctor/widgets/ace_button.dart';
-import 'package:doctor/widgets/form_item.dart';
+import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 
 class DoctorBasicInfoPage extends StatefulWidget {
@@ -190,10 +189,44 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                         model?.doctorDetailInfo?.practiceDepartmentName,
                     style: _textStyle,
                     decoration: InputDecoration(
+                        errorMaxLines: 1,
                         border: InputBorder.none,
-                        hintText: '医学术执业科室',
+                        hintText: '易学术执业科室',
                         hintStyle: _textFieldHintStyle,
                         suffixIcon: _textFieldArrowIcon),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return SearchWidget<SearchModel>(
+                          '选择易学术执业科室',
+                          hintText: '输入易学术执业科室',
+                          searchConditionCallback: (condition) {
+                            print(condition);
+                            // TODO 搜索
+                          },
+                          callback: <T extends SearchModel>(value, pos) {
+                            // TODO 回填显示数据
+                            print('position $pos');
+                          },
+                          data: [
+                            // TODO Test Data
+                            YXSDepModel('AAAAA'),
+                            YXSDepModel('BBBBB'),
+                            YXSDepModel('CCCCC'),
+                            YXSDepModel('DDDDD'),
+                            YXSDepModel('FFFFF'),
+                            YXSDepModel('GGGGG'),
+                            YXSDepModel('HHHHH'),
+                            YXSDepModel('IIIII'),
+                            YXSDepModel('JJJJJ'),
+                            YXSDepModel('KKKKK'),
+                            YXSDepModel('LLLLL'),
+                            YXSDepModel('MMMMM'),
+                            YXSDepModel('NNNNN'),
+                          ],
+                        );
+                      }));
+                    },
                   ),
                 ),
                 _divider,
@@ -230,4 +263,13 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
     _titleText = '填写基本信息';
     return Container();
   }
+}
+
+class YXSDepModel with SearchModel {
+  String text;
+
+  YXSDepModel(this.text);
+
+  @override
+  String faceText() => text;
 }
