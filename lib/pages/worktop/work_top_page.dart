@@ -4,14 +4,17 @@ import 'package:doctor/pages/worktop/learn/learn_list/learn_list_item_wiget.dart
 import 'package:doctor/pages/worktop/model/work_top_entity.dart';
 import 'package:doctor/pages/worktop/service.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
+import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'model/doctor_info_entity.dart';
+import 'model/learn_plan_statistical_entity.dart';
 
 class WorktopPage extends StatefulWidget {
   @override
@@ -29,6 +32,12 @@ class _WorktopPageState extends State<WorktopPage>
       StreamController<WorktopPageEntity>();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+
+  final Map<String, String> _mapping = {
+    'VISIT': '拜访',
+    'SURVEY': '调研',
+    'MEETING': '会议'
+  };
 
   @override
   void initState() {
@@ -86,7 +95,7 @@ class _WorktopPageState extends State<WorktopPage>
         cardPart(entity),
         Container(
           color: Color(0xFFF3F5F8),
-          margin: EdgeInsets.only(left: 16,right: 16),
+          margin: EdgeInsets.only(left: 16, right: 16),
           padding: EdgeInsets.only(top: 12, bottom: 10),
           child: const Text(
             "最近收到",
@@ -124,35 +133,42 @@ class _WorktopPageState extends State<WorktopPage>
   doctorInfoWidget(DoctorInfoEntity doctorInfoEntity) {
     // 医生个人信息部分
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Image.asset("assets/images/avatar.png"),
         Container(
-          margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          decoration: DashedDecoration(dashedColor: ThemeColor.colorFF222222),
+          child: Image.asset("assets/images/avatar.png"),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 children: [
-                  Text(doctorInfoEntity?.doctorName,
+                  Text(doctorInfoEntity?.doctorName ?? '',
                       style: TextStyle(
-                          fontSize: 20,
-                          color: Color(0xFF222222),
+                          fontSize: 22,
+                          color: ThemeColor.colorFF222222,
                           fontWeight: FontWeight.bold)),
                   Text(
-                    doctorInfoEntity?.jobGradeName,
+                    doctorInfoEntity?.jobGradeName ?? '',
                     style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF222222),
+                        color: ThemeColor.colorFF222222,
                         fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              Text(
-                "欢迎来到易学术",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF222222),
+              Container(
+                margin: EdgeInsets.only(top: 5),
+                child: Text(
+                  "欢迎来到易学术",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: ThemeColor.colorFF222222,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ],
@@ -171,21 +187,23 @@ class _WorktopPageState extends State<WorktopPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              text,
-              style: TextStyle(fontSize: 12, color: Color(0xFF107BFD)),
+              text ?? '',
+              style: TextStyle(fontSize: 12, color: ThemeColor.primaryColor),
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               children: [
                 Text(
                   "$value",
-                  style: TextStyle(fontSize: 36, color: Color(0xFF107BFD)),
+                  style:
+                      TextStyle(fontSize: 36, color: ThemeColor.primaryColor),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 4),
                   child: Text(
                     "个",
-                    style: TextStyle(fontSize: 12, color: Color(0xFF222222)),
+                    style: TextStyle(
+                        fontSize: 12, color: ThemeColor.colorFF222222),
                   ),
                 ),
               ],
@@ -195,8 +213,15 @@ class _WorktopPageState extends State<WorktopPage>
       );
     }
 
+    List<Widget> convertStatics(List<LearnPlanStatisticalEntity> lists) {
+      return lists
+          .map((e) => Expanded(
+              child: staticsData(_mapping[e.taskTemplate], e.unSubmitNum)))
+          .toList();
+    }
+
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Column(
         children: [
           Container(
@@ -209,22 +234,21 @@ class _WorktopPageState extends State<WorktopPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 doctorInfoWidget(entity.doctorInfoEntity),
-                const Text(
-                  "您收到了",
-                  style: TextStyle(
-                      color: Color(0xFF222222),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                Container(
+                  margin: EdgeInsets.only(top: 13),
+                  child: Text(
+                    "您收到了",
+                    style: TextStyle(
+                        color: Color(0xFF222222),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 Row(
-                  children: [
-                    Expanded(child: staticsData("拜访", 15)),
-                    Expanded(child: staticsData("会议", 15)),
-                    Expanded(child: staticsData("调研", 15)),
-                  ],
+                  children: convertStatics(entity.learnPlanStatisticalEntity),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 24, bottom: 12),
+                  margin: EdgeInsets.only(top: 20, bottom: 12),
                   child: AceButton(
                     text: "处理一下",
                     onPressed: () =>

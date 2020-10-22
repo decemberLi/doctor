@@ -1,10 +1,16 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'learn_plan_statistical_entity.g.dart';
+
+@JsonSerializable()
 class LearnPlanStatisticalEntity {
   String taskTemplate;
-  String unSubmitNum;
+  int unSubmitNum;
 
   LearnPlanStatisticalEntity(this.taskTemplate, this.unSubmitNum);
 
-  LearnPlanStatisticalEntity.fromJson(Map<String, dynamic> json)
-      : taskTemplate = json['taskTemplate'],
-        unSubmitNum = json['unSubmitNum'];
+  factory LearnPlanStatisticalEntity.fromJson(Map<String, dynamic> param) =>
+      _$LearnPlanStatisticalEntityFromJson(param);
+
+  Map<String, dynamic> toJson() => _$LearnPlanStatisticalEntityToJson(this);
 }

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:doctor/http/http_manager.dart';
+import 'package:doctor/pages/qualification/model/config_data_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -15,13 +15,17 @@ class DoctorQualificationViewModel {
   DoctorQualificationModel _dataModel = DoctorQualificationModel();
 
   get stream => _controller.stream;
-  
-  queryDepartment() async{
-    return await foundation.post('/depart/list');
+
+  queryHospital() async {
+    var result = await foundation.post('/hospital/key-query-page');
+    return HospitalEntity.fromJson(result);
   }
 
-  queryHospital() async{
-    return await foundation.post('/hospital/key-query-page');
+  queryConfig(String type) async {
+    Map<String, dynamic> param = {};
+    param['type']  =type;
+    var result = await foundation.post('/hospital/key-query-page', params: param);
+    return ConfigDataEntity.fromJson(result);
   }
 
   /// 查询当前登陆的医生信息，token 参数由 http 请求统一提供。接口地址：

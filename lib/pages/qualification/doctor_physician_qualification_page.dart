@@ -66,7 +66,7 @@ class _PhysicianQualificationWidgetState
             children: [
               Row(
                 children: [
-                  _uploadPicWidget(),
+                  GestureDetector(child: _uploadPicWidget(),onTap: (){},),
                   Container(
                     margin: EdgeInsets.only(top: 12, left: 24),
                     width: 85,

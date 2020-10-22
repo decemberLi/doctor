@@ -28,7 +28,11 @@ _obtainStatistical() async {
   if (statistical is Exception) {
     return null;
   }
-  return LearnPlanStatisticalEntity.fromJson(statistical);
+
+  return statistical
+      .map<LearnPlanStatisticalEntity>(
+          (item) => LearnPlanStatisticalEntity.fromJson(item))
+      .toList();
 }
 
 /// 查询最近学习计划，接口地址：

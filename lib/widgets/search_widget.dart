@@ -95,7 +95,6 @@ class SearchWidget<T extends Search> extends StatefulWidget {
     this.title, {
     this.hintText,
     this.child,
-    List<T> data,
     this.multiChoose = false,
     this.searchConditionCallback,
     this.callback,

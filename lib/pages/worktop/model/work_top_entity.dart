@@ -5,6 +5,6 @@ import 'learn_plan_statistical_entity.dart';
 
 class WorktopPageEntity {
   DoctorInfoEntity doctorInfoEntity;
-  LearnPlanStatisticalEntity learnPlanStatisticalEntity;
+  List<LearnPlanStatisticalEntity> learnPlanStatisticalEntity;
   List<LearnListItem> learnPlanList;
 }

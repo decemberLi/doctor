@@ -8,6 +8,7 @@ import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'doctor_physician_qualification_page.dart';
+import 'model/config_data_entity.dart';
 
 class DoctorBasicInfoPage extends StatefulWidget {
   @override
@@ -38,6 +39,9 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
   );
 
   var _titleText = '填写基本信息';
+  SearchWidget<HospitalEntity> _hospitalSearchWidget;
+  SearchWidget<ConfigDataEntity> _departSearchWidget;
+  SearchWidget<ConfigDataEntity> _jobGradeSearchWidget;
 
   @override
   void dispose() {
@@ -49,6 +53,24 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
   void initState() {
     super.initState();
     _model.refresh();
+    _hospitalSearchWidget =
+        SearchWidget<HospitalEntity>('选择医院', hintText: '输入医院名称',
+            searchConditionCallback: <T extends Search>(condition, streamSink) {
+      var hospitals = _model.queryHospital();
+      streamSink.add(hospitals);
+    });
+    _departSearchWidget =
+        SearchWidget<ConfigDataEntity>('选择科室', hintText: '请选择科室',
+            searchConditionCallback: <T extends Search>(condition, streamSink) {
+      var hospitals = _model.queryConfig('DEPARTMENTS');
+      streamSink.add(hospitals);
+    });
+    _jobGradeSearchWidget =
+        SearchWidget<ConfigDataEntity>('选择科室', hintText: '请选择科室',
+            searchConditionCallback: <T extends Search>(condition, streamSink) {
+      var hospitals = _model.queryConfig('DEPARTMENTS');
+      streamSink.add(hospitals);
+    });
   }
 
   @override
@@ -151,6 +173,7 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                         hintText: '所在医院',
                         hintStyle: _textFieldHintStyle,
                         suffixIcon: _textFieldArrowIcon),
+                    onTap: _goSearchPage(_hospitalSearchWidget),
                   ),
                 ),
                 // 所在科室
@@ -165,28 +188,26 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                         hintText: '所在科室',
                         hintStyle: _textFieldHintStyle,
                         suffixIcon: _textFieldArrowIcon),
+                    onTap: () {
+                      _goSearchPage(_departSearchWidget);
+                    },
                   ),
                 ),
                 // 职称
                 _divider,
                 Expanded(
                   child: TextFormField(
-                    readOnly: true,
-                    initialValue: model?.doctorDetailInfo?.jobGradeName,
-                    style: _textStyle,
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '职称',
-                        hintStyle: _textFieldHintStyle,
-                        suffixIcon: _textFieldArrowIcon),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  PhysicianQualificationWidget()));
-                    },
-                  ),
+                      readOnly: true,
+                      initialValue: model?.doctorDetailInfo?.jobGradeName,
+                      style: _textStyle,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: '职称',
+                          hintStyle: _textFieldHintStyle,
+                          suffixIcon: _textFieldArrowIcon),
+                      onTap: () {
+                        _goSearchPage(_jobGradeSearchWidget);
+                      }),
                 ),
                 // 医学书执业科室
                 _divider,
@@ -220,9 +241,6 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                             print('position $pos');
                             print('value -> $value');
                           },
-                          data: [
-                            // TODO Test Data
-                          ],
                         );
                       }));
                     },
@@ -235,6 +253,11 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
         )
       ],
     );
+  }
+
+  _goSearchPage(SearchWidget searchWidget) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => searchWidget));
   }
 
   _buildNoticeMessage(DoctorQualificationModel model) {
