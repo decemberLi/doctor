@@ -40,7 +40,7 @@ class PrescriptionModel {
   String status;
 
   /// 处方药品信息
-  List<DrugModel> drugRps;
+  List<DrugModel> drugRp;
 
   /// 处方纸质图片附件信息
   List<AttacementsModel> attachments;
@@ -55,7 +55,7 @@ class PrescriptionModel {
     this.pharmacist,
     this.furtherConsultation = '1',
     this.status,
-    this.drugRps = const <DrugModel>[],
+    this.drugRp = const <DrugModel>[],
     this.attachments,
   });
   factory PrescriptionModel.fromJson(Map<String, dynamic> json) =>

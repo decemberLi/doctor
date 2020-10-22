@@ -1,7 +1,10 @@
+import 'package:doctor/pages/prescription/model/drug_model.dart';
+import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
 import 'package:doctor/pages/prescription/widgets/medication_item.dart';
 import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
+import 'package:doctor/pages/prescription/widgets/prescription_template_sheet.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
@@ -39,6 +42,20 @@ class _PrescriptionPageState extends State<PrescriptionPage>
         onSave(value);
         Navigator.pop(context);
       }),
+    );
+  }
+
+  // 显示药品添加弹窗
+  Future<void> _showPrescriptionTemplateSheet(Function onSave) {
+    return CommonModal.showBottomSheet(
+      context,
+      title: '处方模板',
+      child: PrescriptionTemplateList(
+        onSelected: (PrescriptionTemplateModel data) {
+          onSave(data);
+          Navigator.pop(context);
+        },
+      ),
     );
   }
 
@@ -160,7 +177,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                     style: MyStyles.primaryTextStyle_12,
                   ),
                   onPressed: () {
-                    print(222);
+                    _showPrescriptionTemplateSheet(model.addByTemplate);
                   },
                 ),
                 children: [
@@ -201,10 +218,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 title: 'RP(1)',
                 padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
                 children: [
-                  ...model.data.drugRps
+                  ...model.data.drugRp
                       .map(
                         (e) => MedicationItem(
-                          index: model.data.drugRps.indexOf(e),
+                          index: model.data.drugRp.indexOf(e),
                           onDelete: (int index) {
                             // setState(() {
                             //   this.medicationList.removeAt(index);
@@ -223,9 +240,15 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   ),
                   AceButton(
                     type: AceButtonType.secondary,
-                    onPressed: () {
-                      Navigator.of(context)
-                          .pushNamed(RouteManager.MEDICATION_LIST);
+                    onPressed: () async {
+                      var list = await Navigator.pushNamed(
+                          context, RouteManager.MEDICATION_LIST);
+                      // print(list);
+                      ///TODO: 偶尔有报错
+                      if (list != null) {
+                        model.data.drugRp = [...list as List<DrugModel>];
+                        model.changeDataNotify();
+                      }
                     },
                     width: 295,
                     height: 42,

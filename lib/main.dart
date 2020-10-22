@@ -69,10 +69,11 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, Widget child) {
           /// 确保 loading 组件能覆盖在其他组件之上.
           return FlutterEasyLoading(
-              child: MultiProvider(
-            providers: providers,
-            child: child,
-          ));
+            child: MultiProvider(
+              providers: providers,
+              child: child,
+            ),
+          );
         },
       ),
     );

@@ -13,7 +13,8 @@ List<String> usePatternList = ['口服', '冲服', '硬塞'];
 /// 添加药品弹窗内容
 class MedicationAddSheet extends StatefulWidget {
   final DrugModel item;
-  MedicationAddSheet(this.item);
+  final Function onSave;
+  MedicationAddSheet(this.item, {this.onSave});
 
   @override
   _MedicationAddSheetState createState() => _MedicationAddSheetState();
@@ -31,6 +32,10 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
   double quantity;
 
   initialize() {
+    frequency = widget.item.frequency ?? frequencyList[0];
+    singleDose = widget.item.singleDose ?? '1';
+    doseUnit = widget.item.doseUnit ?? doseUnitList[0];
+    usePattern = widget.item.usePattern ?? usePatternList[0];
     quantity = double.parse(widget.item.quantity ?? '1');
   }
 
@@ -128,7 +133,8 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
                     width: 50,
                     height: 30,
                     margin: EdgeInsets.only(left: 10),
-                    child: TextField(
+                    child: TextFormField(
+                      initialValue: singleDose,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -232,7 +238,7 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
                       spinnerValue: this.quantity,
                       onChange: (newValue) {
                         setState(() {
-                          widget.item.quantity = newValue.toStringAsFixed(0);
+                          // widget.item.quantity = newValue.toStringAsFixed(0);
                           this.quantity = newValue;
                         });
                       },
@@ -249,7 +255,14 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
             ),
             AceButton(
               text: '确认',
-              onPressed: () {},
+              onPressed: () {
+                widget.item.frequency = frequency;
+                widget.item.singleDose = singleDose;
+                widget.item.doseUnit = doseUnit;
+                widget.item.usePattern = usePattern;
+                widget.item.quantity = this.quantity.toStringAsFixed(0);
+                widget.onSave();
+              },
             ),
           ],
         ),

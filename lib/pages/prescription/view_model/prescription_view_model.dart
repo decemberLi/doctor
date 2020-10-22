@@ -1,5 +1,6 @@
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
+import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
 
 HttpManager http = HttpManager('server');
@@ -50,6 +51,12 @@ class PrescriptionViewModel extends ViewStateModel {
     List<String> list = this.clinicaList;
     list.removeAt(index);
     this.clinicaList = list;
+    notifyListeners();
+  }
+
+  addByTemplate(PrescriptionTemplateModel data) {
+    this.data.clinicalDiagnosis = data.clinicalDiagnosis;
+    this.data.drugRp = data.drugRp;
     notifyListeners();
   }
 

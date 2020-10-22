@@ -6,7 +6,7 @@ class CommonModal {
   static Future showBottomSheet(
     BuildContext context, {
     String title,
-    double height,
+    double height = 560,
     @required Widget child,
   }) {
     return showModalBottomSheet<void>(

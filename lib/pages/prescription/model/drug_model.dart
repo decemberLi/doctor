@@ -50,6 +50,10 @@ class DrugModel {
   /// 数量
   String quantity;
 
+  /// 用法用量
+  String get useInfo =>
+      '${frequency ?? ''}；${singleDose ?? ''}${doseUnit ?? ''}；${usePattern ?? ''}';
+
   DrugModel({
     this.drugId,
     this.drugName,

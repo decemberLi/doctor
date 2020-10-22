@@ -9,6 +9,16 @@ class MedicationViewModel extends ViewStateRefreshListModel {
 
   MedicationViewModel();
 
+  /// 总价
+  // double get totalPrice => ;
+
+  @override
+  initData() async {
+    setBusy();
+    print(11);
+    await refresh(init: true);
+  }
+
   @override
   Future<List<DrugModel>> loadData({int pageNum}) async {
     // var list = await http.post('/drug/list', params: {'ps': 10, 'pn': pageNum});
@@ -32,5 +42,24 @@ class MedicationViewModel extends ViewStateRefreshListModel {
     }
     // Future.delayed(Duration(seconds: 2), () => list);
     return list;
+  }
+
+  void addToCart(DrugModel item) {
+    this.cartList.add(item);
+    notifyListeners();
+  }
+
+  void removeFromCart(DrugModel item) {
+    item.frequency = null;
+    item.singleDose = null;
+    item.doseUnit = null;
+    item.usePattern = null;
+    item.quantity = null;
+    this.cartList.remove(item);
+    notifyListeners();
+  }
+
+  void changeDataNotify() {
+    notifyListeners();
   }
 }
