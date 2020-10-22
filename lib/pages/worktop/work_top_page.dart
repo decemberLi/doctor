@@ -33,12 +33,6 @@ class _WorktopPageState extends State<WorktopPage>
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  final Map<String, String> _mapping = {
-    'VISIT': '拜访',
-    'SURVEY': '调研',
-    'MEETING': '会议'
-  };
-
   @override
   void initState() {
     super.initState();
@@ -75,14 +69,7 @@ class _WorktopPageState extends State<WorktopPage>
           stream: _controller.stream,
           builder: (BuildContext context,
               AsyncSnapshot<WorktopPageEntity> snapshot) {
-            if (snapshot.hasData) {
-              Widget body = bodyWidget(snapshot.data);
-              print('body ---------------> $body');
-              return body;
-            }
-            return Container(
-              child: new Text("数据加载中"),
-            );
+            return bodyWidget(snapshot.data);
           },
         ),
       ),
@@ -194,7 +181,7 @@ class _WorktopPageState extends State<WorktopPage>
               crossAxisAlignment: CrossAxisAlignment.baseline,
               children: [
                 Text(
-                  "$value",
+                  '${value ?? 0}',
                   style:
                       TextStyle(fontSize: 36, color: ThemeColor.primaryColor),
                 ),
@@ -214,10 +201,27 @@ class _WorktopPageState extends State<WorktopPage>
     }
 
     List<Widget> convertStatics(List<LearnPlanStatisticalEntity> lists) {
-      return lists
-          .map((e) => Expanded(
-              child: staticsData(_mapping[e.taskTemplate], e.unSubmitNum)))
-          .toList();
+      List<Widget> widgets = [];
+      var visitCount = 0;
+      var surveyCount = 0;
+      var meetingCount = 0;
+
+      if (lists != null && lists.isNotEmpty) {
+        for (var each in lists) {
+          if (each.taskTemplate == 'VISIT') {
+            visitCount = each.unSubmitNum;
+          } else if (each.taskTemplate == 'SURVEY') {
+            surveyCount = each.unSubmitNum;
+          } else if (each.taskTemplate == 'MEETING') {
+            meetingCount = each.unSubmitNum;
+          }
+        }
+      }
+      widgets.add(Expanded(child: staticsData('拜访', visitCount)));
+      widgets.add(Expanded(child: staticsData('调研', surveyCount)));
+      widgets.add(Expanded(child: staticsData('会议', meetingCount)));
+
+      return widgets;
     }
 
     return Container(
@@ -233,7 +237,7 @@ class _WorktopPageState extends State<WorktopPage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                doctorInfoWidget(entity.doctorInfoEntity),
+                doctorInfoWidget(entity?.doctorInfoEntity),
                 Container(
                   margin: EdgeInsets.only(top: 13),
                   child: Text(
@@ -244,8 +248,11 @@ class _WorktopPageState extends State<WorktopPage>
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-                Row(
-                  children: convertStatics(entity.learnPlanStatisticalEntity),
+                Container(
+                  margin: EdgeInsets.only(left: 18),
+                  child: Row(
+                      children:
+                          convertStatics(entity?.learnPlanStatisticalEntity)),
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 20, bottom: 12),
