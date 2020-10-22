@@ -7,6 +7,8 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 
+import 'doctor_physician_qualification_page.dart';
+
 class DoctorBasicInfoPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _DoctorBasicInfoPageState();
@@ -177,6 +179,13 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                         hintText: '职称',
                         hintStyle: _textFieldHintStyle,
                         suffixIcon: _textFieldArrowIcon),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PhysicianQualificationWidget()));
+                    },
                   ),
                 ),
                 // 医学书执业科室
