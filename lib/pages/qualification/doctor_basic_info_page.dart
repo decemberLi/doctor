@@ -1,4 +1,3 @@
-
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
 import 'package:doctor/pages/qualification/view_model/doctor_qualification_view_model.dart';
 import 'package:doctor/theme/common_style.dart';
@@ -197,32 +196,23 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return SearchWidget<SearchModel>(
-                          '选择易学术执业科室',
+                        return SearchWidget<YXSDepModel>(
+                          '搜索易学术执业科室',
                           hintText: '输入易学术执业科室',
-                          searchConditionCallback: (condition) {
-                            print(condition);
+                          searchConditionCallback:
+                              <T extends Search>(condition, streamSink) {
                             // TODO 搜索
+                            List<YXSDepModel> data = [];
+                            data.add(YXSDepModel(condition));
+                            streamSink.add(data);
                           },
-                          callback: <T extends SearchModel>(value, pos) {
+                          callback: <T extends Search>(value, pos) {
                             // TODO 回填显示数据
                             print('position $pos');
+                            print('value -> $value');
                           },
                           data: [
                             // TODO Test Data
-                            YXSDepModel('AAAAA'),
-                            YXSDepModel('BBBBB'),
-                            YXSDepModel('CCCCC'),
-                            YXSDepModel('DDDDD'),
-                            YXSDepModel('FFFFF'),
-                            YXSDepModel('GGGGG'),
-                            YXSDepModel('HHHHH'),
-                            YXSDepModel('IIIII'),
-                            YXSDepModel('JJJJJ'),
-                            YXSDepModel('KKKKK'),
-                            YXSDepModel('LLLLL'),
-                            YXSDepModel('MMMMM'),
-                            YXSDepModel('NNNNN'),
                           ],
                         );
                       }));
@@ -265,7 +255,7 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
   }
 }
 
-class YXSDepModel with SearchModel {
+class YXSDepModel with Search {
   String text;
 
   YXSDepModel(this.text);

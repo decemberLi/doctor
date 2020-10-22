@@ -7,6 +7,7 @@ import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 HttpManager uCenter = HttpManager('ucenter');
+HttpManager foundation = HttpManager('foundation');
 
 class DoctorQualificationViewModel {
   StreamController<DoctorQualificationModel> _controller =
@@ -14,6 +15,14 @@ class DoctorQualificationViewModel {
   DoctorQualificationModel _dataModel = DoctorQualificationModel();
 
   get stream => _controller.stream;
+  
+  queryDepartment() async{
+    return await foundation.post('/depart/list');
+  }
+
+  queryHospital() async{
+    return await foundation.post('/hospital/key-query-page');
+  }
 
   /// 查询当前登陆的医生信息，token 参数由 http 请求统一提供。接口地址：
   /// http://yapi.e-medclouds.com:3000/project/7/interface/api/1703

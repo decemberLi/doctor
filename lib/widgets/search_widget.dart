@@ -1,21 +1,24 @@
+import 'dart:async';
+
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-typedef OnSelectedCallback<T> = void Function<T extends SearchModel>(
+typedef OnSelectedCallback<T> = void Function<T extends Search>(
     T value, int position);
 
-typedef OnMultiSelectedCallback<T> = void Function<T extends SearchModel>(
+typedef OnMultiSelectedCallback<T> = void Function<T extends Search>(
     List<T> values, List<int> positions);
 
-typedef OnSearchConditionCallback = void Function(String condition);
+typedef OnSearchConditionCallback<T> = void Function<T extends Search>(
+    String condition, StreamSink<List<Search>> sink);
 
-mixin SearchModel {
-  String faceText() => '搜索';
+mixin Search {
+  String faceText() => throw UnimplementedError();
 }
 
-class SearchBar extends StatefulWidget {
-  final OnSearchConditionCallback searchConditionCallback;
+class SearchBar<T extends Search> extends StatefulWidget {
+  final OnSearchConditionCallback<T> searchConditionCallback;
   final IconData searchIcon;
   final String hintText;
 
@@ -37,7 +40,7 @@ class _SearchBarState extends State<SearchBar> {
   void initState() {
     _textEditingController.addListener(() {
       if (widget.searchConditionCallback != null) {
-        widget.searchConditionCallback(_textEditingController.text);
+        widget.searchConditionCallback(_textEditingController.text, null);
       }
     });
     super.initState();
@@ -77,15 +80,14 @@ class _SearchBarState extends State<SearchBar> {
   }
 }
 
-class SearchWidget<T extends SearchModel> extends StatefulWidget {
+class SearchWidget<T extends Search> extends StatefulWidget {
   Widget child;
   String title;
 
   String hintText;
-  List<T> data;
   bool multiChoose;
 
-  OnSearchConditionCallback searchConditionCallback;
+  OnSearchConditionCallback<T> searchConditionCallback;
   OnSelectedCallback<T> callback;
   OnMultiSelectedCallback<T> multiCallback;
 
@@ -93,7 +95,7 @@ class SearchWidget<T extends SearchModel> extends StatefulWidget {
     this.title, {
     this.hintText,
     this.child,
-    this.data,
+    List<T> data,
     this.multiChoose = false,
     this.searchConditionCallback,
     this.callback,
@@ -101,10 +103,17 @@ class SearchWidget<T extends SearchModel> extends StatefulWidget {
   }) : assert(multiChoose ? multiCallback != null : true);
 
   @override
-  State<SearchWidget> createState() => _SearchWidget();
+  State<SearchWidget> createState() => _SearchWidget<T>();
 }
 
-class _SearchWidget extends State<SearchWidget> {
+class _SearchWidget<T extends Search> extends State<SearchWidget> {
+  StreamController<List<T>> _controller = StreamController<List<T>>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,41 +126,57 @@ class _SearchWidget extends State<SearchWidget> {
         padding: EdgeInsets.fromLTRB(16, 12, 16, 0),
         child: Column(
           children: [
-            SearchBar(widget.hintText ?? '',
-                searchConditionCallback: widget.searchConditionCallback),
+            SearchBar(
+              widget.hintText ?? '',
+              searchConditionCallback:
+                  <T extends Search>(condition, streamSink) {
+                widget.searchConditionCallback(condition, _controller.sink);
+              },
+            ),
             Expanded(
-              child: ListView.builder(
-                physics: AlwaysScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: widget.data?.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  width: 1, color: ThemeColor.colorLine))),
-                      padding: EdgeInsets.only(top: 16, bottom: 16),
-                      child: Text(
-                        widget.data[index]?.faceText(),
-                        style: const TextStyle(
-                            color: ThemeColor.colorFF000000, fontSize: 16),
-                      ),
-                    ),
-                    onTap: () {
-                      print('index -> $index');
-                      if (widget.callback != null) {
-                        widget.callback(widget.data[index], index);
-                      }
-                      Navigator.pop(context, widget.data[index]);
-                    },
-                  );
-                },
-              ),
-            )
+                child: StreamBuilder(
+              stream: _controller.stream,
+              builder: (BuildContext context, AsyncSnapshot<List<T>> snapshot) {
+                return dataWidget(snapshot.data ?? []);
+              },
+            ))
           ],
         ),
       ),
+    );
+  }
+
+  dataWidget(List<T> data) {
+    if (widget.child != null) {
+      return widget.child;
+    }
+
+    return ListView.builder(
+      physics: AlwaysScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: data?.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          child: Container(
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(width: 1, color: ThemeColor.colorLine))),
+            padding: EdgeInsets.only(top: 16, bottom: 16),
+            child: Text(
+              data[index]?.faceText(),
+              style: const TextStyle(
+                  color: ThemeColor.colorFF000000, fontSize: 16),
+            ),
+          ),
+          onTap: () {
+            print('index -> $index');
+            if (widget.callback != null) {
+              widget.callback(data[index], index);
+            }
+            Navigator.pop(context, data[index]);
+          },
+        );
+      },
     );
   }
 }
