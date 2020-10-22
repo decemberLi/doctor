@@ -5,6 +5,7 @@ import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
 import 'package:doctor/pages/prescription/widgets/medication_item.dart';
 import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_template_sheet.dart';
+import 'package:doctor/pages/prescription/widgets/rp_list.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
@@ -129,6 +130,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       ),
                       validator: (val) => val.length < 1 ? '年龄不能为空' : null,
                       onSaved: (val) => {print(val)},
+                      onChanged: (String value) {
+                        model.data.prescriptionPatientAge = value;
+                        model.changeDataNotify();
+                      },
                       obscureText: false,
                       keyboardType: TextInputType.number,
                       style: MyStyles.inputTextStyle,
@@ -218,76 +223,21 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 title: 'RP(1)',
                 padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
                 children: [
-                  ...model.data.drugRp
-                      .map(
-                        (e) => MedicationItem(
-                          index: model.data.drugRp.indexOf(e),
-                          onDelete: (int index) {
-                            // setState(() {
-                            //   this.medicationList.removeAt(index);
-                            // });
-                          },
-                        ),
-                      )
-                      .toList(),
-                  MedicationItem(
-                    index: 0,
-                    onDelete: (int index) {
-                      // setState(() {
-                      //   this.medicationList.removeAt(index);
-                      // });
+                  RpList(
+                    list: model.data.drugRp,
+                    onAdd: (addList) {
+                      model.data.drugRp = [...addList];
+                      model.changeDataNotify();
                     },
-                  ),
-                  AceButton(
-                    type: AceButtonType.secondary,
-                    onPressed: () async {
-                      var list = await Navigator.pushNamed(
-                          context, RouteManager.MEDICATION_LIST);
-                      // print(list);
-                      ///TODO: 偶尔有报错
-                      if (list != null) {
-                        model.data.drugRp = [...list as List<DrugModel>];
-                        model.changeDataNotify();
-                      }
+                    onItemQuantityChange: (item, value) {
+                      model.changeDataNotify();
                     },
-                    width: 295,
-                    height: 42,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add,
-                          size: 16,
-                          color: ThemeColor.primaryColor,
-                        ),
-                        Text(
-                          '添加药品',
-                          style: TextStyle(
-                              color: ThemeColor.primaryColor, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 14),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.circle,
-                          size: 6,
-                          color: ThemeColor.colorFFFD4B40,
-                        ),
-                        SizedBox(
-                          width: 4,
-                        ),
-                        Text(
-                          '国家规定，对首处患者进行医疗行为时，必须当面诊查。',
-                          style:
-                              MyStyles.labelTextStyle_12.copyWith(fontSize: 10),
-                        ),
-                      ],
-                    ),
+                    onItemDelete: (val) {
+                      model.changeDataNotify();
+                    },
+                    onItemEdit: (val) {
+                      model.changeDataNotify();
+                    },
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 32),
@@ -330,9 +280,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       value: '1',
                       groupValue: model.data.furtherConsultation,
                       onChanged: (String value) {
-                        // setState(() {
-                        //   _visit = value;
-                        // });
+                        model.data.furtherConsultation = value;
+                        model.changeDataNotify();
                       },
                     ),
                     RadioRow(
@@ -343,14 +292,43 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       value: '0',
                       groupValue: model.data.furtherConsultation,
                       onChanged: (String value) {
-                        // setState(() {
-                        //   _visit = value;
-                        // });
+                        model.data.furtherConsultation = value;
+                        model.changeDataNotify();
                       },
                     ),
                   ],
                 ),
                 padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                  top: 35,
+                  bottom: 60,
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 25,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AceButton(
+                      width: 138,
+                      type: AceButtonType.grey,
+                      color: Color(0xFFBCBCBC),
+                      textColor: Colors.white,
+                      text: '预览处方',
+                      onPressed: () {},
+                    ),
+                    AceButton(
+                      width: 138,
+                      text: '生成处方',
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(RouteManager.PRESCRIPTION_SUCCESS);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

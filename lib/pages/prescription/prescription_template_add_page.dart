@@ -1,4 +1,5 @@
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
+import 'package:doctor/pages/prescription/widgets/rp_list.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
@@ -13,6 +14,10 @@ class PrescriptionTemplageAddPage extends StatefulWidget {
 class _PrescriptionTemplageAddPageState
     extends State<PrescriptionTemplageAddPage> {
   PrescriptionTemplateModel data = PrescriptionTemplateModel();
+
+  changeDataNotify() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,30 +101,21 @@ class _PrescriptionTemplageAddPageState
               ),
               Container(
                 alignment: Alignment.center,
-                child: AceButton(
-                  type: AceButtonType.secondary,
-                  onPressed: () {
-                    // var list = await Navigator.pushNamed(
-                    //     context, RouteManager.MEDICATION_LIST);
-                    // // print(list);
-                    // ///TODO: 偶尔有报错
-                    // if (list != null) {
-                    //   model.data.drugRp = [...list as List<DrugModel>];
-                    //   model.changeDataNotify();
-                    // }
+                child: RpList(
+                  list: data.drugRp,
+                  onAdd: (addList) {
+                    data.drugRp = [...addList];
+                    changeDataNotify();
                   },
-                  width: 295,
-                  height: 42,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '+ 添加药品',
-                        style: TextStyle(
-                            color: ThemeColor.primaryColor, fontSize: 16),
-                      ),
-                    ],
-                  ),
+                  onItemQuantityChange: (item, value) {
+                    changeDataNotify();
+                  },
+                  onItemDelete: (val) {
+                    changeDataNotify();
+                  },
+                  onItemEdit: (val) {
+                    changeDataNotify();
+                  },
                 ),
               ),
             ],

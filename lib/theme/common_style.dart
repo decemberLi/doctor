@@ -49,6 +49,11 @@ class MyStyles {
     fontSize: 16,
     fontWeight: FontWeight.w500,
   );
+  static const TextStyle boldTextStyle_20 = TextStyle(
+    color: Colors.black,
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+  );
   static const TextStyle boldTextStyle_12 = TextStyle(
     color: Colors.black,
     fontSize: 12,

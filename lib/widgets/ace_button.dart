@@ -9,6 +9,7 @@ class AceButton extends StatelessWidget {
   final double width;
   final double height;
   final Color color;
+  final Color textColor;
   final double fontSize;
   final Widget child;
 
@@ -16,6 +17,7 @@ class AceButton extends StatelessWidget {
     @required this.onPressed,
     this.text,
     this.color = ThemeColor.primaryColor,
+    this.textColor,
     this.type = AceButtonType.primary,
     this.width = 310,
     this.height = 44,
@@ -36,20 +38,20 @@ class AceButton extends StatelessWidget {
           Text(
             text,
             style: TextStyle(
-              color: Colors.white,
+              color: textColor ?? Colors.white,
               fontSize: fontSize,
             ),
           ),
     );
     FlatButton greyBtn = FlatButton(
       onPressed: onPressed,
-      color: ThemeColor.colorFFF8F8F8,
+      color: color ?? ThemeColor.colorFFF8F8F8,
       shape: shape,
       child: child ??
           Text(
             text,
             style: TextStyle(
-              color: ThemeColor.colorFF5F6266,
+              color: textColor ?? ThemeColor.colorFF5F6266,
               fontSize: fontSize,
             ),
           ),
@@ -63,7 +65,7 @@ class AceButton extends StatelessWidget {
           Text(
             text,
             style: TextStyle(
-              color: ThemeColor.primaryColor,
+              color: textColor ?? ThemeColor.primaryColor,
               fontSize: fontSize,
             ),
           ),

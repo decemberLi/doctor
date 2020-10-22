@@ -4,6 +4,7 @@ import 'package:doctor/pages/prescription/model/prescription_template_model.dart
 import 'package:doctor/provider/view_state_model.dart';
 
 HttpManager http = HttpManager('server');
+HttpManager httpFoundation = HttpManager('foundation');
 
 class PrescriptionViewModel extends ViewStateModel {
   PrescriptionModel data = PrescriptionModel();
@@ -27,6 +28,30 @@ class PrescriptionViewModel extends ViewStateModel {
   //   });
   //   return ResourceModel.fromJson(data);
   // }
+
+  Future<String> get prescriptionQRCode async {
+    String qrCodeUrl = await this.loadQRCode();
+    return qrCodeUrl;
+  }
+
+  /// 获取绑定二维码
+  Future<String> loadQRCode() async {
+    // var res = await httpFoundation.post(
+    //   '/wechat-accounts/temp-qr-code',
+    //   params: {
+    //     'bizType': 'PRESCRIPTION_BIND',
+    //     'bizId': data.prescriptionNo,
+    //   },
+    //   ignoreErrorTips: true,
+    //   showLoading: false,
+    // );
+    // return res['qrCodeUrl'];
+    String qrCodeUrl = await Future.delayed(
+        Duration(seconds: 2),
+        () =>
+            'https://oss-dev.e-medclouds.com/Business-attachment/2020-07/100027/21212508-1595338102423.jpg');
+    return qrCodeUrl;
+  }
 
   List<String> get clinicaList => this.data.clinicalDiagnosis?.split(',') ?? [];
 

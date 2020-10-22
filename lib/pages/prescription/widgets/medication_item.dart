@@ -1,26 +1,45 @@
+import 'package:doctor/pages/prescription/model/drug_model.dart';
+import 'package:doctor/pages/prescription/widgets/medication_add_sheet.dart';
 import 'package:doctor/theme/common_style.dart';
+import 'package:doctor/widgets/common_modal.dart';
+import 'package:doctor/widgets/common_spinner_input.dart';
 import 'package:doctor/widgets/form_item.dart';
 import 'package:doctor/widgets/one_line_text.dart';
 import 'package:flutter/material.dart';
 
 /// 药品项
-class MedicationItem extends StatefulWidget {
+class MedicationItem extends StatelessWidget {
   final int index;
 
-  final Function onDelete;
+  final DrugModel data;
 
+  final Function onDelete;
+  final Function onQuantityChange;
+  final Function onEdit;
   MedicationItem({
     Key key,
     this.index,
+    this.data,
     this.onDelete,
+    this.onEdit,
+    this.onQuantityChange,
   });
 
-  @override
-  _MedicationItemState createState() => _MedicationItemState();
-}
-
-class _MedicationItemState extends State<MedicationItem> {
-  int num = 3;
+  // 显示药品编辑弹窗
+  Future<void> _showMedicationInfoSheet(BuildContext context, Function onSave) {
+    return CommonModal.showBottomSheet(
+      context,
+      title: '药品用法用量',
+      height: 560,
+      child: MedicationAddSheet(
+        data,
+        onSave: () {
+          onSave();
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,22 +54,22 @@ class _MedicationItemState extends State<MedicationItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 OneLineText(
-                  '复方-酮酸片 开同',
+                  data.drugName,
                   style: MyStyles.inputTextStyle_12,
                 ),
                 OneLineText(
-                  '规格： 0.62g*10片',
+                  '规格： ${data.drugSize}',
                   style: MyStyles.labelTextStyle_12,
                 ),
                 OneLineText(
-                  '用法用量：每日一次；5片/次；口服',
+                  '用法用量：${data.useInfo}',
                   style: MyStyles.inputTextStyle_12,
                 ),
               ],
             ),
           ),
           Container(
-            width: 90.0,
+            width: 100.0,
             padding: EdgeInsets.only(left: 15.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,7 +79,9 @@ class _MedicationItemState extends State<MedicationItem> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        print(32343);
+                        _showMedicationInfoSheet(context, () {
+                          onEdit(data);
+                        });
                       },
                       child: Text(
                         '编辑',
@@ -69,8 +90,7 @@ class _MedicationItemState extends State<MedicationItem> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // print(654654);
-                        widget.onDelete(widget.index);
+                        onDelete(data);
                       },
                       child: Text(
                         '删除',
@@ -79,44 +99,13 @@ class _MedicationItemState extends State<MedicationItem> {
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.remove_circle_outline),
-                      iconSize: 20.0,
-                      constraints: BoxConstraints(
-                        minWidth: 20,
-                        minHeight: 20,
-                      ),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        if (num > 1) {
-                          setState(() {
-                            num -= 1;
-                          });
-                        }
-                      },
-                    ),
-                    Text(
-                      '$num',
-                      style: MyStyles.primaryTextStyle_12,
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.add_circle),
-                      iconSize: 20.0,
-                      constraints: BoxConstraints(
-                        minWidth: 20,
-                        minHeight: 20,
-                      ),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        setState(() {
-                          num += 1;
-                        });
-                      },
-                    ),
-                  ],
+                AceSpinnerInput(
+                  spinnerValue: double.parse(data.quantity ?? '1'),
+                  onChange: (newValue) {
+                    String strValue = newValue.toStringAsFixed(0);
+                    data.quantity = strValue;
+                    onQuantityChange(strValue);
+                  },
                 ),
               ],
             ),

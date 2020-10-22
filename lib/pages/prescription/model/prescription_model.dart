@@ -26,6 +26,9 @@ class PrescriptionModel {
   @JsonKey(defaultValue: '1')
   String prescriptionPatientSex;
 
+  String get prescriptionPatientSexLabel =>
+      prescriptionPatientSex == '1' ? '男' : '女';
+
   /// 临床诊断
   String clinicalDiagnosis;
 
