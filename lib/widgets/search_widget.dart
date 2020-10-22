@@ -147,27 +147,25 @@ class _SearchWidget<T extends Search> extends State<SearchWidget> {
   }
 
   dataWidget(List<T> data) {
-    if (widget.child != null) {
-      return widget.child;
-    }
-
     return ListView.builder(
       physics: AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: data?.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-          child: Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(width: 1, color: ThemeColor.colorLine))),
-            padding: EdgeInsets.only(top: 16, bottom: 16),
-            child: Text(
-              data[index]?.faceText(),
-              style: const TextStyle(
-                  color: ThemeColor.colorFF000000, fontSize: 16),
-            ),
-          ),
+          child: widget.child ??
+              Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom:
+                            BorderSide(width: 1, color: ThemeColor.colorLine))),
+                padding: EdgeInsets.only(top: 16, bottom: 16),
+                child: Text(
+                  data[index]?.faceText(),
+                  style: const TextStyle(
+                      color: ThemeColor.colorFF000000, fontSize: 16),
+                ),
+              ),
           onTap: () {
             print('index -> $index');
             if (widget.callback != null) {
