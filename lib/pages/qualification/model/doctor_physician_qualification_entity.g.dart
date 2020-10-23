@@ -50,10 +50,13 @@ Map<String, dynamic> _$DoctorPhysicianInfoEntityToJson(
       'identityDate': instance.identityDate,
       'identityAddress': instance.identityAddress,
       'identityValidity': instance.identityValidity,
-      'fullFacePhoto': instance.fullFacePhoto,
-      'idCardLicense1': instance.idCardLicense1,
-      'idCardLicense2': instance.idCardLicense2,
-      'qualifications': instance.qualifications,
-      'practiceCertificates': instance.practiceCertificates,
-      'jobCertificates': instance.jobCertificates,
+      'fullFacePhoto': instance.fullFacePhoto?.toJson(),
+      'idCardLicense1': instance.idCardLicense1?.toJson(),
+      'idCardLicense2': instance.idCardLicense2?.toJson(),
+      'qualifications':
+          instance.qualifications?.map((e) => e?.toJson())?.toList(),
+      'practiceCertificates':
+          instance.practiceCertificates?.map((e) => e?.toJson())?.toList(),
+      'jobCertificates':
+          instance.jobCertificates?.map((e) => e?.toJson())?.toList(),
     };

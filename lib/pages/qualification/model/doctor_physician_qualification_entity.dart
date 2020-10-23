@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'doctor_physician_qualification_entity.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class DoctorPhysicianInfoEntity {
   num doctorUserId;
 
@@ -16,14 +16,19 @@ class DoctorPhysicianInfoEntity {
 
   /// 头像(正面照)
   FacePhoto fullFacePhoto;
+
   /// 身份证-正面照URL
   FacePhoto idCardLicense1;
+
   /// 身份证-反面照URL
   FacePhoto idCardLicense2;
+
   /// 医师资格证
   List<FacePhoto> qualifications;
+
   /// 医师执业证
   List<FacePhoto> practiceCertificates;
+
   /// 医师职称证
   List<FacePhoto> jobCertificates;
 

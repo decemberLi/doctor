@@ -15,6 +15,9 @@ class PrescriptionStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (data == null) {
+      return Container();
+    }
     Color color = _statusColor[data.status ?? 'WAIT_VERIFY'];
     BorderSide borderSide = BorderSide(color: color, width: 2);
     return Container(

@@ -2,6 +2,8 @@ PODS:
   - Flutter (1.0.0)
   - flutter_file_preview (0.0.1):
     - Flutter
+  - image_picker (0.0.1):
+    - Flutter
   - open_file (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
@@ -18,6 +20,7 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_file_preview (from `.symlinks/plugins/flutter_file_preview/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
@@ -30,6 +33,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_file_preview:
     :path: ".symlinks/plugins/flutter_file_preview/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   open_file:
     :path: ".symlinks/plugins/open_file/ios"
   shared_preferences:
@@ -46,6 +51,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_file_preview: 293b4c5fe05816219ada921e266df3b5e8a59c4f
+  image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef

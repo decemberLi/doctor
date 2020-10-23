@@ -1,4 +1,5 @@
 import 'package:doctor/http/http_manager.dart';
+import 'package:doctor/model/attacements_model.dart';
 import 'package:doctor/pages/prescription/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
@@ -153,6 +154,7 @@ class PrescriptionDetailModel extends ViewStateModel {
     // return PrescriptionModel.fromJson(res);
 
     List<DrugModel> drugRp = [];
+    List<AttacementsModel> attacements = [];
     for (var i = 0; i < 4; i++) {
       String drugId = '3232-$i';
       drugRp.add(
@@ -169,6 +171,12 @@ class PrescriptionDetailModel extends ViewStateModel {
           quantity: '3',
         ),
       );
+      attacements.add(AttacementsModel(
+        ossId: '3432432',
+        name: 'fdsafdsafd',
+        url:
+            'https://oss-dev.e-medclouds.com/Business-attachment/2020-07/100027/21212508-1595338102423.jpg',
+      ));
     }
     String id = '323';
     PrescriptionModel _model = PrescriptionModel(
@@ -182,6 +190,7 @@ class PrescriptionDetailModel extends ViewStateModel {
       orderStatus: 'DONE',
       drugRp: drugRp,
       createTime: '1603366262120',
+      attachments: attacements,
     );
     return Future.delayed(Duration(seconds: 1), () => _model);
   }

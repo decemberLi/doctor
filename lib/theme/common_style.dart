@@ -44,6 +44,10 @@ class MyStyles {
     fontSize: 12,
     fontWeight: FontWeight.w500,
   );
+  static const TextStyle greyTextStyle_12 = TextStyle(
+    color: ThemeColor.secondaryGeryColor,
+    fontSize: 12,
+  );
   static const TextStyle boldTextStyle = TextStyle(
     color: Colors.black,
     fontSize: 14,

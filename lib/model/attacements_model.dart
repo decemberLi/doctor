@@ -14,11 +14,15 @@ class AttacementsModel {
   /// 类型
   String type;
 
-  AttacementsModel(
+  /// 地址
+  String url;
+
+  AttacementsModel({
     this.ossId,
     this.name,
     this.type,
-  );
+    this.url,
+  });
   factory AttacementsModel.fromJson(Map<String, dynamic> json) =>
       _$AttacementsModelFromJson(json);
 

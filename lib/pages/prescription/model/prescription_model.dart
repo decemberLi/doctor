@@ -70,6 +70,24 @@ class PrescriptionModel {
   /// 处方纸质图片附件信息
   List<AttacementsModel> attachments;
 
+  /// 医生姓名
+  String doctorName;
+
+  /// 科室
+  String depart;
+
+  /// 审核人(药师)id
+  String auditorId;
+
+  /// 审核人名称
+  String auditor;
+
+  /// 审核时间
+  String auditTime;
+  String get auditTimeText => auditTime != null
+      ? DateUtil.formatDateMs(int.parse(auditTime), format: 'yyyy.MM.dd HH:mm')
+      : '';
+
   PrescriptionModel({
     this.id,
     this.prescriptionPatientName,

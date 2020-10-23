@@ -8,9 +8,10 @@ part of 'attacements_model.dart';
 
 AttacementsModel _$AttacementsModelFromJson(Map<String, dynamic> json) {
   return AttacementsModel(
-    json['ossId'] as String,
-    json['name'] as String,
-    json['type'] as String,
+    ossId: json['ossId'] as String,
+    name: json['name'] as String,
+    type: json['type'] as String,
+    url: json['url'] as String,
   );
 }
 
@@ -19,4 +20,5 @@ Map<String, dynamic> _$AttacementsModelToJson(AttacementsModel instance) =>
       'ossId': instance.ossId,
       'name': instance.name,
       'type': instance.type,
+      'url': instance.url,
     };
