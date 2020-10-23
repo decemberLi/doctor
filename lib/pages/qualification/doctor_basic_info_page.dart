@@ -109,8 +109,14 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
     return Scaffold(
       backgroundColor: ThemeColor.colorFFF3F5F8,
       floatingActionButton: AceButton(
-        text: '提交',
-        onPressed: () => {_model.submitBasicInfo()},
+        text: '确认',
+        onPressed: () async {
+          await _model.submitBasicInfo();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PhysicianQualificationWidget()));
+        },
       ),
       floatingActionButtonLocation: const _CenterEndFabLocation(),
       appBar: AppBar(

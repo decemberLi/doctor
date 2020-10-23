@@ -71,7 +71,6 @@ Future<WorktopPageEntity> obtainWorktopData() async {
 
   // 最近学习计划
   var list = await _obtainRecentLearnPlan();
-  print("obtainWorktopData#_obtainRecentLearnPlan result -> $list");
   if (list != null) {
     entity.learnPlanList = list;
   }

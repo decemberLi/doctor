@@ -101,7 +101,7 @@ class _UserPageState extends State<UserPage> {
                 children: [
                   messageItem('资质认证', 'assets/images/learn.png', () {
                     print('资质认证');
-                    // TODO: 资质认证页面
+                    Navigator.pushNamed(context, RouteManager.QUALIFICATION_PAGE);
                   }),
                   messageItem('设置', 'assets/images/learn.png', () {
                     print('设置');

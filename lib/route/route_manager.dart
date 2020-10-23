@@ -1,5 +1,6 @@
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/find_password.dart';
+import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:doctor/pages/login/login_by_password_page.dart';
 import 'package:doctor/pages/login/login_page.dart';
 import 'package:doctor/pages/patient/patient_detail_page.dart';
@@ -9,14 +10,14 @@ import 'package:doctor/pages/prescription/prescription_detail_page.dart';
 import 'package:doctor/pages/prescription/prescription_list_page.dart';
 import 'package:doctor/pages/prescription/prescription_success_page.dart';
 import 'package:doctor/pages/prescription/prescription_template_add_page.dart';
+import 'package:doctor/pages/qualification/doctor_basic_info_page.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
+import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_upload_record/learn_upload_record.dart';
-import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
-import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
-import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
+import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
 import 'package:flutter/material.dart';
 
 class RouteManager {
@@ -35,6 +36,7 @@ class RouteManager {
   static const String MEDICATION_LIST = '/medication_list';
   static const String PRESCRIPTION_TEMPLATE_ADD = '/prescription_template_add';
   static const String PRESCRIPTION_SUCCESS = '/prescription_success';
+  static const String QUALIFICATION_PAGE = '/qualification_page';
   static const String PRESCRIPTION_LIST = '/prescription_list';
   static const String PRESCRIPTION_DETAIL = '/prescription_detail';
   static const String PATIENT = '/patient';
@@ -53,6 +55,7 @@ class RouteManager {
     UPDATE_PWD: (context) => UpdatePwdPage(),
     ABOUT_US: (context) => AboutUs(),
     LEARN_PAGE: (context) => LearnPlanPage(),
+    QUALIFICATION_PAGE: (context) => DoctorBasicInfoPage(),
     MEDICATION_LIST: (context) => MedicationPage(),
     PRESCRIPTION_TEMPLATE_ADD: (context) => PrescriptionTemplageAddPage(),
     PRESCRIPTION_SUCCESS: (context) => PrescriptionSuccessPage(),
