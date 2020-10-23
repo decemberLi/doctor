@@ -6,8 +6,8 @@ import 'package:doctor/provider/view_state_model.dart';
 HttpManager http = HttpManager('server');
 
 class CommentListViewModel extends ViewStateRefreshListModel {
-  final String resourceId;
-  final String learnPlanId;
+  final int resourceId;
+  final int learnPlanId;
   CommentListViewModel(this.resourceId, this.learnPlanId);
 
   @override

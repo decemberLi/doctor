@@ -1,4 +1,3 @@
-import 'package:doctor/pages/message/common_style.dart';
 import 'package:doctor/pages/worktop/resource/comment/comment_list_view.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/pages/worktop/resource/service.dart';
@@ -12,13 +11,15 @@ import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/theme/myIcons.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/common_modal.dart';
-import 'package:doctor/widgets/text_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'comment/service.dart';
 
 class ResourceDetailPage extends StatefulWidget {
+  final learnPlanId;
+  final resourceId;
+  ResourceDetailPage(this.learnPlanId, this.resourceId);
   @override
   _ResourceDetailPageState createState() => _ResourceDetailPageState();
 }
@@ -27,6 +28,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   bool logo = true;
   bool _startIcon = false;
   int msgCount = 5;
+
   String commentContent;
   FocusNode commentFocusNode = FocusNode();
   TextEditingController commentTextEdit = TextEditingController();
@@ -47,29 +49,40 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   }
 
   //获取评论
-  void _getComments() async {
-    getCommentNum({'resourceId': 305}).then((res) {
+  void _getComments(resourceId) async {
+    getCommentNum({'resourceId': resourceId}).then((res) {
+      print('mes$res');
       setState(() {
         msgCount = res;
       });
     });
   }
 
+  // 获取收藏状态
+  void _getCollect(resourceId) async {
+    getFavoriteStatus({'bizId': resourceId, 'bizType': 'RESOURCE'}).then((res) {
+      print('res$res');
+      setState(() {
+        _startIcon = res['exists'];
+      });
+    });
+  }
+
   @override
   void initState() {
+    print('');
+    _getComments(widget.resourceId);
+    _getCollect(widget.resourceId);
     super.initState();
-    _getComments();
   }
 
   @override
   Widget build(BuildContext context) {
-    dynamic obj = ModalRoute.of(context).settings.arguments;
-    int learnPlanId;
-    int resourceId;
-    if (obj != null) {
-      learnPlanId = obj["learnPlanId"];
-      resourceId = obj['resourceId'];
-    }
+    // dynamic obj = ModalRoute.of(context).settings.arguments;
+    // if (obj != null) {
+    //   learnPlanId = obj["learnPlanId"];
+    //   resourceId = obj['resourceId'];
+    // }
     //发送消息
     sendCommentInfo() {
       if (commentContent.isEmpty) {
@@ -81,8 +94,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         return;
       }
       sendComment({
-        'resourceId': resourceId,
-        'learnPlanId': learnPlanId,
+        'resourceId': widget.resourceId,
+        'learnPlanId': widget.learnPlanId,
         'commentContent': commentContent,
         'parentId': 0,
         'commentId': 0
@@ -91,7 +104,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         EasyLoading.showToast('评论发表成功');
         commentTextEdit.clear();
         commentFocusNode.unfocus();
-        _getComments();
+        _getComments(widget.resourceId);
       });
     }
 
@@ -108,7 +121,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           });
         },
         child: ProviderWidget<ResourceDetailViewModel>(
-          model: ResourceDetailViewModel(resourceId, learnPlanId),
+          model: ResourceDetailViewModel(widget.resourceId, widget.learnPlanId),
           onModelReady: (model) => model.initData(),
           builder: (context, model, child) {
             if (model.isBusy) {
@@ -180,7 +193,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                               CommonModal.showBottomSheet(context,
                                   title: '评论区',
                                   height: 660,
-                                  child: CommentListPage('381', '1129'));
+                                  child: CommentListPage(
+                                      widget.resourceId, widget.learnPlanId));
                             },
                             child: Icon(
                               MyIcons.icon_talk,
@@ -219,8 +233,16 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                       margin: EdgeInsets.only(left: 10),
                       child: InkWell(
                         onTap: () {
-                          setState(() {
-                            _startIcon = !_startIcon;
+                          //收藏
+                          setFavoriteStatus({
+                            'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
+                            'resourceId': widget.resourceId,
+                          }).then((res) {
+                            EasyLoading.showToast(
+                                _startIcon ? '取消收藏成功' : '收藏成功');
+                            setState(() {
+                              _startIcon = !_startIcon;
+                            });
                           });
                         },
                         child: Icon(
@@ -229,7 +251,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                               : MyIcons.icon_star,
                           size: 28,
                         ),
-                      ))
+                      ),
+                    )
                   : Text('')
             ],
           ),

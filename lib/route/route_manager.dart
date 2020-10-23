@@ -41,7 +41,6 @@ class RouteManager {
   static const String PRESCRIPTION_DETAIL = '/prescription_detail';
   static const String PATIENT = '/patient';
   static const String PATIENT_DETAIL = '/patient_detail';
-
   static Map<String, WidgetBuilder> routes = {
     LOGIN: (context) => LoginPage(),
     LOGIN_PWD: (context) => LoginByPasswordPage(),
@@ -51,7 +50,10 @@ class RouteManager {
     TEST: (context) => TestPage(),
     LEARN_DETAIL: (context) => LearnDetailPage(),
     LEARN_UPLOAD_RECORD: (context) => LearnUploadRecordPage(),
-    RESOURCE_DETAIL: (context) => ResourceDetailPage(),
+    RESOURCE_DETAIL: (context) {
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return ResourceDetailPage(obj["learnPlanId"], obj['resourceId']);
+    },
     UPDATE_PWD: (context) => UpdatePwdPage(),
     ABOUT_US: (context) => AboutUs(),
     LEARN_PAGE: (context) => LearnPlanPage(),

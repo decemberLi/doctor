@@ -1,9 +1,6 @@
-import 'package:doctor/pages/worktop/learn/learn_list/learn_list_item_wiget.dart';
-import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/resource/comment/service.dart';
 import 'package:doctor/pages/worktop/resource/model/comment_list_model.dart';
 import 'package:doctor/pages/worktop/resource/view_model/comment_view_model.dart';
-import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/utils/time_text.dart';
 import 'package:flutter/material.dart';
@@ -213,8 +210,8 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
 
 /// 评论列表
 class CommentListPage extends StatefulWidget {
-  final String resourceId;
-  final String learnPlanId;
+  final int resourceId;
+  final int learnPlanId;
 
   CommentListPage(this.resourceId, this.learnPlanId);
 
