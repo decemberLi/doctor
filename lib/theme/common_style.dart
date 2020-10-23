@@ -6,6 +6,11 @@ class MyStyles {
     color: ThemeColor.primaryColor,
     fontSize: 14,
   );
+  static const TextStyle primaryTextStyle_bold = TextStyle(
+    color: ThemeColor.primaryColor,
+    fontSize: 14,
+    fontWeight: FontWeight.bold,
+  );
   static const TextStyle primaryTextStyle_12 = TextStyle(
     color: ThemeColor.primaryColor,
     fontSize: 12,

@@ -51,7 +51,10 @@ class _PrescriptionListPageState extends State<PrescriptionListPage> {
                   return GestureDetector(
                     child: PrescriptionListLitem(item),
                     onTap: () {
-                      print(333);
+                      Navigator.of(context).pushNamed(
+                        RouteManager.PRESCRIPTION_DETAIL,
+                        arguments: item.prescriptionNo,
+                      );
                     },
                   );
                 },

@@ -73,7 +73,7 @@ class _VideoDetailState extends State<VideoDetail> {
       fontWeight: FontWeight.w500,
     );
     TextStyle lightTextStyle = TextStyle(
-      color: ThemeColor.colorFF666666,
+      color: ThemeColor.primaryGeryColor,
       fontSize: 14.0,
     );
     EdgeInsets commonPadding = EdgeInsets.only(left: 18, right: 18, top: 12);

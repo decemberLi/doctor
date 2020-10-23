@@ -5,31 +5,14 @@ import 'package:doctor/pages/prescription/model/prescription_template_model.dart
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 
-HttpManager http = HttpManager('server');
+HttpManager http = HttpManager('dtp');
 HttpManager httpFoundation = HttpManager('foundation');
 
+/// 开处方主页面viewModel
 class PrescriptionViewModel extends ViewStateModel {
   PrescriptionModel data = PrescriptionModel();
 
   PrescriptionViewModel();
-
-  // initData() async {
-  //   setBusy();
-  //   try {
-  //     data = await loadData();
-  //     setIdle();
-  //   } catch (e, s) {
-  //     setError(e, s);
-  //   }
-  // }
-
-  // Future<ResourceModel> loadData() async {
-  //   var data = await http.post('/resource/detail', params: {
-  //     'resourceId': this.resourceId,
-  //     'learnPlanId': this.learnPlanId,
-  //   });
-  //   return ResourceModel.fromJson(data);
-  // }
 
   Future<String> get prescriptionQRCode async {
     String qrCodeUrl = await this.loadQRCode();
@@ -92,6 +75,7 @@ class PrescriptionViewModel extends ViewStateModel {
   }
 }
 
+/// 处方记录viewModel
 class PrescriptionListViewModel extends ViewStateRefreshListModel {
   @override
   Future<List<PrescriptionModel>> loadData({int pageNum}) async {
@@ -142,5 +126,63 @@ class PrescriptionListViewModel extends ViewStateRefreshListModel {
 
   void changeDataNotify() {
     notifyListeners();
+  }
+}
+
+/// 处方详情viewModel
+class PrescriptionDetailModel extends ViewStateModel {
+  final String prescriptionNo;
+  PrescriptionModel data;
+
+  PrescriptionDetailModel(this.prescriptionNo);
+
+  initData() async {
+    setBusy();
+    data = await loadData();
+    setIdle();
+  }
+
+  /// 获取处方详情
+  Future<PrescriptionModel> loadData() async {
+    // var res = await httpFoundation.post(
+    //   '/prescription/query',
+    //   params: {
+    //     'prescriptionNo': this.prescriptionNo,
+    //   },
+    // );
+    // return PrescriptionModel.fromJson(res);
+
+    List<DrugModel> drugRp = [];
+    for (var i = 0; i < 4; i++) {
+      String drugId = '3232-$i';
+      drugRp.add(
+        DrugModel(
+          drugId: drugId,
+          drugName: '特制开菲尔-$drugId',
+          producer: '石家庄龙泽制药股份有限公司',
+          drugSize: '32',
+          drugPrice: '347',
+          frequency: '每日一次',
+          singleDose: '32',
+          doseUnit: '片/次',
+          usePattern: '口服',
+          quantity: '3',
+        ),
+      );
+    }
+    String id = '323';
+    PrescriptionModel _model = PrescriptionModel(
+      id: '$id',
+      prescriptionNo: "NO-43243243-$id",
+      prescriptionPatientName: '张三-$id',
+      clinicalDiagnosis: '脑瘫,高血压-$id',
+      prescriptionPatientAge: '23',
+      prescriptionPatientSex: '0',
+      status: 'WAIT_VERIFY',
+      orderStatus: 'DONE',
+      drugRp: drugRp,
+      createTime: '1603366262120',
+    );
+    return Future.delayed(Duration(seconds: 1), () => _model);
   }
 }

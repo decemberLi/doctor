@@ -5,6 +5,7 @@ import 'package:doctor/pages/login/login_page.dart';
 import 'package:doctor/pages/patient/patient_detail_page.dart';
 import 'package:doctor/pages/patient/patient_page.dart';
 import 'package:doctor/pages/prescription/medication_page.dart';
+import 'package:doctor/pages/prescription/prescription_detail_page.dart';
 import 'package:doctor/pages/prescription/prescription_list_page.dart';
 import 'package:doctor/pages/prescription/prescription_success_page.dart';
 import 'package:doctor/pages/prescription/prescription_template_add_page.dart';
@@ -35,6 +36,7 @@ class RouteManager {
   static const String PRESCRIPTION_TEMPLATE_ADD = '/prescription_template_add';
   static const String PRESCRIPTION_SUCCESS = '/prescription_success';
   static const String PRESCRIPTION_LIST = '/prescription_list';
+  static const String PRESCRIPTION_DETAIL = '/prescription_detail';
   static const String PATIENT = '/patient';
   static const String PATIENT_DETAIL = '/patient_detail';
 
@@ -55,6 +57,7 @@ class RouteManager {
     PRESCRIPTION_TEMPLATE_ADD: (context) => PrescriptionTemplageAddPage(),
     PRESCRIPTION_SUCCESS: (context) => PrescriptionSuccessPage(),
     PRESCRIPTION_LIST: (context) => PrescriptionListPage(),
+    PRESCRIPTION_DETAIL: (context) => PrescriptionDetailPage(),
     PATIENT: (context) => PatientListPage(),
     PATIENT_DETAIL: (context) => PatientDetailPage(),
   };

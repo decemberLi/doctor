@@ -9,6 +9,7 @@ Map statusMap = {
   'WAIT_VERIFY': '审核中',
   'PASS': '已审核',
   'REJECT': '审核未通过',
+  'EXPIRE': '已过期',
 };
 
 /// 处方model

@@ -27,7 +27,7 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
   DoctorQualificationViewModel _model = DoctorQualificationViewModel();
 
   var _textFieldHintStyle =
-      const TextStyle(fontSize: 16, color: ThemeColor.colorFF888888);
+      const TextStyle(fontSize: 16, color: ThemeColor.secondaryGeryColor);
 
   var _textFieldArrowIcon = const Icon(Icons.keyboard_arrow_right_rounded,
       size: 24, color: ThemeColor.colorFF000000);

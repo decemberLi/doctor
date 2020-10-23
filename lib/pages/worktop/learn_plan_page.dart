@@ -19,7 +19,7 @@ class LearnPlanPage extends StatelessWidget {
                   labelColor: ThemeColor.primaryColor,
                   labelStyle:
                       TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  unselectedLabelColor: ThemeColor.colorFF888888,
+                  unselectedLabelColor: ThemeColor.secondaryGeryColor,
                   indicatorWeight: 4,
                   // indicatorSize: TabBarIndicatorSize.label,
                   indicatorPadding: EdgeInsets.only(left: 80, right: 80),

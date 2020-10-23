@@ -1,4 +1,5 @@
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
+import 'package:doctor/pages/prescription/widgets/prescription_status.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/form_item.dart';
@@ -7,27 +8,6 @@ import 'package:flutter/material.dart';
 class PrescripionListItem extends StatelessWidget {
   final PrescriptionModel data;
   PrescripionListItem(this.data);
-
-  Widget renderStatus() {
-    BorderSide borderSide =
-        BorderSide(color: ThemeColor.primaryColor, width: 2);
-    return Container(
-      padding: EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border(
-          top: borderSide,
-          bottom: borderSide,
-          left: borderSide,
-          right: borderSide,
-        ),
-      ),
-      child: Text(
-        data.statusText,
-        style: MyStyles.primaryTextStyle.copyWith(fontWeight: FontWeight.w500),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +85,7 @@ class PrescripionListItem extends StatelessWidget {
                               ),
                             ],
                           ),
-                          renderStatus(),
+                          PrescriptionStatus(data),
                         ],
                       ),
                       SizedBox(
