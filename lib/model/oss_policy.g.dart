@@ -14,6 +14,7 @@ OssPolicy _$OssPolicyFromJson(Map<String, dynamic> json) {
     json['host'] as String,
     json['policy'] as String,
     json['signature'] as String,
+    json['fileNamePrefix'] as String,
   );
 }
 
@@ -24,4 +25,5 @@ Map<String, dynamic> _$OssPolicyToJson(OssPolicy instance) => <String, dynamic>{
       'host': instance.host,
       'policy': instance.policy,
       'signature': instance.signature,
+      'fileNamePrefix': instance.fileNamePrefix,
     };

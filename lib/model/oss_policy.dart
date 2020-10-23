@@ -12,10 +12,10 @@ class OssPolicy{
   String host;
   String policy;
   String signature;
-
+  String fileNamePrefix;
 
   OssPolicy(this.accessKeyId, this.expire, this.ossFileName, this.host,
-      this.policy, this.signature);
+      this.policy, this.signature,this.fileNamePrefix);
 
   factory OssPolicy.fromJson(Map<String, dynamic> json) =>
       _$OssPolicyFromJson(json);

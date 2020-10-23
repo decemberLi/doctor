@@ -20,6 +20,7 @@ class CommonService {
   uploadToOss(
     String host,
     String file,
+    String fileName,
     String key,
     String oSSAccessKeyId,
     String signature,
@@ -28,14 +29,23 @@ class CommonService {
     String loadingText = '加载中...',
   }) async {
     EasyLoading.show(status: loadingText);
-    Map<String, dynamic> param = {};
-    param['key'] = key;
-    param['OSSAccessKeyId'] = oSSAccessKeyId;
-    param['policy'] = policy;
-    param['Signature'] = signature;
-    param['file'] = File(file);
-    var response = await dio.post(host, data: FormData.fromMap(param));
-    print(response);
+
+    var formData = FormData.fromMap({
+      'key': key,
+      'OSSAccessKeyId': oSSAccessKeyId,
+      'policy': policy,
+      'Signature': signature,
+      'file': await MultipartFile.fromFile(file, filename: fileName),
+    });
+
+    print("YYYLog::UploadFile request --> ${formData}");
+    var response = await dio.post(host, data: formData);
+    print("YYYLog::UploadFile response <-- ${formData}");
+    if (response.statusCode == 204) {
+      return;
+    }
+
+    throw Error();
   }
 
   uploadImage({

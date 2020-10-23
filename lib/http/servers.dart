@@ -19,4 +19,5 @@ final servers = {
   'developer': '$host/medclouds-foundation/developer/$client',
   'dtp': '$host/medclouds-dtp/$system/$client',
   'sso': '$host/medclouds-ucenter/$client',
+  'uCenterCommon': '$host',
 };
