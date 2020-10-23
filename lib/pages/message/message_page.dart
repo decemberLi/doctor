@@ -31,25 +31,26 @@ class _MessagePageState extends State<MessagePage> {
           children: [
             Icon(Icons.keyboard_arrow_right),
             Positioned(
-                left: -25,
-                child: Container(
-                  // padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.all(Radius.circular(12))),
-                  constraints: BoxConstraints(
-                    minWidth: 24,
-                    minHeight: 24,
+              left: -25,
+              child: Container(
+                // padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
+                constraints: BoxConstraints(
+                  minWidth: 24,
+                  minHeight: 24,
+                ),
+                child: Center(
+                    child: Text(
+                  msgCount > 99 ? '99+' : '$msgCount',
+                  style: TextStyle(
+                    color: Colors.white,
                   ),
-                  child: Center(
-                      child: Text(
-                    msgCount > 99 ? '99+' : '$msgCount',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
-                  )),
-                ))
+                  textAlign: TextAlign.center,
+                )),
+              ),
+            ),
           ],
         ),
         onTap: () {

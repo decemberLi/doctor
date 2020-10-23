@@ -1,6 +1,7 @@
 import 'package:doctor/pages/message/common_style.dart';
 import 'package:doctor/pages/worktop/resource/comment/comment_list_view.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
+import 'package:doctor/pages/worktop/resource/service.dart';
 import 'package:doctor/pages/worktop/resource/view_model/resource_view_model.dart';
 import 'package:doctor/pages/worktop/resource/widgets/article.dart';
 import 'package:doctor/pages/worktop/resource/widgets/attachment.dart';
@@ -21,6 +22,7 @@ class ResourceDetailPage extends StatefulWidget {
 class _ResourceDetailPageState extends State<ResourceDetailPage> {
   bool logo = true;
   bool _startIcon = false;
+  int msgCount = 5;
   Widget resourceRender(ResourceModel data) {
     if (data.contentType == 'RICH_TEXT') {
       return Article(data);
@@ -37,6 +39,21 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     return Container();
   }
 
+  //获取评论
+  void _getComments() async {
+    getCommentNum({'resourceId': 305}).then((res) {
+      setState(() {
+        msgCount = res;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getComments();
+  }
+
   @override
   Widget build(BuildContext context) {
     dynamic obj = ModalRoute.of(context).settings.arguments;
@@ -46,6 +63,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
       learnPlanId = obj["learnPlanId"];
       resourceId = obj['resourceId'];
     }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('资料详情'),
@@ -109,19 +127,48 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               logo
                   ? Container(
                       margin: EdgeInsets.only(left: 10),
-                      child: InkWell(
-                        onTap: () {
-                          print('查看评论');
-                          // CommonModal
-                          CommonModal.showBottomSheet(context,
-                              title: '评论区',
-                              height: 660,
-                              child: CommentListPage('381', '1129'));
-                        },
-                        child: Icon(
-                          MyIcons.icon_talk,
-                          size: 28,
-                        ),
+                      child: Stack(
+                        overflow: Overflow.visible,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              print('查看评论');
+                              // CommonModal
+                              CommonModal.showBottomSheet(context,
+                                  title: '评论区',
+                                  height: 660,
+                                  child: CommentListPage('381', '1129'));
+                            },
+                            child: Icon(
+                              MyIcons.icon_talk,
+                              size: 28,
+                            ),
+                          ),
+                          msgCount > 0
+                              ? Positioned(
+                                  left: 18,
+                                  top: -10,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: ThemeColor.primaryColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(12))),
+                                    constraints: BoxConstraints(
+                                      minWidth: 20,
+                                      minHeight: 20,
+                                    ),
+                                    child: Center(
+                                        child: Text(
+                                      msgCount > 99 ? '99+' : '$msgCount',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    )),
+                                  ),
+                                )
+                              : Text(''),
+                        ],
                       ))
                   : Text(''),
               logo
