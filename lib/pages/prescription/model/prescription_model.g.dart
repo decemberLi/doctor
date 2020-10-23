@@ -8,7 +8,7 @@ part of 'prescription_model.dart';
 
 PrescriptionModel _$PrescriptionModelFromJson(Map<String, dynamic> json) {
   return PrescriptionModel(
-    id: json['id'] as int,
+    id: json['id'] as String,
     prescriptionPatientName: json['prescriptionPatientName'] as String,
     prescriptionNo: json['prescriptionNo'] as String,
     reason: json['reason'] as String,
@@ -18,6 +18,7 @@ PrescriptionModel _$PrescriptionModelFromJson(Map<String, dynamic> json) {
     pharmacist: json['pharmacist'] as String,
     furtherConsultation: json['furtherConsultation'] as String ?? '1',
     status: json['status'] as String,
+    orderStatus: json['orderStatus'] as String,
     drugRp: (json['drugRp'] as List)
         ?.map((e) =>
             e == null ? null : DrugModel.fromJson(e as Map<String, dynamic>))
@@ -42,6 +43,7 @@ Map<String, dynamic> _$PrescriptionModelToJson(PrescriptionModel instance) =>
       'pharmacist': instance.pharmacist,
       'furtherConsultation': instance.furtherConsultation,
       'status': instance.status,
+      'orderStatus': instance.orderStatus,
       'drugRp': instance.drugRp?.map((e) => e?.toJson())?.toList(),
       'attachments': instance.attachments?.map((e) => e?.toJson())?.toList(),
     };

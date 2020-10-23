@@ -2,6 +2,8 @@ import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/find_password.dart';
 import 'package:doctor/pages/login/login_by_password_page.dart';
 import 'package:doctor/pages/login/login_page.dart';
+import 'package:doctor/pages/patient/patient_detail_page.dart';
+import 'package:doctor/pages/patient/patient_page.dart';
 import 'package:doctor/pages/prescription/medication_page.dart';
 import 'package:doctor/pages/prescription/prescription_success_page.dart';
 import 'package:doctor/pages/prescription/prescription_template_add_page.dart';
@@ -31,6 +33,8 @@ class RouteManager {
   static const String MEDICATION_LIST = '/medication_list';
   static const String PRESCRIPTION_TEMPLATE_ADD = '/prescription_template_add';
   static const String PRESCRIPTION_SUCCESS = '/prescription_success';
+  static const String PATIENT = '/patient';
+  static const String PATIENT_DETAIL = '/patient_detail';
 
   static Map<String, WidgetBuilder> routes = {
     LOGIN: (context) => LoginPage(),
@@ -48,5 +52,7 @@ class RouteManager {
     MEDICATION_LIST: (context) => MedicationPage(),
     PRESCRIPTION_TEMPLATE_ADD: (context) => PrescriptionTemplageAddPage(),
     PRESCRIPTION_SUCCESS: (context) => PrescriptionSuccessPage(),
+    PATIENT: (context) => PatientListPage(),
+    PATIENT_DETAIL: (context) => PatientDetailPage(),
   };
 }

@@ -71,28 +71,46 @@ class AceButton extends StatelessWidget {
           ),
     );
 
-    Widget btn;
-    Decoration decoration = BoxDecoration(
-      borderRadius: BorderRadius.all(Radius.circular(height / 2)),
-      boxShadow: [
-        BoxShadow(
-          color: Color(0x663AA7FF),
-          offset: Offset(0, 4),
-          blurRadius: 10,
-        ),
-      ],
+    OutlinedButton outlineBtn = OutlinedButton(
+      child: child ??
+          Text(
+            text,
+            style: TextStyle(
+              color: textColor ?? ThemeColor.primaryColor,
+              fontSize: fontSize,
+            ),
+          ),
+      style: OutlinedButton.styleFrom(
+        shape: shape,
+        side: BorderSide(width: 1, color: color ?? ThemeColor.primaryColor),
+      ),
+      onPressed: onPressed,
     );
+
+    Widget btn;
+    Decoration decoration;
     switch (type) {
       case AceButtonType.primary:
         btn = primaryBtn;
+        decoration = BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(height / 2)),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0x663AA7FF),
+              offset: Offset(0, 4),
+              blurRadius: 10,
+            ),
+          ],
+        );
         break;
       case AceButtonType.secondary:
         btn = secondaryBtn;
-        decoration = null;
         break;
       case AceButtonType.grey:
         btn = greyBtn;
-        decoration = null;
+        break;
+      case AceButtonType.outline:
+        btn = outlineBtn;
         break;
       default:
         btn = primaryBtn;
@@ -107,4 +125,4 @@ class AceButton extends StatelessWidget {
   }
 }
 
-enum AceButtonType { primary, secondary, grey }
+enum AceButtonType { primary, secondary, grey, outline }

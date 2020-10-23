@@ -4,11 +4,17 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'prescription_model.g.dart';
 
+Map statusMap = {
+  'WAIT_VERIFY': '审核中',
+  'PASS': '已审核',
+  'REJECT': '审核未通过',
+};
+
 /// 处方model
 @JsonSerializable(explicitToJson: true)
 class PrescriptionModel {
   /// 处方id
-  int id;
+  String id;
 
   /// 处方患者姓名
   String prescriptionPatientName;
@@ -41,6 +47,10 @@ class PrescriptionModel {
 
   /// 状态(药师审核：WAIT_VERIFY-待审核、PASS-通过，REJECT-驳回）
   String status;
+  String get statusText => statusMap[status] ?? '';
+
+  /// 订单状态（DONE 已取药、CANCEL 取消）
+  String orderStatus;
 
   /// 处方药品信息
   List<DrugModel> drugRp;
@@ -58,6 +68,7 @@ class PrescriptionModel {
     this.pharmacist,
     this.furtherConsultation = '1',
     this.status,
+    this.orderStatus,
     this.drugRp = const <DrugModel>[],
     this.attachments,
   });

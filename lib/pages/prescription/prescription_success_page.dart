@@ -1,4 +1,5 @@
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
@@ -84,25 +85,13 @@ class PrescriptionSuccessPage extends StatelessWidget {
                           SizedBox(
                             height: 34,
                           ),
-                          Container(
+                          AceButton(
+                            type: AceButtonType.outline,
+                            text: '查看处方详情',
                             width: 120,
                             height: 36,
-                            child: OutlineButton(
-                              child: Text(
-                                '查看处方详情',
-                                style: MyStyles.primaryTextStyle,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              textColor: ThemeColor.primaryColor,
-                              borderSide:
-                                  BorderSide(color: ThemeColor.primaryColor),
-                              splashColor: Theme.of(context).splashColor,
-                              onPressed: () {},
-                              highlightedBorderColor:
-                                  Theme.of(context).splashColor,
-                            ),
+                            onPressed: null,
+                            fontSize: 14,
                           ),
                         ],
                       );
@@ -144,7 +133,11 @@ class PrescriptionSuccessPage extends StatelessWidget {
               ),
               AceButton(
                 text: '发给随诊患者',
-                onPressed: () {},
+                onPressed: () {
+                  // Navigator.of(context)
+                  //     .pushNamed(RouteManager.PATIENT, arguments: '2432342');
+                  Navigator.of(context).pushNamed(RouteManager.PATIENT);
+                },
               ),
             ],
           ),
