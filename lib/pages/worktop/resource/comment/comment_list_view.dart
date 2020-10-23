@@ -1,0 +1,228 @@
+import 'package:doctor/pages/worktop/learn/learn_list/learn_list_item_wiget.dart';
+import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
+import 'package:doctor/pages/worktop/resource/model/comment_list_model.dart';
+import 'package:doctor/pages/worktop/resource/view_model/comment_view_model.dart';
+import 'package:doctor/provider/provider_widget.dart';
+import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/utils/time_text.dart';
+import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:doctor/theme/theme.dart';
+
+class ShowCommentItems extends StatefulWidget {
+  CommentListItem item;
+  ShowCommentItems(this.item);
+  @override
+  _ShowCommentItemsState createState() => _ShowCommentItemsState();
+}
+
+class _ShowCommentItemsState extends State<ShowCommentItems> {
+  //姓名和角色
+  bool showAllReply = false;
+
+  Widget repplyItem(String name, String roleType) {
+    return Container(
+      margin: EdgeInsets.all(5),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            child: Text(name),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 5),
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            height: 20,
+            constraints: BoxConstraints(
+              minWidth: 30,
+            ),
+            decoration: BoxDecoration(
+              color: ThemeColor.primaryColor,
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+            ),
+            child: Center(
+              child: Text(
+                roleType == 'DOCTOR' ? '医生' : '医药信息沟通专员',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// 子回复
+  Widget commentRepplyItem(CommentSecond data) {
+    return Container(
+      margin: EdgeInsets.only(left: 40, top: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.asset(
+            "assets/images/avatar.png",
+            width: 50,
+          ),
+          // Image.network(
+          //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
+          // ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    repplyItem(data.commentUserName, data.commentUserType),
+                    Text('回复'),
+                    repplyItem(data.respondent, data.respondentUserType),
+                  ],
+                ),
+                Container(
+                  margin: EdgeInsets.all(5),
+                  child: Text(data.commentContent),
+                ),
+                Container(
+                  margin: EdgeInsets.all(5),
+                  alignment: Alignment.centerRight,
+                  child: Text(RelativeDateFormat.format(data.createTime)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List secondItem = widget.item.secondLevelCommentList;
+    int secondLength = secondItem.length;
+
+    List<Widget> applyContentByLength() {
+      if (secondLength > 2 && !showAllReply) {
+        return secondItem
+            .getRange(0, 2)
+            .map((e) => commentRepplyItem(e))
+            .toList();
+      } else {
+        return secondItem.map((e) => commentRepplyItem(e)).toList();
+      }
+    }
+
+    return Container(
+      child: Column(
+        children: [
+          //主回复
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset(
+                "assets/images/avatar.png",
+                width: 50,
+              ),
+              // Image.network(
+              //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
+              // ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    repplyItem(widget.item.commentUserName,
+                        widget.item.commentUserType),
+                    Container(
+                      margin: EdgeInsets.all(5),
+                      child: Text(
+                        widget.item.commentContent,
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                          RelativeDateFormat.format(widget.item.createTime)),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // 子回复
+          ...applyContentByLength(),
+          secondLength > 2
+              ? GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      showAllReply = !showAllReply;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Text(
+                      showAllReply ? '收起' : '查看全部${secondItem.length}条回复>',
+                      style: TextStyle(color: ThemeColor.primaryColor),
+                    ),
+                  ))
+              : Text(''),
+          Divider(
+            height: 1,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 评论列表
+class CommentListPage extends StatefulWidget {
+  final String resourceId;
+  final String learnPlanId;
+
+  CommentListPage(this.resourceId, this.learnPlanId);
+
+  @override
+  _CommentListPageState createState() => _CommentListPageState();
+}
+
+class _CommentListPageState extends State<CommentListPage>
+    with AutomaticKeepAliveClientMixin {
+  // 保持不被销毁
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return ProviderWidget<CommentListViewModel>(
+      model: CommentListViewModel(widget.resourceId, widget.learnPlanId),
+      onModelReady: (model) => model.initData(),
+      builder: (context, model, child) {
+        print(model.list);
+        if (model.isError || model.isEmpty) {
+          return ViewStateEmptyWidget(onPressed: model.initData);
+        }
+        if (model.isEmpty) {
+          return ViewStateEmptyWidget(onPressed: model.initData);
+        }
+        return SmartRefresher(
+          controller: model.refreshController,
+          header: ClassicHeader(),
+          footer: ClassicFooter(),
+          onRefresh: model.refresh,
+          onLoading: model.loadMore,
+          enablePullUp: true,
+          child: ListView.builder(
+              itemCount: model.list.length,
+              padding: EdgeInsets.all(16),
+              itemBuilder: (context, index) {
+                CommentListItem item = model.list[index];
+                return ShowCommentItems(item);
+              }),
+        );
+      },
+    );
+  }
+}
