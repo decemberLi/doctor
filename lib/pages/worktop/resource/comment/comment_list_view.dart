@@ -343,7 +343,6 @@ class _CommentListPageState extends State<CommentListPage>
             color: Colors.white,
             child: TextField(
               onChanged: (text) {
-                print(text);
                 setState(() {
                   commentContent = text;
                 });

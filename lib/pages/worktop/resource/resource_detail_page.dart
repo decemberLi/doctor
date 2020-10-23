@@ -12,7 +12,11 @@ import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/theme/myIcons.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/common_modal.dart';
+import 'package:doctor/widgets/text_input.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'comment/service.dart';
 
 class ResourceDetailPage extends StatefulWidget {
   @override
@@ -23,6 +27,9 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   bool logo = true;
   bool _startIcon = false;
   int msgCount = 5;
+  String commentContent;
+  FocusNode commentFocusNode = FocusNode();
+  TextEditingController commentTextEdit = TextEditingController();
   Widget resourceRender(ResourceModel data) {
     if (data.contentType == 'RICH_TEXT') {
       return Article(data);
@@ -63,28 +70,60 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
       learnPlanId = obj["learnPlanId"];
       resourceId = obj['resourceId'];
     }
+    //发送消息
+    sendCommentInfo() {
+      if (commentContent.isEmpty) {
+        EasyLoading.showToast('请输入评论内容');
+        return;
+      }
+      if (commentContent.length > 150) {
+        EasyLoading.showToast('评论字数超过限制');
+        return;
+      }
+      sendComment({
+        'resourceId': resourceId,
+        'learnPlanId': learnPlanId,
+        'commentContent': commentContent,
+        'parentId': 0,
+        'commentId': 0
+      }).then((res) {
+        print(res);
+        EasyLoading.showToast('评论发表成功');
+        commentTextEdit.clear();
+        commentFocusNode.unfocus();
+        _getComments();
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Text('资料详情'),
         elevation: 0,
       ),
-      body: ProviderWidget<ResourceDetailViewModel>(
-        model: ResourceDetailViewModel(resourceId, learnPlanId),
-        onModelReady: (model) => model.initData(),
-        builder: (context, model, child) {
-          if (model.isBusy) {
-            return Container();
-          }
-          if (model.isError || model.isEmpty) {
-            return ViewStateEmptyWidget(onPressed: model.initData);
-          }
-          var data = model.data;
-          return Container(
-            color: ThemeColor.colorFFF3F5F8,
-            child: resourceRender(data),
-          );
+      body: GestureDetector(
+        onTap: () {
+          commentFocusNode.unfocus();
+          setState(() {
+            logo = true;
+          });
         },
+        child: ProviderWidget<ResourceDetailViewModel>(
+          model: ResourceDetailViewModel(resourceId, learnPlanId),
+          onModelReady: (model) => model.initData(),
+          builder: (context, model, child) {
+            if (model.isBusy) {
+              return Container();
+            }
+            if (model.isError || model.isEmpty) {
+              return ViewStateEmptyWidget(onPressed: model.initData);
+            }
+            var data = model.data;
+            return Container(
+              color: ThemeColor.colorFFF3F5F8,
+              child: resourceRender(data),
+            );
+          },
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         child: Container(
@@ -96,13 +135,17 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
             children: [
               Expanded(
                 child: TextField(
+                  controller: commentTextEdit,
+                  focusNode: commentFocusNode,
                   onTap: () {
                     setState(() {
                       logo = false;
                     });
                   },
                   onChanged: (text) {
-                    print(text);
+                    setState(() {
+                      commentContent = text;
+                    });
                   },
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(10.0),
@@ -112,11 +155,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                     hintText: '请输入您的问题或评价',
                     suffix: GestureDetector(
                       onTap: () {
-                        print('发表评论');
-                        // Navigator.pushNamed(context, RouteManager.FIND_PWD);
+                        sendCommentInfo();
                       },
                       child: Text(
-                        '发表',
+                        logo ? '' : '发表',
                         style: TextStyle(
                             color: ThemeColor.primaryColor, fontSize: 14),
                       ),
@@ -133,6 +175,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           InkWell(
                             onTap: () {
                               print('查看评论');
+                              commentTextEdit.clear();
                               // CommonModal
                               CommonModal.showBottomSheet(context,
                                   title: '评论区',
