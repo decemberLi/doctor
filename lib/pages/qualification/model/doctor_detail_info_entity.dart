@@ -3,22 +3,6 @@ import 'package:json_annotation/json_annotation.dart';
 part 'doctor_detail_info_entity.g.dart';
 
 @JsonSerializable()
-class FacePhoto {
-  String ossId;
-
-  String url;
-
-  String name;
-
-  FacePhoto(this.ossId, this.url, this.name);
-
-  factory FacePhoto.fromJson(Map<String, dynamic> param) =>
-      _$FacePhotoFromJson(param);
-
-  Map<String, dynamic> toJson() => _$FacePhotoToJson(this);
-}
-
-@JsonSerializable()
 class DoctorDetailInfoEntity {
   /// 姓名
   String doctorName;
@@ -56,6 +40,9 @@ class DoctorDetailInfoEntity {
   /// 易学术执业科室
   String practiceDepartmentName;
 
+  /// 易学术执业科室编码
+  String practiceDepartmentCode;
+
   /// 认证状态
   /// 认证状态(WAIT_VERIFY-待认证、VERIFING-认证中、FAIL-认证失败、PASS-认证通过）
   String authStatus;
@@ -69,7 +56,8 @@ class DoctorDetailInfoEntity {
   /// 医生 ID
   int doctorId;
 
-  FacePhoto fullFacePhoto;
+  /// 医生头像
+  String headPicUrl;
 
   DoctorDetailInfoEntity(
       this.doctorName,
@@ -84,11 +72,12 @@ class DoctorDetailInfoEntity {
       this.briefIntroduction,
       this.speciality,
       this.practiceDepartmentName,
+      this.practiceDepartmentCode,
       this.authStatus,
       this.rejectReson,
       this.doctorUserId,
       this.doctorId,
-      this.fullFacePhoto);
+      this.headPicUrl);
 
   factory DoctorDetailInfoEntity.create() =>
       DoctorDetailInfoEntity.fromJson(Map<String, dynamic>());

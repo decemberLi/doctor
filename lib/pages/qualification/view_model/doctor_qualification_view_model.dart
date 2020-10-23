@@ -12,29 +12,56 @@ HttpManager foundation = HttpManager('foundation');
 class DoctorQualificationViewModel {
   StreamController<DoctorQualificationModel> _controller =
       StreamController<DoctorQualificationModel>();
-  DoctorQualificationModel _dataModel = DoctorQualificationModel();
+  final DoctorQualificationModel _dataModel = DoctorQualificationModel();
 
   get stream => _controller.stream;
 
+  void setHospital(HospitalEntity entity) {
+    _dataModel.hospitalEntity =
+        _dataModel.hospitalEntity ?? HospitalEntity.create();
+    _dataModel.doctorDetailInfo.hospitalCode = entity.hospitalCode;
+    _dataModel.doctorDetailInfo.hospitalName = entity.hospitalName;
+  }
+
+  void setDepartment(ConfigDataEntity entity) {
+    _dataModel.hospitalEntity =
+        _dataModel.hospitalEntity ?? HospitalEntity.create();
+    _dataModel.doctorDetailInfo.departmentsCode = entity.code;
+    _dataModel.doctorDetailInfo.departmentsName = entity.name;
+  }
+
+  void setJobGrade(ConfigDataEntity entity) {
+    _dataModel.hospitalEntity =
+        _dataModel.hospitalEntity ?? HospitalEntity.create();
+    _dataModel.doctorDetailInfo.jobGradeCode = entity.code;
+    _dataModel.doctorDetailInfo.jobGradeName = entity.name;
+  }
+
+  void setPracticeDepartment(ConfigDataEntity entity) {
+    _dataModel.hospitalEntity =
+        _dataModel.hospitalEntity ?? HospitalEntity.create();
+    _dataModel.doctorDetailInfo.practiceDepartmentCode = entity.code;
+    _dataModel.doctorDetailInfo.practiceDepartmentName = entity.name;
+  }
+
   queryHospital() async {
     var result = await foundation.post('/hospital/key-query-page');
-    return HospitalEntity.fromJson(result);
   }
 
   queryConfig(String type) async {
     Map<String, dynamic> param = {};
-    param['type']  =type;
-    var result = await foundation.post('/hospital/key-query-page', params: param);
-    return ConfigDataEntity.fromJson(result);
+    param['type'] = type;
+    var result = await foundation.post('/pull-down-config/list', params: param);
+    return result
+        .map<ConfigDataEntity>((each) => ConfigDataEntity.fromJson(each))
+        .toList();
   }
 
   /// 查询当前登陆的医生信息，token 参数由 http 请求统一提供。接口地址：
-  /// http://yapi.e-medclouds.com:3000/project/7/interface/api/1703
+  /// http://yapi.e-medclouds.com:3000/project/7/interface/api/5025
   _obtainDoctorInfo() async {
     var doctorInfo =
         await uCenter.post('/personal/query-doctor-detail', showLoading: false);
-    print('doctor info  -> $doctorInfo');
-    _dataModel = DoctorQualificationModel();
     if (doctorInfo is Exception) {
       _controller.sink.add(_dataModel);
       _dataModel.doctorDetailInfo = DoctorDetailInfoEntity.create();
@@ -62,13 +89,13 @@ class DoctorQualificationViewModel {
     }
   }
 
-  submitBasicInfo() {
+  submitBasicInfo() async {
     if (!validateBasicInfo()) {
       return;
     }
 
-    _modifyDoctorInfo(_dataModel.doctorDetailInfo.toJson());
-    // TODO 接口联调完成，修改用户信息成功后，后期细节处理
+    await _modifyDoctorInfo(_dataModel.doctorDetailInfo.toJson());
+    EasyLoading.showToast('信息修改成功');
   }
 
   bool validateBasicInfo({bool needShowMsg = true}) {

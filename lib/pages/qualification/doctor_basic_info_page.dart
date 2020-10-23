@@ -42,6 +42,7 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
   SearchWidget<HospitalEntity> _hospitalSearchWidget;
   SearchWidget<ConfigDataEntity> _departSearchWidget;
   SearchWidget<ConfigDataEntity> _jobGradeSearchWidget;
+  SearchWidget<ConfigDataEntity> _practiceSearchWidget;
 
   @override
   void dispose() {
@@ -53,24 +54,54 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
   void initState() {
     super.initState();
     _model.refresh();
-    _hospitalSearchWidget =
-        SearchWidget<HospitalEntity>('选择医院', hintText: '输入医院名称',
-            searchConditionCallback: <T extends Search>(condition, streamSink) {
-      var hospitals = _model.queryHospital();
-      streamSink.add(hospitals);
-    });
-    _departSearchWidget =
-        SearchWidget<ConfigDataEntity>('选择科室', hintText: '请选择科室',
-            searchConditionCallback: <T extends Search>(condition, streamSink) {
-      var hospitals = _model.queryConfig('DEPARTMENTS');
-      streamSink.add(hospitals);
-    });
-    _jobGradeSearchWidget =
-        SearchWidget<ConfigDataEntity>('选择科室', hintText: '请选择科室',
-            searchConditionCallback: <T extends Search>(condition, streamSink) {
-      var hospitals = _model.queryConfig('DEPARTMENTS');
-      streamSink.add(hospitals);
-    });
+    _hospitalSearchWidget = SearchWidget<HospitalEntity>(
+      '选择医院',
+      hintText: '输入医院名称',
+      searchConditionCallback: <T extends Search>(condition, streamSink) async {
+        var hospitals = await _model.queryHospital();
+        streamSink.add(hospitals);
+      },
+      callback: <T extends Search>(value, position) {
+        _model.setHospital(value as HospitalEntity);
+        _model.changeDataNotify();
+      },
+    );
+    _departSearchWidget = SearchWidget<ConfigDataEntity>(
+      '选择科室',
+      hintText: '输入科室名称',
+      searchConditionCallback: <T extends Search>(condition, streamSink) async {
+        var department = await _model.queryConfig('DEPARTMENTS');
+        streamSink.add(department);
+      },
+      callback: <T extends Search>(value, index) {
+        _model.setDepartment(value as ConfigDataEntity);
+        _model.changeDataNotify();
+      },
+    );
+    _jobGradeSearchWidget = SearchWidget<ConfigDataEntity>(
+      '选择职称',
+      hintText: '输入职称名称',
+      searchConditionCallback: <T extends Search>(condition, streamSink) async {
+        var result = await _model.queryConfig('DOCTOR_TITLE');
+        streamSink.add(result);
+      },
+      callback: <T extends Search>(value, index) {
+        _model.setJobGrade(value as ConfigDataEntity);
+        _model.changeDataNotify();
+      },
+    );
+    _practiceSearchWidget = SearchWidget<ConfigDataEntity>(
+      '选择易学术执业科室',
+      hintText: '输入易学术执业科室名称',
+      searchConditionCallback: <T extends Search>(condition, streamSink) async {
+        var hospitals = await _model.queryConfig('DOCTOR_PRACTICE_TITLE');
+        streamSink.add(hospitals);
+      },
+      callback: <T extends Search>(value, index) {
+        _model.setPracticeDepartment(value as ConfigDataEntity);
+        _model.changeDataNotify();
+      },
+    );
   }
 
   @override
@@ -115,7 +146,8 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                 Expanded(
                   child: TextFormField(
                     readOnly: false,
-                    initialValue: model?.doctorDetailInfo?.doctorName,
+                    controller: TextEditingController(
+                        text: model?.doctorDetailInfo?.doctorName ?? ''),
                     style: _textStyle,
                     onSaved: (val) => {print(val)},
                     onChanged: (String value) {
@@ -166,14 +198,17 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                 Expanded(
                   child: TextFormField(
                     readOnly: true,
-                    initialValue: model?.doctorDetailInfo?.hospitalName,
+                    controller: TextEditingController(
+                        text: model?.doctorDetailInfo?.hospitalName ?? ''),
                     style: _textStyle,
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: '所在医院',
                         hintStyle: _textFieldHintStyle,
                         suffixIcon: _textFieldArrowIcon),
-                    onTap: _goSearchPage(_hospitalSearchWidget),
+                    onTap: () {
+                      _goSearchPage(_hospitalSearchWidget);
+                    },
                   ),
                 ),
                 // 所在科室
@@ -181,7 +216,8 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                 Expanded(
                   child: TextFormField(
                     readOnly: true,
-                    initialValue: model?.doctorDetailInfo?.departmentsName,
+                    controller: TextEditingController(
+                        text: model?.doctorDetailInfo?.departmentsName ?? ''),
                     style: _textStyle,
                     decoration: InputDecoration(
                         border: InputBorder.none,
@@ -198,7 +234,8 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                 Expanded(
                   child: TextFormField(
                       readOnly: true,
-                      initialValue: model?.doctorDetailInfo?.jobGradeName,
+                      controller: TextEditingController(
+                          text: model?.doctorDetailInfo?.jobGradeName ?? ''),
                       style: _textStyle,
                       decoration: InputDecoration(
                           border: InputBorder.none,
@@ -214,8 +251,9 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                 Expanded(
                   child: TextFormField(
                     readOnly: true,
-                    initialValue:
-                        model?.doctorDetailInfo?.practiceDepartmentName,
+                    controller: TextEditingController(
+                        text: model?.doctorDetailInfo?.practiceDepartmentName ??
+                            ''),
                     style: _textStyle,
                     decoration: InputDecoration(
                         errorMaxLines: 1,
@@ -224,25 +262,7 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
                         hintStyle: _textFieldHintStyle,
                         suffixIcon: _textFieldArrowIcon),
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return SearchWidget<YXSDepModel>(
-                          '搜索易学术执业科室',
-                          hintText: '输入易学术执业科室',
-                          searchConditionCallback:
-                              <T extends Search>(condition, streamSink) {
-                            // TODO 搜索
-                            List<YXSDepModel> data = [];
-                            data.add(YXSDepModel(condition));
-                            streamSink.add(data);
-                          },
-                          callback: <T extends Search>(value, pos) {
-                            // TODO 回填显示数据
-                            print('position $pos');
-                            print('value -> $value');
-                          },
-                        );
-                      }));
+                      _goSearchPage(_practiceSearchWidget);
                     },
                   ),
                 ),

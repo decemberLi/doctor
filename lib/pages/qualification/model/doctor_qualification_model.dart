@@ -6,4 +6,5 @@ class DoctorQualificationModel {
   DoctorDetailInfoEntity doctorDetailInfo;
   HospitalEntity hospitalEntity;
   ConfigDataEntity configDataEntity;
+  bool canSubmit = false;
 }

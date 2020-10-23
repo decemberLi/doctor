@@ -119,6 +119,7 @@ class HttpManager {
       ignoreSession = false,
       ignoreErrorTips = false,
       Options options}) {
+
     return this.request('post', path,
         params: params,
         showLoading: showLoading,
@@ -149,8 +150,10 @@ class HttpManager {
       if (_options.method == null) {
         _options.method = method;
       }
+      print('YYYLog::${method}Request::requestData --> $params');
       response = await dio.request(path,
           queryParameters: query, data: params, options: _options);
+      print('YYYLog::${method}Response::responseData <-- ${response?.data}');
       ResultData data = ResultData.fromJson(response.data);
       if (showLoading) {
         EasyLoading.dismiss();

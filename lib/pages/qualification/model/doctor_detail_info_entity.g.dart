@@ -6,20 +6,6 @@ part of 'doctor_detail_info_entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-FacePhoto _$FacePhotoFromJson(Map<String, dynamic> json) {
-  return FacePhoto(
-    json['ossId'] as String,
-    json['url'] as String,
-    json['name'] as String,
-  );
-}
-
-Map<String, dynamic> _$FacePhotoToJson(FacePhoto instance) => <String, dynamic>{
-      'ossId': instance.ossId,
-      'url': instance.url,
-      'name': instance.name,
-    };
-
 DoctorDetailInfoEntity _$DoctorDetailInfoEntityFromJson(
     Map<String, dynamic> json) {
   return DoctorDetailInfoEntity(
@@ -35,13 +21,12 @@ DoctorDetailInfoEntity _$DoctorDetailInfoEntityFromJson(
     json['briefIntroduction'] as String,
     json['speciality'] as String,
     json['practiceDepartmentName'] as String,
+    json['practiceDepartmentCode'] as String,
     json['authStatus'] as String,
     json['rejectReson'] as String,
     json['doctorUserId'] as int,
     json['doctorId'] as int,
-    json['fullFacePhoto'] == null
-        ? null
-        : FacePhoto.fromJson(json['fullFacePhoto'] as Map<String, dynamic>),
+    json['headPicUrl'] as String,
   );
 }
 
@@ -60,9 +45,10 @@ Map<String, dynamic> _$DoctorDetailInfoEntityToJson(
       'briefIntroduction': instance.briefIntroduction,
       'speciality': instance.speciality,
       'practiceDepartmentName': instance.practiceDepartmentName,
+      'practiceDepartmentCode': instance.practiceDepartmentCode,
       'authStatus': instance.authStatus,
       'rejectReson': instance.rejectReson,
       'doctorUserId': instance.doctorUserId,
       'doctorId': instance.doctorId,
-      'fullFacePhoto': instance.fullFacePhoto,
+      'headPicUrl': instance.headPicUrl,
     };

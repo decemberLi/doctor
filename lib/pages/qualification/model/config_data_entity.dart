@@ -8,18 +8,22 @@ part 'config_data_entity.g.dart';
 /// VISIT_OBJECTIVE-拜访目的
 /// SHOP_OBJECTIVE-巡店目的
 /// DOCTOR_TITLE-医生职称
+/// DOCTOR_PRACTICE_TITLE-易学术执业科室
 @JsonSerializable()
 class ConfigDataEntity with Search {
   String code;
 
   String name;
 
-  String children;
+  dynamic children;
 
   ConfigDataEntity(this.code, this.name, this.children);
 
   factory ConfigDataEntity.fromJson(Map<String, dynamic> param) =>
       _$ConfigDataEntityFromJson(param);
+
+  factory ConfigDataEntity.create() =>
+      _$ConfigDataEntityFromJson(Map<String, dynamic>());
 
   Map<String, dynamic> toJson() => _$ConfigDataEntityToJson(this);
 
@@ -37,6 +41,9 @@ class HospitalEntity with Search {
 
   HospitalEntity(
       this.num, this.hospitalName, this.address, this.level, this.hospitalCode);
+
+  factory HospitalEntity.create() =>
+      _$HospitalEntityFromJson(Map<String, dynamic>());
 
   factory HospitalEntity.fromJson(Map<String, dynamic> param) =>
       _$HospitalEntityFromJson(param);

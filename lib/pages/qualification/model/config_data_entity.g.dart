@@ -10,7 +10,7 @@ ConfigDataEntity _$ConfigDataEntityFromJson(Map<String, dynamic> json) {
   return ConfigDataEntity(
     json['code'] as String,
     json['name'] as String,
-    json['children'] as String,
+    json['children'],
   );
 }
 

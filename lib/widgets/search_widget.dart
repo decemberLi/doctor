@@ -11,7 +11,7 @@ typedef OnMultiSelectedCallback<T> = void Function<T extends Search>(
     List<T> values, List<int> positions);
 
 typedef OnSearchConditionCallback<T> = void Function<T extends Search>(
-    String condition, StreamSink<List<Search>> sink);
+    String condition, StreamSink<List<T>> sink);
 
 mixin Search {
   String faceText() => throw UnimplementedError();
@@ -40,10 +40,15 @@ class _SearchBarState extends State<SearchBar> {
   void initState() {
     _textEditingController.addListener(() {
       if (widget.searchConditionCallback != null) {
-        widget.searchConditionCallback(_textEditingController.text, null);
+        _doSearch();
       }
     });
     super.initState();
+    _doSearch();
+  }
+
+  void _doSearch() {
+    widget.searchConditionCallback(_textEditingController.text, null);
   }
 
   @override
