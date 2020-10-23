@@ -1,7 +1,9 @@
 import 'package:doctor/http/http_manager.dart';
+import 'package:doctor/pages/prescription/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
+import 'package:doctor/provider/view_state_refresh_list_model.dart';
 
 HttpManager http = HttpManager('server');
 HttpManager httpFoundation = HttpManager('foundation');
@@ -83,6 +85,59 @@ class PrescriptionViewModel extends ViewStateModel {
     this.data.clinicalDiagnosis = data.clinicalDiagnosis;
     this.data.drugRp = data.drugRp;
     notifyListeners();
+  }
+
+  void changeDataNotify() {
+    notifyListeners();
+  }
+}
+
+class PrescriptionListViewModel extends ViewStateRefreshListModel {
+  @override
+  Future<List<PrescriptionModel>> loadData({int pageNum}) async {
+    // var list = await httpDtp.post('/prescription/list', params: {
+    //   'ps': 10,
+    //   'pn': pageNum,
+    // });
+    // return list['records']
+    //     .map<PrescriptionModel>((item) => PrescriptionModel.fromJson(item))
+    //     .toList();
+    List<PrescriptionModel> list = [];
+    for (var i = 0; i < 10; i++) {
+      String id = '$pageNum - $i';
+      List<DrugModel> drugRp = [];
+      for (var j = 0; j < 4; j++) {
+        String drugId = '$id-$j';
+        drugRp.add(
+          DrugModel(
+            drugId: drugId,
+            drugName: '特制开菲尔-$drugId',
+            producer: '石家庄龙泽制药股份有限公司',
+            drugSize: '32',
+            drugPrice: '347',
+            frequency: '每日一次',
+            singleDose: '32',
+            doseUnit: '片/次',
+            usePattern: '口服',
+            quantity: '3',
+          ),
+        );
+      }
+      PrescriptionModel _model = PrescriptionModel(
+        id: '$id',
+        prescriptionNo: "NO-43243243-$id",
+        prescriptionPatientName: '张三-$id',
+        clinicalDiagnosis: '脑瘫,高血压-$id',
+        prescriptionPatientAge: '23',
+        prescriptionPatientSex: '0',
+        status: 'WAIT_VERIFY',
+        orderStatus: 'DONE',
+        drugRp: drugRp,
+        createTime: '1603366262120',
+      );
+      list.add(_model);
+    }
+    return Future.delayed(Duration(seconds: 1), () => list);
   }
 
   void changeDataNotify() {

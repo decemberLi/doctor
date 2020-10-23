@@ -33,107 +33,119 @@ class PrescripionListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.only(bottom: 12.0),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          // border: Border(
-          //   top: BorderSide(color: ThemeColor.primaryColor, width: 12),
-          // ),
-        ),
-        alignment: Alignment.topLeft,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              height: 40,
-              child: Text(
-                '诊疗时间：2020年-10-09 15:32',
-                style: MyStyles.inputTextStyle_12,
-              ),
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              // border: Border(
+              //   top: BorderSide(color: ThemeColor.primaryColor, width: 12),
+              // ),
             ),
-            FormItem(
-              height: 40,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '姓名: ${data.prescriptionPatientName}',
-                    style: MyStyles.inputTextStyle,
+            alignment: Alignment.topLeft,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  height: 40,
+                  child: Text(
+                    '诊疗时间：${data.createTimeText}',
+                    style: MyStyles.inputTextStyle_12,
                   ),
-                  Text(
-                    '性别: ${data.prescriptionPatientSexLabel}',
-                    style: MyStyles.inputTextStyle,
-                  ),
-                  Text(
-                    '年龄: ${data.prescriptionPatientAge}',
-                    style: MyStyles.inputTextStyle,
-                  ),
-                ],
-              ),
-            ),
-            FormItem(
-              height: 40,
-              child: Text(
-                '诊断：${data.clinicalDiagnosis}',
-                style: MyStyles.inputTextStyle,
-              ),
-            ),
-            FormItem(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: Column(
-                children: [
-                  Row(
+                ),
+                FormItem(
+                  height: 40,
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '处方详情：',
-                            style: MyStyles.inputTextStyle,
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                            data.prescriptionNo ?? '',
-                            style: MyStyles.labelTextStyle_12,
-                          ),
-                        ],
+                      Text(
+                        '姓名: ${data.prescriptionPatientName}',
+                        style: MyStyles.inputTextStyle,
                       ),
-                      renderStatus(),
+                      Text(
+                        '性别: ${data.prescriptionPatientSexLabel}',
+                        style: MyStyles.inputTextStyle,
+                      ),
+                      Text(
+                        '年龄: ${data.prescriptionPatientAge}',
+                        style: MyStyles.inputTextStyle,
+                      ),
                     ],
                   ),
-                  SizedBox(
-                    height: 8,
+                ),
+                FormItem(
+                  height: 40,
+                  child: Text(
+                    '诊断：${data.clinicalDiagnosis}',
+                    style: MyStyles.inputTextStyle,
                   ),
-                  ...data.drugRp
-                      .map(
-                        (e) => Container(
-                          margin: EdgeInsets.only(bottom: 6),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+                FormItem(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${data.drugRp.indexOf(e) + 1}、${e.drugName}',
-                                style: MyStyles.inputTextStyle_12,
+                                '处方详情：',
+                                style: MyStyles.inputTextStyle,
+                              ),
+                              SizedBox(
+                                height: 8,
                               ),
                               Text(
-                                'X${e.quantity}',
-                                style: MyStyles.inputTextStyle_12,
+                                data.prescriptionNo ?? '',
+                                style: MyStyles.labelTextStyle_12,
                               ),
                             ],
                           ),
-                        ),
-                      )
-                      .toList(),
-                ],
-              ),
+                          renderStatus(),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      ...data.drugRp
+                          .map(
+                            (e) => Container(
+                              margin: EdgeInsets.only(bottom: 6),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${data.drugRp.indexOf(e) + 1}、${e.drugName}',
+                                    style: MyStyles.inputTextStyle_12,
+                                  ),
+                                  Text(
+                                    'X${e.quantity}',
+                                    style: MyStyles.inputTextStyle_12,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            right: 10,
+            top: 10,
+            child: Image.asset(
+              'assets/images/${data.orderStatusImage}',
+            ),
+          ),
+        ],
       ),
     );
   }

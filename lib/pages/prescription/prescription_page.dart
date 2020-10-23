@@ -72,8 +72,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
         actions: [
           TextButton(
             onPressed: () {
-              // TODO: 跳转处方记录
-              print('1111');
+              Navigator.of(context).pushNamed(RouteManager.PRESCRIPTION_LIST);
             },
             child: Text(
               '处方记录',

@@ -86,32 +86,33 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/avatar.png
-    - assets/images/2.0x/avatar.png
-    - assets/images/3.0x/avatar.png
-    -
-    - assets/images/camera.png
-    - assets/images/2.0x/camera.png
-    - assets/images/3.0x/camera.png
+    - assets/images/
+    # - assets/images/avatar.png
+    # - assets/images/2.0x/avatar.png
+    # - assets/images/3.0x/avatar.png
+    # -
+    # - assets/images/camera.png
+    # - assets/images/2.0x/camera.png
+    # - assets/images/3.0x/camera.png
 
-    - assets/images/avatar_sample.png
-    - assets/images/2.0x/avatar_sample.png
-    - assets/images/3.0x/avatar_sample.png
+    # - assets/images/avatar_sample.png
+    # - assets/images/2.0x/avatar_sample.png
+    # - assets/images/3.0x/avatar_sample.png
 
-    - assets/images/physician.png
-    - assets/images/2.0x/physician.png
-    - assets/images/3.0x/physician.png
+    # - assets/images/physician.png
+    # - assets/images/2.0x/physician.png
+    # - assets/images/3.0x/physician.png
 
-    - assets/images/practice.png
-    - assets/images/2.0x/practice.png
-    - assets/images/3.0x/practice.png
+    # - assets/images/practice.png
+    # - assets/images/2.0x/practice.png
+    # - assets/images/3.0x/practice.png
 
-    - assets/images/profession.png
-    - assets/images/2.0x/profession.png
-    - assets/images/3.0x/profession.png
-    - assets/images/learn.png
-    - assets/images/user.png
-    -
+    # - assets/images/profession.png
+    # - assets/images/2.0x/profession.png
+    # - assets/images/3.0x/profession.png
+    # - assets/images/learn.png
+    # - assets/images/user.png
+    # -
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

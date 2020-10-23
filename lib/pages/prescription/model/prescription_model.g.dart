@@ -23,6 +23,7 @@ PrescriptionModel _$PrescriptionModelFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : DrugModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    createTime: json['createTime'] as String,
     attachments: (json['attachments'] as List)
         ?.map((e) => e == null
             ? null
@@ -44,6 +45,7 @@ Map<String, dynamic> _$PrescriptionModelToJson(PrescriptionModel instance) =>
       'furtherConsultation': instance.furtherConsultation,
       'status': instance.status,
       'orderStatus': instance.orderStatus,
+      'createTime': instance.createTime,
       'drugRp': instance.drugRp?.map((e) => e?.toJson())?.toList(),
       'attachments': instance.attachments?.map((e) => e?.toJson())?.toList(),
     };

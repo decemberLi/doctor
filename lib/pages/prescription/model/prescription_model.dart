@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/model/attacements_model.dart';
 import 'package:doctor/pages/prescription/model/drug_model.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -52,11 +53,22 @@ class PrescriptionModel {
   /// 订单状态（DONE 已取药、CANCEL 取消）
   String orderStatus;
 
+  String get orderStatusImage =>
+      orderStatus == 'DONE' ? 'order_status_done.png' : 'order_status_none.png';
+
   /// 处方药品信息
   List<DrugModel> drugRp;
 
+  /// 创建时间
+  String createTime;
+
+  String get createTimeText => createTime != null
+      ? DateUtil.formatDateMs(int.parse(createTime), format: 'yyyy.MM.dd HH:mm')
+      : '';
+
   /// 处方纸质图片附件信息
   List<AttacementsModel> attachments;
+
   PrescriptionModel({
     this.id,
     this.prescriptionPatientName,
@@ -70,6 +82,7 @@ class PrescriptionModel {
     this.status,
     this.orderStatus,
     this.drugRp = const <DrugModel>[],
+    this.createTime,
     this.attachments,
   });
   factory PrescriptionModel.fromJson(Map<String, dynamic> json) =>
