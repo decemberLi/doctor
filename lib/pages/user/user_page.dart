@@ -30,8 +30,8 @@ class _UserPageState extends State<UserPage> {
 
   @override
   void initState() {
-    super.initState();
     _doctorInfo();
+    super.initState();
   }
 
   Widget messageItem(String lable, String img, callBack) {
@@ -111,6 +111,9 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (numData == null) {
+      return Container();
+    }
     return CommonStack(
       body: SafeArea(
         child: Column(
