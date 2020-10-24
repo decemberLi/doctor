@@ -11,6 +11,7 @@ import 'package:doctor/pages/prescription/prescription_list_page.dart';
 import 'package:doctor/pages/prescription/prescription_success_page.dart';
 import 'package:doctor/pages/prescription/prescription_template_add_page.dart';
 import 'package:doctor/pages/qualification/doctor_basic_info_page.dart';
+import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
 import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
@@ -22,6 +23,7 @@ import 'package:flutter/material.dart';
 
 class RouteManager {
   static const String LOGIN = '/login';
+  static const String GUIDE = '/guide';
   static const String LOGIN_PWD = '/login_by_password';
   static const String LOGIN_CAPTCHA = '/login_by_captcha';
   static const String FIND_PWD = '/find_password';
@@ -42,6 +44,7 @@ class RouteManager {
   static const String PATIENT = '/patient';
   static const String PATIENT_DETAIL = '/patient_detail';
   static Map<String, WidgetBuilder> routes = {
+    GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
     LOGIN_PWD: (context) => LoginByPasswordPage(),
     LOGIN_CAPTCHA: (context) => LoginByCaptchaPage(),

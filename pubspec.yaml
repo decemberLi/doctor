@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.7.0 <3.0.0'
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -39,6 +39,9 @@ dependencies:
 
   # 进度条 https://pub.dev/packages/percent_indicator
   percent_indicator: ^2.1.7+4
+
+  #轮播图 https://pub.flutter-io.cn/packages/flutter_swiper#installation
+  flutter_swiper: ^1.1.6
 
   # 解析html标签
   # flutter_html: ^1.0.2

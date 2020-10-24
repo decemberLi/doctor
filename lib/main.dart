@@ -1,5 +1,6 @@
 import 'package:doctor/http/session_manager.dart';
-import 'package:doctor/pages/login/login_page.dart';
+// import 'package:doctor/pages/login/login_page.dart';
+import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
         ],
         navigatorKey: NavigationService().navigatorKey,
         routes: RouteManager.routes,
-        home: session == null ? LoginPage() : HomePage(),
+        home: session == null ? GuidePage() : HomePage(),
         builder: (BuildContext context, Widget child) {
           /// 确保 loading 组件能覆盖在其他组件之上.
           return FlutterEasyLoading(
