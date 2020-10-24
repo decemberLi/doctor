@@ -1,9 +1,10 @@
-import 'package:doctor/pages/prescription/model/drug_model.dart';
+import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
-import 'package:doctor/pages/prescription/widgets/medication_item.dart';
+import 'package:doctor/pages/medication/widgets/medication_item.dart';
 import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
+import 'package:doctor/pages/prescription/widgets/prescription_create_btn.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_template_sheet.dart';
 import 'package:doctor/pages/prescription/widgets/rp_list.dart';
 import 'package:doctor/provider/provider_widget.dart';
@@ -313,19 +314,14 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                     AceButton(
                       width: 138,
                       type: AceButtonType.grey,
-                      color: Color(0xFFBCBCBC),
                       textColor: Colors.white,
                       text: '预览处方',
-                      onPressed: () {},
-                    ),
-                    AceButton(
-                      width: 138,
-                      text: '生成处方',
                       onPressed: () {
                         Navigator.of(context)
-                            .pushNamed(RouteManager.PRESCRIPTION_SUCCESS);
+                            .pushNamed(RouteManager.PRESCRIPTION_PREVIEW);
                       },
                     ),
+                    PrescriptionCreateBtn(),
                   ],
                 ),
               ),

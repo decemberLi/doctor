@@ -1,6 +1,6 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/model/attacements_model.dart';
-import 'package:doctor/pages/prescription/model/drug_model.dart';
+import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'prescription_model.g.dart';

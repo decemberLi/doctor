@@ -5,9 +5,10 @@ import 'package:doctor/pages/login/login_by_password_page.dart';
 import 'package:doctor/pages/login/login_page.dart';
 import 'package:doctor/pages/patient/patient_detail_page.dart';
 import 'package:doctor/pages/patient/patient_page.dart';
-import 'package:doctor/pages/prescription/medication_page.dart';
+import 'package:doctor/pages/medication/medication_page.dart';
 import 'package:doctor/pages/prescription/prescription_detail_page.dart';
 import 'package:doctor/pages/prescription/prescription_list_page.dart';
+import 'package:doctor/pages/prescription/prescription_preview_page.dart';
 import 'package:doctor/pages/prescription/prescription_success_page.dart';
 import 'package:doctor/pages/prescription/prescription_template_add_page.dart';
 import 'package:doctor/pages/qualification/doctor_basic_info_page.dart';
@@ -41,6 +42,7 @@ class RouteManager {
   static const String QUALIFICATION_PAGE = '/qualification_page';
   static const String PRESCRIPTION_LIST = '/prescription_list';
   static const String PRESCRIPTION_DETAIL = '/prescription_detail';
+  static const String PRESCRIPTION_PREVIEW = '/prescription_preview';
   static const String PATIENT = '/patient';
   static const String PATIENT_DETAIL = '/patient_detail';
   static Map<String, WidgetBuilder> routes = {
@@ -66,6 +68,7 @@ class RouteManager {
     PRESCRIPTION_SUCCESS: (context) => PrescriptionSuccessPage(),
     PRESCRIPTION_LIST: (context) => PrescriptionListPage(),
     PRESCRIPTION_DETAIL: (context) => PrescriptionDetailPage(),
+    PRESCRIPTION_PREVIEW: (context) => PrescriptionPreviewPage(),
     PATIENT: (context) => PatientListPage(),
     PATIENT_DETAIL: (context) => PatientDetailPage(),
   };

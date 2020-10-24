@@ -1,4 +1,4 @@
-import 'package:doctor/pages/prescription/model/drug_model.dart';
+import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_spinner_input.dart';

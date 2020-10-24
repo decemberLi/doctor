@@ -1,6 +1,6 @@
-import 'package:doctor/pages/prescription/model/drug_model.dart';
-import 'package:doctor/pages/prescription/view_model/medication_view_model.dart';
-import 'package:doctor/pages/prescription/widgets/medication_add_sheet.dart';
+import 'package:doctor/pages/medication/model/drug_model.dart';
+import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
+import 'package:doctor/pages/medication/widgets/medication_add_sheet.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';

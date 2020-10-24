@@ -1,5 +1,5 @@
-import 'package:doctor/pages/prescription/model/drug_model.dart';
-import 'package:doctor/pages/prescription/widgets/medication_add_sheet.dart';
+import 'package:doctor/pages/medication/model/drug_model.dart';
+import 'package:doctor/pages/medication/widgets/medication_add_sheet.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:doctor/widgets/common_spinner_input.dart';

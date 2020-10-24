@@ -6,7 +6,14 @@ class CommonStack extends StatelessWidget {
   final PreferredSizeWidget appBar;
   final Widget body;
 
-  CommonStack({this.appBar, this.body});
+  /// 绝对定位的子组件
+  final Positioned positionedChild;
+
+  CommonStack({
+    this.appBar,
+    this.body,
+    this.positionedChild,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +48,7 @@ class CommonStack extends StatelessWidget {
           appBar: this.appBar,
           body: this.body,
         ),
+        if (positionedChild != null) positionedChild,
       ],
     );
   }

@@ -1,4 +1,4 @@
-import 'package:doctor/pages/prescription/view_model/medication_view_model.dart';
+import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';

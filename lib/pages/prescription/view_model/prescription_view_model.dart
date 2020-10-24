@@ -1,6 +1,6 @@
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/model/attacements_model.dart';
-import 'package:doctor/pages/prescription/model/drug_model.dart';
+import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
