@@ -19,7 +19,7 @@ import 'comment/service.dart';
 class ResourceDetailPage extends StatefulWidget {
   final learnPlanId;
   final resourceId;
-  final favoriteId;
+  final favoriteId;//收藏id
   ResourceDetailPage(this.learnPlanId, this.resourceId, this.favoriteId);
   @override
   _ResourceDetailPageState createState() => _ResourceDetailPageState();
@@ -71,6 +71,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   @override
   void initState() {
+    //收藏页面进入详情不需要取评论数量
     if (widget.learnPlanId != null) {
       _getComments(widget.resourceId);
     }
@@ -140,7 +141,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           },
         ),
       ),
-      //评论
+      //评论 没有learnPlanId则默认展示为收藏列表进入的详情页
       bottomNavigationBar: widget.learnPlanId != null
           ? BottomAppBar(
               child: Container(

@@ -1,6 +1,6 @@
+import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,29 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  var doctorData;
+  var numData;
+  //获取医生基本信息和收藏患者信息
+
+  _doctorInfo() async {
+    var basicData = await getBasicData();
+    print('res$basicData');
+    setState(() {
+      doctorData = basicData;
+    });
+    var basicNumData = await getBasicNum();
+    print('res$basicNumData');
+    setState(() {
+      numData = basicNumData;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _doctorInfo();
+  }
+
   Widget messageItem(String lable, String img, callBack) {
     return Container(
       margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -46,7 +69,6 @@ class _UserPageState extends State<UserPage> {
   ) {
     return InkWell(
       onTap: () {
-        print('xxx');
         pushRoute();
       },
       child: Row(
@@ -112,7 +134,7 @@ class _UserPageState extends State<UserPage> {
                       children: [
                         Container(
                           child: Text(
-                            '刘医生',
+                            doctorData['doctorName'],
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -122,13 +144,13 @@ class _UserPageState extends State<UserPage> {
                         Container(
                           padding: EdgeInsets.only(top: 8, bottom: 8),
                           child: Text(
-                            '华西医院',
+                            doctorData['hospitalName'],
                             style: TextStyle(color: Colors.white, fontSize: 14),
                           ),
                         ),
                         Container(
                           child: Text(
-                            '骨科 主治医师',
+                            '${doctorData['departmentsName']} ${doctorData['jobGradeName']}',
                             style: TextStyle(color: Colors.white, fontSize: 12),
                           ),
                         ),
@@ -158,13 +180,16 @@ class _UserPageState extends State<UserPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  boxItem('assets/images/learn.png', 165, '我的收藏', () {
+                  boxItem(
+                      'assets/images/learn.png', numData['favoriteNum'], '我的收藏',
+                      () {
                     Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
                   }),
                   VerticalDivider(),
-                  boxItem('assets/images/learn.png', 165, '我的患者', () {
-                    Navigator.pushNamed(context, RouteManager.PATIENT,
-                        arguments: {}); //医生id
+                  boxItem(
+                      'assets/images/learn.png', numData['patientNum'], '我的患者',
+                      () {
+                    Navigator.pushNamed(context, RouteManager.PATIENT);
                   }),
                 ],
               ),

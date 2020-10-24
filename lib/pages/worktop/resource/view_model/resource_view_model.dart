@@ -35,7 +35,7 @@ class ResourceDetailViewModel extends ViewStateModel {
     var data = await http.post('/favorite/detail', params: {
       'favoriteId': this.favoriteId, //传入的是favoriteId
     });
-    data['attachmentOssId'] = data['resourceOssId'];
+    data['attachmentOssId'] = data['resourceOssId']; //收藏详情返回的资源id处理，与学习资料详情同步
     return ResourceModel.fromJson(data);
   }
 
