@@ -1,16 +1,12 @@
-import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
-import 'package:doctor/pages/medication/widgets/medication_item.dart';
 import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_create_btn.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_template_sheet.dart';
 import 'package:doctor/pages/prescription/widgets/rp_list.dart';
-import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
-import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/Radio_row.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';

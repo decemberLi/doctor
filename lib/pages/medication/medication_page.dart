@@ -2,6 +2,7 @@ import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
 import 'package:doctor/pages/medication/widgets/medication_page_list_item.dart';
 import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,9 @@ class _MedicationPageState extends State<MedicationPage>
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       MedicationViewModel _model =
           Provider.of<MedicationViewModel>(context, listen: false);
-      _model.initData();
+      if (_model.list.isEmpty) {
+        _model.initData();
+      }
     });
     // MedicationViewModel _model =
     //     Provider.of<MedicationViewModel>(context, listen: false);
@@ -138,7 +141,17 @@ class _MedicationPageState extends State<MedicationPage>
             child: ListView.separated(
               itemBuilder: (context, index) {
                 DrugModel item = model.list[index];
-                return MedicationListItem(item);
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(
+                      RouteManager.MEDICATION_DETAIL,
+                      arguments: item.drugId,
+                    );
+                  },
+                  child: MedicationListItem(
+                    item,
+                  ),
+                );
               },
               separatorBuilder: (BuildContext context, int index) {
                 return Divider();

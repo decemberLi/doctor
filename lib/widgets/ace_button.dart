@@ -32,7 +32,7 @@ class AceButton extends StatelessWidget {
 
     RaisedButton primaryBtn = RaisedButton(
       onPressed: onPressed,
-      color: color,
+      color: ThemeColor.primaryColor,
       shape: shape,
       child: child ??
           Text(

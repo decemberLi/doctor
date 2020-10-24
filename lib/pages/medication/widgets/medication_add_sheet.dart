@@ -1,6 +1,7 @@
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/widgets/ace_button.dart';
+import 'package:doctor/widgets/common_modal.dart';
 import 'package:doctor/widgets/common_spinner_input.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,23 @@ class MedicationAddSheet extends StatefulWidget {
   final DrugModel item;
   final Function onSave;
   MedicationAddSheet(this.item, {this.onSave});
+
+  // 显示弹窗
+  static Future<void> show(
+      BuildContext context, DrugModel data, Function onSave) {
+    return CommonModal.showBottomSheet(
+      context,
+      title: '药品用法用量',
+      height: 560,
+      child: MedicationAddSheet(
+        data,
+        onSave: () {
+          onSave();
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
 
   @override
   _MedicationAddSheetState createState() => _MedicationAddSheetState();

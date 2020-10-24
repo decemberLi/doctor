@@ -1,5 +1,5 @@
 import 'package:doctor/pages/medication/model/drug_model.dart';
-import 'package:doctor/pages/medication/widgets/medication_item.dart';
+import 'package:doctor/pages/prescription/widgets/rp_list_item.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
@@ -31,7 +31,7 @@ class RpList extends StatelessWidget {
         children: [
           ...list
               .map(
-                (e) => MedicationItem(
+                (e) => RpListItem(
                     data: e,
                     index: list.indexOf(e),
                     onDelete: (val) {

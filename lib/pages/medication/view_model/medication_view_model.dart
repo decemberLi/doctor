@@ -1,5 +1,6 @@
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
+import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 
 HttpManager http = HttpManager('dtp');
@@ -61,5 +62,43 @@ class MedicationViewModel extends ViewStateRefreshListModel {
 
   void changeDataNotify() {
     notifyListeners();
+  }
+}
+
+/// 药品详情viewModel
+class MedicationDetailViewModel extends ViewStateModel {
+  final String drugId;
+  DrugModel data;
+
+  MedicationDetailViewModel(this.drugId);
+
+  initData() async {
+    setBusy();
+    data = await loadData();
+    setIdle();
+  }
+
+  /// 获取处方详情
+  Future<DrugModel> loadData() async {
+    // var res = await httpFoundation.post(
+    //   '/drug/query',
+    //   params: {
+    //     'drugId': this.drugId,
+    //   },
+    // );
+    // return DrugModel.fromJson(res);
+    DrugModel res = DrugModel(
+      drugId: drugId,
+      drugName: '特制开菲尔-$drugId',
+      producer: '石家庄龙泽制药股份有限公司',
+      drugSize: '32',
+      drugPrice: '347',
+      frequency: '每日一次',
+      singleDose: '32',
+      doseUnit: '片/次',
+      usePattern: '口服',
+      quantity: '3',
+    );
+    return Future.delayed(Duration(seconds: 1), () => res);
   }
 }

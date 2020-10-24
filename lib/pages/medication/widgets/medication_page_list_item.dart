@@ -1,11 +1,9 @@
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
+import 'package:doctor/pages/medication/widgets/medication_add_btn.dart';
 import 'package:doctor/pages/medication/widgets/medication_add_sheet.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/widgets/ace_button.dart';
-import 'package:doctor/widgets/common_modal.dart';
-import 'package:doctor/widgets/common_spinner_input.dart';
 import 'package:doctor/widgets/one_line_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,17 +26,9 @@ class MedicationListItem extends StatefulWidget {
 }
 
 class _MedicationListItemState extends State<MedicationListItem> {
-  // 药品总数
-  double _quantity = 0;
-
-  initialize() {
-    _quantity = double.parse(widget.item.quantity ?? '0');
-  }
-
   @override
   void initState() {
     print('${widget.item.drugName} --- ${widget.item.quantity}');
-    initialize();
     super.initState();
   }
 
@@ -46,7 +36,6 @@ class _MedicationListItemState extends State<MedicationListItem> {
   void didUpdateWidget(MedicationListItem oldWidget) {
     print(
         'didUpdateWidget --- ${widget.item.drugName} --- ${widget.item.quantity}');
-    initialize();
     super.didUpdateWidget(oldWidget);
   }
 
@@ -54,48 +43,6 @@ class _MedicationListItemState extends State<MedicationListItem> {
   didChangeDependencies() {
     // print('didChangeDependencies');
     super.didChangeDependencies();
-  }
-
-  // 显示药品添加弹窗
-  Future<void> _showMedicationInfoSheet(Function onSave) {
-    return CommonModal.showBottomSheet(
-      context,
-      title: '药品用法用量',
-      height: 560,
-      child: MedicationAddSheet(
-        widget.item,
-        onSave: () {
-          onSave();
-          Navigator.pop(context);
-        },
-      ),
-    );
-  }
-
-  Widget renderBtn(context, MedicationViewModel model, child) {
-    if (this._quantity == 0) {
-      return AceButton(
-        width: 100,
-        height: 30,
-        fontSize: 14,
-        text: '加入处方笺',
-        onPressed: () {
-          _showMedicationInfoSheet(() {
-            model.addToCart(widget.item);
-          });
-        },
-      );
-    }
-    return AceSpinnerInput(
-      spinnerValue: this._quantity,
-      onChange: (newValue) {
-        setState(() {
-          this._quantity = newValue;
-          widget.item.quantity = this._quantity.toStringAsFixed(0);
-          model.changeDataNotify();
-        });
-      },
-    );
   }
 
   Widget renderEdit(context, MedicationViewModel model, child) {
@@ -109,7 +56,7 @@ class _MedicationListItemState extends State<MedicationListItem> {
         children: [
           GestureDetector(
             onTap: () {
-              _showMedicationInfoSheet(() {
+              MedicationAddSheet.show(context, widget.item, () {
                 model.changeDataNotify();
               });
             },
@@ -196,9 +143,7 @@ class _MedicationListItemState extends State<MedicationListItem> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    Consumer<MedicationViewModel>(
-                      builder: renderBtn,
-                    ),
+                    MedicationAddBtn(widget.item),
                   ],
                 ),
                 renderExtra(),

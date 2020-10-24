@@ -3,6 +3,7 @@ import 'package:doctor/pages/login/find_password.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:doctor/pages/login/login_by_password_page.dart';
 import 'package:doctor/pages/login/login_page.dart';
+import 'package:doctor/pages/medication/medication_detail_page.dart';
 import 'package:doctor/pages/patient/patient_detail_page.dart';
 import 'package:doctor/pages/patient/patient_page.dart';
 import 'package:doctor/pages/medication/medication_page.dart';
@@ -38,6 +39,7 @@ class RouteManager {
   static const String ABOUT_US = '/about_us';
   static const String LEARN_PAGE = '/learn_page';
   static const String MEDICATION_LIST = '/medication_list';
+  static const String MEDICATION_DETAIL = '/medication_detail';
   static const String PRESCRIPTION_TEMPLATE_ADD = '/prescription_template_add';
   static const String PRESCRIPTION_SUCCESS = '/prescription_success';
   static const String QUALIFICATION_PAGE = '/qualification_page';
@@ -66,6 +68,7 @@ class RouteManager {
     LEARN_PAGE: (context) => LearnPlanPage(),
     QUALIFICATION_PAGE: (context) => DoctorBasicInfoPage(),
     MEDICATION_LIST: (context) => MedicationPage(),
+    MEDICATION_DETAIL: (context) => MedicationDetailPage(),
     PRESCRIPTION_TEMPLATE_ADD: (context) => PrescriptionTemplageAddPage(),
     PRESCRIPTION_SUCCESS: (context) => PrescriptionSuccessPage(),
     PRESCRIPTION_LIST: (context) => PrescriptionListPage(),

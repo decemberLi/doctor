@@ -68,4 +68,9 @@ class MyStyles {
     fontSize: 12,
     fontWeight: FontWeight.w500,
   );
+  static const TextStyle redTextStyle = TextStyle(
+    color: ThemeColor.colorFFFD4B40,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+  );
 }

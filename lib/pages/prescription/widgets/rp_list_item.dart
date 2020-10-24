@@ -1,14 +1,13 @@
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/medication/widgets/medication_add_sheet.dart';
 import 'package:doctor/theme/common_style.dart';
-import 'package:doctor/widgets/common_modal.dart';
 import 'package:doctor/widgets/common_spinner_input.dart';
 import 'package:doctor/widgets/form_item.dart';
 import 'package:doctor/widgets/one_line_text.dart';
 import 'package:flutter/material.dart';
 
-/// 药品项
-class MedicationItem extends StatelessWidget {
+/// 处方药列表项
+class RpListItem extends StatelessWidget {
   final int index;
 
   final DrugModel data;
@@ -16,7 +15,7 @@ class MedicationItem extends StatelessWidget {
   final Function onDelete;
   final Function onQuantityChange;
   final Function onEdit;
-  MedicationItem({
+  RpListItem({
     Key key,
     this.index,
     this.data,
@@ -24,22 +23,6 @@ class MedicationItem extends StatelessWidget {
     this.onEdit,
     this.onQuantityChange,
   });
-
-  // 显示药品编辑弹窗
-  Future<void> _showMedicationInfoSheet(BuildContext context, Function onSave) {
-    return CommonModal.showBottomSheet(
-      context,
-      title: '药品用法用量',
-      height: 560,
-      child: MedicationAddSheet(
-        data,
-        onSave: () {
-          onSave();
-          Navigator.pop(context);
-        },
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +62,7 @@ class MedicationItem extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        _showMedicationInfoSheet(context, () {
+                        MedicationAddSheet.show(context, data, () {
                           onEdit(data);
                         });
                       },
