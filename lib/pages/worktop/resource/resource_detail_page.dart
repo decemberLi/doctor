@@ -19,7 +19,8 @@ import 'comment/service.dart';
 class ResourceDetailPage extends StatefulWidget {
   final learnPlanId;
   final resourceId;
-  ResourceDetailPage(this.learnPlanId, this.resourceId);
+  final favoriteId;
+  ResourceDetailPage(this.learnPlanId, this.resourceId, this.favoriteId);
   @override
   _ResourceDetailPageState createState() => _ResourceDetailPageState();
 }
@@ -70,8 +71,9 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   @override
   void initState() {
-    print('');
-    _getComments(widget.resourceId);
+    if (widget.learnPlanId != null) {
+      _getComments(widget.resourceId);
+    }
     _getCollect(widget.resourceId);
     super.initState();
   }
@@ -100,7 +102,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         'parentId': 0,
         'commentId': 0
       }).then((res) {
-        print(res);
         EasyLoading.showToast('评论发表成功');
         commentTextEdit.clear();
         commentFocusNode.unfocus();
@@ -121,7 +122,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           });
         },
         child: ProviderWidget<ResourceDetailViewModel>(
-          model: ResourceDetailViewModel(widget.resourceId, widget.learnPlanId),
+          model: ResourceDetailViewModel(
+              widget.resourceId, widget.learnPlanId, widget.favoriteId),
           onModelReady: (model) => model.initData(),
           builder: (context, model, child) {
             if (model.isBusy) {
@@ -138,126 +140,152 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           },
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-          constraints: BoxConstraints(
-            minHeight: 40,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: commentTextEdit,
-                  focusNode: commentFocusNode,
-                  onTap: () {
-                    setState(() {
-                      logo = false;
-                    });
-                  },
-                  onChanged: (text) {
-                    setState(() {
-                      commentContent = text;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    hintText: '请输入您的问题或评价',
-                    suffix: GestureDetector(
-                      onTap: () {
-                        sendCommentInfo();
-                      },
-                      child: Text(
-                        logo ? '' : '发表',
-                        style: TextStyle(
-                            color: ThemeColor.primaryColor, fontSize: 14),
+      //评论
+      bottomNavigationBar: widget.learnPlanId != null
+          ? BottomAppBar(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                constraints: BoxConstraints(
+                  minHeight: 40,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: commentTextEdit,
+                        focusNode: commentFocusNode,
+                        onTap: () {
+                          setState(() {
+                            logo = false;
+                          });
+                        },
+                        onChanged: (text) {
+                          setState(() {
+                            commentContent = text;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(10.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          hintText: '请输入您的问题或评价',
+                          suffix: GestureDetector(
+                            onTap: () {
+                              sendCommentInfo();
+                            },
+                            child: Text(
+                              logo ? '' : '发表',
+                              style: TextStyle(
+                                  color: ThemeColor.primaryColor, fontSize: 14),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
+                    logo
+                        ? Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: Stack(
+                              overflow: Overflow.visible,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    commentTextEdit.clear();
+                                    // CommonModal
+                                    CommonModal.showBottomSheet(context,
+                                        title: '评论区',
+                                        height: 660,
+                                        child: CommentListPage(
+                                            widget.resourceId,
+                                            widget.learnPlanId));
+                                  },
+                                  child: Icon(
+                                    MyIcons.icon_talk,
+                                    size: 28,
+                                  ),
+                                ),
+                                msgCount > 0
+                                    ? Positioned(
+                                        left: 18,
+                                        top: -10,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: ThemeColor.primaryColor,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(12))),
+                                          constraints: BoxConstraints(
+                                            minWidth: 20,
+                                            minHeight: 20,
+                                          ),
+                                          child: Center(
+                                              child: Text(
+                                            msgCount > 99 ? '99+' : '$msgCount',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          )),
+                                        ),
+                                      )
+                                    : Text(''),
+                              ],
+                            ))
+                        : Text(''),
+                    logo
+                        ? Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: InkWell(
+                              onTap: () {
+                                //收藏
+                                setFavoriteStatus({
+                                  'favoriteStatus':
+                                      _startIcon ? 'CANCEL' : 'ADD',
+                                  'resourceId': widget.resourceId,
+                                }).then((res) {
+                                  EasyLoading.showToast(
+                                      _startIcon ? '取消收藏成功' : '收藏成功');
+                                  setState(() {
+                                    _startIcon = !_startIcon;
+                                  });
+                                });
+                              },
+                              child: Icon(
+                                _startIcon
+                                    ? MyIcons.icon_star_fill
+                                    : MyIcons.icon_star,
+                                size: 28,
+                              ),
+                            ),
+                          )
+                        : Text('')
+                  ],
+                ),
+              ),
+            )
+          : BottomAppBar(
+              child: Container(
+                padding: EdgeInsets.only(top: 10),
+                child: InkWell(
+                  onTap: () {
+                    //收藏
+                    setFavoriteStatus({
+                      'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
+                      'resourceId': widget.resourceId,
+                    }).then((res) {
+                      EasyLoading.showToast(_startIcon ? '取消收藏成功' : '收藏成功');
+                      setState(() {
+                        _startIcon = !_startIcon;
+                      });
+                    });
+                  },
+                  child: Icon(
+                    _startIcon ? MyIcons.icon_star_fill : MyIcons.icon_star,
+                    size: 30,
                   ),
                 ),
               ),
-              logo
-                  ? Container(
-                      margin: EdgeInsets.only(left: 10),
-                      child: Stack(
-                        overflow: Overflow.visible,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              print('查看评论');
-                              commentTextEdit.clear();
-                              // CommonModal
-                              CommonModal.showBottomSheet(context,
-                                  title: '评论区',
-                                  height: 660,
-                                  child: CommentListPage(
-                                      widget.resourceId, widget.learnPlanId));
-                            },
-                            child: Icon(
-                              MyIcons.icon_talk,
-                              size: 28,
-                            ),
-                          ),
-                          msgCount > 0
-                              ? Positioned(
-                                  left: 18,
-                                  top: -10,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: ThemeColor.primaryColor,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12))),
-                                    constraints: BoxConstraints(
-                                      minWidth: 20,
-                                      minHeight: 20,
-                                    ),
-                                    child: Center(
-                                        child: Text(
-                                      msgCount > 99 ? '99+' : '$msgCount',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    )),
-                                  ),
-                                )
-                              : Text(''),
-                        ],
-                      ))
-                  : Text(''),
-              logo
-                  ? Container(
-                      margin: EdgeInsets.only(left: 10),
-                      child: InkWell(
-                        onTap: () {
-                          //收藏
-                          setFavoriteStatus({
-                            'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
-                            'resourceId': widget.resourceId,
-                          }).then((res) {
-                            EasyLoading.showToast(
-                                _startIcon ? '取消收藏成功' : '收藏成功');
-                            setState(() {
-                              _startIcon = !_startIcon;
-                            });
-                          });
-                        },
-                        child: Icon(
-                          _startIcon
-                              ? MyIcons.icon_star_fill
-                              : MyIcons.icon_star,
-                          size: 28,
-                        ),
-                      ),
-                    )
-                  : Text('')
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

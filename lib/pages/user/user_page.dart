@@ -1,6 +1,8 @@
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
+import 'package:doctor/widgets/common_stack.dart';
+import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/material.dart';
 
 class UserPage extends StatefulWidget {
@@ -40,58 +42,135 @@ class _UserPageState extends State<UserPage> {
     String img,
     int counts,
     String lable,
+    pushRoute,
   ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(
-          img,
-          width: 40,
-          height: 40,
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            /*2*/
-            Container(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                '$counts',
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Color(0xFF444444),
-                  fontWeight: FontWeight.bold,
+    return InkWell(
+      onTap: () {
+        print('xxx');
+        pushRoute();
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            img,
+            width: 40,
+            height: 40,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              /*2*/
+              Container(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  '$counts',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Color(0xFF444444),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Text(
-              lable,
-              style: TextStyle(
-                fontSize: 12,
-                color: Color(0xFF717171),
+              Text(
+                lable,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Color(0xFF717171),
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(''),
-          elevation: 0,
-          backgroundColor: Colors.blueAccent,
-        ),
-        body: Stack(
-          alignment: Alignment.center,
-          overflow: Overflow.visible,
+    return CommonStack(
+      body: SafeArea(
+        child: Column(
           children: [
             Container(
-              // margin: EdgeInsets.fromLTRB(16, 285, 16, 16),
+              padding: EdgeInsets.only(top: 20, left: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    // decoration:
+                    //     DashedDecoration(dashedColor: ThemeColor.colorFF222222),
+                    child: Image.asset("assets/images/avatar.png"),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: Text(
+                            '刘医生',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(top: 8, bottom: 8),
+                          child: Text(
+                            '华西医院',
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                        ),
+                        Container(
+                          child: Text(
+                            '骨科 主治医师',
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 40),
+              padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
+              width: 343,
+              height: 80,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0, 4),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  boxItem('assets/images/learn.png', 165, '我的收藏', () {
+                    Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
+                  }),
+                  VerticalDivider(),
+                  boxItem('assets/images/learn.png', 165, '我的患者', () {
+                    Navigator.pushNamed(context, RouteManager.PATIENT,
+                        arguments: {}); //医生id
+                  }),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -101,7 +180,8 @@ class _UserPageState extends State<UserPage> {
                 children: [
                   messageItem('资质认证', 'assets/images/learn.png', () {
                     print('资质认证');
-                    Navigator.pushNamed(context, RouteManager.QUALIFICATION_PAGE);
+                    Navigator.pushNamed(
+                        context, RouteManager.QUALIFICATION_PAGE);
                   }),
                   messageItem('设置', 'assets/images/learn.png', () {
                     print('设置');
@@ -113,35 +193,9 @@ class _UserPageState extends State<UserPage> {
                 ],
               ),
             ),
-            Positioned(
-              top: 192,
-              child: Container(
-                padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
-                width: 343,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey,
-                      offset: Offset(0, 4),
-                      blurRadius: 10,
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    boxItem('assets/images/learn.png', 165, '我的收藏'),
-                    VerticalDivider(),
-                    boxItem('assets/images/learn.png', 165, '我的患者'),
-                  ],
-                ),
-              ),
-            ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }

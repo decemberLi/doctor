@@ -15,6 +15,7 @@ import 'package:doctor/pages/qualification/doctor_basic_info_page.dart';
 import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
+import 'package:doctor/pages/user/collect/collect_list.dart';
 import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_upload_record/learn_upload_record.dart';
@@ -45,6 +46,7 @@ class RouteManager {
   static const String PRESCRIPTION_PREVIEW = '/prescription_preview';
   static const String PATIENT = '/patient';
   static const String PATIENT_DETAIL = '/patient_detail';
+  static const String COLLECT_DETAIL = '/collect_detail';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
@@ -57,7 +59,7 @@ class RouteManager {
     LEARN_UPLOAD_RECORD: (context) => LearnUploadRecordPage(),
     RESOURCE_DETAIL: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
-      return ResourceDetailPage(obj["learnPlanId"], obj['resourceId']);
+      return ResourceDetailPage(obj["learnPlanId"], obj['resourceId'],obj['favoriteId']);
     },
     UPDATE_PWD: (context) => UpdatePwdPage(),
     ABOUT_US: (context) => AboutUs(),
@@ -71,5 +73,6 @@ class RouteManager {
     PRESCRIPTION_PREVIEW: (context) => PrescriptionPreviewPage(),
     PATIENT: (context) => PatientListPage(),
     PATIENT_DETAIL: (context) => PatientDetailPage(),
+    COLLECT_DETAIL: (context) => CollectDetailList(),
   };
 }

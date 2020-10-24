@@ -7,15 +7,16 @@ HttpManager http = HttpManager('server');
 class ResourceDetailViewModel extends ViewStateModel {
   final int resourceId;
   final int learnPlanId;
-
+  final int favoriteId;
   ResourceModel data;
 
-  ResourceDetailViewModel(this.resourceId, this.learnPlanId);
+  ResourceDetailViewModel(this.resourceId, this.learnPlanId, this.favoriteId);
 
   initData() async {
     setBusy();
     try {
-      data = await loadData();
+      data =
+          this.learnPlanId == null ? await loadCollectData() : await loadData();
       setIdle();
     } catch (e, s) {
       setError(e, s);
@@ -27,6 +28,14 @@ class ResourceDetailViewModel extends ViewStateModel {
       'resourceId': this.resourceId,
       'learnPlanId': this.learnPlanId,
     });
+    return ResourceModel.fromJson(data);
+  }
+
+  Future<ResourceModel> loadCollectData() async {
+    var data = await http.post('/favorite/detail', params: {
+      'favoriteId': this.favoriteId, //传入的是favoriteId
+    });
+    data['attachmentOssId'] = data['resourceOssId'];
     return ResourceModel.fromJson(data);
   }
 
