@@ -115,7 +115,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
   @override
   Widget build(BuildContext context) {
     List secondItem = widget.item.secondLevelCommentList;
-    int secondLength = secondItem.length;
+    int secondLength = secondItem == null ? 0 : secondItem.length;
     List<Widget> applyContentByLength() {
       if (secondLength > 2 && !showAllReply) {
         return secondItem
@@ -123,7 +123,9 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
             .map((e) => commentRepplyItem(e))
             .toList();
       } else {
-        return secondItem.map((e) => commentRepplyItem(e)).toList();
+        return secondLength == 0
+            ? [Text('')]
+            : secondItem.map((e) => commentRepplyItem(e)).toList();
       }
     }
 
