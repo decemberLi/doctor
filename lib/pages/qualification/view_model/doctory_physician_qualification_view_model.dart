@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:doctor/http/common_service.dart';
@@ -106,20 +107,20 @@ class DoctorPhysicianQualificationViewModel {
     idCardFace.url = entity.url;
     idCardFace.ossId = entity.ossId;
     Map<String, dynamic> param = {};
-    param['imgUrl'] =
-        'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1603470365&di=80e81078d50c9007dee5c1905b81fd15&src=http://5b0988e595225.cdn.sohucs.com/q_70,c_zoom,w_640/images/20180205/0e2ea15a42384364a4f436fe2abf7658.jpeg';
+    // http://www.diqibu.com/ocrimg/demo/idcard/2.jpg
+    param['imgUrl'] = entity.url;
     param['imgType'] = 'face';
 
     var result = await _recognizeIdCard(param);
     print('-------- $result');
-    if (result is Map<String, dynamic>) {
+    var resultJson = json.decode(result);
+    if (resultJson is Map<String, dynamic>) {
       var physicianInfo = _model.physicianInfoEntity;
-      physicianInfo.identityNo = '${result['num']}';
-      physicianInfo.identityName = '${result['name']}';
-      physicianInfo.identitySex = '${result['sex']}';
-      physicianInfo.identityDate = '${result['birth']}';
-      physicianInfo.identityAddress = '${result['address']}';
-      physicianInfo.identityValidity = '${result['num']}';
+      physicianInfo.identityNo = '${resultJson['num']}';
+      physicianInfo.identityName = '${resultJson['name']}';
+      physicianInfo.identitySex = '${resultJson['sex'] == '男' ? 1 : 0}';
+      physicianInfo.identityDate = '${resultJson['birth']}';
+      physicianInfo.identityAddress = '${resultJson['address']}';
       return;
     }
 
@@ -138,6 +139,21 @@ class DoctorPhysicianQualificationViewModel {
     UploadFileEntity entity = await _uploadImageToOss(path);
     idCardBackground.url = entity.url;
     idCardBackground.ossId = entity.ossId;
+
+    // https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603620957283&di=61acea5fc966284c9bc389e8a752aba7&imgtype=0&src=http%3A%2F%2Fphotocdn.sohu.com%2F20060810%2FImg244728941.jpg
+    Map<String, dynamic> param = {};
+    param['imgUrl'] = entity.url;
+    param['imgType'] = 'back';
+
+    var result = await _recognizeIdCard(param);
+    var resultJson = json.decode(result);
+    if (resultJson is Map<String, dynamic>) {
+      var physicianInfo = _model.physicianInfoEntity;
+      physicianInfo.identityValidity = resultJson['end_date'];
+      return;
+    }
+
+    EasyLoading.showToast('身份证识别失败，请重新上传身份证');
   }
 
   setQualifications(String path, FacePhoto toBeChange, int index) async {
