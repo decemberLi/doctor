@@ -3,6 +3,7 @@ import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'common_style.dart';
+import 'message_list_page.dart';
 
 class MessagePage extends StatefulWidget {
   @override
@@ -80,24 +81,25 @@ class _MessagePageState extends State<MessagePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             messageItem('系统通知', 'assets/images/msg_system_notice.png', 10, () {
-              print('公告');
-              // TODO: 跳转公告页面
+              goMessageList(MessageType.TYPE_SYSTEM);
             }),
             messageItem('学习计划', 'assets/images/msg_learn_plan.png', 11, () {
-              print('学习计划');
-              // TODO: 跳转学习计划页面
+              goMessageList(MessageType.TYPE_LEAN_PLAN);
             }),
             messageItem('患者处方', 'assets/images/msg_interact.png', 100, () {
-              print('患者处方');
-              // TODO: 跳转患者处方页面
+              goMessageList(MessageType.TYPE_PRESCRIPTION);
             }),
             messageItem('互动消息', 'assets/images/msg_patient.png', 100, () {
-              print('患者处方');
-              // TODO: 跳转患者处方页面
+              goMessageList(MessageType.TYPE_INTERACTIVE);
             }),
           ],
         ),
       ),
     );
   }
+
+  goMessageList(String type) => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MessageListPage(type)),
+      );
 }
