@@ -69,24 +69,29 @@ class _MessagePageState extends State<MessagePage> {
         elevation: 0,
       ),
       body: Container(
-        height: 168,
+        padding: EdgeInsets.only(bottom: 5),
         margin: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            messageItem('公告', 'assets/images/learn.png', 10, () {
+            messageItem('系统通知', 'assets/images/msg_system_notice.png', 10, () {
               print('公告');
               // TODO: 跳转公告页面
             }),
-            messageItem('学习计划', 'assets/images/learn.png', 11, () {
+            messageItem('学习计划', 'assets/images/msg_learn_plan.png', 11, () {
               print('学习计划');
               // TODO: 跳转学习计划页面
             }),
-            messageItem('患者处方', 'assets/images/learn.png', 100, () {
+            messageItem('患者处方', 'assets/images/msg_interact.png', 100, () {
+              print('患者处方');
+              // TODO: 跳转患者处方页面
+            }),
+            messageItem('互动消息', 'assets/images/msg_patient.png', 100, () {
               print('患者处方');
               // TODO: 跳转患者处方页面
             }),
