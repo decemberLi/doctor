@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -18,14 +19,18 @@ class _UserPageState extends State<UserPage> {
   _doctorInfo() async {
     var basicData = await getBasicData();
     print('res$basicData');
-    setState(() {
-      doctorData = basicData;
-    });
+    if (basicData is! DioError) {
+      setState(() {
+        doctorData = basicData;
+      });
+    }
     var basicNumData = await getBasicNum();
     print('res$basicNumData');
-    setState(() {
-      numData = basicNumData;
-    });
+    if (basicNumData is! DioError) {
+      setState(() {
+        numData = basicNumData;
+      });
+    }
   }
 
   @override

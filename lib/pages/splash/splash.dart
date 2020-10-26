@@ -6,10 +6,10 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 
 class GuidePage extends StatefulWidget {
   static const List<String> images = <String>[
-    'guide1.png',
-    'guide2.png',
-    'guide3.png',
-    'guide4.png'
+    'android1.png',
+    'android2.png',
+    'android3.png',
+    'android4.png',
   ];
 
   @override
@@ -23,15 +23,13 @@ class _GuidePageState extends State<GuidePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-      // color: Theme.of(context).primaryColor,
       child: Stack(
         alignment: Alignment(0, 0.87),
         children: <Widget>[
           Swiper(
               itemBuilder: (ctx, index) => Image.asset(
-                    'assets/images/${GuidePage.images[index]}',
-                    fit: BoxFit.fill,
-                  ),
+                  'assets/images/${GuidePage.images[index]}',
+                  fit: BoxFit.cover),
               itemCount: GuidePage.images.length,
               loop: false,
               onIndexChanged: (index) {
