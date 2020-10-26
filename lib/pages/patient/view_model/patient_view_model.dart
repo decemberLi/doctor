@@ -102,35 +102,35 @@ class PatientDetailModel extends ViewStateRefreshListModel {
     //     .toList();
     List<PrescriptionModel> list = [];
     for (var i = 0; i < 10; i++) {
-      String id = '$pageNum - $i';
-      List<DrugModel> drugRp = [];
+      int id = pageNum * i;
+      List<DrugModel> drugRps = [];
       for (var j = 0; j < 4; j++) {
         String drugId = '$id-$j';
-        drugRp.add(
+        drugRps.add(
           DrugModel(
-            drugId: drugId,
+            drugId: j + pageNum * i,
             drugName: '特制开菲尔-$drugId',
             producer: '石家庄龙泽制药股份有限公司',
             drugSize: '32',
-            drugPrice: '347',
+            drugPrice: 347,
             frequency: '每日一次',
             singleDose: '32',
             doseUnit: '片/次',
             usePattern: '口服',
-            quantity: '3',
+            quantity: 3,
           ),
         );
       }
       PrescriptionModel _model = PrescriptionModel(
-        id: '$id',
+        id: id,
         prescriptionNo: "NO-43243243-$id",
         prescriptionPatientName: '张三-$id',
         clinicalDiagnosis: '脑瘫,高血压-$id',
-        prescriptionPatientAge: '23',
-        prescriptionPatientSex: '0',
+        prescriptionPatientAge: 23,
+        prescriptionPatientSex: 0,
         status: 'WAIT_VERIFY',
         orderStatus: 'DONE',
-        drugRp: drugRp,
+        drugRps: drugRps,
       );
       list.add(_model);
     }

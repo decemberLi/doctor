@@ -1,5 +1,5 @@
 import 'package:doctor/http/http_manager.dart';
-import 'package:doctor/model/attacements_model.dart';
+import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
@@ -8,10 +8,18 @@ import 'package:doctor/provider/view_state_refresh_list_model.dart';
 
 HttpManager http = HttpManager('dtp');
 HttpManager httpFoundation = HttpManager('foundation');
+HttpManager foundationWeb = HttpManager('foundationWeb');
 
 /// 开处方主页面viewModel
 class PrescriptionViewModel extends ViewStateModel {
-  PrescriptionModel data = PrescriptionModel();
+  // PrescriptionModel data = PrescriptionModel();
+  PrescriptionModel data = PrescriptionModel(attachments: [
+    OssFileEntity(
+      ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
+      name: '测试',
+      type: 'jpg',
+    )
+  ]);
 
   PrescriptionViewModel();
 
@@ -20,23 +28,36 @@ class PrescriptionViewModel extends ViewStateModel {
     return qrCodeUrl;
   }
 
+  /// 总价
+  double get totalPrice =>
+      data.drugRps?.fold(
+        0,
+        (previousValue, element) => previousValue + element.drugPrice ?? 0,
+      ) ??
+      0;
+
   /// 获取绑定二维码
   Future<String> loadQRCode() async {
-    // var res = await httpFoundation.post(
-    //   '/wechat-accounts/temp-qr-code',
-    //   params: {
-    //     'bizType': 'PRESCRIPTION_BIND',
-    //     'bizId': data.prescriptionNo,
-    //   },
-    //   ignoreErrorTips: true,
-    //   showLoading: false,
-    // );
-    // return res['qrCodeUrl'];
-    String qrCodeUrl = await Future.delayed(
-        Duration(seconds: 2),
-        () =>
-            'https://oss-dev.e-medclouds.com/Business-attachment/2020-07/100027/21212508-1595338102423.jpg');
-    return qrCodeUrl;
+    try {
+      var res = await foundationWeb.post(
+        '/wechat-accounts/temp-qr-code',
+        params: {
+          'bizType': 'PRESCRIPTION_BIND',
+          'bizId': data.prescriptionNo,
+        },
+        ignoreErrorTips: true,
+        showLoading: false,
+      );
+      return res['qrCodeUrl'];
+    } catch (e) {
+      return null;
+    }
+
+    // String qrCodeUrl = await Future.delayed(
+    //     Duration(seconds: 2),
+    //     () =>
+    //         'https://oss-dev.e-medclouds.com/Business-attachment/2020-07/100027/21212508-1595338102423.jpg');
+    // return qrCodeUrl;
   }
 
   List<String> get clinicaList => this.data.clinicalDiagnosis?.split(',') ?? [];
@@ -67,7 +88,20 @@ class PrescriptionViewModel extends ViewStateModel {
 
   addByTemplate(PrescriptionTemplateModel data) {
     this.data.clinicalDiagnosis = data.clinicalDiagnosis;
-    this.data.drugRp = data.drugRp;
+    this.data.drugRps = data.drugRps;
+    notifyListeners();
+  }
+
+  savePrescription(Function callBack) async {
+    this.data.prescriptionNo = null;
+    var params = this.data.toJson();
+    var res = await http.post('/prescription/add', params: params);
+    String prescriptionNo = res['prescriptionNo'];
+    print(res);
+    this.data.prescriptionNo = prescriptionNo;
+    if (callBack != null) {
+      callBack(prescriptionNo);
+    }
     notifyListeners();
   }
 
@@ -80,49 +114,49 @@ class PrescriptionViewModel extends ViewStateModel {
 class PrescriptionListViewModel extends ViewStateRefreshListModel {
   @override
   Future<List<PrescriptionModel>> loadData({int pageNum}) async {
-    // var list = await httpDtp.post('/prescription/list', params: {
-    //   'ps': 10,
-    //   'pn': pageNum,
-    // });
-    // return list['records']
-    //     .map<PrescriptionModel>((item) => PrescriptionModel.fromJson(item))
-    //     .toList();
-    List<PrescriptionModel> list = [];
-    for (var i = 0; i < 10; i++) {
-      String id = '$pageNum - $i';
-      List<DrugModel> drugRp = [];
-      for (var j = 0; j < 4; j++) {
-        String drugId = '$id-$j';
-        drugRp.add(
-          DrugModel(
-            drugId: drugId,
-            drugName: '特制开菲尔-$drugId',
-            producer: '石家庄龙泽制药股份有限公司',
-            drugSize: '32',
-            drugPrice: '347',
-            frequency: '每日一次',
-            singleDose: '32',
-            doseUnit: '片/次',
-            usePattern: '口服',
-            quantity: '3',
-          ),
-        );
-      }
-      PrescriptionModel _model = PrescriptionModel(
-        id: '$id',
-        prescriptionNo: "NO-43243243-$id",
-        prescriptionPatientName: '张三-$id',
-        clinicalDiagnosis: '脑瘫,高血压-$id',
-        prescriptionPatientAge: '23',
-        prescriptionPatientSex: '0',
-        status: 'WAIT_VERIFY',
-        orderStatus: 'DONE',
-        drugRp: drugRp,
-        createTime: '1603366262120',
-      );
-      list.add(_model);
-    }
-    return Future.delayed(Duration(seconds: 1), () => list);
+    var list = await http.post('/prescription/list', params: {
+      'ps': 10,
+      'pn': pageNum,
+    });
+    return list['records']
+        .map<PrescriptionModel>((item) => PrescriptionModel.fromJson(item))
+        .toList();
+    // List<PrescriptionModel> list = [];
+    // for (var i = 0; i < 10; i++) {
+    //   String id = '$pageNum - $i';
+    //   List<DrugModel> drugRps = [];
+    //   for (var j = 0; j < 4; j++) {
+    //     String drugId = '$id-$j';
+    //     drugRps.add(
+    //       DrugModel(
+    //         drugId: j + pageNum * i,
+    //         drugName: '特制开菲尔-$drugId',
+    //         producer: '石家庄龙泽制药股份有限公司',
+    //         drugSize: '32',
+    //         drugPrice: 343,
+    //         frequency: '每日一次',
+    //         singleDose: '32',
+    //         doseUnit: '片/次',
+    //         usePattern: '口服',
+    //         quantity: '3',
+    //       ),
+    //     );
+    //   }
+    //   PrescriptionModel _model = PrescriptionModel(
+    //     id: '$id',
+    //     prescriptionNo: "NO-43243243-$id",
+    //     prescriptionPatientName: '张三-$id',
+    //     clinicalDiagnosis: '脑瘫,高血压-$id',
+    //     prescriptionPatientAge: '23',
+    //     prescriptionPatientSex: '0',
+    //     status: 'WAIT_VERIFY',
+    //     orderStatus: 'DONE',
+    //     drugRps: drugRps,
+    //     createTime: '1603366262120',
+    //   );
+    //   list.add(_model);
+    // }
+    // return Future.delayed(Duration(seconds: 1), () => list);
   }
 
   void changeDataNotify() {
@@ -145,53 +179,53 @@ class PrescriptionDetailModel extends ViewStateModel {
 
   /// 获取处方详情
   Future<PrescriptionModel> loadData() async {
-    // var res = await httpFoundation.post(
-    //   '/prescription/query',
-    //   params: {
-    //     'prescriptionNo': this.prescriptionNo,
-    //   },
-    // );
-    // return PrescriptionModel.fromJson(res);
-
-    List<DrugModel> drugRp = [];
-    List<AttacementsModel> attacements = [];
-    for (var i = 0; i < 4; i++) {
-      String drugId = '3232-$i';
-      drugRp.add(
-        DrugModel(
-          drugId: drugId,
-          drugName: '特制开菲尔-$drugId',
-          producer: '石家庄龙泽制药股份有限公司',
-          drugSize: '32',
-          drugPrice: '347',
-          frequency: '每日一次',
-          singleDose: '32',
-          doseUnit: '片/次',
-          usePattern: '口服',
-          quantity: '3',
-        ),
-      );
-      attacements.add(AttacementsModel(
-        ossId: '3432432',
-        name: 'fdsafdsafd',
-        url:
-            'https://oss-dev.e-medclouds.com/Business-attachment/2020-07/100027/21212508-1595338102423.jpg',
-      ));
-    }
-    String id = '323';
-    PrescriptionModel _model = PrescriptionModel(
-      id: '$id',
-      prescriptionNo: "NO-43243243-$id",
-      prescriptionPatientName: '张三-$id',
-      clinicalDiagnosis: '脑瘫,高血压-$id',
-      prescriptionPatientAge: '23',
-      prescriptionPatientSex: '0',
-      status: 'WAIT_VERIFY',
-      orderStatus: 'DONE',
-      drugRp: drugRp,
-      createTime: '1603366262120',
-      attachments: attacements,
+    var res = await http.post(
+      '/prescription/query',
+      params: {
+        'prescriptionNo': this.prescriptionNo,
+      },
     );
-    return Future.delayed(Duration(seconds: 1), () => _model);
+    return PrescriptionModel.fromJson(res);
+
+    // List<DrugModel> drugRps = [];
+    // List<OssFileEntity> attacements = [];
+    // for (var i = 0; i < 4; i++) {
+    //   String drugId = '3232-$i';
+    //   drugRps.add(
+    //     DrugModel(
+    //       drugId: i + 1,
+    //       drugName: '特制开菲尔-$drugId',
+    //       producer: '石家庄龙泽制药股份有限公司',
+    //       drugSize: '32',
+    //       drugPrice: 32,
+    //       frequency: '每日一次',
+    //       singleDose: '32',
+    //       doseUnit: '片/次',
+    //       usePattern: '口服',
+    //       quantity: 3,
+    //     ),
+    //   );
+    //   attacements.add(OssFileEntity(
+    //     ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
+    //     name: 'fdsafdsafd',
+    //     url:
+    //         'https://oss-dev.e-medclouds.com/Business-attachment/2020-07/100027/21212508-1595338102423.jpg',
+    //   ));
+    // }
+    // int id = 323;
+    // PrescriptionModel _model = PrescriptionModel(
+    //   id: id,
+    //   prescriptionNo: "NO-43243243-$id",
+    //   prescriptionPatientName: '张三-$id',
+    //   clinicalDiagnosis: '脑瘫,高血压-$id',
+    //   prescriptionPatientAge: 23,
+    //   prescriptionPatientSex: 0,
+    //   status: 'WAIT_VERIFY',
+    //   orderStatus: 'DONE',
+    //   drugRps: drugRps,
+    //   createTime: 1603366262120,
+    //   attachments: attacements,
+    // );
+    // return Future.delayed(Duration(seconds: 1), () => _model);
   }
 }

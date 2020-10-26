@@ -23,7 +23,7 @@ class MedicationAddSheet extends StatefulWidget {
     return CommonModal.showBottomSheet(
       context,
       title: '药品用法用量',
-      height: 560,
+      height: 500,
       child: MedicationAddSheet(
         data,
         onSave: () {
@@ -54,7 +54,7 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
     singleDose = widget.item.singleDose ?? '1';
     doseUnit = widget.item.doseUnit ?? doseUnitList[0];
     usePattern = widget.item.usePattern ?? usePatternList[0];
-    quantity = double.parse(widget.item.quantity ?? '1');
+    quantity = widget.item?.quantity ?? 1;
   }
 
   @override
@@ -73,216 +73,222 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
   Widget build(BuildContext context) {
     return SafeArea(
       bottom: false,
-      child: Container(
-        alignment: Alignment.topLeft,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                '药品名称：${widget.item.drugName ?? ''}',
-                style: MyStyles.inputTextStyle,
-                textAlign: TextAlign.left,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          // 触摸收起键盘
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
+          alignment: Alignment.topLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  '药品名称：${widget.item.drugName ?? ''}',
+                  style: MyStyles.inputTextStyle,
+                  textAlign: TextAlign.left,
+                ),
               ),
-            ),
-            Divider(
-              height: 1,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                '规格：${widget.item.drugSize ?? ''}',
-                style: MyStyles.inputTextStyle,
-                textAlign: TextAlign.left,
+              Divider(
+                height: 1,
               ),
-            ),
-            Divider(
-              height: 1,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Row(
-                children: [
-                  Text(
-                    '用药频率：',
-                    style: MyStyles.inputTextStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 10),
-                    width: 100.0,
-                    child: DropdownButton(
-                      isExpanded: true,
-                      value: this.frequency,
-                      items: [
-                        ...frequencyList
-                            .map(
-                              (e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
-                              ),
-                            )
-                            .toList(),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          this.frequency = value;
-                        });
-                      },
-                    ),
-                  ),
-                ],
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  '规格：${widget.item.drugSize ?? ''}',
+                  style: MyStyles.inputTextStyle,
+                  textAlign: TextAlign.left,
+                ),
               ),
-            ),
-            Divider(
-              height: 1,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Row(
-                children: [
-                  Text(
-                    '单次剂量：',
-                    style: MyStyles.inputTextStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                  Container(
-                    width: 50,
-                    height: 30,
-                    margin: EdgeInsets.only(left: 10),
-                    child: TextFormField(
-                      initialValue: singleDose,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF979797),
-                          ),
-                          gapPadding: 0,
-                        ),
-                        contentPadding: EdgeInsets.all(6),
-                      ),
-                      onChanged: (String value) {
-                        setState(() {
-                          singleDose = value;
-                        });
-                      },
-                      obscureText: false,
-                      keyboardType: TextInputType.number,
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Row(
+                  children: [
+                    Text(
+                      '用药频率：',
                       style: MyStyles.inputTextStyle,
+                      textAlign: TextAlign.left,
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 20),
-                    width: 100.0,
-                    child: DropdownButton(
-                      isExpanded: true,
-                      value: this.doseUnit,
-                      items: [
-                        ...doseUnitList
-                            .map(
-                              (e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
-                              ),
-                            )
-                            .toList(),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          this.doseUnit = value;
-                        });
-                      },
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      width: 100.0,
+                      child: DropdownButton(
+                        isExpanded: true,
+                        value: this.frequency,
+                        items: [
+                          ...frequencyList
+                              .map(
+                                (e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(e),
+                                ),
+                              )
+                              .toList(),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            this.frequency = value;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Divider(
-              height: 1,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Row(
-                children: [
-                  Text(
-                    '用药途径：',
-                    style: MyStyles.inputTextStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 10),
-                    width: 100.0,
-                    child: DropdownButton(
-                      isExpanded: true,
-                      value: this.usePattern,
-                      items: [
-                        ...usePatternList
-                            .map(
-                              (e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
-                              ),
-                            )
-                            .toList(),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          this.usePattern = value;
-                        });
-                      },
-                    ),
-                  ),
-                ],
+              Divider(
+                height: 1,
               ),
-            ),
-            Divider(
-              height: 1,
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Row(
-                children: [
-                  Text(
-                    '数量：',
-                    style: MyStyles.inputTextStyle,
-                    textAlign: TextAlign.left,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 10),
-                    width: 100.0,
-                    child: AceSpinnerInput(
-                      spinnerValue: this.quantity,
-                      onChange: (newValue) {
-                        setState(() {
-                          // widget.item.quantity = newValue.toStringAsFixed(0);
-                          this.quantity = newValue;
-                        });
-                      },
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Row(
+                  children: [
+                    Text(
+                      '单次剂量：',
+                      style: MyStyles.inputTextStyle,
+                      textAlign: TextAlign.left,
                     ),
-                  ),
-                ],
+                    Container(
+                      width: 50,
+                      height: 30,
+                      margin: EdgeInsets.only(left: 10),
+                      child: TextFormField(
+                        initialValue: singleDose,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: Color(0xFF979797),
+                            ),
+                            gapPadding: 0,
+                          ),
+                          contentPadding: EdgeInsets.all(6),
+                        ),
+                        onChanged: (String value) {
+                          setState(() {
+                            singleDose = value;
+                          });
+                        },
+                        obscureText: false,
+                        keyboardType: TextInputType.number,
+                        style: MyStyles.inputTextStyle,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 20),
+                      width: 100.0,
+                      child: DropdownButton(
+                        isExpanded: true,
+                        value: this.doseUnit,
+                        items: [
+                          ...doseUnitList
+                              .map(
+                                (e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(e),
+                                ),
+                              )
+                              .toList(),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            this.doseUnit = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Divider(
-              height: 1,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            AceButton(
-              text: '确认',
-              onPressed: () {
-                widget.item.frequency = frequency;
-                widget.item.singleDose = singleDose;
-                widget.item.doseUnit = doseUnit;
-                widget.item.usePattern = usePattern;
-                widget.item.quantity = this.quantity.toStringAsFixed(0);
-                widget.onSave();
-              },
-            ),
-          ],
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Row(
+                  children: [
+                    Text(
+                      '用药途径：',
+                      style: MyStyles.inputTextStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      width: 100.0,
+                      child: DropdownButton(
+                        isExpanded: true,
+                        value: this.usePattern,
+                        items: [
+                          ...usePatternList
+                              .map(
+                                (e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(e),
+                                ),
+                              )
+                              .toList(),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            this.usePattern = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Row(
+                  children: [
+                    Text(
+                      '数量：',
+                      style: MyStyles.inputTextStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      width: 100.0,
+                      child: AceSpinnerInput(
+                        spinnerValue: this.quantity,
+                        onChange: (newValue) {
+                          setState(() {
+                            this.quantity = newValue;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 1,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              AceButton(
+                text: '确认',
+                onPressed: () {
+                  widget.item.frequency = frequency;
+                  widget.item.singleDose = singleDose;
+                  widget.item.doseUnit = doseUnit;
+                  widget.item.usePattern = usePattern;
+                  widget.item.quantity = this.quantity;
+                  widget.onSave();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

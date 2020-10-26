@@ -11,10 +11,10 @@ class PerscriptionDetail extends StatelessWidget {
   PerscriptionDetail(this.data);
 
   List<Widget> renderRp() {
-    if (data == null || data.drugRp.isEmpty) {
+    if (data == null || data.drugRps.isEmpty) {
       return [];
     }
-    return data?.drugRp
+    return data?.drugRps
         ?.map(
           (e) => Container(
             padding: EdgeInsets.only(bottom: 10),
@@ -25,7 +25,7 @@ class PerscriptionDetail extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${data.drugRp.indexOf(e) + 1}、${e.drugName}',
+                      '${data.drugRps.indexOf(e) + 1}、${e.drugName}',
                       style: MyStyles.inputTextStyle_12,
                     ),
                     Text(

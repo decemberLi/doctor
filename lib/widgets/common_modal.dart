@@ -12,6 +12,7 @@ class CommonModal {
     return showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
+      isScrollControlled: true,
       builder: (BuildContext context) {
         return Container(
           alignment: Alignment.topLeft,

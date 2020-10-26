@@ -43,7 +43,7 @@ class PrescriptionTemplateItem extends StatelessWidget {
             children: [
               Expanded(
                 child: OneLineText(
-                  '药品信息：${data.drugRp.map((e) => e.drugName).toList().join(',')}',
+                  '药品信息：${data.drugRps.map((e) => e.drugName).toList().join(',')}',
                   style: MyStyles.labelTextStyle_12,
                 ),
               ),

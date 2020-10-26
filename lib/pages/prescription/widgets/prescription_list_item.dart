@@ -35,7 +35,7 @@ class PrescriptionListLitem extends StatelessWidget {
                     ],
                   ),
                 ),
-                ...data.drugRp
+                ...data.drugRps
                     .map(
                       (e) => FormItem(
                         padding: EdgeInsets.symmetric(vertical: 10),
@@ -75,10 +75,12 @@ class PrescriptionListLitem extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 10,
-            top: 10,
+            right: 20,
+            top: 0,
             child: Image.asset(
               'assets/images/${data.orderStatusImage}',
+              width: 90,
+              fit: BoxFit.fitWidth,
             ),
           ),
         ],

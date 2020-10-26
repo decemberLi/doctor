@@ -3,6 +3,7 @@ import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
 import 'package:doctor/pages/medication/widgets/medication_page_list_item.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,9 @@ class _MedicationPageState extends State<MedicationPage>
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       MedicationViewModel _model =
           Provider.of<MedicationViewModel>(context, listen: false);
+      List<DrugModel> obj =
+          ModalRoute.of(context).settings.arguments as List<DrugModel>;
+      _model.initCart(obj);
       if (_model.list.isEmpty) {
         _model.initData();
       }
@@ -175,7 +179,13 @@ class _MedicationPageState extends State<MedicationPage>
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   child: Row(
                     children: [
-                      Text('共计：1盒'),
+                      Text(
+                        '合计：',
+                      ),
+                      Text(
+                        '￥${model.totalPrice}',
+                        style: MyStyles.redTextStyle.copyWith(fontSize: 18),
+                      ),
                       SizedBox(
                         width: 10,
                       ),

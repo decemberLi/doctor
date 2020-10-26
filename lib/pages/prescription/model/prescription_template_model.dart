@@ -6,7 +6,7 @@ part 'prescription_template_model.g.dart';
 /// 药品model
 @JsonSerializable(explicitToJson: true)
 class PrescriptionTemplateModel {
-  String id;
+  num id;
 
   /// 处方模板名称
   String prescriptionTemplateName;
@@ -15,13 +15,13 @@ class PrescriptionTemplateModel {
   String clinicalDiagnosis;
 
   /// 处方药品信息
-  List<DrugModel> drugRp;
+  List<DrugModel> drugRps;
 
   PrescriptionTemplateModel({
     this.id,
     this.prescriptionTemplateName,
     this.clinicalDiagnosis,
-    this.drugRp = const <DrugModel>[],
+    this.drugRps = const <DrugModel>[],
   });
   factory PrescriptionTemplateModel.fromJson(Map<String, dynamic> json) =>
       _$PrescriptionTemplateModelFromJson(json);

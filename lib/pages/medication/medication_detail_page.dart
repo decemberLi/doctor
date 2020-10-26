@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 class MedicationDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String drugId = ModalRoute.of(context).settings.arguments;
+    int drugId = ModalRoute.of(context).settings.arguments;
     return DefaultTabController(
       length: 2,
       child: Scaffold(

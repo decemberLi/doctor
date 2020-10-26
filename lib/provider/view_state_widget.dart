@@ -53,7 +53,7 @@ class ViewStateWidget extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 200, minHeight: 150),
+                constraints: BoxConstraints(maxHeight: 200, minHeight: 60),
                 child: SingleChildScrollView(
                   child: Text(message ?? '', style: messageStyle),
                 ),

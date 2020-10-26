@@ -1,3 +1,4 @@
+import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
@@ -12,6 +13,7 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:doctor/widgets/form_item.dart';
+import 'package:doctor/widgets/image_upload.dart';
 import 'package:doctor/widgets/remove_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -127,7 +129,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       validator: (val) => val.length < 1 ? '年龄不能为空' : null,
                       onSaved: (val) => {print(val)},
                       onChanged: (String value) {
-                        model.data.prescriptionPatientAge = value;
+                        model.data.prescriptionPatientAge = int.parse(value);
                         model.changeDataNotify();
                       },
                       obscureText: false,
@@ -146,9 +148,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             '男',
                             style: MyStyles.inputTextStyle,
                           ),
-                          value: '1',
+                          value: 1,
                           groupValue: model.data.prescriptionPatientSex,
-                          onChanged: (String value) {
+                          onChanged: (int value) {
                             model.data.prescriptionPatientSex = value;
                             model.changeDataNotify();
                           },
@@ -158,9 +160,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             '女',
                             style: MyStyles.inputTextStyle,
                           ),
-                          value: '0',
+                          value: 0,
                           groupValue: model.data.prescriptionPatientSex,
-                          onChanged: (String value) {
+                          onChanged: (int value) {
                             model.data.prescriptionPatientSex = value;
                             model.changeDataNotify();
                           },
@@ -216,13 +218,13 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 ],
               ),
               PrescripionCard(
-                title: 'RP(1)',
+                title: 'RP(${model.data.drugRps.length})',
                 padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
                 children: [
                   RpList(
-                    list: model.data.drugRp,
+                    list: model.data.drugRps,
                     onAdd: (addList) {
-                      model.data.drugRp = [...addList];
+                      model.data.drugRps = [...addList];
                       model.changeDataNotify();
                     },
                     onItemQuantityChange: (item, value) {
@@ -246,7 +248,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                               MyStyles.inputTextStyle_12.copyWith(fontSize: 18),
                         ),
                         Text(
-                          '￥896',
+                          '￥${model.totalPrice}',
                           style: TextStyle(
                             color: Color(0xFFFE4B40),
                             fontSize: 24,
@@ -260,8 +262,15 @@ class _PrescriptionPageState extends State<PrescriptionPage>
               ),
               PrescripionCard(
                 title: '纸质处方图片上传',
-                children: [],
-                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                children: [
+                  ImageUpload(
+                    images: model.data?.attachments ?? [],
+                    onChange: (_) {
+                      model.changeDataNotify();
+                    },
+                  ),
+                ],
+                padding: EdgeInsets.fromLTRB(30, 0, 30, 16),
               ),
               PrescripionCard(
                 title: '是否为复诊患者',

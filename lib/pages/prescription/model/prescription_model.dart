@@ -1,5 +1,5 @@
 import 'package:common_utils/common_utils.dart';
-import 'package:doctor/model/attacements_model.dart';
+import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -16,7 +16,7 @@ Map statusMap = {
 @JsonSerializable(explicitToJson: true)
 class PrescriptionModel {
   /// 处方id
-  String id;
+  int id;
 
   /// 处方患者姓名
   String prescriptionPatientName;
@@ -28,14 +28,14 @@ class PrescriptionModel {
   String reason;
 
   /// 处方患者年龄
-  String prescriptionPatientAge;
+  int prescriptionPatientAge;
 
   /// 处方患者性别（0-女，1-男）
-  @JsonKey(defaultValue: '1')
-  String prescriptionPatientSex;
+  @JsonKey(defaultValue: 1)
+  int prescriptionPatientSex;
 
   String get prescriptionPatientSexLabel =>
-      prescriptionPatientSex == '1' ? '男' : '女';
+      prescriptionPatientSex == 1 ? '男' : '女';
 
   /// 临床诊断
   String clinicalDiagnosis;
@@ -58,17 +58,17 @@ class PrescriptionModel {
       orderStatus == 'DONE' ? 'order_status_done.png' : 'order_status_none.png';
 
   /// 处方药品信息
-  List<DrugModel> drugRp;
+  List<DrugModel> drugRps;
 
   /// 创建时间
-  String createTime;
+  num createTime;
 
   String get createTimeText => createTime != null
-      ? DateUtil.formatDateMs(int.parse(createTime), format: 'yyyy.MM.dd HH:mm')
+      ? DateUtil.formatDateMs(createTime, format: 'yyyy.MM.dd HH:mm')
       : '';
 
   /// 处方纸质图片附件信息
-  List<AttacementsModel> attachments;
+  List<OssFileEntity> attachments;
 
   /// 医生姓名
   String doctorName;
@@ -94,13 +94,13 @@ class PrescriptionModel {
     this.prescriptionNo,
     this.reason,
     this.prescriptionPatientAge,
-    this.prescriptionPatientSex = '1',
+    this.prescriptionPatientSex = 1,
     this.clinicalDiagnosis,
     this.pharmacist,
     this.furtherConsultation = '1',
     this.status,
     this.orderStatus,
-    this.drugRp = const <DrugModel>[],
+    this.drugRps = const <DrugModel>[],
     this.createTime,
     this.attachments,
   });

@@ -1,10 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'attacements_model.g.dart';
+part 'oss_file_entity.g.dart';
 
 /// 附件model
 @JsonSerializable()
-class AttacementsModel {
+class OssFileEntity {
   /// ossId
   String ossId;
 
@@ -17,14 +17,14 @@ class AttacementsModel {
   /// 地址
   String url;
 
-  AttacementsModel({
+  OssFileEntity({
     this.ossId,
     this.name,
     this.type,
     this.url,
   });
-  factory AttacementsModel.fromJson(Map<String, dynamic> json) =>
-      _$AttacementsModelFromJson(json);
+  factory OssFileEntity.fromJson(Map<String, dynamic> json) =>
+      _$OssFileEntityFromJson(json);
 
-  Map<String, dynamic> toJson() => _$AttacementsModelToJson(this);
+  Map<String, dynamic> toJson() => _$OssFileEntityToJson(this);
 }

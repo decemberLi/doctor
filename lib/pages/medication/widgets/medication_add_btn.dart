@@ -16,7 +16,7 @@ class MedicationAddBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MedicationViewModel>(
         builder: (context, MedicationViewModel model, child) {
-      double _quantity = double.parse(data.quantity ?? '0');
+      double _quantity = data?.quantity ?? 0;
       if (_quantity == 0) {
         return AceButton(
           width: 100,
@@ -33,7 +33,7 @@ class MedicationAddBtn extends StatelessWidget {
       return AceSpinnerInput(
         spinnerValue: _quantity,
         onChange: (newValue) {
-          data.quantity = newValue.toStringAsFixed(0);
+          data.quantity = newValue;
           model.changeDataNotify();
         },
       );

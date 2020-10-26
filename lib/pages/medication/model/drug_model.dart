@@ -6,7 +6,7 @@ part 'drug_model.g.dart';
 @JsonSerializable()
 class DrugModel {
   /// 药品id
-  String drugId;
+  int drugId;
 
   /// 药品名称
   String drugName;
@@ -24,7 +24,7 @@ class DrugModel {
   String drugType;
 
   /// 药品单价
-  String drugPrice;
+  double drugPrice;
 
   /// 生产厂家
   String producer;
@@ -48,7 +48,7 @@ class DrugModel {
   String usePattern;
 
   /// 数量
-  String quantity;
+  num quantity;
 
   /// 用法用量
   String get useInfo =>

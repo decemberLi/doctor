@@ -8,13 +8,13 @@ part of 'drug_model.dart';
 
 DrugModel _$DrugModelFromJson(Map<String, dynamic> json) {
   return DrugModel(
-    drugId: json['drugId'] as String,
+    drugId: json['drugId'] as int,
     drugName: json['drugName'] as String,
     drugNo: json['drugNo'] as String,
     generalName: json['generalName'] as String,
     approvalNo: json['approvalNo'] as String,
     drugType: json['drugType'] as String,
-    drugPrice: json['drugPrice'] as String,
+    drugPrice: (json['drugPrice'] as num)?.toDouble(),
     producer: json['producer'] as String,
     pictures: (json['pictures'] as List)?.map((e) => e as String)?.toList(),
     drugSize: json['drugSize'] as String,
@@ -22,7 +22,7 @@ DrugModel _$DrugModelFromJson(Map<String, dynamic> json) {
     singleDose: json['singleDose'] as String,
     doseUnit: json['doseUnit'] as String,
     usePattern: json['usePattern'] as String,
-    quantity: json['quantity'] as String,
+    quantity: json['quantity'] as num,
   );
 }
 

@@ -50,7 +50,10 @@ class RpList extends StatelessWidget {
             type: AceButtonType.secondary,
             onPressed: () async {
               var addList = await Navigator.pushNamed(
-                  context, RouteManager.MEDICATION_LIST);
+                context,
+                RouteManager.MEDICATION_LIST,
+                arguments: list,
+              );
               // print(list);
               ///TODO: 偶尔有报错
               if (addList != null) {

@@ -14,16 +14,8 @@ class RemoveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      overflow: Overflow.visible,
       children: [
-        Positioned(
-          top: 0.0,
-          right: 0.0,
-          child: Icon(
-            Icons.remove_circle,
-            size: 16.0,
-            color: Color(0xFFF57575),
-          ),
-        ),
         Container(
           height: 30,
           child: OutlinedButton(
@@ -38,6 +30,15 @@ class RemoveButton extends StatelessWidget {
               side: BorderSide(width: 1, color: ThemeColor.primaryColor),
             ),
             onPressed: onPressed,
+          ),
+        ),
+        Positioned(
+          top: -5.0,
+          right: -5.0,
+          child: Icon(
+            Icons.remove_circle,
+            size: 16.0,
+            color: Color(0xFFF57575),
           ),
         ),
       ],

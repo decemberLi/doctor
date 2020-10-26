@@ -42,6 +42,7 @@ class PrescripionCard extends StatelessWidget {
         alignment: Alignment.center,
         padding: this.padding,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: _children,
         ),
       ),

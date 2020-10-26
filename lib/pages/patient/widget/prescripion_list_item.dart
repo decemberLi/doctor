@@ -91,7 +91,7 @@ class PrescripionListItem extends StatelessWidget {
                       SizedBox(
                         height: 8,
                       ),
-                      ...data.drugRp
+                      ...data.drugRps
                           .map(
                             (e) => Container(
                               margin: EdgeInsets.only(bottom: 6),
@@ -100,7 +100,7 @@ class PrescripionListItem extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '${data.drugRp.indexOf(e) + 1}、${e.drugName}',
+                                    '${data.drugRps.indexOf(e) + 1}、${e.drugName}',
                                     style: MyStyles.inputTextStyle_12,
                                   ),
                                   Text(

@@ -9,10 +9,10 @@ part of 'prescription_template_model.dart';
 PrescriptionTemplateModel _$PrescriptionTemplateModelFromJson(
     Map<String, dynamic> json) {
   return PrescriptionTemplateModel(
-    id: json['id'] as String,
+    id: json['id'] as num,
     prescriptionTemplateName: json['prescriptionTemplateName'] as String,
     clinicalDiagnosis: json['clinicalDiagnosis'] as String,
-    drugRp: (json['drugRp'] as List)
+    drugRps: (json['drugRps'] as List)
         ?.map((e) =>
             e == null ? null : DrugModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
@@ -25,5 +25,5 @@ Map<String, dynamic> _$PrescriptionTemplateModelToJson(
       'id': instance.id,
       'prescriptionTemplateName': instance.prescriptionTemplateName,
       'clinicalDiagnosis': instance.clinicalDiagnosis,
-      'drugRp': instance.drugRp?.map((e) => e?.toJson())?.toList(),
+      'drugRps': instance.drugRps?.map((e) => e?.toJson())?.toList(),
     };

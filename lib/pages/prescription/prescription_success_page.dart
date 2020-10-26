@@ -62,7 +62,8 @@ class PrescriptionSuccessPage extends StatelessWidget {
                               future: model.prescriptionQRCode,
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
-                                    ConnectionState.done) {
+                                        ConnectionState.done &&
+                                    snapshot.data != null) {
                                   return Image.network(
                                     snapshot.data,
                                     width: 162,

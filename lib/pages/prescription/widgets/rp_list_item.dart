@@ -83,11 +83,10 @@ class RpListItem extends StatelessWidget {
                   ],
                 ),
                 AceSpinnerInput(
-                  spinnerValue: double.parse(data.quantity ?? '1'),
+                  spinnerValue: data.quantity + .0 ?? 1,
                   onChange: (newValue) {
-                    String strValue = newValue.toStringAsFixed(0);
-                    data.quantity = strValue;
-                    onQuantityChange(strValue);
+                    data.quantity = newValue;
+                    onQuantityChange(newValue);
                   },
                 ),
               ],
