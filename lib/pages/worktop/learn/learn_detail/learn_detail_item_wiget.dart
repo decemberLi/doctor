@@ -222,6 +222,7 @@ class PlanDetailList extends StatelessWidget {
                 .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
               "learnPlanId": data.learnPlanId,
               "resourceId": item.resourceId,
+              "taskTemplate": data.taskTemplate,
             });
           },
           child: Container(

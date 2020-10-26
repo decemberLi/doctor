@@ -127,30 +127,34 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   // 如何录制讲课视频
   Widget _buildLookCourse(data) {
     // 文本字段（`TextField`）组件，允许用户使用硬件键盘或屏幕键盘输入文本。
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text('当前完成度：${data.learnProgress}%',
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 18,
-            color: ThemeColor.primaryColor,
-          )),
-      if (data.taskTemplate == 'DOCTOR_LECTURE')
-        GestureDetector(
-          child: Text(
-            '如何录制讲课视频？',
-            style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 18,
-                color: ThemeColor.primaryColor,
-                decoration: TextDecoration.underline,
-                decorationStyle: TextDecorationStyle.solid),
-          ),
-          onTap: () {
-            EasyLoading.showToast('如何录制讲课视频？');
-            print('111');
-          },
-        ),
-    ]);
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+              child: Text('当前完成度：${data.learnProgress}%',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                    color: ThemeColor.primaryColor,
+                  ))),
+          if (data.taskTemplate == 'DOCTOR_LECTURE')
+            GestureDetector(
+              child: Text(
+                '如何录制讲课视频？',
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    color: ThemeColor.primaryColor,
+                    decoration: TextDecoration.underline,
+                    decorationStyle: TextDecorationStyle.solid),
+              ),
+              onTap: () {
+                EasyLoading.showToast('如何录制讲课视频？');
+                print('111');
+              },
+            ),
+        ]);
   }
 
   @override

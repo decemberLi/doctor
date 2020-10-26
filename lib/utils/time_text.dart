@@ -19,29 +19,31 @@ class RelativeDateFormat {
     num delta = DateTime.now().millisecondsSinceEpoch - date;
     if (delta < 1 * ONE_MINUTE) {
       num seconds = toSeconds(delta);
-      return (seconds <= 0 ? 1 : seconds).toInt().toString() + ONE_SECOND_AGO;
+      return (seconds >= 5
+          ? ((seconds).toInt().toString() + ONE_SECOND_AGO)
+          : '刚刚');
     }
     if (delta < 45 * ONE_MINUTE) {
       num minutes = toMinutes(delta);
-      return (minutes <= 0 ? 1 : minutes).toInt().toString() + ONE_MINUTE_AGO;
+      return (minutes < 1 ? 1 : minutes).toInt().toString() + ONE_MINUTE_AGO;
     }
     if (delta < 24 * ONE_HOUR) {
       num hours = toHours(delta);
-      return (hours <= 0 ? 1 : hours).toInt().toString() + ONE_HOUR_AGO;
+      return (hours < 1 ? 1 : hours).toInt().toString() + ONE_HOUR_AGO;
     }
     if (delta < 48 * ONE_HOUR) {
       return "昨天";
     }
     if (delta < 30 * ONE_DAY) {
       num days = toDays(delta);
-      return (days <= 0 ? 1 : days).toInt().toString() + ONE_DAY_AGO;
+      return (days < 1 ? 1 : days).toInt().toString() + ONE_DAY_AGO;
     }
     if (delta < 12 * 4 * ONE_WEEK) {
       num months = toMonths(delta);
-      return (months <= 0 ? 1 : months).toInt().toString() + ONE_MONTH_AGO;
+      return (months < 1 ? 1 : months).toInt().toString() + ONE_MONTH_AGO;
     } else {
       num years = toYears(delta);
-      return (years <= 0 ? 1 : years).toInt().toString() + ONE_YEAR_AGO;
+      return (years < 1 ? 1 : years).toInt().toString() + ONE_YEAR_AGO;
     }
   }
 

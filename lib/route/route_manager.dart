@@ -61,7 +61,8 @@ class RouteManager {
     LEARN_UPLOAD_RECORD: (context) => LearnUploadRecordPage(),
     RESOURCE_DETAIL: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
-      return ResourceDetailPage(obj["learnPlanId"], obj['resourceId'],obj['favoriteId']);
+      return ResourceDetailPage(obj["learnPlanId"], obj['resourceId'],
+          obj['favoriteId'], obj['taskTemplate']);
     },
     UPDATE_PWD: (context) => UpdatePwdPage(),
     ABOUT_US: (context) => AboutUs(),
