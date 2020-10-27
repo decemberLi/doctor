@@ -37,7 +37,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   TextEditingController commentTextEdit = TextEditingController();
   Widget resourceRender(ResourceModel data) {
     if (data.contentType == 'RICH_TEXT') {
-      return Article(data);
+      return Article(data, _clickWebView);
     }
     if (data.resourceType == 'VIDEO') {
       return VideoDetail(data);
@@ -49,6 +49,14 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
       return QuestionPage(data);
     }
     return Container();
+  }
+
+  // 文章webview点击时触发
+  void _clickWebView() {
+    commentFocusNode.unfocus();
+    setState(() {
+      logo = true;
+    });
   }
 
   //获取评论

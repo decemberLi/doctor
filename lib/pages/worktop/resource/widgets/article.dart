@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -11,7 +13,8 @@ final String articleHtml =
 /// 使用webview显示html文章内容
 class Article extends StatelessWidget {
   final ResourceModel data;
-  Article(this.data);
+  final _clickWebView;
+  Article(this.data, this._clickWebView);
   @override
   Widget build(BuildContext context) {
     String str = articleHtml
@@ -30,6 +33,15 @@ class Article extends StatelessWidget {
           onWebViewCreated: (WebViewController webViewController) {
             // webViewController.loadUrl(text);
           },
+          gestureRecognizers: Set()
+            ..add(
+              Factory<TapGestureRecognizer>(
+                () => TapGestureRecognizer()
+                  ..onTapDown = (tap) {
+                    _clickWebView();
+                  },
+              ),
+            ),
         ),
       ),
     );

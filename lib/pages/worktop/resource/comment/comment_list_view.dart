@@ -56,7 +56,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
 // 子回复
   Widget commentRepplyItem(CommentSecond data) {
     return Container(
-      margin: EdgeInsets.only(left: 40, top: 5),
+      margin: EdgeInsets.only(left: 20, top: 5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -298,37 +298,49 @@ class _CommentListPageState extends State<CommentListPage>
     super.build(context);
     return Stack(
       children: [
-        ChangeNotifierProvider<CommentListViewModel>.value(
-          value: model,
-          child: Consumer<CommentListViewModel>(
-            builder: (context, model, child) {
-              if (model.isError || model.isEmpty) {
-                return ViewStateEmptyWidget(onPressed: model.initData);
-              }
-              if (model.isEmpty) {
-                return ViewStateEmptyWidget(onPressed: model.initData);
-              }
-              return SmartRefresher(
-                controller: model.refreshController,
-                header: ClassicHeader(),
-                footer: ClassicFooter(),
-                onRefresh: model.refresh,
-                onLoading: model.loadMore,
-                enablePullUp: true,
-                child: Stack(
-                  children: [
-                    ListView.builder(
-                      itemCount: model.list.length,
-                      padding: EdgeInsets.fromLTRB(10, 10, 10, 60),
-                      itemBuilder: (context, index) {
-                        CommentListItem item = model.list[index];
-                        return ShowCommentItems(item, onCommentClick);
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
+        GestureDetector(
+          onDoubleTap: () {
+            //双击初始化弹窗
+            commentTextEdit.clear();
+            commentFocusNode.unfocus();
+            setState(() {
+              parentId = 0;
+              commentId = 0;
+              placeholder = '请输入您的问题或评价';
+            });
+          },
+          child: ChangeNotifierProvider<CommentListViewModel>.value(
+            value: model,
+            child: Consumer<CommentListViewModel>(
+              builder: (context, model, child) {
+                if (model.isError || model.isEmpty) {
+                  return ViewStateEmptyWidget(onPressed: model.initData);
+                }
+                if (model.isEmpty) {
+                  return ViewStateEmptyWidget(onPressed: model.initData);
+                }
+                return SmartRefresher(
+                  controller: model.refreshController,
+                  header: ClassicHeader(),
+                  footer: ClassicFooter(),
+                  onRefresh: model.refresh,
+                  onLoading: model.loadMore,
+                  enablePullUp: true,
+                  child: Stack(
+                    children: [
+                      ListView.builder(
+                        itemCount: model.list.length,
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 60),
+                        itemBuilder: (context, index) {
+                          CommentListItem item = model.list[index];
+                          return ShowCommentItems(item, onCommentClick);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
         Positioned(
@@ -348,7 +360,6 @@ class _CommentListPageState extends State<CommentListPage>
               },
               controller: commentTextEdit,
               focusNode: commentFocusNode,
-              autofocus: false,
               minLines: 1,
               maxLines: 10,
               decoration: InputDecoration(
