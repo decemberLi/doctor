@@ -26,13 +26,13 @@ class CommonStack extends StatelessWidget {
               Container(
                 color: Color(0xFF3AA7FF),
                 alignment: Alignment.topCenter,
-                // child: Image.asset(
-                //   'assets/images/logo.png',
-                //   fit: BoxFit.cover,
-                //   width: MediaQuery.of(context).size.width,
-                // ),
+                child: Image.asset(
+                  'assets/images/common_statck_bg.png',
+                  fit: BoxFit.cover,
+                  width: MediaQuery.of(context).size.width,
+                ),
                 width: MediaQuery.of(context).size.width,
-                height: 186.0,
+                height: 232.0,
               ),
               Container(
                 width: MediaQuery.of(context).size.width,

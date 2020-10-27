@@ -8,11 +8,11 @@ part of 'patient_model.dart';
 
 PatientModel _$PatientModelFromJson(Map<String, dynamic> json) {
   return PatientModel(
-    patientUserId: json['patientUserId'] as String,
+    patientUserId: json['patientUserId'] as int,
     patientName: json['patientName'] as String,
     age: json['age'] as int,
-    sex: json['sex'] as String,
-    diagnosisTime: json['diagnosisTime'] as String,
+    sex: json['sex'] as int,
+    diagnosisTime: json['diagnosisTime'] as num,
     diseaseName: json['diseaseName'] as String,
     diseaseType: json['diseaseType'] as String,
     patientHeaderUrl: json['patientHeaderUrl'] as String,

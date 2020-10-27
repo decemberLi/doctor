@@ -10,4 +10,5 @@ class MyIcons {
   static const IconData icon_shoucang = IconData(0xe619, fontFamily: _family);
   static const IconData icon_talk = IconData(0xe617, fontFamily: _family);
   static const IconData icon_star = IconData(0xe618, fontFamily: _family);
+  static const IconData icon_no_data = IconData(0xe626, fontFamily: _family);
 }

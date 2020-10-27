@@ -15,6 +15,7 @@ import 'package:doctor/widgets/common_stack.dart';
 import 'package:doctor/widgets/form_item.dart';
 import 'package:doctor/widgets/image_upload.dart';
 import 'package:doctor/widgets/remove_button.dart';
+import 'package:doctor/widgets/sex_radio_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,8 +30,6 @@ class _PrescriptionPageState extends State<PrescriptionPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
-  String val = '';
 
   // 显示临床诊断弹窗
   Future<void> _showClinicalDiagnosisSheet(Function onSave) {
@@ -97,7 +96,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                     style: MyStyles.primaryTextStyle_12,
                   ),
                   onPressed: () {
-                    print(222);
+                    // Navigator.of(context).pushNamed(
+                    //   RouteManager.PRESCRIPTION_DETAIL,
+                    // );
+                    SessionManager.loginOutHandler();
                   },
                 ),
                 children: [
@@ -109,10 +111,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       ),
                       initialValue: model.data.prescriptionPatientName,
                       validator: (val) => val.length < 1 ? '姓名不能为空' : null,
-                      onSaved: (val) => {print(val)},
                       onChanged: (String value) {
                         model.data.prescriptionPatientName = value;
-                        model.changeDataNotify();
+                        // model.changeDataNotify();
                       },
                       obscureText: false,
                       keyboardType: TextInputType.text,
@@ -126,11 +127,12 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       decoration: InputDecoration(
                         border: InputBorder.none,
                       ),
+                      initialValue:
+                          model.data?.prescriptionPatientAge?.toString() ?? '',
                       validator: (val) => val.length < 1 ? '年龄不能为空' : null,
-                      onSaved: (val) => {print(val)},
                       onChanged: (String value) {
                         model.data.prescriptionPatientAge = int.parse(value);
-                        model.changeDataNotify();
+                        // model.changeDataNotify();
                       },
                       obscureText: false,
                       keyboardType: TextInputType.number,
@@ -140,35 +142,11 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   ),
                   FormItem(
                     label: '性别',
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        RadioRow(
-                          title: Text(
-                            '男',
-                            style: MyStyles.inputTextStyle,
-                          ),
-                          value: 1,
-                          groupValue: model.data.prescriptionPatientSex,
-                          onChanged: (int value) {
-                            model.data.prescriptionPatientSex = value;
-                            model.changeDataNotify();
-                          },
-                        ),
-                        RadioRow(
-                          title: Text(
-                            '女',
-                            style: MyStyles.inputTextStyle,
-                          ),
-                          value: 0,
-                          groupValue: model.data.prescriptionPatientSex,
-                          onChanged: (int value) {
-                            model.data.prescriptionPatientSex = value;
-                            model.changeDataNotify();
-                          },
-                        ),
-                      ],
-                    ),
+                    child: SexRadioRow(
+                        groupValue: model.data.prescriptionPatientSex,
+                        onChanged: (int value) {
+                          model.data.prescriptionPatientSex = value;
+                        }),
                   ),
                 ],
               ),
@@ -265,8 +243,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 children: [
                   ImageUpload(
                     images: model.data?.attachments ?? [],
+                    customUploadImageType: 'PRESCRIPTION_PAPER',
                     onChange: (_) {
-                      model.changeDataNotify();
+                      // model.changeDataNotify();
                     },
                   ),
                 ],

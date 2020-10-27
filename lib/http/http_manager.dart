@@ -37,7 +37,7 @@ class HttpManager {
     String baseUrl = servers[server];
     if (dio == null) {
       BaseOptions _baseOptions =
-          BaseOptions(baseUrl: baseUrl, connectTimeout: 10000);
+          BaseOptions(baseUrl: baseUrl, connectTimeout: 30000);
       dio = Dio(_baseOptions);
       dio.interceptors
           .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
@@ -162,11 +162,12 @@ class HttpManager {
 
       return content;
     } on DioError catch (e) {
-      if (showLoading) {
-        EasyLoading.dismiss();
-      }
+      // if (showLoading) {
+      //   EasyLoading.dismiss();
+      // }
       print('error: $e');
-      return e;
+      // return e;
+      throw e;
     }
   }
 }

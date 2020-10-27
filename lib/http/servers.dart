@@ -1,7 +1,8 @@
 const ENV = 'dev';
 
 const HOST_MAP = {
-  'dev': 'https://gateway-dev.e-medclouds.com',
+  // 'dev': 'https://gateway-dev.e-medclouds.com',
+  'dev': 'http://192.168.1.93:8860',
   'qa': 'https://gateway-dev.e-medclouds.com',
   'prod': 'https://gateway.e-medclouds.com',
 };

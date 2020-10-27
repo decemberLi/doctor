@@ -1,3 +1,5 @@
+import 'package:doctor/theme/myIcons.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,14 +35,19 @@ class ViewStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var titleStyle =
-        Theme.of(context).textTheme.subhead.copyWith(color: Colors.grey);
+        Theme.of(context).textTheme.subtitle1.copyWith(color: Colors.grey);
     var messageStyle = titleStyle.copyWith(
         color: titleStyle.color.withOpacity(0.7), fontSize: 14);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        image,
+        image ??
+            Icon(
+              MyIcons.icon_no_data,
+              size: 100,
+              color: Color(0xFF70BEE8),
+            ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
           child: Column(
@@ -96,14 +103,13 @@ class ViewStateErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var defaultImage = Image.asset('assets/images/default_error.png');
-    var defaultTitle = '页面出错';
+    var defaultTitle = '暂无数据';
     var errorMessage = error.message;
     String defaultTextData = '重试';
 
     return ViewStateWidget(
       onPressed: this.onPressed,
-      image: image ?? defaultImage,
+      image: image,
       title: title ?? defaultTitle,
       message: message ?? errorMessage,
       buttonTextData: buttonTextData ?? defaultTextData,
@@ -131,7 +137,7 @@ class ViewStateEmptyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewStateWidget(
       onPressed: this.onPressed,
-      image: image ?? Image.asset('assets/images/default_error.png'),
+      image: image,
       title: message ?? '暂无数据',
       buttonText: buttonText,
       buttonTextData: '刷新',
