@@ -8,6 +8,7 @@ import 'package:doctor/pages/prescription/widgets/prescription_template_sheet.da
 import 'package:doctor/pages/prescription/widgets/rp_list.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/Radio_row.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';
@@ -56,6 +57,64 @@ class _PrescriptionPageState extends State<PrescriptionPage>
         },
       ),
     );
+  }
+
+  Future<bool> showConsultationDialog() {
+    return showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text("提示"),
+          content: Container(
+            padding: EdgeInsets.only(top: 12),
+            child: Text("患者必须为复诊才能开处方"),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                "确定",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                //关闭对话框并返回true
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  renderBottomBtns() {
+    return Consumer<PrescriptionViewModel>(builder: (_, model, __) {
+      if (model.data.prescriptionNo != null) {
+        return AceButton(
+          text: '重新提交',
+          onPressed: () {
+            model.updatePrescription();
+          },
+        );
+      }
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          AceButton(
+            width: 138,
+            type: AceButtonType.grey,
+            textColor: Colors.white,
+            text: '预览处方',
+            onPressed: () {
+              Navigator.of(context)
+                  .pushNamed(RouteManager.PRESCRIPTION_PREVIEW);
+            },
+          ),
+          PrescriptionCreateBtn(),
+        ],
+      );
+    });
   }
 
   @override
@@ -131,6 +190,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                           model.data?.prescriptionPatientAge?.toString() ?? '',
                       validator: (val) => val.length < 1 ? '年龄不能为空' : null,
                       onChanged: (String value) {
+                        if (value.isEmpty) {
+                          model.data.prescriptionPatientAge = null;
+                          return;
+                        }
                         model.data.prescriptionPatientAge = int.parse(value);
                         // model.changeDataNotify();
                       },
@@ -265,7 +328,6 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       groupValue: model.data.furtherConsultation,
                       onChanged: (String value) {
                         model.data.furtherConsultation = value;
-                        model.changeDataNotify();
                       },
                     ),
                     RadioRow(
@@ -276,8 +338,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       value: '0',
                       groupValue: model.data.furtherConsultation,
                       onChanged: (String value) {
-                        model.data.furtherConsultation = value;
-                        model.changeDataNotify();
+                        showConsultationDialog();
                       },
                     ),
                   ],
@@ -292,22 +353,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 padding: EdgeInsets.symmetric(
                   horizontal: 25,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    AceButton(
-                      width: 138,
-                      type: AceButtonType.grey,
-                      textColor: Colors.white,
-                      text: '预览处方',
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(RouteManager.PRESCRIPTION_PREVIEW);
-                      },
-                    ),
-                    PrescriptionCreateBtn(),
-                  ],
-                ),
+                child: renderBottomBtns(),
               ),
             ],
           ),

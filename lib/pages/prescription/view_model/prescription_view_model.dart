@@ -5,6 +5,8 @@ import 'package:doctor/pages/prescription/model/prescription_template_model.dart
 import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 /// 开处方主页面viewModel
 class PrescriptionViewModel extends ViewStateModel {
@@ -28,7 +30,7 @@ class PrescriptionViewModel extends ViewStateModel {
   double get totalPrice =>
       data.drugRps?.fold(
         0,
-        (previousValue, element) => previousValue + element.drugPrice ?? 0,
+        (previousValue, element) => previousValue + (element?.drugPrice ?? 0),
       ) ??
       0;
 
@@ -64,16 +66,76 @@ class PrescriptionViewModel extends ViewStateModel {
     notifyListeners();
   }
 
+  bool validateData() {
+    if (this.data.prescriptionPatientName == null ||
+        this.data.prescriptionPatientName.isEmpty) {
+      EasyLoading.showToast('请输入姓名');
+      return false;
+    }
+    if (this.data.prescriptionPatientAge == null ||
+        this.data.prescriptionPatientAge < 1) {
+      EasyLoading.showToast('请输入年龄');
+      return false;
+    }
+    if (this.data.clinicalDiagnosis == null ||
+        this.data.clinicalDiagnosis.isEmpty) {
+      EasyLoading.showToast('请添加临床诊断');
+      return false;
+    }
+    if (this.data.drugRps == null || this.data.drugRps.isEmpty) {
+      EasyLoading.showToast('请添加药品');
+      return false;
+    }
+    if (this.data.attachments == null || this.data.attachments.isEmpty) {
+      EasyLoading.showToast('请上传纸质处方图片');
+      return false;
+    }
+    return true;
+  }
+
+  /// 重新设置开处方数据
+  setData(
+    PrescriptionModel newData, {
+    bool isNew = false,
+    VoidCallback callBack,
+  }) {
+    this.data = newData;
+    if (isNew) {
+      // 纸质处方重新设置
+      this.data.attachments = [];
+    }
+    notifyListeners();
+    if (callBack != null) {
+      callBack();
+    }
+  }
+
   savePrescription(Function callBack) async {
+    if (!this.validateData()) {
+      return;
+    }
     this.data.prescriptionNo = null;
     var params = this.data.toJson();
     var res = await addPrescription(params);
     String prescriptionNo = res['prescriptionNo'];
-    this.data.prescriptionNo = prescriptionNo;
+    this.data = new PrescriptionModel();
     if (callBack != null) {
       callBack(prescriptionNo);
     }
     notifyListeners();
+  }
+
+  updatePrescription() async {
+    if (!this.validateData()) {
+      return;
+    }
+    try {
+      var params = this.data.toJson();
+      await updatePrescriptionServive(params);
+      this.data = new PrescriptionModel();
+      notifyListeners();
+      EasyLoading.showToast('修改成功');
+    } catch (e) {}
   }
 
   void changeDataNotify() {
@@ -117,6 +179,9 @@ class PrescriptionDetailModel extends ViewStateModel {
     var res = await loadPrescriptionDetail({
       'prescriptionNo': this.prescriptionNo,
     });
-    return PrescriptionModel.fromJson(res);
+    PrescriptionModel data = PrescriptionModel.fromJson(res);
+    data.status = 'REJECT';
+    data.reason = '不给过';
+    return data;
   }
 }

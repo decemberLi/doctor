@@ -9,6 +9,11 @@ Future addPrescription(params) async {
   return await http.post('/prescription/add', params: params);
 }
 
+/// 修改处方
+Future updatePrescriptionServive(params) async {
+  return await http.post('/prescription/update', params: params);
+}
+
 /// 处方记录列表
 Future loadPrescriptionList(params) async {
   return await http.post('/prescription/list', params: params);

@@ -11,8 +11,7 @@ class PatientListViewModel extends ViewStateRefreshListModel {
   @override
   Future<List<PatientModel>> loadData({int pageNum}) async {
     var list = await loadPatientList({'ps': 10, 'pn': pageNum});
-    // return list['records']
-    return list
+    return list['records']
         .map<PatientModel>((item) => PatientModel.fromJson(item))
         .toList();
   }
