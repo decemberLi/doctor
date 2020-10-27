@@ -25,3 +25,12 @@ setFavoriteStatus(params) {
     params: params,
   );
 }
+
+// 上传学习时间
+updateLearnTime(params) {
+  print('调用接口$params');
+  return http.post(
+    '/learn-resource/learn-time-submit',
+    params: params,
+  );
+}

@@ -7,7 +7,9 @@ import 'package:video_player/video_player.dart';
 
 class VideoDetail extends StatefulWidget {
   final ResourceModel data;
-  VideoDetail(this.data);
+  final openTimer;
+  final closeTimer;
+  VideoDetail(this.data, this.openTimer, this.closeTimer);
   @override
   _VideoDetailState createState() => _VideoDetailState();
 }
@@ -15,7 +17,7 @@ class VideoDetail extends StatefulWidget {
 class _VideoDetailState extends State<VideoDetail> {
   VideoPlayerController _controller;
   Future<void> _initializeVideoPlayerFuture;
-
+  bool _isPlaying = false;
   _initData() async {
     var files = await CommonService.getFile({
       'ossIds': [widget.data.attachmentOssId]
@@ -23,6 +25,24 @@ class _VideoDetailState extends State<VideoDetail> {
     _controller = VideoPlayerController.network(
       files[0]['tmpUrl'],
     );
+    _controller.addListener(() {
+      final bool isPlaying = _controller.value.isPlaying;
+      if (isPlaying && isPlaying != _isPlaying) {
+        setState(() {
+          _isPlaying = isPlaying;
+        });
+        //计时器
+        print('开');
+        widget.openTimer();
+      }
+      if (!isPlaying && isPlaying != _isPlaying) {
+        print('关');
+        setState(() {
+          _isPlaying = isPlaying;
+        });
+        widget.closeTimer();
+      }
+    });
     print(files[0]['tmpUrl']);
     _initializeVideoPlayerFuture = _controller.initialize();
     setState(() {});

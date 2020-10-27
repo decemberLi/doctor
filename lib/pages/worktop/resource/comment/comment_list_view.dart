@@ -10,7 +10,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:doctor/theme/theme.dart';
 
 class ShowCommentItems extends StatefulWidget {
-  CommentListItem item;
+  final CommentListItem item;
   final onCommentClick;
   ShowCommentItems(this.item, this.onCommentClick);
   @override
