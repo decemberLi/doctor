@@ -22,6 +22,8 @@ void main() async {
   runApp(MyApp());
 }
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class MyApp extends StatelessWidget {
       hideFooterWhenNotFull: true, //列表数据不满一页,不触发加载更多
       child: MaterialApp(
         title: APP_NAME,
+        navigatorObservers: [routeObserver],
         theme: ThemeData(
           primaryColor: ThemeColor.primaryColor,
           appBarTheme: AppBarTheme(

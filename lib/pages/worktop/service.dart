@@ -11,6 +11,8 @@ HttpManager uCenter = HttpManager('ucenter');
 
 HttpManager medServer = HttpManager('server');
 
+HttpManager foundation = HttpManager('foundation');
+
 /// 查询当前登陆的医生信息，token 参数由 http 请求统一提供。接口地址：
 /// http://yapi.e-medclouds.com:3000/project/7/interface/api/1703
 _obtainDoctorInfo() async {
@@ -76,4 +78,21 @@ Future<WorktopPageEntity> obtainWorktopData() async {
   }
 
   return Future.value(entity);
+}
+
+//反馈信息
+getFeedbackInfo(params) {
+  print('调用接口$params');
+  return foundation.post(
+    '/feedback-config/random-list',
+    params: params,
+  );
+}
+
+//上传反馈信息
+feedbackService(params) {
+  return medServer.post(
+    '/learn-resource/feedback',
+    params: params,
+  );
 }
