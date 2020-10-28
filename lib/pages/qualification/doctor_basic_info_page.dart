@@ -58,7 +58,7 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
       '选择医院',
       hintText: '输入医院名称',
       searchConditionCallback: <T extends Search>(condition, streamSink) async {
-        var hospitals = await _model.queryHospital();
+        var hospitals = await _model.queryHospital(condition);
         streamSink.add(hospitals);
       },
       callback: <T extends Search>(value, position) {

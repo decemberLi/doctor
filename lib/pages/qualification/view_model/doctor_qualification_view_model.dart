@@ -44,8 +44,12 @@ class DoctorQualificationViewModel {
     _dataModel.doctorDetailInfo.practiceDepartmentName = entity.name;
   }
 
-  queryHospital() async {
-    var result = await foundation.post('/hospital/key-query-page');
+  queryHospital(String hospitalName) async {
+    var result = await foundation.post('/hospital/key-query-page',
+        params: {'hospitalName': hospitalName, 'pn': 100, 'ps': 1});
+    return result['records']
+        .map<HospitalEntity>((each) => HospitalEntity.fromJson(each))
+        .toList();
   }
 
   queryConfig(String type) async {
