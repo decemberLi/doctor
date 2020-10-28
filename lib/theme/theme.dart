@@ -25,6 +25,8 @@ class ThemeColor {
 
   // 红色
   static const Color colorFFFD4B40 = const Color(0xFFFD4B40);
+  // 黄色
+  static const Color colorFFfece35 = const Color(0xFFfece35);
 
   // 资源类型
   static const Color color72c140 = const Color(0xff72c140);

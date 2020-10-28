@@ -87,7 +87,7 @@ class LearnListItemWiget extends StatelessWidget {
     }
     Widget centerText = Text(
       "${this.item.learnProgress}%",
-      style: TextStyle(color: ThemeColor.colorFF4FD7C8, fontSize: 14.0),
+      style: TextStyle(color: ThemeColor.primaryColor, fontSize: 14.0),
     );
     if (listStatus == 'HISTORY') {
       percent = 1;
@@ -95,7 +95,7 @@ class LearnListItemWiget extends StatelessWidget {
       centerText = Icon(
         Icons.done,
         size: 40,
-        color: ThemeColor.colorFF4FD7C8,
+        color: ThemeColor.primaryColor,
       );
     }
     return Column(
@@ -120,12 +120,12 @@ class LearnListItemWiget extends StatelessWidget {
             center: centerText,
             circularStrokeCap: CircularStrokeCap.round,
             backgroundColor: Color(0xFFDEDEE1),
-            progressColor: ThemeColor.colorFF4FD7C8,
+            progressColor: ThemeColor.primaryColor,
           ),
         ),
         Text(
           text,
-          style: TextStyle(color: ThemeColor.colorFF4FD7C8, fontSize: 14),
+          style: TextStyle(color: ThemeColor.primaryColor, fontSize: 14),
         ),
       ],
     );
@@ -149,17 +149,72 @@ class LearnListItemWiget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(bottom: 10),
-              child: Text(
-                TASK_TEMPLATE[item.taskTemplate],
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold),
+            Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: EdgeInsets.only(bottom: 10),
+                child: Text(
+                  TASK_TEMPLATE[item.taskTemplate],
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
+              if (item.reLearn)
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                  margin: EdgeInsets.only(bottom: 10, left: 10),
+                  decoration: BoxDecoration(
+                    color: Color(0xffF6A419),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color(0xffF6A419),
+                          offset: Offset(2.0, 2.0),
+                          blurRadius: 4.0)
+                    ],
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(28),
+                        topRight: Radius.circular(28),
+                        bottomRight: Radius.circular(28)),
+                  ),
+                  child: Text(
+                    item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
+                    style: TextStyle(
+                        color: ThemeColor.colorFFFFFF,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              // 新
+              if (item.status == 'WAIT_LEARN')
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                  margin: EdgeInsets.only(bottom: 10, left: 10),
+                  decoration: BoxDecoration(
+                    color: ThemeColor.primaryColor,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color(0xff3AA7FF),
+                          offset: Offset(2.0, 2.0),
+                          blurRadius: 4.0)
+                    ],
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(28),
+                        topRight: Radius.circular(28),
+                        bottomRight: Radius.circular(28)),
+                  ),
+                  child: Text(
+                    '新',
+                    style: TextStyle(
+                        color: ThemeColor.colorFFFFFF,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+            ]),
             ResourceTypeListWiget(item.resourceTypeResult),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,

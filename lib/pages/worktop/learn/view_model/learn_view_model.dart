@@ -8,14 +8,14 @@ HttpManager http = HttpManager('server');
 
 class LearnListViewModel extends ViewStateRefreshListModel {
   String learnStatus = 'learning';
-
-  LearnListViewModel(this.learnStatus);
+  List taskTemplate = [];
+  LearnListViewModel(this.learnStatus, this.taskTemplate);
 
   @override
   Future<List<LearnListItem>> loadData({int pageNum}) async {
     var list = await http.post('/learn-plan/list', params: {
       'searchStatus': this.learnStatus,
-      'taskTemplate': [],
+      'taskTemplate': this.taskTemplate,
       'ps': 10,
       'pn': pageNum
     });
