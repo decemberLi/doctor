@@ -38,7 +38,7 @@ class _WorktopPageState extends State<WorktopPage>
   @override
   void initState() {
     LoginInfoModel loginInfo = SessionManager.getLoginInfo();
-    if (loginInfo.authStatus == 'WAIT_VERIFY') {
+    if (loginInfo?.authStatus == 'WAIT_VERIFY') {
       WidgetsBinding.instance.addPostFrameCallback((callback) {
         _showGoToQualificationDialog();
       });

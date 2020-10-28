@@ -79,7 +79,9 @@ class DoctorPhysicianQualificationViewModel {
       'publicRead': false,
       'type': suffix,
     };
-    return await _saveImage(param);
+    UploadFileEntity entity =  await _saveImage(param);
+    entity.ossFileName = ossFileName;
+    return entity;
   }
 
   setAvatar(String path) async {
@@ -93,6 +95,7 @@ class DoctorPhysicianQualificationViewModel {
     UploadFileEntity entity = await _uploadImageToOss(path);
     facePhoto.url = entity.url;
     facePhoto.ossId = entity.ossId;
+    facePhoto.name = entity.ossFileName;
   }
 
   setIdCardFaceSide(String path) async {
@@ -106,6 +109,7 @@ class DoctorPhysicianQualificationViewModel {
     UploadFileEntity entity = await _uploadImageToOss(path);
     idCardFace.url = entity.url;
     idCardFace.ossId = entity.ossId;
+    idCardFace.name = entity.ossFileName;
     Map<String, dynamic> param = {};
     // http://www.diqibu.com/ocrimg/demo/idcard/2.jpg
     param['imgUrl'] = entity.url;
@@ -118,8 +122,8 @@ class DoctorPhysicianQualificationViewModel {
       var physicianInfo = _model.physicianInfoEntity;
       physicianInfo.identityNo = '${resultJson['num']}';
       physicianInfo.identityName = '${resultJson['name']}';
-      physicianInfo.identitySex = '${resultJson['sex'] == '男' ? 1 : 0}';
-      physicianInfo.identityDate = '${resultJson['birth']}';
+      physicianInfo.identitySex = resultJson['sex'] == '男' ? 1 : 0;
+      physicianInfo.identityDate = resultJson['birth'];
       physicianInfo.identityAddress = '${resultJson['address']}';
       return;
     }
@@ -139,6 +143,7 @@ class DoctorPhysicianQualificationViewModel {
     UploadFileEntity entity = await _uploadImageToOss(path);
     idCardBackground.url = entity.url;
     idCardBackground.ossId = entity.ossId;
+    idCardBackground.name = entity.ossFileName;
 
     // https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603620957283&di=61acea5fc966284c9bc389e8a752aba7&imgtype=0&src=http%3A%2F%2Fphotocdn.sohu.com%2F20060810%2FImg244728941.jpg
     Map<String, dynamic> param = {};
@@ -198,6 +203,7 @@ class DoctorPhysicianQualificationViewModel {
     UploadFileEntity entity = await _uploadImageToOss(path);
     toBeChange.ossId = entity.ossId;
     toBeChange.url = entity.url;
+    toBeChange.name = entity.ossFileName;
   }
 
   void submitData() async {
