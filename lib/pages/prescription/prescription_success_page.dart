@@ -1,3 +1,4 @@
+import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 class PrescriptionSuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    String prescriptionNo = ModalRoute.of(context).settings.arguments as String;
     return SafeArea(
       bottom: false,
       child: Scaffold(
@@ -91,7 +93,12 @@ class PrescriptionSuccessPage extends StatelessWidget {
                             text: '查看处方详情',
                             width: 120,
                             height: 36,
-                            onPressed: null,
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                RouteManager.PRESCRIPTION_DETAIL,
+                                arguments: prescriptionNo,
+                              );
+                            },
                             fontSize: 14,
                           ),
                         ],
@@ -134,10 +141,14 @@ class PrescriptionSuccessPage extends StatelessWidget {
               ),
               AceButton(
                 text: '发给随诊患者',
-                onPressed: () {
-                  // Navigator.of(context)
-                  //     .pushNamed(RouteManager.PATIENT, arguments: '2432342');
-                  Navigator.of(context).pushNamed(RouteManager.PATIENT);
+                onPressed: () async {
+                  var check = await checkPrescriptionBeforeBind(prescriptionNo);
+                  if (check) {
+                    Navigator.of(context).pushNamed(
+                      RouteManager.PATIENT,
+                      arguments: prescriptionNo,
+                    );
+                  }
                 },
               ),
             ],

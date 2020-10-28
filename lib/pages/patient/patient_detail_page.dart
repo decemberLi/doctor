@@ -25,7 +25,7 @@ class _PatientDetailPageState extends State<PatientDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    var patientId = ModalRoute.of(context).settings.arguments;
+    var patientUserId = ModalRoute.of(context).settings.arguments;
     super.build(context);
     return Scaffold(
       appBar: AppBar(
@@ -37,7 +37,7 @@ class _PatientDetailPageState extends State<PatientDetailPage>
         alignment: Alignment.topCenter,
         padding: EdgeInsets.zero,
         child: ProviderWidget<PatientDetailModel>(
-          model: PatientDetailModel(patientId as String),
+          model: PatientDetailModel(patientUserId as int),
           onModelReady: (model) => model.initData(),
           builder: (context, model, child) {
             if (model.isError || model.isEmpty) {
@@ -68,11 +68,11 @@ class _PatientDetailPageState extends State<PatientDetailPage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '汤姆',
+                                  model.patient?.patientName ?? '',
                                   style: MyStyles.boldTextStyle_20,
                                 ),
                                 Text(
-                                  '男 | 36岁',
+                                  '${model.patient?.sexLabel ?? ''} | ${model.patient?.age ?? ''}岁',
                                   style: MyStyles.inputTextStyle_12,
                                 ),
                               ],

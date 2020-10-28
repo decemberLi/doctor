@@ -14,11 +14,15 @@ class ImageUpload extends StatefulWidget {
 
   final Function onChange;
 
+  /// 自定义上传后的图类别
+  final String customUploadImageType;
+
   ImageUpload({
     this.images = const <OssFileEntity>[],
     this.width = 74,
     this.height = 60,
     this.onChange,
+    this.customUploadImageType,
   });
 
   @override
@@ -48,12 +52,12 @@ class _ImageUploadState extends State<ImageUpload> {
   //   super.didUpdateWidget(oldWidget);
   // }
 
-  // @override
-  // didChangeDependencies() {
-  //   this.initialize();
-  //   print('$ImageUpload --- didChangeDependencies');
-  //   super.didChangeDependencies();
-  // }
+  @override
+  didChangeDependencies() {
+    this.initialize();
+    print('$ImageUpload --- didChangeDependencies');
+    super.didChangeDependencies();
+  }
 
   _pickImage() async {
     int index = await DialogHelper.showBottom(context);
@@ -71,6 +75,9 @@ class _ImageUploadState extends State<ImageUpload> {
         return;
       }
       OssFileEntity entity = await OssService.upload(image.path);
+      if (widget.customUploadImageType != null) {
+        entity.type = widget.customUploadImageType;
+      }
       setState(() {
         _images.add(entity);
         if (widget.onChange != null) {
@@ -109,7 +116,7 @@ class _ImageUploadState extends State<ImageUpload> {
       });
       if (data.isNotEmpty) {
         image.url = data[0]['tmpUrl'];
-        image.type = data[0]['type'];
+        image.type = widget.customUploadImageType ?? data[0]['type'];
       }
     }
     return image;
@@ -123,7 +130,8 @@ class _ImageUploadState extends State<ImageUpload> {
           FutureBuilder(
             future: _getImageUrlByOssId(image),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  image.url != null) {
                 return Image.network(
                   image.url,
                   width: widget.width,

@@ -1,14 +1,12 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
+import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
-
-HttpManager http = HttpManager('dtp');
-HttpManager httpFoundation = HttpManager('foundation');
-HttpManager foundationWeb = HttpManager('foundationWeb');
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 /// 开处方主页面viewModel
 class PrescriptionViewModel extends ViewStateModel {
@@ -17,14 +15,14 @@ class PrescriptionViewModel extends ViewStateModel {
     OssFileEntity(
       ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
       name: '测试',
-      type: 'jpg',
+      type: 'PRESCRIPTION_PAPER',
     )
   ]);
 
   PrescriptionViewModel();
 
   Future<String> get prescriptionQRCode async {
-    String qrCodeUrl = await this.loadQRCode();
+    String qrCodeUrl = await loadBindQRCode(data.prescriptionNo);
     return qrCodeUrl;
   }
 
@@ -32,33 +30,9 @@ class PrescriptionViewModel extends ViewStateModel {
   double get totalPrice =>
       data.drugRps?.fold(
         0,
-        (previousValue, element) => previousValue + element.drugPrice ?? 0,
+        (previousValue, element) => previousValue + (element?.drugPrice ?? 0),
       ) ??
       0;
-
-  /// 获取绑定二维码
-  Future<String> loadQRCode() async {
-    try {
-      var res = await foundationWeb.post(
-        '/wechat-accounts/temp-qr-code',
-        params: {
-          'bizType': 'PRESCRIPTION_BIND',
-          'bizId': data.prescriptionNo,
-        },
-        ignoreErrorTips: true,
-        showLoading: false,
-      );
-      return res['qrCodeUrl'];
-    } catch (e) {
-      return null;
-    }
-
-    // String qrCodeUrl = await Future.delayed(
-    //     Duration(seconds: 2),
-    //     () =>
-    //         'https://oss-dev.e-medclouds.com/Business-attachment/2020-07/100027/21212508-1595338102423.jpg');
-    // return qrCodeUrl;
-  }
 
   List<String> get clinicaList => this.data.clinicalDiagnosis?.split(',') ?? [];
 
@@ -92,17 +66,76 @@ class PrescriptionViewModel extends ViewStateModel {
     notifyListeners();
   }
 
+  bool validateData() {
+    if (this.data.prescriptionPatientName == null ||
+        this.data.prescriptionPatientName.isEmpty) {
+      EasyLoading.showToast('请输入姓名');
+      return false;
+    }
+    if (this.data.prescriptionPatientAge == null ||
+        this.data.prescriptionPatientAge < 1) {
+      EasyLoading.showToast('请输入年龄');
+      return false;
+    }
+    if (this.data.clinicalDiagnosis == null ||
+        this.data.clinicalDiagnosis.isEmpty) {
+      EasyLoading.showToast('请添加临床诊断');
+      return false;
+    }
+    if (this.data.drugRps == null || this.data.drugRps.isEmpty) {
+      EasyLoading.showToast('请添加药品');
+      return false;
+    }
+    if (this.data.attachments == null || this.data.attachments.isEmpty) {
+      EasyLoading.showToast('请上传纸质处方图片');
+      return false;
+    }
+    return true;
+  }
+
+  /// 重新设置开处方数据
+  setData(
+    PrescriptionModel newData, {
+    bool isNew = false,
+    VoidCallback callBack,
+  }) {
+    this.data = newData;
+    if (isNew) {
+      // 纸质处方重新设置
+      this.data.attachments = [];
+    }
+    notifyListeners();
+    if (callBack != null) {
+      callBack();
+    }
+  }
+
   savePrescription(Function callBack) async {
+    if (!this.validateData()) {
+      return;
+    }
     this.data.prescriptionNo = null;
     var params = this.data.toJson();
-    var res = await http.post('/prescription/add', params: params);
+    var res = await addPrescription(params);
     String prescriptionNo = res['prescriptionNo'];
-    print(res);
-    this.data.prescriptionNo = prescriptionNo;
+    this.data = new PrescriptionModel();
     if (callBack != null) {
       callBack(prescriptionNo);
     }
     notifyListeners();
+  }
+
+  updatePrescription() async {
+    if (!this.validateData()) {
+      return;
+    }
+    try {
+      var params = this.data.toJson();
+      await updatePrescriptionServive(params);
+      this.data = new PrescriptionModel();
+      notifyListeners();
+      EasyLoading.showToast('修改成功');
+    } catch (e) {}
   }
 
   void changeDataNotify() {
@@ -114,49 +147,13 @@ class PrescriptionViewModel extends ViewStateModel {
 class PrescriptionListViewModel extends ViewStateRefreshListModel {
   @override
   Future<List<PrescriptionModel>> loadData({int pageNum}) async {
-    var list = await http.post('/prescription/list', params: {
+    var list = await loadPrescriptionList({
       'ps': 10,
       'pn': pageNum,
     });
     return list['records']
         .map<PrescriptionModel>((item) => PrescriptionModel.fromJson(item))
         .toList();
-    // List<PrescriptionModel> list = [];
-    // for (var i = 0; i < 10; i++) {
-    //   String id = '$pageNum - $i';
-    //   List<DrugModel> drugRps = [];
-    //   for (var j = 0; j < 4; j++) {
-    //     String drugId = '$id-$j';
-    //     drugRps.add(
-    //       DrugModel(
-    //         drugId: j + pageNum * i,
-    //         drugName: '特制开菲尔-$drugId',
-    //         producer: '石家庄龙泽制药股份有限公司',
-    //         drugSize: '32',
-    //         drugPrice: 343,
-    //         frequency: '每日一次',
-    //         singleDose: '32',
-    //         doseUnit: '片/次',
-    //         usePattern: '口服',
-    //         quantity: '3',
-    //       ),
-    //     );
-    //   }
-    //   PrescriptionModel _model = PrescriptionModel(
-    //     id: '$id',
-    //     prescriptionNo: "NO-43243243-$id",
-    //     prescriptionPatientName: '张三-$id',
-    //     clinicalDiagnosis: '脑瘫,高血压-$id',
-    //     prescriptionPatientAge: '23',
-    //     prescriptionPatientSex: '0',
-    //     status: 'WAIT_VERIFY',
-    //     orderStatus: 'DONE',
-    //     drugRps: drugRps,
-    //     createTime: '1603366262120',
-    //   );
-    //   list.add(_model);
-    // }
-    // return Future.delayed(Duration(seconds: 1), () => list);
   }
 
   void changeDataNotify() {
@@ -179,53 +176,12 @@ class PrescriptionDetailModel extends ViewStateModel {
 
   /// 获取处方详情
   Future<PrescriptionModel> loadData() async {
-    var res = await http.post(
-      '/prescription/query',
-      params: {
-        'prescriptionNo': this.prescriptionNo,
-      },
-    );
-    return PrescriptionModel.fromJson(res);
-
-    // List<DrugModel> drugRps = [];
-    // List<OssFileEntity> attacements = [];
-    // for (var i = 0; i < 4; i++) {
-    //   String drugId = '3232-$i';
-    //   drugRps.add(
-    //     DrugModel(
-    //       drugId: i + 1,
-    //       drugName: '特制开菲尔-$drugId',
-    //       producer: '石家庄龙泽制药股份有限公司',
-    //       drugSize: '32',
-    //       drugPrice: 32,
-    //       frequency: '每日一次',
-    //       singleDose: '32',
-    //       doseUnit: '片/次',
-    //       usePattern: '口服',
-    //       quantity: 3,
-    //     ),
-    //   );
-    //   attacements.add(OssFileEntity(
-    //     ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
-    //     name: 'fdsafdsafd',
-    //     url:
-    //         'https://oss-dev.e-medclouds.com/Business-attachment/2020-07/100027/21212508-1595338102423.jpg',
-    //   ));
-    // }
-    // int id = 323;
-    // PrescriptionModel _model = PrescriptionModel(
-    //   id: id,
-    //   prescriptionNo: "NO-43243243-$id",
-    //   prescriptionPatientName: '张三-$id',
-    //   clinicalDiagnosis: '脑瘫,高血压-$id',
-    //   prescriptionPatientAge: 23,
-    //   prescriptionPatientSex: 0,
-    //   status: 'WAIT_VERIFY',
-    //   orderStatus: 'DONE',
-    //   drugRps: drugRps,
-    //   createTime: 1603366262120,
-    //   attachments: attacements,
-    // );
-    // return Future.delayed(Duration(seconds: 1), () => _model);
+    var res = await loadPrescriptionDetail({
+      'prescriptionNo': this.prescriptionNo,
+    });
+    PrescriptionModel data = PrescriptionModel.fromJson(res);
+    data.status = 'REJECT';
+    data.reason = '不给过';
+    return data;
   }
 }

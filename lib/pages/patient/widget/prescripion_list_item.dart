@@ -119,10 +119,12 @@ class PrescripionListItem extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 10,
+            right: 20,
             top: 10,
             child: Image.asset(
               'assets/images/${data.orderStatusImage}',
+              width: 90,
+              fit: BoxFit.fitWidth,
             ),
           ),
         ],

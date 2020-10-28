@@ -12,7 +12,11 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   int _currentIndex = 0;
   final List<Widget> _children = [
     WorktopPage(),
@@ -21,6 +25,7 @@ class _HomePageState extends State<HomePage> {
     UserPage(),
     // TestPage()
   ];
+
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -29,6 +34,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    // int index = ModalRoute.of(context).settings.arguments as int;
+    // if (index != null) {
+    //   _currentIndex = index;
+    //   index = null;
+    // }
     return Scaffold(
       body: _children[_currentIndex], // new
       bottomNavigationBar: BottomNavigationBar(

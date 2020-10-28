@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
+import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/pages/prescription/widgets/rp_list.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class PrescriptionTemplageAddPage extends StatefulWidget {
   @override
@@ -28,10 +30,13 @@ class _PrescriptionTemplageAddPageState
   submitData() async {
     final form = _formKey.currentState;
     if (form.validate()) {
+      if (data.drugRps == null || data.drugRps.isEmpty) {
+        EasyLoading.showToast('请添加药品信息');
+        return;
+      }
       form.save();
       try {
-        var res = await http.post('/prescription-template/add',
-            params: this.data.toJson());
+        var res = await addPrescriptionTemplate(this.data.toJson());
         if (!(res is DioError)) {
           Navigator.pop(context, true);
         }

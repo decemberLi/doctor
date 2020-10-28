@@ -59,15 +59,18 @@ class PerscriptionDetail extends StatelessWidget {
     if (data == null || data.attachments == null || data.attachments.isEmpty) {
       return [];
     }
-    return data.attachments
-        .map(
-          (e) => Image.network(
-            e.url,
-            width: 74,
-            fit: BoxFit.fitWidth,
-          ),
-        )
-        .toList();
+    return data.attachments.map(
+      (e) {
+        if (e.url == null) {
+          return Container();
+        }
+        return Image.network(
+          e.url,
+          width: 74,
+          fit: BoxFit.fitWidth,
+        );
+      },
+    ).toList();
   }
 
   @override

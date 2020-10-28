@@ -8,6 +8,7 @@ import 'package:doctor/pages/prescription/widgets/prescription_template_sheet.da
 import 'package:doctor/pages/prescription/widgets/rp_list.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/Radio_row.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';
@@ -15,6 +16,7 @@ import 'package:doctor/widgets/common_stack.dart';
 import 'package:doctor/widgets/form_item.dart';
 import 'package:doctor/widgets/image_upload.dart';
 import 'package:doctor/widgets/remove_button.dart';
+import 'package:doctor/widgets/sex_radio_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,8 +31,6 @@ class _PrescriptionPageState extends State<PrescriptionPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
-  String val = '';
 
   // 显示临床诊断弹窗
   Future<void> _showClinicalDiagnosisSheet(Function onSave) {
@@ -57,6 +57,64 @@ class _PrescriptionPageState extends State<PrescriptionPage>
         },
       ),
     );
+  }
+
+  Future<bool> showConsultationDialog() {
+    return showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text("提示"),
+          content: Container(
+            padding: EdgeInsets.only(top: 12),
+            child: Text("患者必须为复诊才能开处方"),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                "确定",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                //关闭对话框并返回true
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  renderBottomBtns() {
+    return Consumer<PrescriptionViewModel>(builder: (_, model, __) {
+      if (model.data.prescriptionNo != null) {
+        return AceButton(
+          text: '重新提交',
+          onPressed: () {
+            model.updatePrescription();
+          },
+        );
+      }
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          AceButton(
+            width: 138,
+            type: AceButtonType.grey,
+            textColor: Colors.white,
+            text: '预览处方',
+            onPressed: () {
+              Navigator.of(context)
+                  .pushNamed(RouteManager.PRESCRIPTION_PREVIEW);
+            },
+          ),
+          PrescriptionCreateBtn(),
+        ],
+      );
+    });
   }
 
   @override
@@ -97,7 +155,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                     style: MyStyles.primaryTextStyle_12,
                   ),
                   onPressed: () {
-                    print(222);
+                    // Navigator.of(context).pushNamed(
+                    //   RouteManager.PRESCRIPTION_DETAIL,
+                    // );
+                    SessionManager.loginOutHandler();
                   },
                 ),
                 children: [
@@ -109,10 +170,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       ),
                       initialValue: model.data.prescriptionPatientName,
                       validator: (val) => val.length < 1 ? '姓名不能为空' : null,
-                      onSaved: (val) => {print(val)},
                       onChanged: (String value) {
                         model.data.prescriptionPatientName = value;
-                        model.changeDataNotify();
+                        // model.changeDataNotify();
                       },
                       obscureText: false,
                       keyboardType: TextInputType.text,
@@ -126,11 +186,16 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       decoration: InputDecoration(
                         border: InputBorder.none,
                       ),
+                      initialValue:
+                          model.data?.prescriptionPatientAge?.toString() ?? '',
                       validator: (val) => val.length < 1 ? '年龄不能为空' : null,
-                      onSaved: (val) => {print(val)},
                       onChanged: (String value) {
+                        if (value.isEmpty) {
+                          model.data.prescriptionPatientAge = null;
+                          return;
+                        }
                         model.data.prescriptionPatientAge = int.parse(value);
-                        model.changeDataNotify();
+                        // model.changeDataNotify();
                       },
                       obscureText: false,
                       keyboardType: TextInputType.number,
@@ -140,35 +205,11 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   ),
                   FormItem(
                     label: '性别',
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        RadioRow(
-                          title: Text(
-                            '男',
-                            style: MyStyles.inputTextStyle,
-                          ),
-                          value: 1,
-                          groupValue: model.data.prescriptionPatientSex,
-                          onChanged: (int value) {
-                            model.data.prescriptionPatientSex = value;
-                            model.changeDataNotify();
-                          },
-                        ),
-                        RadioRow(
-                          title: Text(
-                            '女',
-                            style: MyStyles.inputTextStyle,
-                          ),
-                          value: 0,
-                          groupValue: model.data.prescriptionPatientSex,
-                          onChanged: (int value) {
-                            model.data.prescriptionPatientSex = value;
-                            model.changeDataNotify();
-                          },
-                        ),
-                      ],
-                    ),
+                    child: SexRadioRow(
+                        groupValue: model.data.prescriptionPatientSex,
+                        onChanged: (int value) {
+                          model.data.prescriptionPatientSex = value;
+                        }),
                   ),
                 ],
               ),
@@ -265,8 +306,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 children: [
                   ImageUpload(
                     images: model.data?.attachments ?? [],
+                    customUploadImageType: 'PRESCRIPTION_PAPER',
                     onChange: (_) {
-                      model.changeDataNotify();
+                      // model.changeDataNotify();
                     },
                   ),
                 ],
@@ -286,7 +328,6 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       groupValue: model.data.furtherConsultation,
                       onChanged: (String value) {
                         model.data.furtherConsultation = value;
-                        model.changeDataNotify();
                       },
                     ),
                     RadioRow(
@@ -297,8 +338,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       value: '0',
                       groupValue: model.data.furtherConsultation,
                       onChanged: (String value) {
-                        model.data.furtherConsultation = value;
-                        model.changeDataNotify();
+                        showConsultationDialog();
                       },
                     ),
                   ],
@@ -313,22 +353,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 padding: EdgeInsets.symmetric(
                   horizontal: 25,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    AceButton(
-                      width: 138,
-                      type: AceButtonType.grey,
-                      textColor: Colors.white,
-                      text: '预览处方',
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(RouteManager.PRESCRIPTION_PREVIEW);
-                      },
-                    ),
-                    PrescriptionCreateBtn(),
-                  ],
-                ),
+                child: renderBottomBtns(),
               ),
             ],
           ),

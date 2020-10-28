@@ -57,6 +57,8 @@ class OssService {
       'type': suffix,
     };
     OssFileEntity entity = await _saveFile(param);
+    entity.type = suffix;
+    entity.name = originName;
     EasyLoading.dismiss();
     return entity;
   }

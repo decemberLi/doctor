@@ -6,7 +6,7 @@ part 'patient_model.g.dart';
 @JsonSerializable()
 class PatientModel {
   /// id
-  String patientUserId;
+  int patientUserId;
 
   /// 姓名
   String patientName;
@@ -15,12 +15,12 @@ class PatientModel {
   int age;
 
   /// 性别
-  String sex;
+  int sex;
 
-  String get sexLabel => sex == '1' ? '男' : '女';
+  String get sexLabel => sex == 1 ? '男' : '女';
 
   /// 诊断时间
-  String diagnosisTime;
+  num diagnosisTime;
 
   /// 疾病名称
   String diseaseName;

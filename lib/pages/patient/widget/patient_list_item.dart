@@ -37,7 +37,7 @@ class PatientListItem extends StatelessWidget {
                 ],
               ),
               trailing: Text(
-                '${DateUtil.formatDateMs(int.parse(data.diagnosisTime), format: 'yyyy.MM.dd HH:mm')}',
+                '${DateUtil.formatDateMs(data.diagnosisTime, format: 'yyyy.MM.dd HH:mm')}',
                 style: MyStyles.inputTextStyle_12,
               ),
             ),

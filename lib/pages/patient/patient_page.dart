@@ -97,7 +97,7 @@ class _PatientListPageState extends State<PatientListPage>
                             await confirmDialog(item.patientName);
                         if (bindConfirm) {
                           bool success = await model.bindPrescription(
-                            patientId: item.patientUserId,
+                            patientUserId: item.patientUserId,
                             prescriptionNo: prescriptionNo as String,
                           );
                           if (success) {
