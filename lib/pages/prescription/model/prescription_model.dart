@@ -44,8 +44,8 @@ class PrescriptionModel {
   String pharmacist;
 
   /// 是否复诊患者（0-不是，1-是复诊患者）
-  @JsonKey(defaultValue: '1')
-  String furtherConsultation;
+  @JsonKey(defaultValue: true)
+  bool furtherConsultation;
 
   /// 状态(药师审核：WAIT_VERIFY-待审核、PASS-通过，REJECT-驳回）
   String status;
@@ -97,7 +97,7 @@ class PrescriptionModel {
     this.prescriptionPatientSex = 1,
     this.clinicalDiagnosis,
     this.pharmacist,
-    this.furtherConsultation = '1',
+    this.furtherConsultation = true,
     this.status,
     this.orderStatus,
     this.drugRps = const <DrugModel>[],

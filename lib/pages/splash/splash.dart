@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,8 +44,13 @@ class _GuidePageState extends State<GuidePage> {
               color: Theme.of(context).primaryColor,
               child: Text('点我开始'),
               onPressed: () {
-                // 跳转登陆页
-                Navigator.of(context).pushReplacementNamed(RouteManager.LOGIN);
+                String session = SessionManager().getSession();
+                String nextRoute = RouteManager.HOME;
+                if (session == null) {
+                  nextRoute = RouteManager.LOGIN_CAPTCHA;
+                }
+                // 跳转
+                Navigator.of(context).pushReplacementNamed(nextRoute);
               },
             ),
           )

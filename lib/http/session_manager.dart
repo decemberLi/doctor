@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/route/navigation_service.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -14,9 +17,17 @@ class SessionManager {
     return await _instance._initSP();
   }
 
-  static loginHandler(String ticket, LoginUser loginUser) {
-    _instance.setSession(ticket);
-    _instance.sp.setString(LAST_PHONE, loginUser.mobile);
+  /// 获取登录信息
+  static LoginInfoModel getLoginInfo() {
+    return _instance.loginInfo;
+  }
+
+  static loginHandler(Map response) {
+    LoginInfoModel loginInfo = LoginInfoModel.fromJson(response);
+    _instance.setSession(loginInfo.ticket);
+    _instance.loginInfo = loginInfo;
+    _instance.sp.setString(LOGIN_INFO, jsonEncode(loginInfo.toJson()));
+    _instance.sp.setString(LAST_PHONE, loginInfo.loginUser.mobile);
     NavigationService().pushNamedAndRemoveUntil(
         RouteManager.HOME, (Route<dynamic> route) => false);
   }
@@ -24,12 +35,14 @@ class SessionManager {
   static loginOutHandler() {
     _instance.setSession(null);
     NavigationService().pushNamedAndRemoveUntil(
-        RouteManager.LOGIN, (Route<dynamic> route) => false);
+        RouteManager.LOGIN_CAPTCHA, (Route<dynamic> route) => false);
   }
 
   SharedPreferences sp;
 
   String session;
+
+  LoginInfoModel loginInfo;
 
   SessionManager._internal() {
     this._initSP();
@@ -39,8 +52,16 @@ class SessionManager {
     if (sp == null) {
       sp = await SharedPreferences.getInstance();
       this.session = sp.getString(SESSION_KEY);
+      this.setLoginInfoFromSp();
     }
     return sp;
+  }
+
+  setLoginInfoFromSp() {
+    String info = sp.getString(LOGIN_INFO);
+    if (info != null) {
+      this.loginInfo = LoginInfoModel.fromJson(jsonDecode(info));
+    }
   }
 
   /// 获取session

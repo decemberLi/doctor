@@ -16,7 +16,7 @@ PrescriptionModel _$PrescriptionModelFromJson(Map<String, dynamic> json) {
     prescriptionPatientSex: json['prescriptionPatientSex'] as int ?? 1,
     clinicalDiagnosis: json['clinicalDiagnosis'] as String,
     pharmacist: json['pharmacist'] as String,
-    furtherConsultation: json['furtherConsultation'] as String ?? '1',
+    furtherConsultation: json['furtherConsultation'] as bool ?? true,
     status: json['status'] as String,
     orderStatus: json['orderStatus'] as String,
     drugRps: (json['drugRps'] as List)

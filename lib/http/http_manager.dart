@@ -50,6 +50,7 @@ class HttpManager {
             // dio.lock();
             // TODO: 获取session
           }
+          print('YYYLog::ticket: $session');
           options.headers['_ticketObject'] = session;
         }
         return options;

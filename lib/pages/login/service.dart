@@ -9,14 +9,24 @@ loginByPassword(params) {
 }
 
 loginByCaptCha(params) {
-  return http.post('/user/login-by-code',
+  return http.post('/user/login-after-register',
       params: params, ignoreSession: true, loadingText: '登录中...');
 }
 
 sendSms(params) {
   return foundation.post(
-    '/sms/send-code',
+    '/sms/send-captcha',
     params: params,
+    loadingText: '发送中...',
+    ignoreSession: true,
+  );
+}
+
+checkUserExists(params) {
+  return http.post(
+    '/user/exists',
+    params: params,
+    showLoading: false,
     ignoreSession: true,
   );
 }

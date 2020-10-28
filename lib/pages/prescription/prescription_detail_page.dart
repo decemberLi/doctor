@@ -91,6 +91,8 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
                           Navigator.of(context)
                               .popUntil(ModalRoute.withName(RouteManager.HOME));
                         });
+                        // Navigator.of(context)
+                        //     .popAndPushNamed(RouteManager.HOME);
                       },
                     );
                   }),

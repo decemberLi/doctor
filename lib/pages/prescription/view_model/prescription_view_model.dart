@@ -10,14 +10,14 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 /// 开处方主页面viewModel
 class PrescriptionViewModel extends ViewStateModel {
-  // PrescriptionModel data = PrescriptionModel();
-  PrescriptionModel data = PrescriptionModel(attachments: [
-    OssFileEntity(
-      ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
-      name: '测试',
-      type: 'PRESCRIPTION_PAPER',
-    )
-  ]);
+  PrescriptionModel data = PrescriptionModel();
+  // PrescriptionModel data = PrescriptionModel(attachments: [
+  //   OssFileEntity(
+  //     ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
+  //     name: '测试',
+  //     type: 'PRESCRIPTION_PAPER',
+  //   )
+  // ]);
 
   PrescriptionViewModel();
 
@@ -118,11 +118,11 @@ class PrescriptionViewModel extends ViewStateModel {
     var params = this.data.toJson();
     var res = await addPrescription(params);
     String prescriptionNo = res['prescriptionNo'];
-    this.data = new PrescriptionModel();
+    // this.data = new PrescriptionModel();
+    notifyListeners();
     if (callBack != null) {
       callBack(prescriptionNo);
     }
-    notifyListeners();
   }
 
   updatePrescription() async {
@@ -180,8 +180,8 @@ class PrescriptionDetailModel extends ViewStateModel {
       'prescriptionNo': this.prescriptionNo,
     });
     PrescriptionModel data = PrescriptionModel.fromJson(res);
-    data.status = 'REJECT';
-    data.reason = '不给过';
+    // data.status = 'REJECT';
+    // data.reason = '不给过';
     return data;
   }
 }

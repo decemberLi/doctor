@@ -168,7 +168,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       decoration: InputDecoration(
                         border: InputBorder.none,
                       ),
-                      initialValue: model.data.prescriptionPatientName,
+                      initialValue: model.data.prescriptionPatientName ?? '',
                       validator: (val) => val.length < 1 ? '姓名不能为空' : null,
                       onChanged: (String value) {
                         model.data.prescriptionPatientName = value;
@@ -307,7 +307,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   ImageUpload(
                     images: model.data?.attachments ?? [],
                     customUploadImageType: 'PRESCRIPTION_PAPER',
-                    onChange: (_) {
+                    onChange: (newImages) {
+                      model.data.attachments = newImages;
                       // model.changeDataNotify();
                     },
                   ),
@@ -324,9 +325,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                         '是',
                         style: MyStyles.inputTextStyle,
                       ),
-                      value: '1',
+                      value: true,
                       groupValue: model.data.furtherConsultation,
-                      onChanged: (String value) {
+                      onChanged: (bool value) {
                         model.data.furtherConsultation = value;
                       },
                     ),
@@ -335,9 +336,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                         '否',
                         style: MyStyles.inputTextStyle,
                       ),
-                      value: '0',
+                      value: false,
                       groupValue: model.data.furtherConsultation,
-                      onChanged: (String value) {
+                      onChanged: (bool value) {
                         showConsultationDialog();
                       },
                     ),
