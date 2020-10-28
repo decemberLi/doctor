@@ -2,6 +2,20 @@ import 'package:doctor/http/http_manager.dart';
 
 HttpManager http = HttpManager('server');
 
+/// 提交学习计划
+Future learnSubmit(params) async {
+  return await http.post('/learn-plan/submit', params: params);
+}
+
+// 提交问卷
+submitQuestion(params) {
+  print('调用接口$params');
+  return http.post(
+    '/submit/question',
+    params: params,
+  );
+}
+
 // 获取评论
 getCommentNum(params) {
   return http.post(

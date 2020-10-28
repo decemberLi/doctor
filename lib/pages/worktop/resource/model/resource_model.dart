@@ -34,7 +34,7 @@ class Question {
 class QuestionOption {
   String answerOption;
   String index;
-  int checked;
+  String checked;
   QuestionOption(this.answerOption, this.index, this.checked);
   factory QuestionOption.fromJson(Map<String, dynamic> json) =>
       _$QuestionOptionFromJson(json);

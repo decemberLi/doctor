@@ -140,7 +140,7 @@ class LearnListItemWiget extends StatelessWidget {
         // Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL);
       },
       child: Container(
-        margin: EdgeInsets.only(bottom: 12),
+        margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
         padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
         decoration: BoxDecoration(
           color: Colors.white,

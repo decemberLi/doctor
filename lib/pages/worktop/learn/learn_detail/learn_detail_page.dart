@@ -5,6 +5,7 @@ import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/utils/constants.dart';
@@ -30,8 +31,54 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         {
           'field': 'createTime',
           'label': '收到学习计划日期',
+        },
+        {
+          'field': 'meetingEndTime',
+          'label': '截止日期',
         }
       ];
+
+  //确认弹窗
+  Future<bool> confirmDialog(int learnProgress) {
+    return showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        print(learnProgress);
+        String _text = '当前的学习计划已完成确认提交吗?';
+        if (learnProgress == 0) {
+          _text = '当前学习计划尚未学习，请在学习后提交';
+        } else if (learnProgress != 100) {
+          // 学习进度未完成
+          _text = '当前学习计划尚未完成，完成度${learnProgress}%，确认提交吗？';
+        }
+        return CupertinoAlertDialog(
+          title: Text("提示"),
+          content: Container(
+            padding: EdgeInsets.only(top: 12),
+            child: Text(_text),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("取消"),
+              onPressed: () => Navigator.of(context).pop(false), // 关闭对话框
+            ),
+            FlatButton(
+              child: Text(
+                "确定",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                //关闭对话框并返回true
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget typeDecoratedBox(String type) {
     Color rendColor = ThemeColor.color72c140;
@@ -72,11 +119,15 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
       }
       if (item['field'] == 'createTime') {
         fieldText =
-            DateUtil.formatDateMs(data.createTime, format: 'yyyy年MM月dd HH:mm');
+            DateUtil.formatDateMs(data.createTime, format: 'yyyy年MM月dd ');
+      }
+      if (item['field'] == 'meetingEndTime') {
+        fieldText =
+            DateUtil.formatDateMs(data.meetingEndTime, format: 'yyyy年MM月dd ');
       }
       tiles.add(new Container(
           alignment: Alignment.centerLeft,
-          margin: EdgeInsets.fromLTRB(16, 10, 16, 10),
+          margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
           padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
           decoration: BoxDecoration(
             border: Border(
@@ -91,7 +142,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 18,
+                      fontSize: 16,
                     )),
                 SizedBox(
                   height: 20,
@@ -101,7 +152,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                     fieldText,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      fontSize: 18,
+                      fontSize: 14,
                     ),
                     textAlign: TextAlign.right,
                   ),
@@ -117,9 +168,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   // 提交按钮
   String _aceText(type, reLearn) {
-    String text = reLearn ? '重传讲课视频' : '提交学习计划';
+    String text = '提交学习计划';
     if (type == 'DOCTOR_LECTURE') {
-      text = '上传讲课视频';
+      text = reLearn ? '重传讲课视频' : '上传讲课视频';
     }
     return text;
   }
@@ -127,8 +178,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   // 如何录制讲课视频
   Widget _buildLookCourse(data) {
     // 文本字段（`TextField`）组件，允许用户使用硬件键盘或屏幕键盘输入文本。
-// TODO:增加计划截止日期
-
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
@@ -137,7 +186,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               child: Text('当前完成度：${data.learnProgress}%',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 18,
+                    fontSize: 16,
                     color: ThemeColor.primaryColor,
                   ))),
           if (data.taskTemplate == 'DOCTOR_LECTURE')
@@ -162,6 +211,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   @override
   Widget build(BuildContext context) {
     int arguments = ModalRoute.of(context).settings.arguments;
+    // var learnPlanId = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -186,10 +237,47 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 child: ListView(
                   // mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    if (data.taskTemplate == 'DOCTOR_LECTURE' ??
+                        data.reLearnReason)
+                      Container(
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                          padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          child: Column(children: [
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text('${data.representName}推广员给您留言了：',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: ThemeColor.colorFFfece35,
+                                      )),
+                                ]),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                      child: Text('${data.reLearnReason}推广员推给',
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14,
+                                            color: ThemeColor.colorFFfece35,
+                                          )))
+                                ])
+                          ])),
                     Container(
                       child: Container(
                         margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -223,8 +311,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                 }),
                             Container(
                                 alignment: Alignment.centerLeft,
-                                margin: EdgeInsets.fromLTRB(16, 10, 16, 10),
-                                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                                padding: EdgeInsets.fromLTRB(0, 14, 0, 14),
                                 decoration: BoxDecoration(
                                   border: Border(
                                     bottom: BorderSide(
@@ -241,7 +329,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w500,
-                                            fontSize: 18,
+                                            fontSize: 16,
                                           )),
                                       SizedBox(
                                         height: 20,
@@ -251,7 +339,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                           data.taskName,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w500,
-                                            fontSize: 18,
+                                            fontSize: 14,
                                           ),
                                           textAlign: TextAlign.right,
                                           softWrap: true,
@@ -276,21 +364,33 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                             ),
                             AceButton(
                               text: _aceText(data.taskTemplate, data.reLearn),
-                              onPressed: () => {
-                                if (data.taskTemplate == 'DOCTOR_LECTURE')
-                                  {
-                                    Navigator.of(context).pushNamed(
-                                        RouteManager.LEARN_UPLOAD_RECORD,
-                                        arguments: {
-                                          'resourceId': data.resources ??
-                                              data.resources[0].resourceId,
-                                          'learnPlanId': data.learnPlanId,
-                                          'doctorName': data.doctorName,
-                                          'taskName': data.taskName
-                                        })
+                              onPressed: () async {
+                                if (data.taskTemplate == 'DOCTOR_LECTURE') {
+                                  Navigator.of(context).pushNamed(
+                                      RouteManager.LEARN_UPLOAD_RECORD,
+                                      arguments: {
+                                        'resourceId': data.resources ??
+                                            data.resources[0].resourceId,
+                                        'learnPlanId': data.learnPlanId,
+                                        'doctorName': data.doctorName,
+                                        'taskName': data.taskName
+                                      });
+                                } else {
+                                  // EasyLoading.showToast('暂未开放'),
+                                  if (data.learnProgress > 0) {
+                                    bool bindConfirm =
+                                        await confirmDialog(data.learnProgress);
+                                    if (bindConfirm) {
+                                      bool success = await model.bindLearnPlan(
+                                        learnPlanId: data.learnPlanId,
+                                      );
+                                      if (success) {
+                                        EasyLoading.showToast('提交成功');
+                                        Navigator.of(context).pop();
+                                      }
+                                    }
                                   }
-                                else
-                                  {EasyLoading.showToast('暂未开放')},
+                                }
                               },
                             ),
                             SizedBox(

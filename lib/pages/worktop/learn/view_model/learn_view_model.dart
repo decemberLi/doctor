@@ -1,6 +1,7 @@
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
+import 'package:doctor/pages/worktop/service/service.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
 
@@ -47,5 +48,18 @@ class LearnDetailViewModel extends ViewStateModel {
       'learnPlanId': this.learnPlanId,
     });
     return LearnDetailItem.fromJson(data);
+  }
+
+  Future<bool> bindLearnPlan({
+    int learnPlanId,
+  }) async {
+    try {
+      var res = await learnSubmit({
+        'learnPlanId': learnPlanId,
+      });
+      return res;
+    } catch (e) {
+      return false;
+    }
   }
 }

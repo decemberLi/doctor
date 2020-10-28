@@ -33,7 +33,8 @@ class PlanDetailList extends StatelessWidget {
   }
 
   // 头部状态
-  Widget learnStatusType(String resourceType, String status, dynamic item) {
+  Widget learnStatusType(
+      String resourceType, String status, String taskTemplate, dynamic item) {
     Color rendColor = Color(0xFFDEDEE1);
     String text = '待浏览';
     IconData icon = Icons.access_time;
@@ -49,6 +50,14 @@ class PlanDetailList extends StatelessWidget {
         text = '浏览时长：${item.learnTime}s';
       } else {
         text = '已完成';
+      }
+    }
+    // 录制视频只有一个状态-完成条件只有一个：上传讲课视频
+    if (taskTemplate == 'DOCTOR_LECTURE') {
+      text = '上传讲课视频';
+      if (item.ststus != null && item.ststus == 'FINISHED') {
+        icon = Icons.done;
+        rendColor = ThemeColor.color72c140;
       }
     }
     if (item.ststus != null && item.ststus == 'FINISHED') {
@@ -262,9 +271,10 @@ class PlanDetailList extends StatelessWidget {
                                 children: [
                                   Row(
                                     children: [
-                                      learnStatusType(
-                                          item.resourceType, data.status, item),
-                                      learnFeedback(item),
+                                      learnStatusType(item.resourceType,
+                                          data.status, data.taskTemplate, item),
+                                      if (data.taskTemplate != 'DOCTOR_LECTURE')
+                                        learnFeedback(item),
                                     ],
                                   ),
                                   learnTitle(item.resourceType, item),

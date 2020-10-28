@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
+import 'package:doctor/pages/worktop/resource/service.dart';
 import 'package:doctor/pages/worktop/resource/view_model/resource_component_model.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_file_preview/flutter_file_preview.dart';
@@ -22,6 +26,40 @@ class _QuestionPageState extends State<QuestionPage> {
     _questionsInit = _getQuestionsInit();
 
     super.initState();
+  }
+
+//确认弹窗
+  Future<bool> confirmDialog() {
+    return showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text("提示"),
+          content: Container(
+            padding: EdgeInsets.only(top: 12),
+            child: Text('确认提交本调研问卷答案吗？'),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("取消"),
+              onPressed: () => Navigator.of(context).pop(false), // 关闭对话框
+            ),
+            FlatButton(
+              child: Text(
+                "确定",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                //关闭对话框并返回true
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   _getQuestionsInit() {
@@ -60,8 +98,86 @@ class _QuestionPageState extends State<QuestionPage> {
 
   _openFile() async {
     // TODO: 提交问卷
-    EasyLoading.showToast('$_questionsInit');
+    Iterable questionsAll = widget.data.questions;
+    print("提交问卷:${questionsAll}");
     print('提交问卷:$_questionsInit');
+    bool showError = false;
+    for (var item in questionsAll) {
+      if (item.type == 'RADIO') {
+        // 单选
+        _questionsInit.forEach((element) {
+          if (element['index'] == item.index) {
+            if (int.parse(element['groupValue']) > 0) {
+              item.options[int.parse(element['groupValue'])].checked =
+                  (element['groupValue']);
+            } else {
+              EasyLoading.showToast('请确保所有问卷内容已正确填写');
+              showError = true;
+              return false;
+            }
+          }
+        });
+      }
+      if (item.type == 'CHECKBOX') {
+        // 多选
+        _questionsInit.forEach((element) {
+          if (element['index'] == item.index) {
+            if (element['checked'].length == 0) {
+              EasyLoading.showToast('请确保所有问卷内容已正确填写');
+              showError = true;
+              return false;
+            }
+            // (element['checked']).forEach((checkeditem) {
+            //   if (item.options[int.parse(checkeditem)] != null)
+            //     item.options[int.parse(checkeditem)].checked = checkeditem;
+            // });
+          }
+        });
+      }
+      if (item.type == 'TEXT') {
+        // 文本
+        _questionsInit.forEach((element) {
+          if (element['index'] == item.index) {
+            if (element['textField'] != null) {
+              print(item.toString());
+              // item.options = [
+              //   {'checked': element['textField']}
+              // ];
+              Map<String, dynamic> reoptions = {
+                "checked": element['textField'],
+                "index": null,
+                "answerOption": null,
+              };
+              item.options.add(reoptions);
+
+              // item.options[0].checked = element['textField'];
+            } else {
+              EasyLoading.showToast('请确保所有问卷内容已正确填写');
+              showError = true;
+              return false;
+            }
+          }
+        });
+      }
+    }
+
+    if (!showError) {
+      bool bindConfirm = await confirmDialog();
+      if (bindConfirm) {
+        bool success = await submitQuestion({
+          'learnPlanId': widget.data.learnPlanId,
+          'resourceId': widget.data.resourceId,
+          'questions': questionsAll
+        }).then((res) {
+          EasyLoading.showToast('提交成功');
+          Navigator.of(context).pop();
+        });
+        if (success) {
+          EasyLoading.showToast('提交成功');
+          Navigator.of(context).pop();
+        }
+      }
+    }
   }
 
   // 构建 单选框Radio 单选题选项列表 组件
@@ -138,7 +254,7 @@ class _QuestionPageState extends State<QuestionPage> {
           activeColor: ThemeColor.primaryColor, //选中时的颜色
           checkColor: Colors.white, //选中时里面对号的颜色
           value: question.options[optionIndex].checked != null &&
-              (question.options[optionIndex].checked ==
+              (int.parse(question.options[optionIndex].checked) ==
                       int.parse(question.options[optionIndex].index)
                   ? true
                   : false), // 该值为bool类型 false即不选中
@@ -159,7 +275,7 @@ class _QuestionPageState extends State<QuestionPage> {
 
       if (isCheck) {
         _questionsInit[question.index]['checked'].add(optionId);
-        question.options[optionIndex].checked = optionIndex;
+        question.options[optionIndex].checked = optionIndex.toString();
         print('选中了: ' + optionId);
       } else {
         question.options[optionIndex].checked = null;
@@ -198,8 +314,7 @@ class _QuestionPageState extends State<QuestionPage> {
       ),
       onChanged: (text) {
         _questionsInit[question.index]['textField'] = text;
-
-        print("输入框 组件: $text");
+        // print("输入框 组件: $text");
       },
       // controller: controller, // 控制正在编辑的文本
     );
