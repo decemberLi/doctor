@@ -32,9 +32,9 @@ PrescriptionModel _$PrescriptionModelFromJson(Map<String, dynamic> json) {
   )
     ..doctorName = json['doctorName'] as String
     ..depart = json['depart'] as String
-    ..auditorId = json['auditorId'] as String
+    ..auditorId = json['auditorId'] as num
     ..auditor = json['auditor'] as String
-    ..auditTime = json['auditTime'] as String;
+    ..auditTime = json['auditTime'] as num;
 }
 
 Map<String, dynamic> _$PrescriptionModelToJson(PrescriptionModel instance) =>

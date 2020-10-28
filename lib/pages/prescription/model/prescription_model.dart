@@ -77,15 +77,15 @@ class PrescriptionModel {
   String depart;
 
   /// 审核人(药师)id
-  String auditorId;
+  num auditorId;
 
   /// 审核人名称
   String auditor;
 
   /// 审核时间
-  String auditTime;
+  num auditTime;
   String get auditTimeText => auditTime != null
-      ? DateUtil.formatDateMs(int.parse(auditTime), format: 'yyyy.MM.dd HH:mm')
+      ? DateUtil.formatDateMs(auditTime, format: 'yyyy.MM.dd HH:mm')
       : '';
 
   PrescriptionModel({
