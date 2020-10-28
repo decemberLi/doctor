@@ -127,6 +127,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   // 如何录制讲课视频
   Widget _buildLookCourse(data) {
     // 文本字段（`TextField`）组件，允许用户使用硬件键盘或屏幕键盘输入文本。
+// TODO:增加计划截止日期
+
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
