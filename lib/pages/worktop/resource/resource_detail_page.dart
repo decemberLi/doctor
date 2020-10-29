@@ -421,11 +421,14 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   // crossAxisAlignment: CrossAxisAlignment.center,
                   // mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      successFeedback
-                          ? '您的反馈已收到,非常感谢！'
-                          : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗?',
-                      style: TextStyle(fontSize: 26, color: Colors.white),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        successFeedback
+                            ? '您的反馈已收到,非常感谢！'
+                            : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗?',
+                        style: TextStyle(fontSize: 26, color: Colors.white),
+                      ),
                     ),
                     // 反馈成功
                     if (successFeedback)
@@ -445,8 +448,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                             children: [
                               Container(
                                 height: 30,
-                                padding: EdgeInsets.only(left: 33, right: 10),
-                                margin: EdgeInsets.all(20),
+                                padding: EdgeInsets.only(left: 30, right: 10),
+                                margin: EdgeInsets.only(top: 26),
                                 constraints: BoxConstraints(
                                   minWidth: 100,
                                 ),
@@ -473,8 +476,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                                 ),
                               ),
                               Positioned(
-                                left: 9,
-                                top: 12,
+                                left: -10,
+                                top: 18,
                                 child: Icon(
                                   item['icon'],
                                   size: 40,
@@ -490,7 +493,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           overflow: Overflow.visible,
                           children: [
                             Container(
-                              width: 150,
+                              margin: EdgeInsets.only(top: 26),
+                              width: 140,
                               height: 30,
                               child: RaisedButton(
                                 padding: EdgeInsets.only(left: 30),
@@ -525,7 +529,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                             ),
                             Positioned(
                               left: -5,
-                              top: -4,
+                              top: 22,
                               child: Icon(
                                 MyIcons.icon_pinglun,
                                 size: 40,
@@ -543,8 +547,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   left: 0,
                   right: 0,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
-                      ? MediaQuery.of(context).viewInsets.bottom - 110
-                      : 110,
+                      ? MediaQuery.of(context).viewInsets.bottom - 115
+                      : 115,
                   child: Column(
                     children: [
                       TextField(
@@ -577,14 +581,13 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                 Positioned(
                   left: 0,
                   right: 0,
-                  bottom: 55,
+                  bottom: 60,
                   child: FloatingActionButton.extended(
                     backgroundColor: ThemeColor.primaryColor,
                     onPressed: () {
                       // Respond to button press
                       sendFeedback(_feedbackContent);
                     },
-                    icon: Icon(Icons.send),
                     label: Text('发送评价'),
                   ),
                 ),
