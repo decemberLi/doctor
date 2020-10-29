@@ -96,3 +96,11 @@ feedbackService(params) {
     params: params,
   );
 }
+
+//上传讲课视频
+addLectureSubmit(params) {
+  return medServer.post(
+    '/doctor-lecture/submit',
+    params: params,
+  );
+}
