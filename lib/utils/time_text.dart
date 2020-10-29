@@ -7,7 +7,7 @@ class RelativeDateFormat {
   static final num ONE_DAY = 86400000;
   static final num ONE_WEEK = 604800000;
 
-  static final String ONE_SECOND_AGO = "秒前";
+  // static final String ONE_SECOND_AGO = "秒前";
   static final String ONE_MINUTE_AGO = "分钟前";
   static final String ONE_HOUR_AGO = "小时前";
   static final String ONE_DAY_AGO = "天前";
@@ -17,15 +17,12 @@ class RelativeDateFormat {
 //时间转换
   static String format(int date) {
     num delta = DateTime.now().millisecondsSinceEpoch - date;
-    if (delta < 1 * ONE_MINUTE) {
-      num seconds = toSeconds(delta);
-      return (seconds >= 5
-          ? ((seconds).toInt().toString() + ONE_SECOND_AGO)
-          : '刚刚');
+    if (delta < 5 * ONE_MINUTE) {
+      return '刚刚';
     }
-    if (delta < 45 * ONE_MINUTE) {
+    if (delta < 60 * ONE_MINUTE) {
       num minutes = toMinutes(delta);
-      return (minutes < 1 ? 1 : minutes).toInt().toString() + ONE_MINUTE_AGO;
+      return (minutes < 5 ? 5 : minutes).toInt().toString() + ONE_MINUTE_AGO;
     }
     if (delta < 24 * ONE_HOUR) {
       num hours = toHours(delta);
