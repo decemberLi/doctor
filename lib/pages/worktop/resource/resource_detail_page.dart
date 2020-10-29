@@ -391,7 +391,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     return Positioned.fill(
       child: GestureDetector(
         onTap: () {
-          // Navigator.pop(context); //点击屏幕不反馈直接返回
+          Navigator.pop(context); //点击屏幕不反馈直接返回
         },
         child: Container(
           child: Stack(
