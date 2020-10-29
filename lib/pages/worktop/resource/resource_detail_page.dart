@@ -433,15 +433,19 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                             children: [
                               Container(
                                 height: 30,
-                                padding: EdgeInsets.only(left: 25, right: 10),
+                                padding: EdgeInsets.only(left: 33, right: 10),
                                 margin: EdgeInsets.all(20),
                                 constraints: BoxConstraints(
                                   minWidth: 100,
                                 ),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15)),
+                                  // borderRadius:
+                                  // BorderRadius.all(Radius.circular(15)),
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15),
+                                      topRight: Radius.circular(15)),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -457,8 +461,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                                 ),
                               ),
                               Positioned(
-                                left: 0,
-                                top: 13,
+                                left: 9,
+                                top: 12,
                                 child: Icon(
                                   item['icon'],
                                   size: 40,
@@ -474,12 +478,12 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           overflow: Overflow.visible,
                           children: [
                             Container(
-                              width: 130,
-                              height: 40,
+                              width: 150,
+                              height: 30,
                               child: RaisedButton(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(40 / 2),
+                                    Radius.circular(30 / 2),
                                   ),
                                 ),
                                 color: Colors.white,
@@ -494,8 +498,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                               ),
                             ),
                             Positioned(
-                              left: -20,
-                              top: 0,
+                              left: -5,
+                              top: -4,
                               child: Icon(
                                 MyIcons.icon_pinglun,
                                 size: 40,
@@ -503,7 +507,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                             ),
                             Positioned(
                               right: 0,
-                              top: 0,
+                              top: -4,
                               child: Icon(
                                 _addFeedback
                                     ? Icons.keyboard_arrow_up
