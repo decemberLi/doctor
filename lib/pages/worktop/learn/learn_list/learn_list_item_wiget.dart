@@ -135,8 +135,10 @@ class LearnListItemWiget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context)
-            .pushNamed(RouteManager.LEARN_DETAIL, arguments: item.learnPlanId);
+        Navigator.of(context).pushNamed(RouteManager.LEARN_DETAIL, arguments: {
+          "learnPlanId": item.learnPlanId,
+          "listStatus": listStatus,
+        });
         // Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL);
       },
       child: Container(

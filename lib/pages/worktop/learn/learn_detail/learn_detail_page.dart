@@ -210,7 +210,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    int arguments = ModalRoute.of(context).settings.arguments;
+    dynamic arguments = ModalRoute.of(context).settings.arguments;
     // var learnPlanId = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
@@ -219,7 +219,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         title: Text('学习计划详情'),
       ),
       body: ProviderWidget<LearnDetailViewModel>(
-        model: LearnDetailViewModel(arguments),
+        model: LearnDetailViewModel(arguments['learnPlanId']),
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           if (model.isBusy) {
@@ -359,40 +359,43 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                 _buildLookCourse(data),
                               ]),
                             ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            AceButton(
-                              text: _aceText(data.taskTemplate, data.reLearn),
-                              onPressed: () async {
-                                if (data.taskTemplate == 'DOCTOR_LECTURE') {
-                                  Navigator.of(context).pushNamed(
-                                      RouteManager.LEARN_UPLOAD_RECORD,
-                                      arguments: {
-                                        'resourceId': data.resources ??
-                                            data.resources[0].resourceId,
-                                        'learnPlanId': data.learnPlanId,
-                                        'doctorName': data.doctorName,
-                                        'taskName': data.taskName
-                                      });
-                                } else {
-                                  // EasyLoading.showToast('暂未开放'),
-                                  if (data.learnProgress > 0) {
-                                    bool bindConfirm =
-                                        await confirmDialog(data.learnProgress);
-                                    if (bindConfirm) {
-                                      bool success = await model.bindLearnPlan(
-                                        learnPlanId: data.learnPlanId,
-                                      );
-                                      if (success) {
-                                        EasyLoading.showToast('提交成功');
-                                        Navigator.of(context).pop();
+                            if (arguments['listStatus'] != 'HISTORY')
+                              SizedBox(
+                                height: 20,
+                              ),
+                            if (arguments['listStatus'] != 'HISTORY')
+                              AceButton(
+                                text: _aceText(data.taskTemplate, data.reLearn),
+                                onPressed: () async {
+                                  if (data.taskTemplate == 'DOCTOR_LECTURE') {
+                                    Navigator.of(context).pushNamed(
+                                        RouteManager.LEARN_UPLOAD_RECORD,
+                                        arguments: {
+                                          'resourceId': data.resources ??
+                                              data.resources[0].resourceId,
+                                          'learnPlanId': data.learnPlanId,
+                                          'doctorName': data.doctorName,
+                                          'taskName': data.taskName
+                                        });
+                                  } else {
+                                    // EasyLoading.showToast('暂未开放'),
+                                    if (data.learnProgress > 0) {
+                                      bool bindConfirm = await confirmDialog(
+                                          data.learnProgress);
+                                      if (bindConfirm) {
+                                        bool success =
+                                            await model.bindLearnPlan(
+                                          learnPlanId: data.learnPlanId,
+                                        );
+                                        if (success) {
+                                          EasyLoading.showToast('提交成功');
+                                          Navigator.of(context).pop();
+                                        }
                                       }
                                     }
                                   }
-                                }
-                              },
-                            ),
+                                },
+                              ),
                             SizedBox(
                               height: 20,
                             ),

@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
           ),
           primaryIconTheme: IconThemeData(color: ThemeColor.primaryColor),
           visualDensity: VisualDensity.adaptivePlatformDensity,
+          disabledColor: ThemeColor.secondaryGeryColor,
         ),
         localizationsDelegates: [
           RefreshLocalizations.delegate,
