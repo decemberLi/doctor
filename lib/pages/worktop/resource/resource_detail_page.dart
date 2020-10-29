@@ -29,8 +29,7 @@ class ResourceDetailPage extends StatefulWidget {
   _ResourceDetailPageState createState() => _ResourceDetailPageState();
 }
 
-class _ResourceDetailPageState extends State<ResourceDetailPage>
-    with RouteAware {
+class _ResourceDetailPageState extends State<ResourceDetailPage> {
   bool logo = true;
   bool _startIcon = false;
   int msgCount = 5;
@@ -46,11 +45,13 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   bool successFeedback = false; //反馈成功状态
   bool _addFeedback = false; //撰写评论
   String feedbackType;
+
   Widget resourceRender(ResourceModel data) {
     void openTimer() {
       //需要记录浏览时间
       bool needReport = data.learnPlanStatus != 'SUBMIT_LEARN' &&
-          data.learnPlanStatus != 'ACCEPTED';
+          data.learnPlanStatus != 'ACCEPTED' &&
+          widget.learnPlanId != null;
       if (_timer == null && needReport) {
         startCountTimer();
       }
@@ -80,10 +81,12 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   // 文章webview点击时触发
   void _clickWebView() {
-    commentFocusNode.unfocus();
-    setState(() {
-      logo = true;
-    });
+    if (widget.learnPlanId != null) {
+      commentFocusNode.unfocus();
+      setState(() {
+        logo = true;
+      });
+    }
   }
 
   //获取评论
@@ -112,17 +115,19 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     }
     _getCollect(widget.resourceId);
     // 输入框焦点监听事件
-    commentFocusNode.addListener(() {
-      if (commentFocusNode.hasFocus) {
-        setState(() {
-          logo = false;
-        });
-      } else {
-        setState(() {
-          logo = true;
-        });
-      }
-    });
+    if (commentFocusNode != null) {
+      commentFocusNode.addListener(() {
+        if (commentFocusNode.hasFocus) {
+          setState(() {
+            logo = false;
+          });
+        } else {
+          setState(() {
+            logo = true;
+          });
+        }
+      });
+    }
     super.initState();
   }
 
@@ -134,7 +139,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       _timer.cancel();
       _timer = null;
     }
-    if (_learnTime > 0) {
+    if (_learnTime > 0 && widget.learnPlanId != null) {
       //上传时间
       //time传当前学习了多少s 后台做累加用
       updateLearnTime({
@@ -617,7 +622,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                   data.resourceType != 'QUESTIONNAIRE' &&
                   widget.taskTemplate != 'DOCTOR_LECTURE' &&
                   _learnTime > 0 &&
-                  data.feedback == null;
+                  data.feedback == null &&
+                  widget.learnPlanId != null;
               return Container(
                 color: ThemeColor.colorFFF3F5F8,
                 child: Stack(
@@ -672,7 +678,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                             ),
                     ),
                     // 计时器
-                    timerContent(data),
+                    if (widget.learnPlanId != null) timerContent(data),
                     //反馈
                     if (needFeedback && showFeedback) feedbackWidget(data),
                   ],
