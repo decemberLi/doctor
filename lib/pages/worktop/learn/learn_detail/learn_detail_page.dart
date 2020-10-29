@@ -208,6 +208,39 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         ]);
   }
 
+  // 会议进行中
+  Widget _meetingStatus(int start, int end) {
+    Color rendColor = Color(0xffF6A419);
+    String text = '会议进行中';
+    int time = new DateTime.now().millisecondsSinceEpoch;
+    if (time > end) {
+      text = '会议已结束';
+      rendColor = Color(0xFFDEDEE1);
+    }
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+      margin: EdgeInsets.only(top: 16, bottom: 16, left: 10),
+      decoration: BoxDecoration(
+        color: rendColor,
+        boxShadow: [
+          BoxShadow(color: rendColor, offset: Offset(2.0, 2.0), blurRadius: 4.0)
+        ],
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28),
+            bottomRight: Radius.circular(28)),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+            color: ThemeColor.colorFFFFFF,
+            fontSize: 12,
+            fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
@@ -284,31 +317,54 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                         ),
                         child: Column(
                           children: [
-                            ListTile(
-                                title: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        _isExpanded
-                                            ? Icons.keyboard_arrow_up
-                                            : Icons.keyboard_arrow_down,
-                                        color: ThemeColor.primaryColor,
-                                      ),
-                                    ]),
-                                leading: Text('学习计划信息',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20,
-                                      color: ThemeColor.primaryColor,
-                                    )),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                              padding: EdgeInsets.fromLTRB(0, 14, 0, 0),
+                              child: GestureDetector(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text('学习计划信息',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 20,
+                                              color: ThemeColor.primaryColor,
+                                            )),
+                                        // 新
+                                        if (data.taskTemplate == 'SALON' ||
+                                            data.taskTemplate == 'DEPART')
+                                          _meetingStatus(data.meetingStartTime,
+                                              data.meetingEndTime)
+                                      ],
+                                    ),
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            _isExpanded
+                                                ? Icons.keyboard_arrow_up
+                                                : Icons.keyboard_arrow_down,
+                                            color: ThemeColor.primaryColor,
+                                          ),
+                                        ]),
+                                  ],
+                                ),
                                 onTap: () {
                                   setState(() {
                                     _isExpanded = !_isExpanded;
                                   });
-                                }),
+                                },
+                              ),
+                            ),
                             Container(
                                 alignment: Alignment.centerLeft,
                                 margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
