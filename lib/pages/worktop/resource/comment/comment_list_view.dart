@@ -62,7 +62,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
         children: [
           Image.asset(
             "assets/images/avatar.png",
-            width: 50,
+            width: 40,
           ),
           // Image.network(
           //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
@@ -85,7 +85,6 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                   // child: Text(data.commentContent),
                   child: GestureDetector(
                     onTap: () {
-                      print('回复');
                       // Navigator.pushNamed(context, RouteManager.FIND_PWD);
                       widget.onCommentClick(
                         data.id,
@@ -124,12 +123,13 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
             .toList();
       } else {
         return secondLength == 0
-            ? [Text('')]
+            ? [Container()]
             : secondItem.map((e) => commentRepplyItem(e)).toList();
       }
     }
 
     return Container(
+      padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
       child: Column(
         children: [
           //主回复
@@ -138,7 +138,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
             children: [
               Image.asset(
                 "assets/images/avatar.png",
-                width: 50,
+                width: 40,
               ),
               // Image.network(
               //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
@@ -160,7 +160,6 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                       margin: EdgeInsets.all(5),
                       child: GestureDetector(
                         onTap: () {
-                          print('回复');
                           // Navigator.pushNamed(context, RouteManager.FIND_PWD);
                           widget.onCommentClick(
                             widget.item.id,
@@ -175,6 +174,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                       ),
                     ),
                     Container(
+                      margin: EdgeInsets.all(5),
                       alignment: Alignment.centerRight,
                       child: Text(
                           RelativeDateFormat.format(widget.item.createTime)),
@@ -200,7 +200,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                       style: TextStyle(color: ThemeColor.primaryColor),
                     ),
                   ))
-              : Text(''),
+              : Container(),
           Divider(
             height: 1,
           ),
@@ -330,7 +330,7 @@ class _CommentListPageState extends State<CommentListPage>
                     children: [
                       ListView.builder(
                         itemCount: model.list.length,
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 60),
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, 60),
                         itemBuilder: (context, index) {
                           CommentListItem item = model.list[index];
                           return ShowCommentItems(item, onCommentClick);

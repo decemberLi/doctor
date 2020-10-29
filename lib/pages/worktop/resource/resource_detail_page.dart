@@ -633,7 +633,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   data.learnPlanStatus != 'ACCEPTED' &&
                   data.resourceType != 'QUESTIONNAIRE' &&
                   widget.taskTemplate != 'DOCTOR_LECTURE' &&
-                  _learnTime > 0 &&
+                  data.learnTime + _learnTime > 0 &&
                   data.feedback == null &&
                   widget.learnPlanId != null;
               return Container(
