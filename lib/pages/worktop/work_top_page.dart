@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:doctor/http/session_manager.dart';
+import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_item_wiget.dart';
 import 'package:doctor/pages/worktop/model/work_top_entity.dart';
 import 'package:doctor/pages/worktop/service.dart';
@@ -35,8 +37,59 @@ class _WorktopPageState extends State<WorktopPage>
 
   @override
   void initState() {
-    super.initState();
+    LoginInfoModel loginInfo = SessionManager.getLoginInfo();
+    // if (loginInfo.authStatus == 'WAIT_VERIFY') {
+    //   WidgetsBinding.instance.addPostFrameCallback((callback) {
+    //     _showGoToQualificationDialog();
+    //   });
+    // } else {
+    //   _refreshData();
+    // }
     _refreshData();
+    super.initState();
+  }
+
+  /// 显示完善信息弹窗
+  Future<bool> _showGoToQualificationDialog() {
+    return showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          content: Container(
+            padding: EdgeInsets.only(top: 12),
+            child: Text("您还没有完善医生基础信息"),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                "现在去完善",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                //关闭对话框并返回true
+                // Navigator.of(context).pop();
+                Navigator.of(context)
+                    .pushNamed(RouteManager.QUALIFICATION_PAGE);
+              },
+            ),
+            FlatButton(
+              child: Text(
+                "退出登录",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                SessionManager.loginOutHandler();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   _refreshData() async {

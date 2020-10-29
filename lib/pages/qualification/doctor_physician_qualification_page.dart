@@ -114,9 +114,9 @@ class _PhysicianQualificationWidgetState
                 itemBuilder: (BuildContext context, int index) {
                   var photo = list[index];
                   var widget;
-                  if (photo.addImgPlaceHolder) {
+                  if (photo.addImgPlaceHolder ?? false) {
                     widget = _addImageWidget();
-                  } else if (photo.sampleImgPlaceHolder) {
+                  } else if (photo.sampleImgPlaceHolder ?? false) {
                     widget = _imageWidget(photo);
                   } else {
                     widget = _imageWidget(photo);

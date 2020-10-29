@@ -5,6 +5,8 @@ const APP_NAME = '易学术';
 const SESSION_KEY = '$NAME-ticket';
 const LAST_PHONE = '$NAME-last-phone';
 
+const LOGIN_INFO = '$NAME-login-info';
+
 /// 任务类型
 const Map<String, String> TASK_TEMPLATE = {
   'SALON': '会议',

@@ -6,6 +6,7 @@ part 'uploaded_file_entity.g.dart';
 class UploadFileEntity {
   String ossId;
   String url;
+  String ossFileName;
 
 
   UploadFileEntity(this.ossId, this.url);

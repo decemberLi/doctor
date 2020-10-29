@@ -61,7 +61,7 @@ class PrescriptionSuccessPage extends StatelessWidget {
                           //   height: 162,
                           // ),
                           FutureBuilder(
-                              future: model.prescriptionQRCode,
+                              future: loadBindQRCode(prescriptionNo),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                         ConnectionState.done &&

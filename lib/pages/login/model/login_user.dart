@@ -1,4 +1,9 @@
-/// 通用请求返回结果封装
+import 'package:json_annotation/json_annotation.dart';
+
+part 'login_user.g.dart';
+
+/// 登录用户
+@JsonSerializable()
 class LoginUser {
   /// 用户id
   final int userId;
@@ -15,11 +20,14 @@ class LoginUser {
   /// 手机号
   final String mobile;
   LoginUser(
-      this.userId, this.userType, this.userName, this.realName, this.mobile);
-  LoginUser.fromJson(Map<String, dynamic> json)
-      : userId = json['userId'],
-        userType = json['userType'],
-        userName = json['userName'],
-        realName = json['realName'],
-        mobile = json['mobile'];
+    this.userId,
+    this.userType,
+    this.userName,
+    this.realName,
+    this.mobile,
+  );
+  factory LoginUser.fromJson(Map<String, dynamic> json) =>
+      _$LoginUserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LoginUserToJson(this);
 }

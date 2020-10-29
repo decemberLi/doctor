@@ -15,6 +15,7 @@ import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import '../service.dart';
 import 'comment/service.dart';
 
 class ResourceDetailPage extends StatefulWidget {
@@ -32,18 +33,25 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   bool logo = true;
   bool _startIcon = false;
   int msgCount = 5;
-
+  String _feedbackContent;
   Timer _timer;
   String commentContent;
   FocusNode commentFocusNode = FocusNode();
   TextEditingController commentTextEdit = TextEditingController();
   int _learnTime = 0;
+  bool showFeedback = false; //是否展示遮罩层
+  List _feedbackData = []; //反馈数据
+  bool needFeedback = true; //是否需要遮罩层
+  bool successFeedback = false; //反馈成功状态
+  bool _addFeedback = false; //撰写评论
+  String feedbackType;
 
   Widget resourceRender(ResourceModel data) {
     void openTimer() {
       //需要记录浏览时间
       bool needReport = data.learnPlanStatus != 'SUBMIT_LEARN' &&
-          data.learnPlanStatus != 'ACCEPTED';
+          data.learnPlanStatus != 'ACCEPTED' &&
+          widget.learnPlanId != null;
       if (_timer == null && needReport) {
         startCountTimer();
       }
@@ -73,10 +81,12 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   // 文章webview点击时触发
   void _clickWebView() {
-    commentFocusNode.unfocus();
-    setState(() {
-      logo = true;
-    });
+    if (widget.learnPlanId != null) {
+      commentFocusNode.unfocus();
+      setState(() {
+        logo = true;
+      });
+    }
   }
 
   //获取评论
@@ -105,17 +115,19 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     }
     _getCollect(widget.resourceId);
     // 输入框焦点监听事件
-    commentFocusNode.addListener(() {
-      if (commentFocusNode.hasFocus) {
-        setState(() {
-          logo = false;
-        });
-      } else {
-        setState(() {
-          logo = true;
-        });
-      }
-    });
+    if (commentFocusNode != null) {
+      commentFocusNode.addListener(() {
+        if (commentFocusNode.hasFocus) {
+          setState(() {
+            logo = false;
+          });
+        } else {
+          setState(() {
+            logo = true;
+          });
+        }
+      });
+    }
     super.initState();
   }
 
@@ -126,9 +138,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     if (_timer != null) {
       _timer.cancel();
       _timer = null;
-      //反馈
     }
-    if (_learnTime > 0) {
+    if (_learnTime > 0 && widget.learnPlanId != null) {
       //上传时间
       //time传当前学习了多少s 后台做累加用
       updateLearnTime({
@@ -348,90 +359,349 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // dynamic obj = ModalRoute.of(context).settings.arguments;
-    // if (obj != null) {
-    //   learnPlanId = obj["learnPlanId"];
-    //   resourceId = obj['resourceId'];
-    // }
+  //发送反馈
+  void sendFeedback(content) {
+    // print('conten$content');
+    //上传反馈 测试使用
+    // setState(() {
+    //   successFeedback = true;
+    //   _feedbackData = [];
+    //   _addFeedback = false;
+    // });
+    // //2秒后返回 测试使用
+    // Timer(Duration(seconds: 2), () {
+    //   Navigator.pop(context);
+    // });
+    //需提交代码
+    feedbackService({
+      'learnPlanId': widget.learnPlanId,
+      'resourceId': widget.resourceId,
+      'feedback': content
+    }).then((res) {
+      setState(() {
+        successFeedback = true;
+        _feedbackData = [];
+        _addFeedback = false;
+      });
+      //2秒后返回
+      Timer(Duration(seconds: 2), () {
+        Navigator.pop(context);
+      });
+    });
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('资料详情'),
-        elevation: 0,
-      ),
-      resizeToAvoidBottomInset: false,
-      body: ProviderWidget<ResourceDetailViewModel>(
-        model: ResourceDetailViewModel(
-            widget.resourceId, widget.learnPlanId, widget.favoriteId),
-        onModelReady: (model) => model.initData(),
-        builder: (context, model, child) {
-          if (model.isBusy) {
-            return Container();
-          }
-          if (model.isError || model.isEmpty) {
-            return ViewStateEmptyWidget(onPressed: model.initData);
-          }
-          var data = model.data;
-          return Container(
-            color: ThemeColor.colorFFF3F5F8,
-            child: Stack(
-              overflow: Overflow.visible,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    commentFocusNode.unfocus();
-                    setState(() {
-                      logo = true;
-                    });
-                  },
-                  child: resourceRender(data),
+  //反馈弹窗
+  Widget feedbackWidget(ResourceModel data) {
+    String resourceType = data.resourceType;
+    return Positioned.fill(
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pop(context); //点击屏幕不反馈直接返回
+        },
+        child: Container(
+          child: Stack(
+            overflow: Overflow.visible,
+            children: [
+              Container(
+                height: 500,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      successFeedback
+                          ? '您的反馈已收到,非常感谢！'
+                          : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗?',
+                      style: TextStyle(fontSize: 26, color: Colors.white),
+                    ),
+                    // 反馈成功
+                    if (successFeedback)
+                      Icon(
+                        Icons.favorite,
+                        size: 80,
+                        color: Colors.red,
+                      ),
+                    if (_feedbackData.length > 0)
+                      ..._feedbackData.map((item) {
+                        return GestureDetector(
+                          onTap: () {
+                            sendFeedback(item['content']);
+                          },
+                          child: Stack(
+                            overflow: Overflow.visible,
+                            children: [
+                              Container(
+                                height: 30,
+                                padding: EdgeInsets.only(left: 33, right: 10),
+                                margin: EdgeInsets.all(20),
+                                constraints: BoxConstraints(
+                                  minWidth: 100,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  // borderRadius:
+                                  // BorderRadius.all(Radius.circular(15)),
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15),
+                                      topRight: Radius.circular(15)),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(right: 5),
+                                      child: Text(
+                                        item['content'],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Positioned(
+                                left: 9,
+                                top: 12,
+                                child: Icon(
+                                  item['icon'],
+                                  size: 40,
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    if (_feedbackData.length > 0)
+                      Container(
+                        child: Stack(
+                          overflow: Overflow.visible,
+                          children: [
+                            Container(
+                              width: 150,
+                              height: 30,
+                              child: RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(30 / 2),
+                                  ),
+                                ),
+                                color: Colors.white,
+                                textColor: ThemeColor.primaryColor,
+                                onPressed: () {
+                                  // Respond to button press
+                                  setState(() {
+                                    _addFeedback = !_addFeedback;
+                                  });
+                                },
+                                child: Text("撰写评价"),
+                              ),
+                            ),
+                            Positioned(
+                              left: -5,
+                              top: -4,
+                              child: Icon(
+                                MyIcons.icon_pinglun,
+                                size: 40,
+                              ),
+                            ),
+                            Positioned(
+                              right: 0,
+                              top: -4,
+                              child: Icon(
+                                _addFeedback
+                                    ? Icons.keyboard_arrow_up
+                                    : Icons.keyboard_arrow_down,
+                                size: 40,
+                                color: ThemeColor.primaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
-                // 评论 没有learnPlanId则默认展示为收藏列表进入的详情页
+              ),
+              //添加评论
+              if (_addFeedback)
                 Positioned(
                   left: 0,
                   right: 0,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
-                      ? MediaQuery.of(context).viewInsets.bottom
-                      : 0,
-                  child: widget.learnPlanId != null
-                      ? commentBottom(data)
-                      : Container(
-                          height: 60,
-                          width: MediaQuery.of(context).size.width,
-                          color: Colors.white,
-                          padding: EdgeInsets.all(10),
-                          child: InkWell(
-                            onTap: () {
-                              //收藏
-                              setFavoriteStatus({
-                                'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
-                                'resourceId': widget.resourceId,
-                              }).then((res) {
-                                EasyLoading.showToast(
-                                    _startIcon ? '取消收藏成功' : '收藏成功');
-                                setState(() {
-                                  _startIcon = !_startIcon;
-                                });
-                              });
-                            },
-                            child: Icon(
-                              _startIcon
-                                  ? MyIcons.icon_star_fill
-                                  : MyIcons.icon_star,
-                              size: 30,
-                            ),
+                      ? MediaQuery.of(context).viewInsets.bottom - 120
+                      : 120,
+                  child: Column(
+                    children: [
+                      TextField(
+                        keyboardType: TextInputType.text,
+                        minLines: 3,
+                        maxLines: 10,
+                        onChanged: (text) {
+                          setState(() {
+                            _feedbackContent = text;
+                          });
+                        },
+                        autofocus: false,
+                        // BoxDecoration(
+                        //     border: Border.all(color: Colors.white)),
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          filled: true,
+                          contentPadding: EdgeInsets.all(10.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
+                          hintText: '请输入评价',
                         ),
+                      ),
+                    ],
+                  ),
                 ),
-                // 计时器
-                timerContent(data),
-              ],
-            ),
-          );
-        },
+              if (_addFeedback)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 60,
+                  child: FloatingActionButton.extended(
+                    backgroundColor: ThemeColor.primaryColor,
+                    onPressed: () {
+                      // Respond to button press
+                      sendFeedback(_feedbackContent);
+                    },
+                    icon: Icon(Icons.send),
+                    label: Text('发送评价'),
+                  ),
+                ),
+            ],
+          ),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Color(0x40000000),
+          ),
+        ),
       ),
     );
+  }
+
+  void setFeedback() {
+    //获取反馈信息初始化
+    setState(() {
+      showFeedback = true;
+    });
+    getFeedbackInfo({'businessArea': 'ACADEMIC_PROMOTION'}).then((res) {
+      setState(() {
+        _feedbackData = [
+          {'content': res['perfectList'][0], 'icon': MyIcons.icon_dianzan},
+          {'content': res['goodList'][0], 'icon': MyIcons.icon_xiaolian},
+          {'content': res['middleList'][0], 'icon': MyIcons.icon_kulian}
+        ];
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('资料详情'),
+            elevation: 0,
+          ),
+          resizeToAvoidBottomInset: false,
+          body: ProviderWidget<ResourceDetailViewModel>(
+            model: ResourceDetailViewModel(
+                widget.resourceId, widget.learnPlanId, widget.favoriteId),
+            onModelReady: (model) => model.initData(),
+            builder: (context, model, child) {
+              if (model.isBusy) {
+                return Container();
+              }
+              if (model.isError || model.isEmpty) {
+                return ViewStateEmptyWidget(onPressed: model.initData);
+              }
+              var data = model.data;
+              //根据状态决定是否需要反馈
+              needFeedback = data.learnPlanStatus != 'SUBMIT_LEARN' &&
+                  data.learnPlanStatus != 'ACCEPTED' &&
+                  data.resourceType != 'QUESTIONNAIRE' &&
+                  widget.taskTemplate != 'DOCTOR_LECTURE' &&
+                  _learnTime > 0 &&
+                  data.feedback == null &&
+                  widget.learnPlanId != null;
+              return Container(
+                color: ThemeColor.colorFFF3F5F8,
+                child: Stack(
+                  // overflow: Overflow.visible,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        commentFocusNode.unfocus();
+                        setState(() {
+                          logo = true;
+                        });
+                      },
+                      child: resourceRender(data),
+                    ),
+                    // 评论 没有learnPlanId则默认展示为收藏列表进入的详情页
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: MediaQuery.of(context).viewInsets.bottom > 0 &&
+                              !showFeedback
+                          ? MediaQuery.of(context).viewInsets.bottom
+                          : 0,
+                      child: widget.learnPlanId != null
+                          ? commentBottom(data)
+                          : Container(
+                              height: 60,
+                              width: MediaQuery.of(context).size.width,
+                              color: Colors.white,
+                              padding: EdgeInsets.all(10),
+                              child: InkWell(
+                                onTap: () {
+                                  //收藏
+                                  setFavoriteStatus({
+                                    'favoriteStatus':
+                                        _startIcon ? 'CANCEL' : 'ADD',
+                                    'resourceId': widget.resourceId,
+                                  }).then((res) {
+                                    EasyLoading.showToast(
+                                        _startIcon ? '取消收藏成功' : '收藏成功');
+                                    setState(() {
+                                      _startIcon = !_startIcon;
+                                    });
+                                  });
+                                },
+                                child: Icon(
+                                  _startIcon
+                                      ? MyIcons.icon_star_fill
+                                      : MyIcons.icon_star,
+                                  size: 30,
+                                ),
+                              ),
+                            ),
+                    ),
+                    // 计时器
+                    if (widget.learnPlanId != null) timerContent(data),
+                    //反馈
+                    if (needFeedback && showFeedback) feedbackWidget(data),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+        onWillPop: () {
+          if (_timer != null) {
+            _timer.cancel();
+          }
+          if (needFeedback && !showFeedback) {
+            setFeedback();
+          }
+          if (!needFeedback) {
+            Navigator.pop(context);
+          }
+          return;
+        });
   }
 }

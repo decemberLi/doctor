@@ -50,6 +50,7 @@ class HttpManager {
             // dio.lock();
             // TODO: 获取session
           }
+          print('YYYLog::ticket: $session');
           options.headers['_ticketObject'] = session;
         }
         return options;
@@ -162,9 +163,9 @@ class HttpManager {
 
       return content;
     } on DioError catch (e) {
-      // if (showLoading) {
-      //   EasyLoading.dismiss();
-      // }
+      if (showLoading) {
+        EasyLoading.dismiss();
+      }
       print('error: $e');
       // return e;
       throw e;

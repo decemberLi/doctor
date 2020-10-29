@@ -88,10 +88,11 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
                       text: '去修改处方',
                       onPressed: () {
                         model1.setData(model.data, callBack: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              RouteManager.HOME, (route) => false,
-                              arguments: 1);
+                          Navigator.of(context)
+                              .popUntil(ModalRoute.withName(RouteManager.HOME));
                         });
+                        // Navigator.of(context)
+                        //     .popAndPushNamed(RouteManager.HOME);
                       },
                     );
                   }),

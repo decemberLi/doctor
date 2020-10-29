@@ -35,11 +35,6 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    // int index = ModalRoute.of(context).settings.arguments as int;
-    // if (index != null) {
-    //   _currentIndex = index;
-    //   index = null;
-    // }
     return Scaffold(
       body: _children[_currentIndex], // new
       bottomNavigationBar: BottomNavigationBar(

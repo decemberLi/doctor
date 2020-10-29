@@ -4,6 +4,7 @@ import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/theme/theme.dart';
@@ -16,9 +17,12 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 void main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
+  await AppUtils.init();
   await SessionManager.init();
   runApp(MyApp());
 }
+
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 class MyApp extends StatelessWidget {
   @override
@@ -28,6 +32,7 @@ class MyApp extends StatelessWidget {
       hideFooterWhenNotFull: true, //列表数据不满一页,不触发加载更多
       child: MaterialApp(
         title: APP_NAME,
+        navigatorObservers: [routeObserver],
         theme: ThemeData(
           primaryColor: ThemeColor.primaryColor,
           appBarTheme: AppBarTheme(
