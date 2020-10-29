@@ -17,7 +17,7 @@ class ResourceTypeListWiget extends StatelessWidget {
     IconData icon = Icons.access_time;
     if (resource.complete) {
       icon = Icons.done;
-      decorationColor = Color(0xFF52C41A);
+      decorationColor = Color(0xFF25CDA1);
     }
     return Container(
       decoration: BoxDecoration(

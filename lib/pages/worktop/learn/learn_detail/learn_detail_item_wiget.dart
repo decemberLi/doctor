@@ -42,7 +42,7 @@ class PlanDetailList extends StatelessWidget {
       if (item.learnTime >= item.needLearnTime) {
         text = '浏览时长：${item.learnTime}s';
         icon = Icons.done;
-        rendColor = ThemeColor.color72c140;
+        rendColor = ThemeColor.colorFFf25CDA1;
       } else {
         text = item.learnTime <= 0 ? '待浏览' : '浏览时长：${item.learnTime}s';
       }
@@ -50,7 +50,7 @@ class PlanDetailList extends StatelessWidget {
       if (item.learnTime >= item.needLearnTime) {
         text = '观看时长：${item.learnTime}s';
         icon = Icons.done;
-        rendColor = ThemeColor.color72c140;
+        rendColor = ThemeColor.colorFFf25CDA1;
       } else {
         text = item.learnTime <= 0 ? '待观看' : '观看时长：${item.learnTime}s';
       }
@@ -67,12 +67,12 @@ class PlanDetailList extends StatelessWidget {
       text = '上传讲课视频';
       if (item.status != null && item.status == 'FINISHED') {
         icon = Icons.done;
-        rendColor = ThemeColor.color72c140;
+        rendColor = ThemeColor.colorFFf25CDA1;
       }
     }
     if (item.status != null && item.status == 'FINISHED') {
       icon = Icons.done;
-      rendColor = ThemeColor.color72c140;
+      rendColor = ThemeColor.colorFFf25CDA1;
     }
 
     return Container(
@@ -115,7 +115,7 @@ class PlanDetailList extends StatelessWidget {
 
     if (item.feedback != null) {
       icon = Icons.done;
-      rendColor = ThemeColor.color72c140;
+      rendColor = ThemeColor.colorFFf25CDA1;
     }
 
     return Container(
