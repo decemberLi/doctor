@@ -13,6 +13,7 @@ import 'package:doctor/theme/myIcons.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../service.dart';
@@ -35,7 +36,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   int msgCount = 5;
   String _feedbackContent;
   Timer _timer;
-  String commentContent;
+  String commentContent = '';
   FocusNode commentFocusNode = FocusNode();
   TextEditingController commentTextEdit = TextEditingController();
   int _learnTime = 0;
@@ -209,7 +210,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   //发送消息
   sendCommentInfo() {
-    if (commentContent.isEmpty) {
+    if (commentContent.isEmpty || commentContent.trim().isEmpty) {
       EasyLoading.showToast('请输入评论内容');
       return;
     }
@@ -254,8 +255,12 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         children: [
           Expanded(
             child: TextField(
+              minLines: 1,
+              maxLines: 10,
+              maxLength: 150,
               controller: commentTextEdit,
               focusNode: commentFocusNode,
+              autofocus: false,
               onTap: () {
                 setState(() {
                   logo = false;
@@ -267,6 +272,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                 });
               },
               decoration: InputDecoration(
+                counterText: "",
                 contentPadding: EdgeInsets.all(10.0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -364,7 +370,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   //发送反馈
   void sendFeedback(content) {
-    // print('conten$content');
     //上传反馈 测试使用
     // setState(() {
     //   successFeedback = true;

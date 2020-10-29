@@ -247,7 +247,6 @@ class _CommentListPageState extends State<CommentListPage>
   }
 
   onCommentClick(sonId, parent, String name, String type) {
-    print('son$sonId,$parent');
     if (sonId != commentId) {
       commentTextEdit.clear();
     }
@@ -262,7 +261,7 @@ class _CommentListPageState extends State<CommentListPage>
 
   //发送消息
   sendCommentInfo() {
-    if (commentContent.isEmpty) {
+    if (commentContent.isEmpty || commentContent.trim().isEmpty) {
       EasyLoading.showToast('请输入评论内容');
       return;
     }
@@ -324,17 +323,13 @@ class _CommentListPageState extends State<CommentListPage>
                   onRefresh: model.refresh,
                   onLoading: model.loadMore,
                   enablePullUp: true,
-                  child: Stack(
-                    children: [
-                      ListView.builder(
-                        itemCount: model.list.length,
-                        padding: EdgeInsets.fromLTRB(0, 0, 0, 60),
-                        itemBuilder: (context, index) {
-                          CommentListItem item = model.list[index];
-                          return ShowCommentItems(item, onCommentClick);
-                        },
-                      ),
-                    ],
+                  child: ListView.builder(
+                    itemCount: model.list.length,
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 60),
+                    itemBuilder: (context, index) {
+                      CommentListItem item = model.list[index];
+                      return ShowCommentItems(item, onCommentClick);
+                    },
                   ),
                 );
               },
