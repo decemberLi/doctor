@@ -427,7 +427,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                         successFeedback
                             ? '您的反馈已收到,非常感谢！'
                             : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗?',
-                        style: TextStyle(fontSize: 26, color: Colors.white),
+                        style: TextStyle(
+                            fontSize: 26,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                     // 反馈成功
@@ -476,8 +479,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                                 ),
                               ),
                               Positioned(
-                                left: -10,
-                                top: 18,
+                                left: -11,
+                                top: 19,
                                 child: Icon(
                                   item['icon'],
                                   size: 40,
@@ -515,7 +518,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text("撰写评价"),
+                                    Text(
+                                      "撰写评价",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
                                     Icon(
                                       _addFeedback
                                           ? Icons.keyboard_arrow_up
@@ -571,7 +577,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
-                          hintText: '请输入评价',
+                          hintText: '请输入您对素材的评价',
                         ),
                       ),
                     ],
@@ -588,7 +594,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                       // Respond to button press
                       sendFeedback(_feedbackContent);
                     },
-                    label: Text('发送评价'),
+                    label: Text(
+                      '发送评价',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
             ],
