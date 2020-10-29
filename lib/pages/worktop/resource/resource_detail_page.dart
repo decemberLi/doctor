@@ -641,9 +641,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   data.learnPlanStatus != 'ACCEPTED' &&
                   data.resourceType != 'QUESTIONNAIRE' &&
                   widget.taskTemplate != 'DOCTOR_LECTURE' &&
+                  widget.learnPlanId != null &&
                   data.learnTime + _learnTime > 0 &&
-                  data.feedback == null &&
-                  widget.learnPlanId != null;
+                  data.feedback == null;
+
               return Container(
                 color: ThemeColor.colorFFF3F5F8,
                 child: Stack(
