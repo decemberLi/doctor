@@ -13,6 +13,7 @@ import 'package:doctor/theme/myIcons.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../service.dart';
@@ -35,7 +36,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   int msgCount = 5;
   String _feedbackContent;
   Timer _timer;
-  String commentContent;
+  String commentContent = '';
   FocusNode commentFocusNode = FocusNode();
   TextEditingController commentTextEdit = TextEditingController();
   int _learnTime = 0;
@@ -167,7 +168,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         data.learnPlanStatus != 'ACCEPTED';
     if (data.resourceType == 'QUESTIONNAIRE' ||
         widget.taskTemplate == 'DOCTOR_LECTURE') {
-      return Text('');
+      return Container();
     }
     int learnedTime = data.learnTime ?? 0;
     String tips = data.resourceType == 'VIDEO' ? '已观看' : '已浏览';
@@ -209,7 +210,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   //发送消息
   sendCommentInfo() {
-    if (commentContent.isEmpty) {
+    if (commentContent.isEmpty || commentContent.trim().isEmpty) {
       EasyLoading.showToast('请输入评论内容');
       return;
     }
@@ -225,13 +226,16 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
       'parentId': 0,
       'commentId': 0
     }).then((res) {
-      EasyLoading.showToast('评论发表成功');
       commentTextEdit.clear();
       commentFocusNode.unfocus();
       setState(() {
         logo = true;
+        commentContent = '';
       });
       _getComments(widget.resourceId);
+      Timer(Duration(seconds: 1), () {
+        EasyLoading.showToast('评论发表成功');
+      });
     });
   }
 
@@ -239,7 +243,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   Widget commentBottom(data) {
     if (data.resourceType == 'QUESTIONNAIRE' ||
         widget.taskTemplate == 'DOCTOR_LECTURE') {
-      return Text('');
+      return Container();
     }
     return Container(
       color: Colors.white,
@@ -251,8 +255,12 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         children: [
           Expanded(
             child: TextField(
+              minLines: 1,
+              maxLines: 10,
+              maxLength: 150,
               controller: commentTextEdit,
               focusNode: commentFocusNode,
+              autofocus: false,
               onTap: () {
                 setState(() {
                   logo = false;
@@ -264,6 +272,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                 });
               },
               decoration: InputDecoration(
+                counterText: "",
                 contentPadding: EdgeInsets.all(10.0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -291,7 +300,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                       InkWell(
                         onTap: () {
                           commentTextEdit.clear();
-                          // CommonModal
+                          // CommonModal 点击评论数弹出评论区
                           CommonModal.showBottomSheet(context,
                               title: '评论区',
                               height: 660,
@@ -326,10 +335,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                                 )),
                               ),
                             )
-                          : Text(''),
+                          : Container(),
                     ],
                   ))
-              : Text(''),
+              : Container(),
           logo
               ? Container(
                   color: Colors.white,
@@ -353,7 +362,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                     ),
                   ),
                 )
-              : Text('')
+              : Container()
         ],
       ),
     );
@@ -361,7 +370,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
 
   //发送反馈
   void sendFeedback(content) {
-    // print('conten$content');
     //上传反馈 测试使用
     // setState(() {
     //   successFeedback = true;
@@ -413,11 +421,14 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   // crossAxisAlignment: CrossAxisAlignment.center,
                   // mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      successFeedback
-                          ? '您的反馈已收到,非常感谢！'
-                          : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗?',
-                      style: TextStyle(fontSize: 26, color: Colors.white),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        successFeedback
+                            ? '您的反馈已收到,非常感谢！'
+                            : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗?',
+                        style: TextStyle(fontSize: 26, color: Colors.white),
+                      ),
                     ),
                     // 反馈成功
                     if (successFeedback)
@@ -437,8 +448,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                             children: [
                               Container(
                                 height: 30,
-                                padding: EdgeInsets.only(left: 33, right: 10),
-                                margin: EdgeInsets.all(20),
+                                padding: EdgeInsets.only(left: 30, right: 10),
+                                margin: EdgeInsets.only(top: 26),
                                 constraints: BoxConstraints(
                                   minWidth: 100,
                                 ),
@@ -465,8 +476,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                                 ),
                               ),
                               Positioned(
-                                left: 9,
-                                top: 12,
+                                left: -10,
+                                top: 18,
                                 child: Icon(
                                   item['icon'],
                                   size: 40,
@@ -482,7 +493,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                           overflow: Overflow.visible,
                           children: [
                             Container(
-                              width: 150,
+                              margin: EdgeInsets.only(top: 26),
+                              width: 140,
                               height: 30,
                               child: RaisedButton(
                                 padding: EdgeInsets.only(left: 30),
@@ -517,7 +529,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                             ),
                             Positioned(
                               left: -5,
-                              top: -4,
+                              top: 22,
                               child: Icon(
                                 MyIcons.icon_pinglun,
                                 size: 40,
@@ -535,8 +547,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   left: 0,
                   right: 0,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
-                      ? MediaQuery.of(context).viewInsets.bottom - 110
-                      : 110,
+                      ? MediaQuery.of(context).viewInsets.bottom - 115
+                      : 115,
                   child: Column(
                     children: [
                       TextField(
@@ -569,14 +581,13 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                 Positioned(
                   left: 0,
                   right: 0,
-                  bottom: 55,
+                  bottom: 60,
                   child: FloatingActionButton.extended(
                     backgroundColor: ThemeColor.primaryColor,
                     onPressed: () {
                       // Respond to button press
                       sendFeedback(_feedbackContent);
                     },
-                    icon: Icon(Icons.send),
                     label: Text('发送评价'),
                   ),
                 ),
@@ -633,9 +644,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   data.learnPlanStatus != 'ACCEPTED' &&
                   data.resourceType != 'QUESTIONNAIRE' &&
                   widget.taskTemplate != 'DOCTOR_LECTURE' &&
+                  widget.learnPlanId != null &&
                   data.learnTime + _learnTime > 0 &&
-                  data.feedback == null &&
-                  widget.learnPlanId != null;
+                  data.feedback == null;
+
               return Container(
                 color: ThemeColor.colorFFF3F5F8,
                 child: Stack(
