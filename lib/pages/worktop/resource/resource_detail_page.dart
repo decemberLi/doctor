@@ -294,7 +294,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                       InkWell(
                         onTap: () {
                           commentTextEdit.clear();
-                          // CommonModal
+                          // CommonModal 点击评论数弹出评论区
                           CommonModal.showBottomSheet(context,
                               title: '评论区',
                               height: 660,

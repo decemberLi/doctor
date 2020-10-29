@@ -57,58 +57,57 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
 
 // 子回复
   Widget commentRepplyItem(CommentSecond data) {
-    return Container(
-      margin: EdgeInsets.only(left: 20, top: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.asset(
-            "assets/images/avatar.png",
-            width: 40,
-          ),
-          // Image.network(
-          //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
-          // ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    repplyItem(data.commentUserName, data.commentUserType),
-                    Text('回复'),
-                    repplyItem(data.respondent, data.respondentUserType),
-                  ],
-                ),
-                Container(
-                  margin: EdgeInsets.all(5),
-                  // child: Text(data.commentContent),
-                  child: GestureDetector(
-                    onTap: () {
-                      // Navigator.pushNamed(context, RouteManager.FIND_PWD);
-                      widget.onCommentClick(
-                        data.id,
-                        data.parentId,
-                        data.commentUserName,
-                        data.commentUserType,
-                      );
-                    },
+    return GestureDetector(
+      onTap: () {
+        // Navigator.pushNamed(context, RouteManager.FIND_PWD);
+        widget.onCommentClick(
+          data.id,
+          data.parentId,
+          data.commentUserName,
+          data.commentUserType,
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(left: 20, top: 5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(
+              "assets/images/avatar.png",
+              width: 40,
+            ),
+            // Image.network(
+            //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
+            // ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      repplyItem(data.commentUserName, data.commentUserType),
+                      Text('回复'),
+                      repplyItem(data.respondent, data.respondentUserType),
+                    ],
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
                     child: Text(
                       data.deleted ? '该评论已删除' : data.commentContent,
                     ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.all(5),
-                  alignment: Alignment.centerRight,
-                  child: Text(RelativeDateFormat.format(data.createTime)),
-                ),
-              ],
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    alignment: Alignment.centerRight,
+                    child: Text(RelativeDateFormat.format(data.createTime)),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -132,81 +131,75 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
 
     return Container(
       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-      child: Column(
-        children: [
-          //主回复
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset(
-                "assets/images/avatar.png",
-                width: 40,
-              ),
-              // Image.network(
-              //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
-              // ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    repplyItem(widget.item.commentUserName,
-                        widget.item.commentUserType),
-                    // Container(
-                    //   margin: EdgeInsets.all(5),
-                    //   child: Text(
-                    //     widget.item.commentContent,
-                    //   ),
-                    // ),
-                    Container(
-                      margin: EdgeInsets.all(5),
-                      child: GestureDetector(
-                        onTap: () {
-                          // Navigator.pushNamed(context, RouteManager.FIND_PWD);
-                          widget.onCommentClick(
-                            widget.item.id,
-                            widget.item.id,
-                            widget.item.commentUserName,
-                            widget.item.commentUserType,
-                          );
-                        },
+      child: GestureDetector(
+        onTap: () {
+          // Navigator.pushNamed(context, RouteManager.FIND_PWD);
+          widget.onCommentClick(
+            widget.item.id,
+            widget.item.id,
+            widget.item.commentUserName,
+            widget.item.commentUserType,
+          );
+        },
+        child: Column(
+          children: [
+            //主回复
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset(
+                  "assets/images/avatar.png",
+                  width: 40,
+                ),
+                // Image.network(
+                //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
+                // ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      repplyItem(widget.item.commentUserName,
+                          widget.item.commentUserType),
+                      Container(
+                        margin: EdgeInsets.all(5),
                         child: Text(
                           widget.item.commentContent,
                         ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(5),
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                          RelativeDateFormat.format(widget.item.createTime)),
-                    )
-                  ],
+                      Container(
+                        margin: EdgeInsets.all(5),
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                            RelativeDateFormat.format(widget.item.createTime)),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          // 子回复
-          ...applyContentByLength(),
-          secondLength > 2
-              ? GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showAllReply = !showAllReply;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Text(
-                      showAllReply ? '收起' : '查看全部${secondItem.length}条回复>',
-                      style: TextStyle(color: ThemeColor.primaryColor),
-                    ),
-                  ))
-              : Container(),
-          Divider(
-            height: 1,
-          ),
-        ],
+              ],
+            ),
+            // 子回复
+            ...applyContentByLength(),
+            secondLength > 2
+                ? GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        showAllReply = !showAllReply;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        showAllReply ? '收起' : '查看全部${secondItem.length}条回复>',
+                        style: TextStyle(color: ThemeColor.primaryColor),
+                      ),
+                    ))
+                : Container(),
+            Divider(
+              height: 1,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -311,6 +304,7 @@ class _CommentListPageState extends State<CommentListPage>
               parentId = 0;
               commentId = 0;
               placeholder = '请输入您的问题或评价';
+              commentContent = '';
             });
           },
           child: ChangeNotifierProvider<CommentListViewModel>.value(
@@ -366,6 +360,7 @@ class _CommentListPageState extends State<CommentListPage>
               focusNode: commentFocusNode,
               minLines: 1,
               maxLines: 10,
+              autofocus: false,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(10.0),
                 border: OutlineInputBorder(
@@ -374,7 +369,6 @@ class _CommentListPageState extends State<CommentListPage>
                 hintText: placeholder,
                 suffix: GestureDetector(
                   onTap: () {
-                    print('发表评论');
                     sendCommentInfo();
                   },
                   child: Text(
