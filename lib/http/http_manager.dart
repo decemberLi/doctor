@@ -39,60 +39,67 @@ class HttpManager {
       BaseOptions _baseOptions =
           BaseOptions(baseUrl: baseUrl, connectTimeout: 30000);
       dio = Dio(_baseOptions);
-      dio.interceptors
-          .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
-        debugPrint('request--->url--> ${options.baseUrl}${options.path}');
-        Map extra = options.extra;
-        if (!extra['ignoreSession']) {
-          String session = SessionManager().getSession();
-          if (session == null) {
-            // 锁定所有请求
-            // dio.lock();
-            // TODO: 获取session
-          }
-          print('YYYLog::ticket: $session');
-          options.headers['_ticketObject'] = session;
-        }
-        return options;
-      }, onResponse: (Response response) async {
-        // 网络错误
-        if (response.statusCode < 200 || response.statusCode >= 300) {
-          EasyLoading.showToast(msgMap['httpError']);
-          return dio.reject(response);
-        }
-        Options options = response.request;
-        Map extra = options.extra;
-        ResultData data = ResultData.fromJson(response.data);
-        if (data.status.toUpperCase() == 'ERROR') {
-          if (!extra['ignoreSession']) {
-            // 会话过期，重新登录
-            if (outLoginCodes.indexOf(data.errorCode) != -1) {
-              EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-              SessionManager.loginOutHandler();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (RequestOptions options) async {
+            debugPrint('request--->url--> ${options.baseUrl}${options.path}');
+            Map extra = options.extra;
+            if (!extra['ignoreSession']) {
+              String session = SessionManager().getSession();
+              if (session == null) {
+                // 锁定所有请求
+                // dio.lock();
+                // TODO: 获取session
+              }
+              print('YYYLog::ticket: $session');
+              options.headers['_ticketObject'] = session;
+            }
+            return options;
+          },
+          onResponse: (Response response) async {
+            // 网络错误
+            if (response.statusCode < 200 || response.statusCode >= 300) {
+              EasyLoading.showToast(msgMap['httpError']);
               return dio.reject(response);
             }
-            // 需更新session
-            if (authFailCodes.indexOf(data.errorCode) != -1) {
-              // TODO: 更新session
-              EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-              SessionManager.loginOutHandler();
-              return dio.reject(response);
+            Options options = response.request;
+            Map extra = options.extra;
+            ResultData data = ResultData.fromJson(response.data);
+            if (data.status.toUpperCase() == 'ERROR') {
+              if (!extra['ignoreSession']) {
+                // 会话过期，重新登录
+                if (outLoginCodes.indexOf(data.errorCode) != -1) {
+                  EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
+                  SessionManager.loginOutHandler();
+                  return dio.reject(response);
+                }
+                // 需更新session
+                if (authFailCodes.indexOf(data.errorCode) != -1) {
+                  // TODO: 更新session
+                  EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
+                  SessionManager.loginOutHandler();
+                  return dio.reject(response);
+                }
+                // 错误
+                if (authErrorCodes.indexOf(data.errorCode) != -1) {
+                  // TODO: 错误处理
+                  EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
+                  return dio.reject(response);
+                }
+              }
+              if (!extra['ignoreErrorTips']) {
+                EasyLoading.showToast(data.errorMsg ?? msgMap['dataError'],
+                    duration: Duration(milliseconds: 1500));
+                return dio.reject(response);
+              }
             }
-            // 错误
-            if (authErrorCodes.indexOf(data.errorCode) != -1) {
-              // TODO: 错误处理
-              EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-              return dio.reject(response);
+            if (extra['showLoading']) {
+              EasyLoading.dismiss();
             }
-          }
-          if (!extra['ignoreErrorTips']) {
-            EasyLoading.showToast(data.errorMsg ?? msgMap['dataError'],
-                duration: Duration(milliseconds: 1500));
-            return dio.reject(response);
-          }
-        }
-        return dio.resolve(response);
-      }));
+            return dio.resolve(response);
+          },
+        ),
+      );
     }
   }
 
@@ -145,7 +152,8 @@ class HttpManager {
       Options _options = options ?? Options(method: method);
       _options.extra = {
         'ignoreSession': ignoreSession,
-        'ignoreErrorTips': ignoreErrorTips
+        'ignoreErrorTips': ignoreErrorTips,
+        'showLoading': showLoading,
       };
       if (_options.method == null) {
         _options.method = method;
@@ -163,9 +171,6 @@ class HttpManager {
 
       return content;
     } on DioError catch (e) {
-      if (showLoading) {
-        EasyLoading.dismiss();
-      }
       print('error: $e');
       // return e;
       throw e;

@@ -125,7 +125,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                     Container(
                       margin: EdgeInsets.only(bottom: 30),
                       child: TextFormField(
-                        autofocus: true,
+                        autofocus: false,
                         initialValue:
                             SessionManager().sp.getString(LAST_PHONE) ?? '',
                         decoration: InputDecoration(hintText: '请输入手机号'),
@@ -133,7 +133,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                             !captcha.hasMatch(val) ? '请输入正确的手机号' : null,
                         onSaved: (val) => _mobile = val,
                         obscureText: false,
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.number,
                         style: loginInputStyle,
                       ),
                     ),
@@ -160,7 +160,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                         ),
                         validator: (val) => val.length < 4 ? '请输入4位验证码' : null,
                         onSaved: (val) => _captcha = val,
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.number,
                         autocorrect: false,
                         style: loginInputStyle,
                       ),

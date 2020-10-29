@@ -3,9 +3,29 @@ import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+const taskTypeMap = [
+  {
+    'text': '全部',
+    'taskTemplate': [],
+  },
+  {
+    'text': '会议',
+    'taskTemplate': ['SALON', 'DEPART'],
+  },
+  {
+    'text': '拜访',
+    'taskTemplate': ['VISIT', 'DOCTOR_LECTURE'],
+  },
+  {
+    'text': '调研',
+    'taskTemplate': ['SURVEY'],
+  },
+];
 
 /// 学习计划列表
 class LearnListPage extends StatefulWidget {
@@ -17,64 +37,58 @@ class LearnListPage extends StatefulWidget {
 }
 
 class _LearnListPageState extends State<LearnListPage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   // 保持不被销毁
   @override
   bool get wantKeepAlive => true;
-  String _isType = '';
-  List taskTemplate = [];
 
-  // ignore: non_constant_identifier_names
-  Widget _renderTopType(String name, String type) {
-    Color rendColor = Color(0xFFDEDEE1);
-    if (type == _isType) {
-      rendColor = ThemeColor.primaryColor;
-    }
+  TabController _tabController;
 
-    return GestureDetector(
-      child: Container(
-        decoration: BoxDecoration(
-          color: rendColor,
-          borderRadius: BorderRadius.all(Radius.circular(34)),
-          boxShadow: [
-            BoxShadow(color: rendColor, offset: Offset(0, 2.0), blurRadius: 4.0)
-          ],
-        ),
-        padding: EdgeInsets.fromLTRB(12, 4, 12, 4),
-        margin: EdgeInsets.only(
-          right: 10,
-        ),
-        child: Text(
-          name,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-          ),
-        ),
-      ),
-      onTap: () {
-        print('111=>${type}');
-        List _taskTemplate = [];
-        if (type == 'SALON') {
-          _taskTemplate = ['SALON', 'DEPART'];
-        }
-        if (type == 'VISIT') {
-          _taskTemplate = ['VISIT', 'DOCTOR_LECTURE'];
-        }
-        if (type == 'SURVEY') {
-          _taskTemplate = ['SURVEY'];
-        }
+  int _currentTabIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // 添加监听器
+    _tabController = TabController(vsync: this, length: taskTypeMap.length)
+      ..addListener(() {
         setState(() {
-          _isType = type;
-          taskTemplate = _taskTemplate;
+          _currentTabIndex = _tabController.index;
         });
-      },
-    );
+      });
   }
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  Widget _renderTop(String text, int index) {
+    Color color = Color(0xFFDEDEE1);
+    if (index == _currentTabIndex) {
+      color = ThemeColor.primaryColor;
+    }
+    return Container(
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.all(Radius.circular(34)),
+      ),
+      padding: EdgeInsets.fromLTRB(12, 4, 12, 4),
+      margin: EdgeInsets.only(
+        right: 10,
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+        ),
+      ),
+    );
+  }
+
+  Widget _renderList(taskTemplate) {
     return ProviderWidget<LearnListViewModel>(
       model: LearnListViewModel(widget.learnStatus, taskTemplate),
       onModelReady: (model) => model.initData(),
@@ -89,43 +103,72 @@ class _LearnListPageState extends State<LearnListPage>
           onRefresh: model.refresh,
           onLoading: model.loadMore,
           enablePullUp: true,
-          child: CustomScrollView(slivers: <Widget>[
-            //AppBar，包含一个导航栏
-
-            SliverToBoxAdapter(
-                child: Container(
-                    alignment: Alignment.topLeft,
-                    padding: EdgeInsets.all(16),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          _renderTopType('全部', ''),
-                          _renderTopType('会议', 'SALON'),
-                          _renderTopType('拜访', 'VISIT'),
-                          _renderTopType('调研', 'SURVEY'),
-                        ]))),
-            SliverList(
-              // Use a delegate to build items as they're scrolled on screen.
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  LearnListItem item = model.list[index];
-                  return LearnListItemWiget(item, widget.learnStatus);
+          child: ListView.builder(
+            itemCount: model.list.length,
+            itemBuilder: (context, index) {
+              LearnListItem item = model.list[index];
+              return GestureDetector(
+                onTap: () async {
+                  await Navigator.of(context).pushNamed(
+                    RouteManager.LEARN_DETAIL,
+                    arguments: item.learnPlanId,
+                  );
+                  // 从详情页回来后刷新数据
+                  if (widget.learnStatus == 'LEARNING') {
+                    model.refreshController.requestRefresh(needMove: false);
+                  }
                 },
-                childCount: model.list.length,
-              ),
-            )
-          ]),
-
-          //  ListView.builder(
-          //       itemCount: model.list.length,
-          //       padding: EdgeInsets.all(16),
-          //       itemBuilder: (context, index) {
-          //         LearnListItem item = model.list[index];
-          //         return LearnListItemWiget(item, widget.learnStatus);
-          //       }),
+                child: LearnListItemWiget(item, widget.learnStatus),
+              );
+            },
+          ),
         );
       },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Scaffold(
+      backgroundColor: ThemeColor.colorFFF3F5F8,
+      appBar: AppBar(
+        elevation: 0,
+        titleSpacing: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: ThemeColor.colorFFF3F5F8,
+        title: Container(
+          alignment: Alignment.centerLeft,
+          child: TabBar(
+            physics: NeverScrollableScrollPhysics(),
+            controller: this._tabController,
+            isScrollable: true,
+            labelPadding: EdgeInsets.symmetric(horizontal: 8),
+            indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(style: BorderStyle.none)),
+            tabs: taskTypeMap
+                .map(
+                  (e) => Tab(
+                    child: _renderTop(e['text'], taskTypeMap.indexOf(e)),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ),
+      body: Container(
+        child: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          controller: this._tabController,
+          children: taskTypeMap
+              .map(
+                (e) => Container(
+                  child: _renderList(e['taskTemplate']),
+                ),
+              )
+              .toList(),
+        ),
+      ),
     );
   }
 }

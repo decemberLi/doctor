@@ -386,7 +386,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                       );
                                       if (success) {
                                         EasyLoading.showToast('提交成功');
-                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pop(true);
                                       }
                                     }
                                   }
