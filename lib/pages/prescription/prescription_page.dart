@@ -154,10 +154,13 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                     '快速开方',
                     style: MyStyles.primaryTextStyle_12,
                   ),
-                  onPressed: () {
-                    // Navigator.of(context).pushNamed(
-                    //   RouteManager.PRESCRIPTION_DETAIL,
+                  onPressed: () async {
+                    // String patientUserId = await Navigator.pushNamed(
+                    //   context,
+                    //   RouteManager.PATIENT,
+                    //   arguments: 'QUICK_CREATE',
                     // );
+                    // print(patientUserId);
                     SessionManager.loginOutHandler();
                   },
                 ),

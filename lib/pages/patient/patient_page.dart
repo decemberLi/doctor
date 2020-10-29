@@ -93,16 +93,20 @@ class _PatientListPageState extends State<PatientListPage>
                     child: PatientListItem(item),
                     onTap: () async {
                       if (prescriptionNo != null) {
-                        bool bindConfirm =
-                            await confirmDialog(item.patientName);
-                        if (bindConfirm) {
-                          bool success = await model.bindPrescription(
-                            patientUserId: item.patientUserId,
-                            prescriptionNo: prescriptionNo as String,
-                          );
-                          if (success) {
-                            EasyLoading.showToast('发送成功');
-                            Navigator.of(context).pop();
+                        if (prescriptionNo == 'QUICK_CREATE') {
+                          Navigator.pop(context, item.patientUserId);
+                        } else {
+                          bool bindConfirm =
+                              await confirmDialog(item.patientName);
+                          if (bindConfirm) {
+                            bool success = await model.bindPrescription(
+                              patientUserId: item.patientUserId,
+                              prescriptionNo: prescriptionNo as String,
+                            );
+                            if (success) {
+                              EasyLoading.showToast('发送成功');
+                              Navigator.of(context).pop();
+                            }
                           }
                         }
                       } else {

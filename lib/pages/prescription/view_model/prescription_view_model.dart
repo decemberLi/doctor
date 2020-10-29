@@ -101,6 +101,7 @@ class PrescriptionViewModel extends ViewStateModel {
   }) {
     this.data = newData;
     if (isNew) {
+      this.data.prescriptionNo = null;
       // 纸质处方重新设置
       this.data.attachments = [];
     }
