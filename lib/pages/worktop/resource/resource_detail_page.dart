@@ -167,7 +167,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
         data.learnPlanStatus != 'ACCEPTED';
     if (data.resourceType == 'QUESTIONNAIRE' ||
         widget.taskTemplate == 'DOCTOR_LECTURE') {
-      return Text('');
+      return Container();
     }
     int learnedTime = data.learnTime ?? 0;
     String tips = data.resourceType == 'VIDEO' ? '已观看' : '已浏览';
@@ -225,13 +225,16 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
       'parentId': 0,
       'commentId': 0
     }).then((res) {
-      EasyLoading.showToast('评论发表成功');
       commentTextEdit.clear();
       commentFocusNode.unfocus();
       setState(() {
         logo = true;
+        commentContent = '';
       });
       _getComments(widget.resourceId);
+      Timer(Duration(seconds: 1), () {
+        EasyLoading.showToast('评论发表成功');
+      });
     });
   }
 
@@ -239,7 +242,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   Widget commentBottom(data) {
     if (data.resourceType == 'QUESTIONNAIRE' ||
         widget.taskTemplate == 'DOCTOR_LECTURE') {
-      return Text('');
+      return Container();
     }
     return Container(
       color: Colors.white,
@@ -326,10 +329,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                                 )),
                               ),
                             )
-                          : Text(''),
+                          : Container(),
                     ],
                   ))
-              : Text(''),
+              : Container(),
           logo
               ? Container(
                   color: Colors.white,
@@ -353,7 +356,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                     ),
                   ),
                 )
-              : Text('')
+              : Container()
         ],
       ),
     );

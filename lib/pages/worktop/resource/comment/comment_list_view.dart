@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:doctor/pages/worktop/resource/comment/service.dart';
 import 'package:doctor/pages/worktop/resource/model/comment_list_model.dart';
 import 'package:doctor/pages/worktop/resource/view_model/comment_view_model.dart';
@@ -282,13 +284,15 @@ class _CommentListPageState extends State<CommentListPage>
       'parentId': parentId,
       'commentId': commentId
     }).then((res) {
-      print(res);
-      EasyLoading.showToast('评论发表成功');
-      model.refresh();
       commentTextEdit.clear();
       commentFocusNode.unfocus();
       setState(() {
         placeholder = '请输入您的问题或评价';
+        commentContent = '';
+      });
+      model.refresh();
+      Timer(Duration(seconds: 1), () {
+        EasyLoading.showToast('评论发表成功');
       });
     });
   }
