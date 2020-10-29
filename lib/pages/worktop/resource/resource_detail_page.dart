@@ -373,21 +373,25 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
     //   Navigator.pop(context);
     // });
     //需提交代码
-    feedbackService({
-      'learnPlanId': widget.learnPlanId,
-      'resourceId': widget.resourceId,
-      'feedback': content
-    }).then((res) {
-      setState(() {
-        successFeedback = true;
-        _feedbackData = [];
-        _addFeedback = false;
+    if (content != null) {
+      feedbackService({
+        'learnPlanId': widget.learnPlanId,
+        'resourceId': widget.resourceId,
+        'feedback': content
+      }).then((res) {
+        setState(() {
+          successFeedback = true;
+          _feedbackData = [];
+          _addFeedback = false;
+        });
+        //2秒后返回
+        Timer(Duration(seconds: 2), () {
+          Navigator.pop(context);
+        });
       });
-      //2秒后返回
-      Timer(Duration(seconds: 2), () {
-        Navigator.pop(context);
-      });
-    });
+    } else {
+      EasyLoading.showToast('反馈不能为空');
+    }
   }
 
   //反馈弹窗
@@ -481,6 +485,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                               width: 150,
                               height: 30,
                               child: RaisedButton(
+                                padding: EdgeInsets.only(left: 30),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(30 / 2),
@@ -494,7 +499,20 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                                     _addFeedback = !_addFeedback;
                                   });
                                 },
-                                child: Text("撰写评价"),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text("撰写评价"),
+                                    Icon(
+                                      _addFeedback
+                                          ? Icons.keyboard_arrow_up
+                                          : Icons.keyboard_arrow_down,
+                                      // size: 40,
+                                      color: ThemeColor.primaryColor,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             Positioned(
@@ -503,17 +521,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                               child: Icon(
                                 MyIcons.icon_pinglun,
                                 size: 40,
-                              ),
-                            ),
-                            Positioned(
-                              right: 0,
-                              top: -4,
-                              child: Icon(
-                                _addFeedback
-                                    ? Icons.keyboard_arrow_up
-                                    : Icons.keyboard_arrow_down,
-                                size: 40,
-                                color: ThemeColor.primaryColor,
                               ),
                             ),
                           ],
@@ -528,14 +535,15 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   left: 0,
                   right: 0,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
-                      ? MediaQuery.of(context).viewInsets.bottom - 120
-                      : 120,
+                      ? MediaQuery.of(context).viewInsets.bottom - 110
+                      : 110,
                   child: Column(
                     children: [
                       TextField(
                         keyboardType: TextInputType.text,
                         minLines: 3,
                         maxLines: 10,
+                        maxLength: 200,
                         onChanged: (text) {
                           setState(() {
                             _feedbackContent = text;
@@ -561,7 +569,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                 Positioned(
                   left: 0,
                   right: 0,
-                  bottom: 60,
+                  bottom: 55,
                   child: FloatingActionButton.extended(
                     backgroundColor: ThemeColor.primaryColor,
                     onPressed: () {
@@ -625,7 +633,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                   data.learnPlanStatus != 'ACCEPTED' &&
                   data.resourceType != 'QUESTIONNAIRE' &&
                   widget.taskTemplate != 'DOCTOR_LECTURE' &&
-                  _learnTime > 0 &&
+                  data.learnTime + _learnTime > 0 &&
                   data.feedback == null &&
                   widget.learnPlanId != null;
               return Container(
