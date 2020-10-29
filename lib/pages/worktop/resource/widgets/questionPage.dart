@@ -123,7 +123,6 @@ class _QuestionPageState extends State<QuestionPage> {
   _openFile() async {
     // TODO: 提交问卷
     Iterable questionsAll = widget.data.questions;
-    print("提交问卷:${questionsAll}");
     print('提交问卷:$_questionsInit');
     bool showError = false;
     for (var item in questionsAll) {
@@ -194,7 +193,6 @@ class _QuestionPageState extends State<QuestionPage> {
           // 延时1s执行返回
           Future.delayed(Duration(seconds: 1), () {
             Navigator.of(context).pop();
-            print('延时1s执行');
           });
         });
         // if (success != null) {

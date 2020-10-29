@@ -19,6 +19,7 @@ import 'package:doctor/pages/user/about/about_us_page.dart';
 import 'package:doctor/pages/user/collect/collect_list.dart';
 import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart';
+import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
 import 'package:doctor/pages/worktop/learn/learn_upload_record/learn_upload_record.dart';
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
@@ -32,6 +33,7 @@ class RouteManager {
   static const String FIND_PWD = '/find_password';
   static const String HOME = '/home';
   static const String TEST = '/test';
+  static const String LEARN_LIST = '/learn_list';
   static const String LEARN_DETAIL = '/learn_detail';
   static const String LEARN_UPLOAD_RECORD = '/learn_upload_record';
   static const String RESOURCE_DETAIL = '/resource_detail';
@@ -57,6 +59,7 @@ class RouteManager {
     FIND_PWD: (context) => FindPassword(),
     HOME: (context) => HomePage(),
     TEST: (context) => TestPage(),
+    LEARN_LIST: (context) => LearnListPage('LEARNING'),
     LEARN_DETAIL: (context) => LearnDetailPage(),
     LEARN_UPLOAD_RECORD: (context) => LearnUploadRecordPage(),
     RESOURCE_DETAIL: (context) {

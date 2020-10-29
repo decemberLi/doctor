@@ -1,6 +1,7 @@
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
+import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
 import 'package:doctor/pages/worktop/service/service.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
@@ -61,5 +62,33 @@ class LearnDetailViewModel extends ViewStateModel {
     } catch (e) {
       return false;
     }
+  }
+}
+
+// 讲课视频
+class LearnRecordingModel extends ViewStateModel {
+  final String learnPlanId;
+  final String resourceId;
+
+  LearnRecordingItem data;
+
+  LearnRecordingModel(this.learnPlanId, this.resourceId);
+
+  initData() async {
+    setBusy();
+    try {
+      data = (await loadData());
+      setIdle();
+    } catch (e, s) {
+      setError(e, s);
+    }
+  }
+
+  Future<LearnRecordingItem> loadData() async {
+    var data = await http.post('/doctor-lecture/detail', params: {
+      'learnPlanId': this.learnPlanId,
+      'resourceId': this.resourceId,
+    });
+    return LearnRecordingItem.fromJson(data);
   }
 }
