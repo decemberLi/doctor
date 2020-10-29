@@ -17,7 +17,7 @@ class ResourceTypeListWiget extends StatelessWidget {
     IconData icon = Icons.access_time;
     if (resource.complete) {
       icon = Icons.done;
-      decorationColor = Color(0xFF52C41A);
+      decorationColor = Color(0xFF25CDA1);
     }
     return Container(
       decoration: BoxDecoration(
@@ -131,6 +131,39 @@ class LearnListItemWiget extends StatelessWidget {
     );
   }
 
+  // 会议进行中
+  Widget _meetingStatus(int end) {
+    Color rendColor = Color(0xffF6A419);
+    String text = '会议进行中';
+    int time = new DateTime.now().millisecondsSinceEpoch;
+    if (time > end) {
+      text = '会议已结束';
+      rendColor = Color(0xFFDEDEE1);
+    }
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+      margin: EdgeInsets.only(right: 16, bottom: 6, left: 10),
+      decoration: BoxDecoration(
+        color: rendColor,
+        boxShadow: [
+          BoxShadow(color: rendColor, offset: Offset(2.0, 2.0), blurRadius: 4.0)
+        ],
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(28),
+            topRight: Radius.circular(28),
+            bottomRight: Radius.circular(28)),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+            color: ThemeColor.colorFFFFFF,
+            fontSize: 12,
+            fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -209,7 +242,15 @@ class LearnListItemWiget extends StatelessWidget {
                 ),
               ),
           ]),
-          ResourceTypeListWiget(item.resourceTypeResult),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ResourceTypeListWiget(item.resourceTypeResult),
+                if (this.item.taskTemplate == 'SALON' ||
+                    this.item.taskTemplate == 'DEPART')
+                  _meetingStatus(this.item.meetingEndTime),
+              ]),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

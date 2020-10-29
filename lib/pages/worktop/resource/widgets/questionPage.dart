@@ -8,6 +8,7 @@ import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_file_preview/flutter_file_preview.dart';
 
@@ -19,7 +20,6 @@ class QuestionPage extends StatefulWidget {
 
 class _QuestionPageState extends State<QuestionPage> {
   List _questionsInit;
-
   @override
   void initState() {
     // 在initState中发出请求
@@ -72,8 +72,17 @@ class _QuestionPageState extends State<QuestionPage> {
           'index': item.index,
           'question': item.question,
           'type': 'RADIO',
-          'groupValue': '-1'
+          'groupValue': ''
         });
+        if (item.options.length > 0) {
+          item.options.forEach((element) {
+            if (element.checked != null) {
+              questionsNew[item.index]['groupValue'] = element.checked;
+
+              return false;
+            }
+          });
+        }
       }
       if (item.type == 'CHECKBOX') {
         // item.checked = [];
@@ -83,6 +92,13 @@ class _QuestionPageState extends State<QuestionPage> {
           'type': 'CHECKBOX',
           'checked': []
         });
+        if (item.options.length > 0) {
+          item.options.forEach((element) {
+            if (element.checked != null) {
+              questionsNew[item.index]['checked'].add(element.checked);
+            }
+          });
+        }
       }
       if (item.type == 'TEXT') {
         questionsNew.add({
@@ -91,6 +107,14 @@ class _QuestionPageState extends State<QuestionPage> {
           'type': 'TEXT',
           'textField': ''
         });
+
+        if (item.options.length > 0) {
+          item.options.forEach((element) {
+            if (element.checked != null) {
+              questionsNew[item.index]['textField'] = (element.checked);
+            }
+          });
+        }
       }
     }
     return questionsNew;
@@ -140,17 +164,14 @@ class _QuestionPageState extends State<QuestionPage> {
           if (element['index'] == item.index) {
             if (element['textField'] != null) {
               print(item.toString());
-              // item.options = [
-              //   {'checked': element['textField']}
-              // ];
               Map<String, dynamic> reoptions = {
                 "checked": element['textField'],
                 "index": null,
                 "answerOption": null,
               };
-              item.options.add(reoptions);
 
-              // item.options[0].checked = element['textField'];
+              QuestionOption option = QuestionOption.fromJson(reoptions);
+              item.options.add(option);
             } else {
               EasyLoading.showToast('请确保所有问卷内容已正确填写');
               showError = true;
@@ -164,18 +185,22 @@ class _QuestionPageState extends State<QuestionPage> {
     if (!showError) {
       bool bindConfirm = await confirmDialog();
       if (bindConfirm) {
-        bool success = await submitQuestion({
+        String success = await submitQuestion({
           'learnPlanId': widget.data.learnPlanId,
           'resourceId': widget.data.resourceId,
           'questions': questionsAll
         }).then((res) {
           EasyLoading.showToast('提交成功');
-          Navigator.of(context).pop();
+          // 延时1s执行返回
+          Future.delayed(Duration(seconds: 1), () {
+            Navigator.of(context).pop();
+            print('延时1s执行');
+          });
         });
-        if (success) {
-          EasyLoading.showToast('提交成功');
-          Navigator.of(context).pop();
-        }
+        // if (success != null) {
+        //   EasyLoading.showToast('提交成功');
+        //   Navigator.of(context).pop();
+        // }
       }
     }
   }
@@ -206,17 +231,22 @@ class _QuestionPageState extends State<QuestionPage> {
         ),
         // 此处也可以使用RadioListTile，但是这个组件不满足我们这边的需求，所以自己后来写了布局
         new Radio(
-          activeColor: ThemeColor.primaryColor, //选中时的颜色
+          activeColor: widget.data.learnStatus != 'FINISHED'
+              ? ThemeColor.primaryColor
+              : ThemeColor.secondaryGeryColor, //选中时的颜色
           value: question.options[optionIndex].index, // 该值为string类型
           groupValue: _questionsInit[question.index]
               ['groupValue'], // 与value一样是选中
+          // mouseCursor: MaterialStateMouseCursor.clickable,
           onChanged: (val) {
             // 收起键盘
             FocusScope.of(context).requestFocus(FocusNode());
-            setState(() {
-              _questionsInit[question.index]['groupValue'] = val;
-              print('选中了: ' + val);
-            });
+            if (widget.data.learnStatus != 'FINISHED') {
+              setState(() {
+                _questionsInit[question.index]['groupValue'] = val;
+                print('选中了: ' + val);
+              });
+            }
           },
         ),
       ],
@@ -251,7 +281,9 @@ class _QuestionPageState extends State<QuestionPage> {
         ),
         // 此处也可以使用CheckboxListTile，但是这个组件不满足我们这边的需求，所以后来自己写了布局
         Checkbox(
-          activeColor: ThemeColor.primaryColor, //选中时的颜色
+          activeColor: widget.data.learnStatus != 'FINISHED'
+              ? ThemeColor.primaryColor
+              : ThemeColor.secondaryGeryColor, //选中时的颜色
           checkColor: Colors.white, //选中时里面对号的颜色
           value: question.options[optionIndex].checked != null &&
               (int.parse(question.options[optionIndex].checked) ==
@@ -261,8 +293,11 @@ class _QuestionPageState extends State<QuestionPage> {
           onChanged: (isCheck) {
             // 收起键盘
             FocusScope.of(context).requestFocus(FocusNode());
-            _checkMaxChoise(question, optionIndex, isCheck);
+            if (widget.data.learnStatus != 'FINISHED') {
+              _checkMaxChoise(question, optionIndex, isCheck);
+            }
           },
+          // mouseCursor:MouseCursor,
         ),
       ],
     );
@@ -312,11 +347,13 @@ class _QuestionPageState extends State<QuestionPage> {
           borderRadius: BorderRadius.circular(8.0),
         ),
       ),
+      enabled: widget.data.learnStatus == 'FINISHED' ? false : true, //禁用
       onChanged: (text) {
         _questionsInit[question.index]['textField'] = text;
         // print("输入框 组件: $text");
       },
-      // controller: controller, // 控制正在编辑的文本
+      controller: new TextEditingController(
+          text: _questionsInit[question.index]['textField']), // 控制正在编辑的文本
     );
   }
 
@@ -412,10 +449,11 @@ class _QuestionPageState extends State<QuestionPage> {
                     ),
                   ],
                 ),
-                AceButton(
-                  onPressed: _openFile,
-                  text: '提交',
-                ),
+                if (widget.data.learnStatus != 'FINISHED')
+                  AceButton(
+                    onPressed: _openFile,
+                    text: '提交',
+                  ),
               ]),
         )
       ],

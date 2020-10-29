@@ -12,7 +12,7 @@ class Resources {
   String title;
   int needLearnTime;
   int learnTime;
-  String ststus;
+  String status;
   String thumbnailOssId;
   String thumbnailUrl;
   String feedback;
@@ -25,7 +25,7 @@ class Resources {
     this.title,
     this.needLearnTime,
     this.learnTime,
-    this.ststus,
+    this.status,
     this.thumbnailOssId,
     this.thumbnailUrl,
     this.feedback,

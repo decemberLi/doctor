@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 /// 渲染列表
 class PlanDetailList extends StatelessWidget {
   final data;
-
   PlanDetailList(this.data);
 
   Widget typeDecoratedBox(String type) {
@@ -41,29 +40,41 @@ class PlanDetailList extends StatelessWidget {
     String text = '待浏览';
     IconData icon = Icons.access_time;
 
-    if (item.learnTime > 0 && item.learnTime >= item.needLearnTime) {
-      icon = Icons.done;
-      rendColor = ThemeColor.color72c140;
-      if (resourceType == 'VIDEO') {
-        text = '观看时长：${item.learnTime}s';
-      } else if (resourceType == 'QUESTIONNAIRE') {
-        text = '已完成';
-      } else if (resourceType == 'ARTICLE') {
+    if (resourceType == 'ARTICLE') {
+      if (item.learnTime >= item.needLearnTime) {
         text = '浏览时长：${item.learnTime}s';
+        icon = Icons.done;
+        rendColor = ThemeColor.color72c140;
       } else {
+        text = item.learnTime <= 0 ? '待浏览' : '浏览时长：${item.learnTime}s';
+      }
+    } else if (resourceType == 'VIDEO') {
+      if (item.learnTime >= item.needLearnTime) {
+        text = '观看时长：${item.learnTime}s';
+        icon = Icons.done;
+        rendColor = ThemeColor.color72c140;
+      } else {
+        text = item.learnTime <= 0 ? '待观看' : '观看时长：${item.learnTime}s';
+      }
+    } else if (resourceType == 'QUESTIONNAIRE') {
+      if (item.status == 'FINISHED') {
         text = '已完成';
+      } else {
+        text = '待完成';
       }
     }
+
     // 录制视频只有一个状态-完成条件只有一个：上传讲课视频
     if (taskTemplate == 'DOCTOR_LECTURE') {
       text = '上传讲课视频';
-      if (item.ststus != null && item.ststus == 'FINISHED') {
+      if (item.status != null && item.status == 'FINISHED') {
         icon = Icons.done;
         rendColor = ThemeColor.color72c140;
       }
     }
-    if (item.ststus != null && item.ststus == 'FINISHED') {
+    if (item.status != null && item.status == 'FINISHED') {
       icon = Icons.done;
+      rendColor = ThemeColor.color72c140;
     }
 
     return Container(
@@ -99,6 +110,10 @@ class PlanDetailList extends StatelessWidget {
     Color rendColor = Color(0xFFDEDEE1);
     String text = '反馈';
     IconData icon = Icons.access_time;
+
+    if (item.resourceType == 'QUESTIONNAIRE') {
+      return Text('');
+    }
 
     if (item.feedback != null) {
       icon = Icons.done;
