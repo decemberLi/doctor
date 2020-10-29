@@ -111,7 +111,10 @@ class _LearnListPageState extends State<LearnListPage>
                 onTap: () async {
                   await Navigator.of(context).pushNamed(
                     RouteManager.LEARN_DETAIL,
-                    arguments: item.learnPlanId,
+                    arguments: {
+                      'learnPlanId': item.learnPlanId,
+                      'listStatus': widget.learnStatus,
+                    },
                   );
                   // 从详情页回来后刷新数据
                   if (widget.learnStatus == 'LEARNING') {
