@@ -172,7 +172,8 @@ class HttpManager {
       return content;
     } on DioError catch (e) {
       print('error: $e');
-      // return e;
+      return e;
+
       throw e;
     }
   }

@@ -188,7 +188,7 @@ class LearnListItemWiget extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
             ),
-            if (item.reLearn)
+            if (item.reLearn && listStatus != 'HISTORY')
               Container(
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.fromLTRB(10, 2, 10, 2),

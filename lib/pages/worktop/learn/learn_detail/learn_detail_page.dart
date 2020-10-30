@@ -253,11 +253,10 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               text: '查看视频',
               onPressed: () {
                 Navigator.of(context)
-                    .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
+                    .pushNamed(RouteManager.LOOK_LECTURE_VIDEOS, arguments: {
                   "learnPlanId": data.learnPlanId,
                   "resourceId": data.resources[0].resourceId,
-                  "taskTemplate": 'QUESTIONNAIRE',
-                  "lookRecording": 'QUESTIONNAIRE',
+                  'doctorName': data.doctorName,
                 });
               },
             ));
@@ -269,7 +268,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   @override
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
-    // var learnPlanId = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
@@ -480,14 +478,14 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                           if (data.taskTemplate ==
                                               'DOCTOR_LECTURE') {
                                             Navigator.of(context).pushNamed(
-                                                RouteManager
-                                                    .LEARN_UPLOAD_RECORD,
+                                                RouteManager.LECTURE_VIDEOS,
                                                 arguments: {
                                                   'resourceId': data
                                                       .resources[0].resourceId,
                                                   'learnPlanId':
                                                       data.learnPlanId,
                                                   'doctorName': data.doctorName,
+                                                  'taskName': data.taskName
                                                 });
                                           } else {
                                             // EasyLoading.showToast('暂未开放'),
