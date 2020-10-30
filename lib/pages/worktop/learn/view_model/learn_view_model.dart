@@ -2,7 +2,7 @@ import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
-import 'package:doctor/pages/worktop/service/service.dart';
+import 'package:doctor/pages/worktop/resource/service.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
 
@@ -85,10 +85,14 @@ class LearnRecordingModel extends ViewStateModel {
   }
 
   Future<LearnRecordingItem> loadData() async {
-    var data = await http.post('/doctor-lecture/detail', params: {
-      'learnPlanId': this.learnPlanId,
-      'resourceId': this.resourceId,
-    });
-    return LearnRecordingItem.fromJson(data);
+    try {
+      var data = await http.post('/doctor-lecture/detail', params: {
+        'learnPlanId': this.learnPlanId,
+        'resourceId': this.resourceId,
+      });
+      return LearnRecordingItem.fromJson(data);
+    } catch (e) {
+      return e;
+    }
   }
 }

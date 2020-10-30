@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
-import 'package:doctor/pages/worktop/learn/learn_upload_record/upload_video.dart';
-import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
+import 'package:doctor/pages/worktop/learn/lecture_videos/upload_video.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/pages/worktop/service.dart';
 import 'package:doctor/provider/provider_widget.dart';
-import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
@@ -17,38 +15,48 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:async';
 
-class LearnUploadRecordPage extends StatefulWidget {
+/// * @Author: duanruilong  * @Date: 2020-10-30 14:49:43  * @Desc: 上传讲课视频  */ lecture_videos
+
+class LectureVideosPage extends StatefulWidget {
   // final ResourceModel data;
-  // LearnUploadRecordPage(this.data);
-  LearnUploadRecordPage({Key key}) : super(key: key);
+  // LectureVideosPage(this.data);
+  LectureVideosPage({Key key}) : super(key: key);
 
   @override
   _LearnDetailPageState createState() => _LearnDetailPageState();
 }
 
-class _LearnDetailPageState extends State<LearnUploadRecordPage> {
+class _LearnDetailPageState extends State<LectureVideosPage> {
   String _upDoctorName;
   String _upTaskName;
   PickedFile _selectVideoData;
   String _doctorName;
+  String _taskName;
 
   VideoPlayerController _controller;
 
   final ImagePicker _picker = ImagePicker();
 
+  FocusNode taskNameFocusNode = FocusNode();
+  FocusNode doctorNameFocusNode = FocusNode();
+
   @override
   void initState() {
     // 在initState中发出请求
-    _upDoctorName = '';
-    _upTaskName = '';
     super.initState();
   }
 
-  Future<void> _selectVideos(videdata) async {
+  @override
+  void dispose() {
+    super.dispose();
+    taskNameFocusNode.dispose();
+    doctorNameFocusNode.dispose();
+  }
+
+  Future<void> _selectVideos() async {
     try {
       final PickedFile file = await _picker.getVideo(
           source: ImageSource.gallery,
@@ -68,7 +76,7 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
 
   // 视频播放
   Widget _videoBox(dynamic videdata) {
-    if (videdata.videoUrl != null) {
+    if (_controller != null || videdata?.videoUrl != null) {
       return Container(
         padding: EdgeInsets.fromLTRB(0, 10, 0, 40),
         child: Column(
@@ -85,7 +93,9 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
                     color: ThemeColor.primaryColor,
                   )),
               onTap: () {
-                _selectVideos(videdata);
+                // 收起键盘
+                FocusScope.of(context).requestFocus(FocusNode());
+                _selectVideos();
               },
             ),
           ],
@@ -105,7 +115,9 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
                   height: 87,
                 ),
                 onTap: () {
-                  EasyLoading.showToast('添加视频');
+                  // 收起键盘
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  _selectVideos();
                 },
               ),
             ),
@@ -149,21 +161,35 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
 
   // 上传提交
   void _onUpVideoClick(data, learnPlanId, resourceId) async {
+    print('$_upDoctorName--------$_upTaskName');
+    if (_selectVideoData == null && data == null) {
+      EasyLoading.showToast('请选择视频');
+      return;
+    }
     bool bindConfirm = await confirmDialog();
     if (bindConfirm) {
       var _presenter = _doctorName;
-      if (_upDoctorName != null) {
-        _presenter = _upDoctorName;
+      var _videoTitle = _taskName;
+      if (data.presenter != null) {
+        _presenter = data.presenter;
       } else {
-        if (data.presenter != null) {
-          _presenter = data.presenter;
+        if (_upDoctorName != null) {
+          _presenter = _upDoctorName;
         }
       }
+      if (data.videoTitle != null) {
+        _videoTitle = data.videoTitle;
+      } else {
+        if (_upTaskName != null) {
+          _videoTitle = _upTaskName;
+        }
+      }
+
       OssFileEntity entity = await OssService.upload(_selectVideoData.path);
       await addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
-        'videoTitle': _upTaskName != null ? _upTaskName : data.videoTitle,
+        'videoTitle': _videoTitle,
         'presenter': _presenter,
         'videoOssId': entity != null ? entity.ossId : data.videoOssId,
       }).then((res) {
@@ -171,7 +197,7 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
         // 延时1s执行返回
         Future.delayed(Duration(seconds: 1), () {
           // 回到列表
-          Navigator.of(context).pushNamed(RouteManager.LEARN_LIST);
+          Navigator.of(context).pushNamed(RouteManager.LEARN_PAGE);
         });
       });
     }
@@ -185,7 +211,9 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
     if (obj != null) {
       learnPlanId = obj["learnPlanId"].toString();
       resourceId = obj['resourceId'].toString();
-      _doctorName = obj['doctorName'];
+
+      // _upDoctorName = obj['doctorName'];
+      // _upTaskName = obj['taskName'];
     }
 
     return Scaffold(
@@ -200,12 +228,41 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
               if (model.isBusy) {
                 return Container();
               }
-              if (model.isError || model.isEmpty) {
-                return ViewStateEmptyWidget(onPressed: model.initData);
-              }
+              // if (model.isError || model.isEmpty) {
+              //   return ViewStateEmptyWidget(onPressed: model.initData);
+              // }
               var data = model.data;
-              return Container(
-                  color: ThemeColor.colorFFF3F5F8,
+              var _showDoctorName = _doctorName;
+              var _showTaskName = _taskName;
+              if (data != null) {
+                if (data?.videoTitle != null) {
+                  _showTaskName = data.videoTitle;
+                } else if (_upTaskName != null) {
+                  _showTaskName = _upTaskName;
+                }
+
+                if (data?.presenter != null) {
+                  _showDoctorName = data.presenter;
+                } else if (_upDoctorName != null) {
+                  _showDoctorName = _upDoctorName;
+                }
+              } else {
+                _doctorName = obj['doctorName'];
+                _taskName = obj['taskName'];
+                _showDoctorName = obj['doctorName'];
+                _showTaskName = obj['taskName'];
+              }
+
+              return GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    // 触摸收起键盘
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    setState(() {
+                      _upDoctorName = _doctorName;
+                      _upTaskName = _taskName;
+                    });
+                  },
                   child: Container(
                     alignment: Alignment.topCenter,
                     color: ThemeColor.colorFFF3F5F8,
@@ -227,16 +284,17 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
                                   keyboardType: TextInputType.multiline, //多行
                                   textAlign: TextAlign.right,
                                   controller: TextEditingController(
-                                      text: data.presenter),
+                                      text: _showTaskName),
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     contentPadding: EdgeInsets.all(10.0),
                                   ),
+                                  autofocus: false,
+                                  focusNode: taskNameFocusNode,
                                   style:
                                       TextStyle(color: ThemeColor.primaryColor),
                                   onChanged: (value) {
-                                    _upTaskName = value;
-                                    print("$_upTaskName'11输入框 组件: $value");
+                                    _taskName = value;
                                   },
                                 ),
                                 leading: Text('视频标题',
@@ -261,18 +319,18 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
                                   keyboardType: TextInputType.multiline, //多行
                                   textAlign: TextAlign.right,
                                   controller: TextEditingController(
-                                      text: data.videoTitle != null
-                                          ? data.videoTitle
-                                          : _doctorName),
+                                      text: _showDoctorName),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.all(10.0),
                                     border: InputBorder.none,
                                   ),
+                                  autofocus: false,
+                                  focusNode: doctorNameFocusNode,
                                   style:
                                       TextStyle(color: ThemeColor.primaryColor),
+
                                   onChanged: (value) {
-                                    _upDoctorName = value;
-                                    print("$_upDoctorName'输入框 组件: $value");
+                                    _doctorName = value;
                                   },
                                 ),
                                 leading: Text('主讲人',
@@ -302,6 +360,9 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
                             AceButton(
                                 text: '上传并提交',
                                 onPressed: () => {
+                                      // 收起键盘
+                                      FocusScope.of(context)
+                                          .requestFocus(FocusNode()),
                                       _onUpVideoClick(
                                           data, learnPlanId, resourceId)
                                     }),

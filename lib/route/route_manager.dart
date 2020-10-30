@@ -20,7 +20,8 @@ import 'package:doctor/pages/user/collect/collect_list.dart';
 import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
-import 'package:doctor/pages/worktop/learn/learn_upload_record/learn_upload_record.dart';
+import 'package:doctor/pages/worktop/learn/lecture_videos/lecture_videos_page.dart';
+import 'package:doctor/pages/worktop/learn/lecture_videos/look_lecture_video_page.dart';
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,8 @@ class RouteManager {
   static const String TEST = '/test';
   static const String LEARN_LIST = '/learn_list';
   static const String LEARN_DETAIL = '/learn_detail';
-  static const String LEARN_UPLOAD_RECORD = '/learn_upload_record';
+  static const String LECTURE_VIDEOS = '/lecture_videos';
+  static const String LOOK_LECTURE_VIDEOS = '/look_lecture_video_page';
   static const String RESOURCE_DETAIL = '/resource_detail';
   static const String UPDATE_PWD = '/update_pwd';
   static const String ABOUT_US = '/about_us';
@@ -61,7 +63,8 @@ class RouteManager {
     TEST: (context) => TestPage(),
     LEARN_LIST: (context) => LearnListPage('LEARNING'),
     LEARN_DETAIL: (context) => LearnDetailPage(),
-    LEARN_UPLOAD_RECORD: (context) => LearnUploadRecordPage(),
+    LECTURE_VIDEOS: (context) => LectureVideosPage(),
+    LOOK_LECTURE_VIDEOS: (context) => LookLectureVideosPage(),
     RESOURCE_DETAIL: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return ResourceDetailPage(obj["learnPlanId"], obj['resourceId'],
