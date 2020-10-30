@@ -14,11 +14,12 @@ class _UserPageState extends State<UserPage> {
   var doctorData;
   var numData;
   //获取医生基本信息和收藏患者信息
-
+  //authStatus:认证状态(WAIT_VERIFY-待认证、VERIFING-认证中、FAIL-认证失败、PASS-认证通过）
   _doctorInfo() async {
     var basicData = await getBasicData();
     print('res$basicData');
     if (basicData is! DioError) {
+      print(basicData);
       setState(() {
         doctorData = basicData;
       });
@@ -38,6 +39,7 @@ class _UserPageState extends State<UserPage> {
     super.initState();
   }
 
+//跳转列表样式
   Widget messageItem(String lable, String img, callBack) {
     return Container(
       margin: EdgeInsets.fromLTRB(14, 0, 14, 0),
@@ -65,6 +67,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+//收藏患者样式
   Widget boxItem(
     String img,
     int counts,
@@ -126,6 +129,7 @@ class _UserPageState extends State<UserPage> {
       body: SafeArea(
         child: Column(
           children: [
+            //头部
             Container(
               padding: EdgeInsets.only(top: 60, left: 16),
               child: Row(
@@ -133,8 +137,6 @@ class _UserPageState extends State<UserPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    // decoration:
-                    //     DashedDecoration(dashedColor: ThemeColor.colorFF222222),
                     child: Image.asset(
                       "assets/images/avatar.png",
                       width: 80,
@@ -148,12 +150,56 @@ class _UserPageState extends State<UserPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          child: Text(
-                            doctorData['doctorName'],
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                          child: Row(
+                            children: [
+                              Text(
+                                doctorData['doctorName'],
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Container(
+                                width: 80,
+                                height: 20,
+                                margin: EdgeInsets.only(left: 5),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: doctorData['authStatus'] == 'PASS'
+                                      ? Color(0xFFFAAD14)
+                                      : Color(0xFFB9B9B9),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(28),
+                                    bottomRight: Radius.circular(28),
+                                    topRight: Radius.circular(28),
+                                  ),
+                                ),
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    children: [
+                                      if (doctorData['authStatus'] == 'PASS')
+                                        WidgetSpan(
+                                          child: Icon(
+                                            Icons.keyboard_arrow_down,
+                                            color: Color(0xFFFAAD14),
+                                            size: 16,
+                                          ),
+                                        ),
+                                      TextSpan(
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                        ),
+                                        text: doctorData['authStatus'] == 'PASS'
+                                            ? '资质认证'
+                                            : '尚未认证',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
                         ),
                         Container(
@@ -175,6 +221,7 @@ class _UserPageState extends State<UserPage> {
                 ],
               ),
             ),
+            //收藏 患者
             Container(
               margin: EdgeInsets.only(top: 20, left: 16, right: 16),
               padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
@@ -206,6 +253,7 @@ class _UserPageState extends State<UserPage> {
                 ],
               ),
             ),
+            // 跳转页面
             Container(
               margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
               decoration: BoxDecoration(
