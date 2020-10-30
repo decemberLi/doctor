@@ -3,7 +3,6 @@ import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/common_stack.dart';
-import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/material.dart';
 
 class UserPage extends StatefulWidget {
@@ -41,7 +40,7 @@ class _UserPageState extends State<UserPage> {
 
   Widget messageItem(String lable, String img, callBack) {
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
+      margin: EdgeInsets.fromLTRB(14, 0, 14, 0),
       decoration: BoxDecoration(
         border: Border(bottom: Divider.createBorderSide(context)),
       ),
@@ -77,12 +76,14 @@ class _UserPageState extends State<UserPage> {
         pushRoute();
       },
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            img,
-            width: 40,
-            height: 40,
+          Container(
+            margin: EdgeInsets.only(right: 12),
+            child: Image.asset(
+              img,
+              width: 40,
+              height: 40,
+            ),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -90,7 +91,9 @@ class _UserPageState extends State<UserPage> {
             children: [
               /*2*/
               Container(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(
+                  bottom: 8,
+                ),
                 child: Text(
                   '$counts',
                   style: TextStyle(
@@ -173,9 +176,8 @@ class _UserPageState extends State<UserPage> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 20),
-              padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
-              width: 343,
+              margin: EdgeInsets.only(top: 20, left: 16, right: 16),
+              padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
               height: 80,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -189,18 +191,16 @@ class _UserPageState extends State<UserPage> {
                 ],
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  boxItem(
-                      'assets/images/learn.png', numData['favoriteNum'], '我的收藏',
-                      () {
+                  boxItem('assets/images/collectInfo.png',
+                      numData['favoriteNum'], '我的收藏', () {
                     Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
                   }),
                   VerticalDivider(),
-                  boxItem(
-                      'assets/images/learn.png', numData['patientNum'], '我的患者',
-                      () {
+                  boxItem('assets/images/patient.png', numData['patientNum'],
+                      '我的患者', () {
                     Navigator.pushNamed(context, RouteManager.PATIENT);
                   }),
                 ],
@@ -215,16 +215,16 @@ class _UserPageState extends State<UserPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  messageItem('资质认证', 'assets/images/learn.png', () {
+                  messageItem('资质认证', 'assets/images/zzrz.png', () {
                     print('资质认证');
                     Navigator.pushNamed(
                         context, RouteManager.QUALIFICATION_PAGE);
                   }),
-                  messageItem('设置', 'assets/images/learn.png', () {
+                  messageItem('设置', 'assets/images/setting.png', () {
                     print('设置');
                     // TODO: 设置页面
                   }),
-                  messageItem('关于我们', 'assets/images/learn.png', () {
+                  messageItem('关于我们', 'assets/images/aboutus.png', () {
                     Navigator.pushNamed(context, RouteManager.ABOUT_US);
                   }),
                 ],
