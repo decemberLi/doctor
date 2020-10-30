@@ -21,24 +21,20 @@ import 'dart:async';
 /// * @Author: duanruilong  * @Date: 2020-10-30 14:49:43  * @Desc: 上传讲课视频  */ lecture_videos
 
 class LectureVideosPage extends StatefulWidget {
-  // final ResourceModel data;
-  // LectureVideosPage(this.data);
   LectureVideosPage({Key key}) : super(key: key);
-
   @override
   _LearnDetailPageState createState() => _LearnDetailPageState();
 }
 
 class _LearnDetailPageState extends State<LectureVideosPage> {
+  VideoPlayerController _controller;
+  final ImagePicker _picker = ImagePicker();
+  PickedFile _selectVideoData;
+
   String _upDoctorName;
   String _upTaskName;
-  PickedFile _selectVideoData;
   String _doctorName;
   String _taskName;
-
-  VideoPlayerController _controller;
-
-  final ImagePicker _picker = ImagePicker();
 
   FocusNode taskNameFocusNode = FocusNode();
   FocusNode doctorNameFocusNode = FocusNode();
@@ -168,29 +164,12 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
     }
     bool bindConfirm = await confirmDialog();
     if (bindConfirm) {
-      var _presenter = _doctorName;
-      var _videoTitle = _taskName;
-      if (data.presenter != null) {
-        _presenter = data.presenter;
-      } else {
-        if (_upDoctorName != null) {
-          _presenter = _upDoctorName;
-        }
-      }
-      if (data.videoTitle != null) {
-        _videoTitle = data.videoTitle;
-      } else {
-        if (_upTaskName != null) {
-          _videoTitle = _upTaskName;
-        }
-      }
-
       OssFileEntity entity = await OssService.upload(_selectVideoData.path);
       await addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
-        'videoTitle': _videoTitle,
-        'presenter': _presenter,
+        'videoTitle': _upTaskName,
+        'presenter': _upDoctorName,
         'videoOssId': entity != null ? entity.ossId : data.videoOssId,
       }).then((res) {
         EasyLoading.showToast('提交成功');
@@ -232,23 +211,17 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
               //   return ViewStateEmptyWidget(onPressed: model.initData);
               // }
               var data = model.data;
-              var _showDoctorName = _doctorName;
-              var _showTaskName = _taskName;
-              if (data != null) {
-                if (data?.videoTitle != null) {
-                  _showTaskName = data.videoTitle;
-                } else if (_upTaskName != null) {
-                  _showTaskName = _upTaskName;
-                }
 
-                if (data?.presenter != null) {
+              var _showDoctorName = _upDoctorName;
+              var _showTaskName = _upTaskName;
+              if (data != null) {
+                if (_upTaskName == null && data?.videoTitle != null) {
+                  _showTaskName = data.videoTitle;
+                }
+                if (_upDoctorName == null && data?.presenter != null) {
                   _showDoctorName = data.presenter;
-                } else if (_upDoctorName != null) {
-                  _showDoctorName = _upDoctorName;
                 }
               } else {
-                _doctorName = obj['doctorName'];
-                _taskName = obj['taskName'];
                 _showDoctorName = obj['doctorName'];
                 _showTaskName = obj['taskName'];
               }

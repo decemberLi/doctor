@@ -1,16 +1,11 @@
-import 'dart:convert';
-
-import 'package:doctor/http/common_service.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/pages/worktop/resource/service.dart';
-import 'package:doctor/pages/worktop/resource/view_model/resource_component_model.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_file_preview/flutter_file_preview.dart';
 
 class QuestionPage extends StatefulWidget {
   final ResourceModel data;

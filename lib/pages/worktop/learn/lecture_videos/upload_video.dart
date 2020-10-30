@@ -1,6 +1,6 @@
-import 'package:chewie/chewie.dart';
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
+import 'package:doctor/widgets/ace_video.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -14,7 +14,6 @@ class UploadVideoDetail extends StatefulWidget {
 
 class _UploadVideoDetailState extends State<UploadVideoDetail> {
   VideoPlayerController _controller;
-  Future<void> _initializeVideoPlayerFuture;
   bool _isPlaying = false;
   _initData() async {
     if (widget.tocontroller != null) {
@@ -44,7 +43,6 @@ class _UploadVideoDetailState extends State<UploadVideoDetail> {
       }
     });
     print('tmpUrl==> $_controller');
-    _initializeVideoPlayerFuture = _controller.initialize();
     setState(() {});
   }
 
@@ -56,7 +54,6 @@ class _UploadVideoDetailState extends State<UploadVideoDetail> {
 
   @override
   void didUpdateWidget(covariant UploadVideoDetail oldWidget) {
-    print(2222222);
     this._initData();
     super.didUpdateWidget(oldWidget);
   }
@@ -69,26 +66,6 @@ class _UploadVideoDetailState extends State<UploadVideoDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initializeVideoPlayerFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Chewie(
-            controller: ChewieController(
-              videoPlayerController: _controller,
-              aspectRatio: 3 / 2,
-              autoPlay: false,
-              autoInitialize: false,
-            ),
-          );
-        } else {
-          return Container(
-            alignment: Alignment.center,
-            height: 240,
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
+    return AceVideo(controller: _controller);
   }
 }
