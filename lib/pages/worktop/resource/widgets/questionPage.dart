@@ -125,7 +125,7 @@ class _QuestionPageState extends State<QuestionPage> {
         // 单选
         _questionsInit.forEach((element) {
           if (element['index'] == item.index) {
-            if (int.parse(element['groupValue']) > 0) {
+            if (int.parse(element['groupValue']) != null) {
               item.options[int.parse(element['groupValue'])].checked =
                   (element['groupValue']);
             } else {
@@ -352,104 +352,110 @@ class _QuestionPageState extends State<QuestionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      shrinkWrap: true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
-      children: [
-        Container(
-          padding: EdgeInsets.fromLTRB(20, 20, 20, 40),
-          margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Column(
+    return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          // 触摸收起键盘
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: ListView(
+          shrinkWrap: true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
+          children: [
+            Container(
+              padding: EdgeInsets.fromLTRB(14, 14, 14, 60),
+              margin: EdgeInsets.fromLTRB(14, 14, 14, 14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(widget.data.title ?? widget.data.resourceName,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: ThemeColor.colorFF444444,
-                        )),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Column(children: [
-                      if (widget.data.info != null &&
-                          widget.data.info.summary != null)
-                        Text(widget.data.info.summary,
-                            textAlign: TextAlign.left,
+                    Column(
+                      children: [
+                        Text(widget.data.title ?? widget.data.resourceName,
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontWeight: FontWeight.w400,
+                              fontWeight: FontWeight.w600,
                               fontSize: 14,
                               color: ThemeColor.colorFF444444,
                             )),
-                    ]),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Row(children: [
-                      Text('一、基本情况',
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: ThemeColor.colorFF444444,
-                          )),
-                    ]),
-                    ListView.builder(
-                      shrinkWrap:
-                          true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
-                      physics:
-                          new NeverScrollableScrollPhysics(), // 禁用问题列表子组件的滚动事件
-                      //itemCount +1 为了显示加载中和暂无数据progressbar
-                      itemCount: widget.data.questions.length,
-                      itemBuilder: (context, index) {
-                        // 列表显示
-                        return Container(
-                          padding: new EdgeInsets.fromLTRB(4, 4, 10, 4),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                  '${index + 1}、${widget.data.questions[index].question}',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: ThemeColor.colorFF444444,
-                                  )),
-                              widget.data.questions[index].type == 'RADIO'
-                                  ? _buildRadioChoiceRow(
-                                      widget.data.questions[index])
-                                  : widget.data.questions[index].type ==
-                                          "CHECKBOX"
-                                      ? _buildCheckboxChoiceRow(
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Column(children: [
+                          if (widget.data.info != null &&
+                              widget.data.info.summary != null)
+                            Text('widget.data.info.summary',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: ThemeColor.colorFF444444,
+                                )),
+                        ]),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Row(children: [
+                          Text('一、基本情况',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: ThemeColor.colorFF444444,
+                              )),
+                        ]),
+                        ListView.builder(
+                          shrinkWrap:
+                              true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
+                          physics:
+                              new NeverScrollableScrollPhysics(), // 禁用问题列表子组件的滚动事件
+                          //itemCount +1 为了显示加载中和暂无数据progressbar
+                          itemCount: widget.data.questions.length,
+                          itemBuilder: (context, index) {
+                            // 列表显示
+                            return Container(
+                              padding: new EdgeInsets.fromLTRB(4, 4, 10, 4),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                      '${index + 1}、${widget.data.questions[index].question}',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                        color: ThemeColor.colorFF444444,
+                                      )),
+                                  widget.data.questions[index].type == 'RADIO'
+                                      ? _buildRadioChoiceRow(
                                           widget.data.questions[index])
-                                      : _buildTextControllerRow(
-                                          widget.data.questions[index])
-                            ],
-                          ),
-                        );
-                      },
+                                      : widget.data.questions[index].type ==
+                                              "CHECKBOX"
+                                          ? _buildCheckboxChoiceRow(
+                                              widget.data.questions[index])
+                                          : _buildTextControllerRow(
+                                              widget.data.questions[index])
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
-                if (widget.data.learnStatus != 'FINISHED')
-                  AceButton(
-                    onPressed: _openFile,
-                    text: '提交',
-                  ),
-              ]),
-        )
-      ],
-    );
+                    if (widget.data.learnStatus != 'FINISHED')
+                      AceButton(
+                        onPressed: _openFile,
+                        text: '提交',
+                      ),
+                  ]),
+            )
+          ],
+        ));
   }
 }

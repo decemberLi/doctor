@@ -49,7 +49,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           _text = '当前学习计划尚未学习，请在学习后提交';
         } else if (learnProgress != 100) {
           // 学习进度未完成
-          _text = '当前学习计划尚未完成，完成度${learnProgress}%，确认提交吗？';
+          _text = '当前学习计划尚未完成，完成度$learnProgress%，确认提交吗？';
         }
         return CupertinoAlertDialog(
           title: Text("提示"),
@@ -71,7 +71,11 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               ),
               onPressed: () {
                 //关闭对话框并返回true
-                Navigator.of(context).pop(true);
+                if (learnProgress == 0) {
+                  Navigator.of(context).pop(false);
+                } else {
+                  Navigator.of(context).pop(true);
+                }
               },
             ),
           ],
@@ -489,19 +493,21 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                 });
                                           } else {
                                             // EasyLoading.showToast('暂未开放'),
-                                            if (data.learnProgress > 0) {
-                                              bool bindConfirm =
-                                                  await confirmDialog(
-                                                      data.learnProgress);
-                                              if (bindConfirm) {
-                                                bool success =
-                                                    await model.bindLearnPlan(
-                                                  learnPlanId: data.learnPlanId,
-                                                );
-                                                if (success) {
-                                                  EasyLoading.showToast('提交成功');
+                                            bool bindConfirm =
+                                                await confirmDialog(
+                                                    data.learnProgress);
+                                            if (bindConfirm) {
+                                              bool success =
+                                                  await model.bindLearnPlan(
+                                                learnPlanId: data.learnPlanId,
+                                              );
+                                              if (success) {
+                                                EasyLoading.showToast('提交成功');
+                                                // 延时1s执行返回
+                                                Future.delayed(
+                                                    Duration(seconds: 1), () {
                                                   Navigator.of(context).pop();
-                                                }
+                                                });
                                               }
                                             }
                                           }
