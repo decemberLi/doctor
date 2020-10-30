@@ -4,13 +4,23 @@ HttpManager http = HttpManager('sso');
 HttpManager foundation = HttpManager('foundation');
 
 loginByPassword(params) {
-  return http.post('/user/login-by-pwd',
-      params: params, ignoreSession: true, loadingText: '登录中...');
+  return http.post(
+    '/user/login-by-pwd',
+    params: params,
+    ignoreSession: true,
+    loadingText: '登录中...',
+    showLoading: true,
+  );
 }
 
 loginByCaptCha(params) {
-  return http.post('/user/login-after-register',
-      params: params, ignoreSession: true, loadingText: '登录中...');
+  return http.post(
+    '/user/login-after-register',
+    params: params,
+    ignoreSession: true,
+    loadingText: '登录中...',
+    showLoading: true,
+  );
 }
 
 sendSms(params) {
@@ -19,6 +29,7 @@ sendSms(params) {
     params: params,
     loadingText: '发送中...',
     ignoreSession: true,
+    showLoading: true,
   );
 }
 
@@ -35,5 +46,6 @@ findPwd(params) {
   return http.post(
     '/forget/pwd',
     params: params,
+    showLoading: true,
   );
 }

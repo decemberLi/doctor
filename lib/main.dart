@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
         ],
         navigatorKey: NavigationService().navigatorKey,
         routes: RouteManager.routes,
-        home: session == null ? GuidePage() : HomePage(),
+        initialRoute: session == null ? RouteManager.GUIDE : RouteManager.HOME,
         builder: (BuildContext context, Widget child) {
           /// 确保 loading 组件能覆盖在其他组件之上.
           return FlutterEasyLoading(

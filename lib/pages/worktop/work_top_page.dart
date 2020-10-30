@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_item_wiget.dart';
+import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/model/work_top_entity.dart';
 import 'package:doctor/pages/worktop/service.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -165,7 +166,21 @@ class _WorktopPageState extends State<WorktopPage>
       itemCount: entity.learnPlanList.length,
       physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        return LearnListItemWiget(entity.learnPlanList[index], 'LEARNING');
+        LearnListItem item = entity.learnPlanList[index];
+        return GestureDetector(
+          onTap: () async {
+            await Navigator.of(context).pushNamed(
+              RouteManager.LEARN_DETAIL,
+              arguments: {
+                'learnPlanId': item.learnPlanId,
+                'listStatus': 'LEARNING',
+              },
+            );
+            // 从详情页回来后刷新数据
+            _refreshController.requestRefresh(needMove: false);
+          },
+          child: LearnListItemWiget(item, 'LEARNING'),
+        );
       },
     );
   }
@@ -176,8 +191,12 @@ class _WorktopPageState extends State<WorktopPage>
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          decoration: DashedDecoration(dashedColor: ThemeColor.colorFF222222),
-          child: Image.asset("assets/images/avatar.png"),
+          // decoration: DashedDecoration(dashedColor: ThemeColor.colorFF222222),
+          child: Image.asset(
+            "assets/images/avatar.png",
+            width: 80,
+            fit: BoxFit.fitWidth,
+          ),
         ),
         Container(
           margin: EdgeInsets.only(left: 10),

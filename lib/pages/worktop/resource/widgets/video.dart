@@ -1,7 +1,7 @@
-import 'package:chewie/chewie.dart';
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/ace_video.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -16,7 +16,6 @@ class VideoDetail extends StatefulWidget {
 
 class _VideoDetailState extends State<VideoDetail> {
   VideoPlayerController _controller;
-  Future<void> _initializeVideoPlayerFuture;
   bool _isPlaying = false;
   _initData() async {
     var files = await CommonService.getFile({
@@ -44,7 +43,6 @@ class _VideoDetailState extends State<VideoDetail> {
       }
     });
     print(files[0]['tmpUrl']);
-    _initializeVideoPlayerFuture = _controller.initialize();
     setState(() {});
   }
 
@@ -58,31 +56,6 @@ class _VideoDetailState extends State<VideoDetail> {
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  /// 渲染视频区域
-  Widget _renderVideo() {
-    return FutureBuilder(
-      future: _initializeVideoPlayerFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Chewie(
-            controller: ChewieController(
-              videoPlayerController: _controller,
-              aspectRatio: 3 / 2,
-              autoPlay: false,
-              autoInitialize: false,
-            ),
-          );
-        } else {
-          return Container(
-            alignment: Alignment.center,
-            height: 240,
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
   }
 
   /// 渲染视频信息
@@ -164,7 +137,7 @@ class _VideoDetailState extends State<VideoDetail> {
       alignment: Alignment.topCenter,
       child: Column(
         children: [
-          _renderVideo(),
+          AceVideo(controller: _controller),
           Expanded(
             child: _renderVideoInfo(),
           ),

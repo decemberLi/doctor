@@ -26,12 +26,12 @@ import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
 import 'package:flutter/material.dart';
 
 class RouteManager {
+  static const String HOME = '/';
   static const String LOGIN = '/login';
   static const String GUIDE = '/guide';
   static const String LOGIN_PWD = '/login_by_password';
   static const String LOGIN_CAPTCHA = '/login_by_captcha';
   static const String FIND_PWD = '/find_password';
-  static const String HOME = '/home';
   static const String TEST = '/test';
   static const String LEARN_LIST = '/learn_list';
   static const String LEARN_DETAIL = '/learn_detail';

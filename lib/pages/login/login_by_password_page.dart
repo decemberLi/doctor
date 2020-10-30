@@ -70,7 +70,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                       Container(
                         margin: EdgeInsets.only(bottom: 30),
                         child: TextFormField(
-                          autofocus: true,
+                          autofocus: false,
                           initialValue:
                               SessionManager().sp.getString(LAST_PHONE) ?? '',
                           decoration: InputDecoration(hintText: '请输入手机号'),
@@ -87,18 +87,6 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                         child: TextFormField(
                           decoration: InputDecoration(
                             hintText: '请输入6位数字密码',
-                            suffix: GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, RouteManager.FIND_PWD);
-                              },
-                              child: Text(
-                                '找回密码',
-                                style: TextStyle(
-                                    color: ThemeColor.primaryColor,
-                                    fontSize: 14),
-                              ),
-                            ),
                           ),
                           validator: (val) =>
                               val.length < 6 ? '请输入6位数字密码' : null,
@@ -110,10 +98,32 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(bottom: 40),
+                        margin: EdgeInsets.only(bottom: 10),
                         child: AceButton(
                           text: '登录',
                           onPressed: _submit,
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        width: 310,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              child: Text('验证码登录'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: Text('找回密码'),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, RouteManager.FIND_PWD);
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ],
