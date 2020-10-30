@@ -55,6 +55,13 @@ class _UploadVideoDetailState extends State<UploadVideoDetail> {
   }
 
   @override
+  void didUpdateWidget(covariant UploadVideoDetail oldWidget) {
+    print(2222222);
+    this._initData();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();

@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:chewie/chewie.dart';
-import 'package:doctor/http/common_service.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/worktop/learn/learn_upload_record/upload_video.dart';
@@ -12,7 +10,6 @@ import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +33,8 @@ class LearnUploadRecordPage extends StatefulWidget {
 class _LearnDetailPageState extends State<LearnUploadRecordPage> {
   String _upDoctorName;
   String _upTaskName;
-  String _videoOssId;
+  PickedFile _selectVideoData;
+  String _doctorName;
 
   VideoPlayerController _controller;
 
@@ -50,57 +48,23 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
     super.initState();
   }
 
-  Future<void> _playVideo(PickedFile file, videdata) async {
-    if (file != null && mounted) {
-      _controller = VideoPlayerController.file(File(file.path));
-      await _controller.setVolume(1.0);
-      OssFileEntity entity = await OssService.upload(file.path);
-
-      print('entity:>>${entity}');
-      print('file.path:>>${file.path}');
-      print('_controller:>>$_controller');
-      if (entity != null) {
-        _videoOssId = entity.ossId;
-        Map<String, dynamic> reoptions = {
-          "videoTitle": entity.name,
-          "videoOssId": entity.ossId,
-          "videoUrl": entity.url,
-        };
-
-        LearnRecordingItem option = LearnRecordingItem.fromJson(reoptions);
-        videdata.videoUrl = option.videoUrl;
-        videdata.videoOssId = option.videoOssId;
-      }
-      setState(() {});
-    }
-  }
-
   Future<void> _selectVideos(videdata) async {
     try {
-      // ignore: deprecated_member_use
-      // _video = await ImagePicker.pickVideo(source: ImageSource.gallery);
-      // print('选取视频：' + _video.toString());
-
       final PickedFile file = await _picker.getVideo(
           source: ImageSource.gallery,
           maxDuration: const Duration(seconds: 10));
-      await _playVideo(file, videdata);
+      if (file != null && mounted) {
+        _controller = VideoPlayerController.file(File(file.path));
+        await _controller.setVolume(1.0);
+
+        print('file.path:>>${file.path}');
+        print('_controller:>>$_controller');
+        setState(() {
+          _selectVideoData = file;
+        });
+      }
     } on PlatformException {}
   }
-
-  // 选择视频
-  // _selectPicture() async {
-  // try {
-  //   _galleryMode = GalleryMode.video;
-  //   _listVideoPaths = await ImagePickers.pickerPaths(
-  //     galleryMode: _galleryMode,
-  //     selectCount: 2,
-  //     showCamera: true,
-  //   );
-  //   setState(() {});
-  //   print(_listVideoPaths);
-  // } on PlatformException {}
-  // }
 
   // 视频播放
   Widget _videoBox(dynamic videdata) {
@@ -187,12 +151,21 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
   void _onUpVideoClick(data, learnPlanId, resourceId) async {
     bool bindConfirm = await confirmDialog();
     if (bindConfirm) {
+      var _presenter = _doctorName;
+      if (_upDoctorName != null) {
+        _presenter = _upDoctorName;
+      } else {
+        if (data.presenter != null) {
+          _presenter = data.presenter;
+        }
+      }
+      OssFileEntity entity = await OssService.upload(_selectVideoData.path);
       await addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
         'videoTitle': _upTaskName != null ? _upTaskName : data.videoTitle,
-        'presenter': _upDoctorName != null ? _upDoctorName : data.presenter,
-        'videoOssId': _videoOssId != null ? _videoOssId : data.videoOssId,
+        'presenter': _presenter,
+        'videoOssId': entity != null ? entity.ossId : data.videoOssId,
       }).then((res) {
         EasyLoading.showToast('提交成功');
         // 延时1s执行返回
@@ -212,6 +185,7 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
     if (obj != null) {
       learnPlanId = obj["learnPlanId"].toString();
       resourceId = obj['resourceId'].toString();
+      _doctorName = obj['doctorName'];
     }
 
     return Scaffold(
@@ -287,7 +261,9 @@ class _LearnDetailPageState extends State<LearnUploadRecordPage> {
                                   keyboardType: TextInputType.multiline, //多行
                                   textAlign: TextAlign.right,
                                   controller: TextEditingController(
-                                      text: data.videoTitle),
+                                      text: data.videoTitle != null
+                                          ? data.videoTitle
+                                          : _doctorName),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.all(10.0),
                                     border: InputBorder.none,

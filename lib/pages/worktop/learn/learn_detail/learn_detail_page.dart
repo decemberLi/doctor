@@ -244,24 +244,24 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   // 查看视频
   Widget _renderLookRecording(data) {
     if (data.taskTemplate == 'DOCTOR_LECTURE') {
-      // if (data.status == 'SUBMIT_LEARN' || data.status == 'ACCEPTED') {
-      return Container(
-          alignment: Alignment.center,
-          margin: EdgeInsets.fromLTRB(0, 10, 0, 40),
-          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-          child: AceButton(
-            text: '查看视频',
-            onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
-                "learnPlanId": data.learnPlanId,
-                "resourceId": data.resources[0].resourceId,
-                "taskTemplate": 'QUESTIONNAIRE',
-                "lookRecording": 'QUESTIONNAIRE',
-              });
-            },
-          ));
-      // }
+      if (data.status == 'SUBMIT_LEARN' || data.status == 'ACCEPTED') {
+        return Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.fromLTRB(0, 10, 0, 40),
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: AceButton(
+              text: '查看视频',
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
+                  "learnPlanId": data.learnPlanId,
+                  "resourceId": data.resources[0].resourceId,
+                  "taskTemplate": 'QUESTIONNAIRE',
+                  "lookRecording": 'QUESTIONNAIRE',
+                });
+              },
+            ));
+      }
     }
     return Text('');
   }
@@ -487,6 +487,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                       .resources[0].resourceId,
                                                   'learnPlanId':
                                                       data.learnPlanId,
+                                                  'doctorName': data.doctorName,
                                                 });
                                           } else {
                                             // EasyLoading.showToast('暂未开放'),
