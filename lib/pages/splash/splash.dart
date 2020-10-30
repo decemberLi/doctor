@@ -33,6 +33,7 @@ class _GuidePageState extends State<GuidePage> {
                   fit: BoxFit.cover),
               itemCount: GuidePage.images.length,
               loop: false,
+              pagination: new SwiperPagination(),
               onIndexChanged: (index) {
                 setState(() {
                   curIndex = index;
@@ -40,18 +41,30 @@ class _GuidePageState extends State<GuidePage> {
               }),
           Offstage(
             offstage: curIndex != GuidePage.images.length - 1,
-            child: CupertinoButton(
-              color: Theme.of(context).primaryColor,
-              child: Text('点我开始'),
-              onPressed: () {
-                String session = SessionManager().getSession();
-                String nextRoute = RouteManager.HOME;
-                if (session == null) {
-                  nextRoute = RouteManager.LOGIN_CAPTCHA;
-                }
-                // 跳转
-                Navigator.of(context).pushReplacementNamed(nextRoute);
-              },
+            child: Container(
+              margin: EdgeInsets.only(bottom: 80),
+              child: RaisedButton(
+                padding: EdgeInsets.fromLTRB(60, 10, 60, 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(50 / 2),
+                  ),
+                ),
+                color: Color(0xFF41A4F8),
+                child: Text(
+                  '立即体验',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  String session = SessionManager().getSession();
+                  String nextRoute = RouteManager.HOME;
+                  if (session == null) {
+                    nextRoute = RouteManager.LOGIN_CAPTCHA;
+                  }
+                  // 跳转
+                  Navigator.of(context).pushReplacementNamed(nextRoute);
+                },
+              ),
             ),
           )
         ],
