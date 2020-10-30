@@ -124,7 +124,7 @@ class _UserPageState extends State<UserPage> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.only(top: 20, left: 16),
+              padding: EdgeInsets.only(top: 60, left: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,7 +132,11 @@ class _UserPageState extends State<UserPage> {
                   Container(
                     // decoration:
                     //     DashedDecoration(dashedColor: ThemeColor.colorFF222222),
-                    child: Image.asset("assets/images/avatar.png"),
+                    child: Image.asset(
+                      "assets/images/avatar.png",
+                      width: 80,
+                      fit: BoxFit.fitWidth,
+                    ),
                   ),
                   Container(
                     margin: EdgeInsets.only(left: 10),
@@ -169,7 +173,7 @@ class _UserPageState extends State<UserPage> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 40),
+              margin: EdgeInsets.only(top: 20),
               padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
               width: 343,
               height: 80,

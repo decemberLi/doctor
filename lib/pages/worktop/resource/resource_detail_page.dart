@@ -455,7 +455,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                             ? '您的反馈已收到,非常感谢！'
                             : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗?',
                         style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 20,
                             color: Colors.white,
                             fontWeight: FontWeight.bold),
                       ),
@@ -470,11 +470,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                           height: 88,
                         ),
                       ),
-                    // Icon(
-                    //   Icons.favorite,
-                    //   size: 80,
-                    //   color: Colors.red,
-                    // ),
                     if (_feedbackData.length > 0)
                       ..._feedbackData.map((item) {
                         return GestureDetector(
@@ -486,7 +481,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                             children: [
                               Container(
                                 height: 30,
-                                padding: EdgeInsets.only(left: 30, right: 10),
+                                padding: EdgeInsets.only(left: 25, right: 10),
                                 margin: EdgeInsets.only(top: 26),
                                 constraints: BoxConstraints(
                                   minWidth: 100,
@@ -496,9 +491,11 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                   // borderRadius:
                                   // BorderRadius.all(Radius.circular(15)),
                                   borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(15),
-                                      topRight: Radius.circular(15)),
+                                    topLeft: Radius.circular(18),
+                                    bottomRight: Radius.circular(15),
+                                    topRight: Radius.circular(15),
+                                    bottomLeft: Radius.circular(5),
+                                  ),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -514,11 +511,12 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                 ),
                               ),
                               Positioned(
-                                left: -11,
-                                top: 18,
+                                left: item['index'] == 0 ? -10 : -8,
+                                top: item['index'] == 0 ? 20 : 22,
                                 child: Icon(
                                   item['icon'],
-                                  size: 40,
+                                  size: 35,
+                                  color: Color(0xFF51BEFF),
                                 ),
                               )
                             ],
@@ -533,12 +531,15 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                             Container(
                               margin: EdgeInsets.only(top: 26),
                               width: 140,
-                              height: 35,
+                              height: 33,
                               child: RaisedButton(
                                 padding: EdgeInsets.only(left: 30),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(30 / 2),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15),
+                                    bottomRight: Radius.circular(15),
+                                    topRight: Radius.circular(15),
+                                    bottomLeft: Radius.circular(22),
                                   ),
                                 ),
                                 color: Colors.white,
@@ -562,18 +563,19 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                           ? Icons.keyboard_arrow_up
                                           : Icons.keyboard_arrow_down,
                                       // size: 40,
-                                      color: ThemeColor.primaryColor,
+                                      color: Color(0xFF000000),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
                             Positioned(
-                              left: -8,
-                              top: 23,
+                              left: -6,
+                              top: 24,
                               child: Icon(
                                 MyIcons.icon_pinglun,
-                                size: 40,
+                                size: 35,
+                                color: Color(0xFF51BEFF),
                               ),
                             ),
                           ],
@@ -610,7 +612,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                           filled: true,
                           contentPadding: EdgeInsets.all(10.0),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
                           hintText: '请输入您对素材的评价',
                         ),
@@ -639,7 +641,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
           ),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Color(0x40000000),
+            color: Color(0xC0000000),
           ),
         ),
       ),
@@ -654,9 +656,21 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     getFeedbackInfo({'businessArea': 'ACADEMIC_PROMOTION'}).then((res) {
       setState(() {
         _feedbackData = [
-          {'content': res['perfectList'][0], 'icon': MyIcons.icon_dianzan},
-          {'content': res['goodList'][0], 'icon': MyIcons.icon_xiaolian},
-          {'content': res['middleList'][0], 'icon': MyIcons.icon_kulian}
+          {
+            'content': res['perfectList'][0],
+            'icon': MyIcons.icon_dianzan,
+            'index': 0
+          },
+          {
+            'content': res['goodList'][0],
+            'icon': MyIcons.icon_xiaolian,
+            'index': 1
+          },
+          {
+            'content': res['middleList'][0],
+            'icon': MyIcons.icon_kulian,
+            'index': 2
+          }
         ];
       });
     });
