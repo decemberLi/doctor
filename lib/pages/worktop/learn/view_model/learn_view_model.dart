@@ -55,10 +55,10 @@ class LearnDetailViewModel extends ViewStateModel {
     int learnPlanId,
   }) async {
     try {
-      var res = await learnSubmit({
+      await learnSubmit({
         'learnPlanId': learnPlanId,
       });
-      return res;
+      return true;
     } catch (e) {
       return false;
     }

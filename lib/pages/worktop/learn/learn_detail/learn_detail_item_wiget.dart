@@ -1,8 +1,10 @@
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
+import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:provider/provider.dart';
 
 /// 渲染列表
 class PlanDetailList extends StatelessWidget {
@@ -241,13 +243,16 @@ class PlanDetailList extends StatelessWidget {
     for (var item in resources) {
       print(item);
       tiles.add(new GestureDetector(
-          onTap: () {
-            Navigator.of(context)
+          onTap: () async {
+            await Navigator.of(context)
                 .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
               "learnPlanId": data.learnPlanId,
               "resourceId": item.resourceId,
               "taskTemplate": data.taskTemplate,
             });
+            LearnDetailViewModel _model =
+                Provider.of<LearnDetailViewModel>(context, listen: false);
+            _model.initData();
           },
           child: Container(
               margin: EdgeInsets.only(bottom: 12),

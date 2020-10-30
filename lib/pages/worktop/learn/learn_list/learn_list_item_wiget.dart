@@ -166,152 +166,143 @@ class LearnListItemWiget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pushNamed(RouteManager.LEARN_DETAIL, arguments: {
-          "learnPlanId": item.learnPlanId,
-          "listStatus": listStatus,
-        });
-        // Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL);
-      },
-      child: Container(
-        margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
-        padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+    return Container(
+      margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
+      padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.only(bottom: 10),
+              child: Text(
+                TASK_TEMPLATE[item.taskTemplate],
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            if (item.reLearn)
               Container(
                 alignment: Alignment.centerLeft,
-                margin: EdgeInsets.only(bottom: 10),
+                padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                margin: EdgeInsets.only(bottom: 10, left: 10),
+                decoration: BoxDecoration(
+                  color: Color(0xffF6A419),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color(0xffF6A419),
+                        offset: Offset(2.0, 2.0),
+                        blurRadius: 4.0)
+                  ],
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(28),
+                      topRight: Radius.circular(28),
+                      bottomRight: Radius.circular(28)),
+                ),
                 child: Text(
-                  TASK_TEMPLATE[item.taskTemplate],
+                  item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
                   style: TextStyle(
-                      color: Colors.black,
+                      color: ThemeColor.colorFFFFFF,
                       fontSize: 12,
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              if (item.reLearn)
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                  margin: EdgeInsets.only(bottom: 10, left: 10),
-                  decoration: BoxDecoration(
-                    color: Color(0xffF6A419),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color(0xffF6A419),
-                          offset: Offset(2.0, 2.0),
-                          blurRadius: 4.0)
-                    ],
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(28),
-                        topRight: Radius.circular(28),
-                        bottomRight: Radius.circular(28)),
-                  ),
-                  child: Text(
-                    item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
-                    style: TextStyle(
-                        color: ThemeColor.colorFFFFFF,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold),
-                  ),
+            // 新
+            if (item.status == 'WAIT_LEARN')
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                margin: EdgeInsets.only(bottom: 10, left: 10),
+                decoration: BoxDecoration(
+                  color: ThemeColor.primaryColor,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color(0xff3AA7FF),
+                        offset: Offset(2.0, 2.0),
+                        blurRadius: 4.0)
+                  ],
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(28),
+                      topRight: Radius.circular(28),
+                      bottomRight: Radius.circular(28)),
                 ),
-              // 新
-              if (item.status == 'WAIT_LEARN')
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                  margin: EdgeInsets.only(bottom: 10, left: 10),
-                  decoration: BoxDecoration(
-                    color: ThemeColor.primaryColor,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color(0xff3AA7FF),
-                          offset: Offset(2.0, 2.0),
-                          blurRadius: 4.0)
-                    ],
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(28),
-                        topRight: Radius.circular(28),
-                        bottomRight: Radius.circular(28)),
-                  ),
-                  child: Text(
-                    '新',
-                    style: TextStyle(
-                        color: ThemeColor.colorFFFFFF,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold),
-                  ),
+                child: Text(
+                  '新',
+                  style: TextStyle(
+                      color: ThemeColor.colorFFFFFF,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
                 ),
-            ]),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ResourceTypeListWiget(item.resourceTypeResult),
-                  if (this.item.taskTemplate == 'SALON' ||
-                      this.item.taskTemplate == 'DEPART')
-                    _meetingStatus(this.item.meetingEndTime),
-                ]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              ),
+          ]),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.symmetric(vertical: 6),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        right: BorderSide(color: ThemeColor.colorFFF3F5F8),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.taskName,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          softWrap: true,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          '医学信息推广专员：${item.representName}',
-                          style:
-                              TextStyle(color: Color(0xFF666666), fontSize: 12),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          timeRender(),
-                          style:
-                              TextStyle(color: Color(0xFF666666), fontSize: 10),
-                        ),
-                      ],
+                ResourceTypeListWiget(item.resourceTypeResult),
+                if (this.item.taskTemplate == 'SALON' ||
+                    this.item.taskTemplate == 'DEPART')
+                  _meetingStatus(this.item.meetingEndTime),
+              ]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.symmetric(vertical: 6),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      right: BorderSide(color: ThemeColor.colorFFF3F5F8),
                     ),
                   ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.taskName,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        softWrap: true,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        '医学信息推广专员：${item.representName}',
+                        style:
+                            TextStyle(color: Color(0xFF666666), fontSize: 12),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        timeRender(),
+                        style:
+                            TextStyle(color: Color(0xFF666666), fontSize: 10),
+                      ),
+                    ],
+                  ),
                 ),
-                Container(
-                  width: 108,
-                  child: circleRender(),
-                ),
-              ],
-            )
-          ],
-        ),
+              ),
+              Container(
+                width: 108,
+                child: circleRender(),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

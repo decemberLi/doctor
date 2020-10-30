@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage>
   ];
 
   void onTabTapped(int index) {
+    // TODO: 接RDM控制处方是否可见
     setState(() {
       _currentIndex = index;
     });
