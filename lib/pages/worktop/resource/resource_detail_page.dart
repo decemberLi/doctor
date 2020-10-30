@@ -462,11 +462,19 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                     ),
                     // 反馈成功
                     if (successFeedback)
-                      Icon(
-                        Icons.favorite,
-                        size: 80,
-                        color: Colors.red,
+                      Container(
+                        margin: EdgeInsets.only(top: 59),
+                        child: Image.asset(
+                          'assets/images/feedback.png',
+                          width: 88,
+                          height: 88,
+                        ),
                       ),
+                    // Icon(
+                    //   Icons.favorite,
+                    //   size: 80,
+                    //   color: Colors.red,
+                    // ),
                     if (_feedbackData.length > 0)
                       ..._feedbackData.map((item) {
                         return GestureDetector(
@@ -507,7 +515,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                               ),
                               Positioned(
                                 left: -11,
-                                top: 19,
+                                top: 18,
                                 child: Icon(
                                   item['icon'],
                                   size: 40,
@@ -525,7 +533,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                             Container(
                               margin: EdgeInsets.only(top: 26),
                               width: 140,
-                              height: 30,
+                              height: 35,
                               child: RaisedButton(
                                 padding: EdgeInsets.only(left: 30),
                                 shape: RoundedRectangleBorder(
@@ -561,8 +569,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                               ),
                             ),
                             Positioned(
-                              left: -5,
-                              top: 22,
+                              left: -8,
+                              top: 23,
                               child: Icon(
                                 MyIcons.icon_pinglun,
                                 size: 40,
