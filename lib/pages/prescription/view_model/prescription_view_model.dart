@@ -93,6 +93,18 @@ class PrescriptionViewModel extends ViewStateModel {
     return true;
   }
 
+  getDataByPatient(patientUserId) async {
+    var res = await loadPrescriptionByPatient({'patientUserId': patientUserId});
+
+    PrescriptionModel data = PrescriptionModel.fromJson(res);
+    this.setData(data, isNew: true);
+  }
+
+  resetData() {
+    this.data = PrescriptionModel();
+    this.changeDataNotify();
+  }
+
   /// 重新设置开处方数据
   setData(
     PrescriptionModel newData, {
@@ -126,7 +138,7 @@ class PrescriptionViewModel extends ViewStateModel {
     }
   }
 
-  updatePrescription() async {
+  updatePrescription(Function callBack) async {
     if (!this.validateData()) {
       return;
     }
@@ -136,6 +148,9 @@ class PrescriptionViewModel extends ViewStateModel {
       this.data = new PrescriptionModel();
       notifyListeners();
       EasyLoading.showToast('修改成功');
+      if (callBack != null) {
+        callBack();
+      }
     } catch (e) {}
   }
 

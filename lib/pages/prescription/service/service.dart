@@ -2,7 +2,7 @@ import 'package:doctor/http/http_manager.dart';
 
 HttpManager http = HttpManager('dtp');
 HttpManager httpFoundation = HttpManager('foundation');
-HttpManager foundationWeb = HttpManager('foundationWeb');
+HttpManager foundation = HttpManager('foundation');
 
 /// 新增处方
 Future addPrescription(params) async {
@@ -22,6 +22,11 @@ Future loadPrescriptionList(params) async {
 /// 处方详情
 Future loadPrescriptionDetail(params) async {
   return await http.post('/prescription/query', params: params);
+}
+
+/// 患者最近的一个处方
+Future loadPrescriptionByPatient(params) async {
+  return await http.post('/patient/prescription/lately-one', params: params);
 }
 
 /// 处方模板列表
@@ -49,7 +54,7 @@ Future checkPrescriptionBeforeBind(String prescriptionNo) async {
 /// 获取绑定二维码
 Future<String> loadBindQRCode(String prescriptionNo) async {
   try {
-    var res = await foundationWeb.post(
+    var res = await foundation.post(
       '/wechat-accounts/temp-qr-code',
       params: {
         'bizType': 'PRESCRIPTION_BIND',

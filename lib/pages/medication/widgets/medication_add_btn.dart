@@ -16,7 +16,7 @@ class MedicationAddBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MedicationViewModel>(
         builder: (context, MedicationViewModel model, child) {
-      double _quantity = data?.quantity ?? 0;
+      double _quantity = data.quantity != null ? data.quantity + .0 : 0;
       if (_quantity == 0) {
         return AceButton(
           width: 100,

@@ -1,4 +1,5 @@
 import 'package:doctor/pages/home_page.dart';
+import 'package:doctor/pages/prescription/prescription_page.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_detail.dart';
 import 'package:doctor/provider/provider_widget.dart';
@@ -77,21 +78,32 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
             width: MediaQuery.of(context).size.width,
             child: Container(
               alignment: Alignment.topCenter,
-              padding: EdgeInsets.symmetric(
-                horizontal: 50,
-              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Consumer<PrescriptionViewModel>(builder: (_, model1, __) {
+                  Consumer<PrescriptionViewModel>(
+                      builder: (_, prescriptionViewModel, __) {
                     return AceButton(
                       textColor: Colors.white,
                       text: '去修改处方',
-                      onPressed: () {
-                        model1.setData(model.data, callBack: () {
-                          Navigator.of(context)
-                              .popUntil(ModalRoute.withName(RouteManager.HOME));
+                      onPressed: () async {
+                        prescriptionViewModel.setData(model.data, callBack: () {
+                          // Navigator.of(context)
+                          //     .popUntil(ModalRoute.withName(RouteManager.HOME));
                         });
+                        bool updated = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PrescriptionPage(
+                              title: '处方修改',
+                              showActicons: false,
+                            ),
+                          ),
+                        );
+                        prescriptionViewModel.resetData();
+                        if (updated) {
+                          model.initData();
+                        }
                       },
                     );
                   }),

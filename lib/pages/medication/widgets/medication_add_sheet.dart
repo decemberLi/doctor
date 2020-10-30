@@ -1,15 +1,10 @@
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/theme/common_style.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:doctor/widgets/common_spinner_input.dart';
 import 'package:flutter/material.dart';
-
-List<String> frequencyList = ['每日一次', '每日两次', '每日三次'];
-
-List<String> doseUnitList = ['片/次', '颗/次'];
-
-List<String> usePatternList = ['口服', '冲服', '硬塞'];
 
 /// 添加药品弹窗内容
 class MedicationAddSheet extends StatefulWidget {
@@ -39,21 +34,21 @@ class MedicationAddSheet extends StatefulWidget {
 }
 
 class _MedicationAddSheetState extends State<MedicationAddSheet> {
-  String frequency = frequencyList[0];
+  String frequency = FREQUENCY_LIST[0];
 
-  String doseUnit = doseUnitList[0];
+  String doseUnit = DOSEUNIT_LIST[0];
 
   String singleDose = '1';
 
-  String usePattern = usePatternList[0];
+  String usePattern = USEPATTERN_LIST[0];
 
   double quantity;
 
   initialize() {
-    frequency = widget.item.frequency ?? frequencyList[0];
+    frequency = widget.item.frequency ?? FREQUENCY_LIST[0];
     singleDose = widget.item.singleDose ?? '1';
-    doseUnit = widget.item.doseUnit ?? doseUnitList[0];
-    usePattern = widget.item.usePattern ?? usePatternList[0];
+    doseUnit = widget.item.doseUnit ?? DOSEUNIT_LIST[0];
+    usePattern = widget.item.usePattern ?? USEPATTERN_LIST[0];
     quantity = widget.item?.quantity ?? 1;
   }
 
@@ -117,12 +112,12 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 10),
-                      width: 100.0,
+                      width: 120.0,
                       child: DropdownButton(
                         isExpanded: true,
                         value: this.frequency,
                         items: [
-                          ...frequencyList
+                          ...FREQUENCY_LIST
                               .map(
                                 (e) => DropdownMenuItem(
                                   value: e,
@@ -186,7 +181,7 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
                         isExpanded: true,
                         value: this.doseUnit,
                         items: [
-                          ...doseUnitList
+                          ...DOSEUNIT_LIST
                               .map(
                                 (e) => DropdownMenuItem(
                                   value: e,
@@ -224,7 +219,7 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
                         isExpanded: true,
                         value: this.usePattern,
                         items: [
-                          ...usePatternList
+                          ...USEPATTERN_LIST
                               .map(
                                 (e) => DropdownMenuItem(
                                   value: e,
