@@ -325,7 +325,6 @@ class _CommentListPageState extends State<CommentListPage>
                   enablePullUp: true,
                   child: ListView.builder(
                     itemCount: model.list.length,
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 60),
                     itemBuilder: (context, index) {
                       CommentListItem item = model.list[index];
                       return ShowCommentItems(item, onCommentClick);

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:doctor/pages/worktop/resource/comment/comment_list_view.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/pages/worktop/resource/service.dart';
@@ -30,7 +31,8 @@ class ResourceDetailPage extends StatefulWidget {
   _ResourceDetailPageState createState() => _ResourceDetailPageState();
 }
 
-class _ResourceDetailPageState extends State<ResourceDetailPage> {
+class _ResourceDetailPageState extends State<ResourceDetailPage>
+    with WidgetsBindingObserver {
   bool logo = true;
   bool _startIcon = false;
   int msgCount = 5;
@@ -46,6 +48,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
   bool successFeedback = false; //反馈成功状态
   bool _addFeedback = false; //撰写评论
   String feedbackType;
+  bool isKeyboardActived = false; //当前键盘是否激活
 
   Widget resourceRender(ResourceModel data) {
     void openTimer() {
@@ -126,16 +129,40 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
           setState(() {
             logo = true;
           });
+          isKeyboardActived = false;
         }
+        isKeyboardActived = false;
       });
     }
+    WidgetsBinding.instance.addObserver(this); //添加观察者
     super.initState();
+  }
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      print(MediaQuery.of(context).viewInsets.bottom);
+//当前是安卓系统并且在焦点聚焦的情况下
+      if (Platform.isAndroid && commentFocusNode.hasFocus) {
+        if (isKeyboardActived) {
+          isKeyboardActived = false;
+// 使输入框失去焦点
+          commentFocusNode.unfocus();
+          return;
+        }
+        isKeyboardActived = true;
+      } else {
+        isKeyboardActived = false;
+      }
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
     commentFocusNode.dispose();
+    WidgetsBinding.instance.removeObserver(this); //卸载观察者
     if (_timer != null) {
       _timer.cancel();
       _timer = null;
@@ -260,8 +287,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
               maxLength: 150,
               controller: commentTextEdit,
               focusNode: commentFocusNode,
-              autofocus: false,
               onTap: () {
+                FocusScope.of(context).requestFocus(commentFocusNode);
                 setState(() {
                   logo = false;
                 });
@@ -665,6 +692,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage> {
                     GestureDetector(
                       onTap: () {
                         commentFocusNode.unfocus();
+                        isKeyboardActived = false;
                         setState(() {
                           logo = true;
                         });
