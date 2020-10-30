@@ -25,6 +25,17 @@ class _SexRadioRowState extends State<SexRadioRow> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(covariant SexRadioRow oldWidget) {
+    groupValue = widget.groupValue;
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,

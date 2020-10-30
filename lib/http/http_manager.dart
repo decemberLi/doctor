@@ -114,6 +114,7 @@ class HttpManager {
     return this.request('get', path,
         query: params,
         showLoading: showLoading,
+        loadingText: loadingText,
         ignoreSession: ignoreSession,
         ignoreErrorTips: ignoreErrorTips,
         options: options);
@@ -130,6 +131,7 @@ class HttpManager {
     return this.request('post', path,
         params: params,
         showLoading: showLoading,
+        loadingText: loadingText,
         ignoreSession: ignoreSession,
         ignoreErrorTips: ignoreErrorTips,
         options: options);

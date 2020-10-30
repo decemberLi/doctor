@@ -168,10 +168,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   FormItem(
                     label: '姓名',
                     child: TextFormField(
+                      controller: TextEditingController(),
                       decoration: InputDecoration(
                         border: InputBorder.none,
                       ),
-                      initialValue: model.data.prescriptionPatientName ?? '',
                       validator: (val) => val.length < 1 ? '姓名不能为空' : null,
                       onChanged: (String value) {
                         model.data.prescriptionPatientName = value;
@@ -181,7 +181,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       keyboardType: TextInputType.text,
                       style: MyStyles.inputTextStyle,
                       textAlign: TextAlign.right,
-                    ),
+                    )..controller.text =
+                        model.data.prescriptionPatientName ?? '',
                   ),
                   FormItem(
                     label: '年龄',
@@ -189,8 +190,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       decoration: InputDecoration(
                         border: InputBorder.none,
                       ),
-                      initialValue:
-                          model.data?.prescriptionPatientAge?.toString() ?? '',
+                      controller: TextEditingController(),
                       validator: (val) => val.length < 1 ? '年龄不能为空' : null,
                       onChanged: (String value) {
                         if (value.isEmpty) {
@@ -204,7 +204,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       keyboardType: TextInputType.number,
                       style: MyStyles.inputTextStyle,
                       textAlign: TextAlign.right,
-                    ),
+                    )..controller.text =
+                        model.data?.prescriptionPatientAge?.toString() ?? '',
                   ),
                   FormItem(
                     label: '性别',

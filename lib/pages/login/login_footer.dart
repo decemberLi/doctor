@@ -2,6 +2,7 @@ import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_file_preview/flutter_file_preview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String AGREE_KEY = 'AGREE_KEY';
@@ -91,7 +92,10 @@ class _LoginFooterState extends State<LoginFooter> {
                   style: MyStyles.primaryTextStyle_12,
                   recognizer: _tap1
                     ..onTap = () {
-                      print(323);
+                      FlutterFilePreview.openFile(
+                        'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.pdf',
+                        title: '易学术服务协议',
+                      );
                     },
                 ),
                 TextSpan(
@@ -103,7 +107,10 @@ class _LoginFooterState extends State<LoginFooter> {
                   style: MyStyles.primaryTextStyle_12,
                   recognizer: _tap2
                     ..onTap = () {
-                      print(43432);
+                      FlutterFilePreview.openFile(
+                        'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.pdf',
+                        title: '易学术隐私协议',
+                      );
                     },
                 ),
               ]),

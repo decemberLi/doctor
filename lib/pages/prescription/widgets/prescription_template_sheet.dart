@@ -124,6 +124,9 @@ class _PrescriptionTemplateListState extends State<PrescriptionTemplateList> {
                   .pushNamed(RouteManager.PRESCRIPTION_TEMPLATE_ADD);
             },
           ),
+          SizedBox(
+            height: 16,
+          ),
         ],
       ),
     );

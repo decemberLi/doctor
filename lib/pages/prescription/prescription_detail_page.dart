@@ -1,3 +1,4 @@
+import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_detail.dart';
 import 'package:doctor/provider/provider_widget.dart';
@@ -91,8 +92,6 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
                           Navigator.of(context)
                               .popUntil(ModalRoute.withName(RouteManager.HOME));
                         });
-                        // Navigator.of(context)
-                        //     .popAndPushNamed(RouteManager.HOME);
                       },
                     );
                   }),

@@ -10,7 +10,7 @@ class MyIcons {
   static const IconData icon_shoucang = IconData(0xe619, fontFamily: _family);
   static const IconData icon_talk = IconData(0xe617, fontFamily: _family);
   static const IconData icon_star = IconData(0xe618, fontFamily: _family);
-  static const IconData icon_no_data = IconData(0xe626, fontFamily: _family);
+  static const IconData icon_no_data = IconData(0xe640, fontFamily: _family);
   static const IconData icon_kulian = IconData(0xe645, fontFamily: _family);
   static const IconData icon_xiaolian = IconData(0xe646, fontFamily: _family);
   static const IconData icon_dianzan = IconData(0xe644, fontFamily: _family);

@@ -45,18 +45,11 @@ class _ImageUploadState extends State<ImageUpload> {
     super.initState();
   }
 
-  // @override
-  // void didUpdateWidget(ImageUpload oldWidget) {
-  //   this.initialize();
-  //   print('$ImageUpload --- didUpdateWidget');
-  //   super.didUpdateWidget(oldWidget);
-  // }
-
   @override
-  didChangeDependencies() {
+  void didUpdateWidget(ImageUpload oldWidget) {
     this.initialize();
-    print('$ImageUpload --- didChangeDependencies');
-    super.didChangeDependencies();
+    print('$ImageUpload --- didUpdateWidget');
+    super.didUpdateWidget(oldWidget);
   }
 
   _pickImage() async {
