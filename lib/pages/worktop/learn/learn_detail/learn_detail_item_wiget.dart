@@ -231,7 +231,7 @@ class PlanDetailList extends StatelessWidget {
   }
 
   Widget resourcesList(
-      LearnDetailItem data, Iterable resources, BuildContext context) {
+    LearnDetailItem data, Iterable resources, BuildContext context) {
     List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
     Widget content; //单独一个widget组件，用于返回需要生成的内容widget
     if (resources.isEmpty) {

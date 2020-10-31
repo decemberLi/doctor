@@ -213,20 +213,27 @@ class _QuestionPageState extends State<QuestionPage> {
 
   Widget _radioListItem(question, optionContent, optionIndex, radioTitle) {
     String charCode = String.fromCharCode(65 + optionIndex);
+    bool _dispatch = false;
+    if (widget.data.learnStatus == 'FINISHED' || widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
+      _dispatch = true;
+    }
     return new Row(
       children: <Widget>[
         Expanded(
           // Row的子元素Text实现换行 需要加Expanded
-          child: Text(
-            '$charCode、$radioTitle',
-            softWrap: true, // 自动换行
-          ),
+          child: Text('$charCode、$radioTitle',
+              softWrap: true, // 自动换行
+              style: TextStyle(
+                // fontWeight: FontWeight.w600,
+                fontSize: 14,
+              )),
         ),
+
         // 此处也可以使用RadioListTile，但是这个组件不满足我们这边的需求，所以自己后来写了布局
-        new Radio(
-          activeColor: widget.data.learnStatus != 'FINISHED'
-              ? ThemeColor.primaryColor
-              : ThemeColor.secondaryGeryColor, //选中时的颜色
+       new Radio(
+          activeColor: _dispatch
+              ? ThemeColor.secondaryGeryColor
+              : ThemeColor.primaryColor, //选中时的颜色
           value: question.options[optionIndex].index, // 该值为string类型
           groupValue: _questionsInit[question.index]
               ['groupValue'], // 与value一样是选中
@@ -234,14 +241,14 @@ class _QuestionPageState extends State<QuestionPage> {
           onChanged: (val) {
             // 收起键盘
             FocusScope.of(context).requestFocus(FocusNode());
-            if (widget.data.learnStatus != 'FINISHED') {
+            if (!_dispatch) {
               setState(() {
                 _questionsInit[question.index]['groupValue'] = val;
                 print('选中了: ' + val);
               });
             }
-          },
-        ),
+          }
+       )
       ],
     );
   }
@@ -263,6 +270,10 @@ class _QuestionPageState extends State<QuestionPage> {
   Widget _checkboxListItem(
       question, optionContent, optionIndex, checkboxTitle) {
     String charCode = String.fromCharCode(65 + optionIndex);
+    bool _dispatch = false;
+    if (widget.data.learnStatus == 'FINISHED' || widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
+      _dispatch = true;
+    }
     return new Row(
       children: <Widget>[
         Expanded(
@@ -274,9 +285,9 @@ class _QuestionPageState extends State<QuestionPage> {
         ),
         // 此处也可以使用CheckboxListTile，但是这个组件不满足我们这边的需求，所以后来自己写了布局
         Checkbox(
-          activeColor: widget.data.learnStatus != 'FINISHED'
-              ? ThemeColor.primaryColor
-              : ThemeColor.secondaryGeryColor, //选中时的颜色
+          activeColor: _dispatch
+              ? ThemeColor.secondaryGeryColor
+              : ThemeColor.primaryColor, //选中时的颜色
           checkColor: Colors.white, //选中时里面对号的颜色
           value: question.options[optionIndex].checked != null &&
               (int.parse(question.options[optionIndex].checked) ==
@@ -286,7 +297,7 @@ class _QuestionPageState extends State<QuestionPage> {
           onChanged: (isCheck) {
             // 收起键盘
             FocusScope.of(context).requestFocus(FocusNode());
-            if (widget.data.learnStatus != 'FINISHED') {
+            if (!_dispatch) {
               _checkMaxChoise(question, optionIndex, isCheck);
             }
           },
@@ -327,6 +338,10 @@ class _QuestionPageState extends State<QuestionPage> {
   // 构建 输入框 组件
   Widget _buildTextField(question) {
     // 文本字段（`TextField`）组件，允许用户使用硬件键盘或屏幕键盘输入文本。
+     bool _dispatch = true;
+    if (widget.data.learnStatus == 'FINISHED' || widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
+      _dispatch = false;
+    }
     return new TextField(
       maxLines: 8,
       cursorColor: const Color(0xFFFE7C30),
@@ -340,7 +355,7 @@ class _QuestionPageState extends State<QuestionPage> {
           borderRadius: BorderRadius.circular(8.0),
         ),
       ),
-      enabled: widget.data.learnStatus == 'FINISHED' ? false : true, //禁用
+      enabled:_dispatch, //禁用
       onChanged: (text) {
         _questionsInit[question.index]['textField'] = text;
         // print("输入框 组件: $text");
@@ -384,17 +399,25 @@ class _QuestionPageState extends State<QuestionPage> {
                         SizedBox(
                           height: 16,
                         ),
-                        Column(children: [
-                          if (widget.data.info != null &&
-                              widget.data.info.summary != null)
-                            Text('widget.data.info.summary',
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: ThemeColor.colorFF444444,
-                                )),
-                        ]),
+                        if (widget.data.info != null &&
+                            widget.data.info.summary != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                child: Text('widget.data.info.summary',
+                                    // 'widget.data.info.summary  书法家俄罗斯定金付了看见啊撒旦法按时来得快减肥卢卡斯',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: ThemeColor.colorFF444444,
+                                    )),
+                              )
+
+                              // ])
+                            ],
+                          ),
                         SizedBox(
                           height: 16,
                         ),
@@ -403,7 +426,7 @@ class _QuestionPageState extends State<QuestionPage> {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                fontSize: 14,
+                                fontSize: 16,
                                 color: ThemeColor.colorFF444444,
                               )),
                         ]),
@@ -417,7 +440,7 @@ class _QuestionPageState extends State<QuestionPage> {
                           itemBuilder: (context, index) {
                             // 列表显示
                             return Container(
-                              padding: new EdgeInsets.fromLTRB(4, 4, 10, 4),
+                              margin: EdgeInsets.fromLTRB(4, 24, 0, 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
@@ -426,7 +449,7 @@ class _QuestionPageState extends State<QuestionPage> {
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         color: ThemeColor.colorFF444444,
                                       )),
                                   widget.data.questions[index].type == 'RADIO'
@@ -448,7 +471,7 @@ class _QuestionPageState extends State<QuestionPage> {
                         ),
                       ],
                     ),
-                    if (widget.data.learnStatus != 'FINISHED')
+                    if (widget.data.learnStatus != 'FINISHED' && widget.data.learnPlanStatus != 'SUBMIT_LEARN') //已完成、已提交
                       AceButton(
                         onPressed: _openFile,
                         text: '提交',
