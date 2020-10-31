@@ -13,6 +13,18 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   var doctorData;
   var numData;
+  dynamic doctorStatus = {
+    'WAIT_VERIFY': '未认证',
+    'VERIFING': '审核中',
+    'FAIL': '需重新认证',
+    'PASS': '已认证',
+  };
+  dynamic doctorColor = {
+    'WAIT_VERIFY': Color(0XFFB9B9B9),
+    'VERIFING': Color(0XFFFFBA00),
+    'FAIL': Color(0XFFFFBA00),
+    'PASS': Color(0XFF489DFE),
+  };
   //获取医生基本信息和收藏患者信息
   //authStatus:认证状态(WAIT_VERIFY-待认证、VERIFING-认证中、FAIL-认证失败、PASS-认证通过）
   _doctorInfo() async {
@@ -42,7 +54,7 @@ class _UserPageState extends State<UserPage> {
 //跳转列表样式
   Widget messageItem(String lable, String img, callBack) {
     return Container(
-      margin: EdgeInsets.fromLTRB(14, 0, 14, 0),
+      margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
       decoration: BoxDecoration(
         border: Border(bottom: Divider.createBorderSide(context)),
       ),
@@ -59,7 +71,33 @@ class _UserPageState extends State<UserPage> {
           width: 24,
           height: 24,
         ),
-        trailing: Icon(Icons.keyboard_arrow_right),
+        trailing: Stack(
+          overflow: Overflow.visible,
+          children: [
+            if (lable == '资质认证')
+              Positioned(
+                top: 2,
+                right: 20,
+                child: Container(
+                  width: 60,
+                  height: 20,
+                  margin: EdgeInsets.only(left: 5),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: doctorColor[doctorData['authStatus']],
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(28),
+                    ),
+                  ),
+                  child: Text(
+                    doctorStatus[doctorData['authStatus']],
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+              ),
+            Icon(Icons.keyboard_arrow_right),
+          ],
+        ),
         onTap: () {
           callBack();
         },
