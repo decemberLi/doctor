@@ -301,8 +301,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            if (data.taskTemplate == 'DOCTOR_LECTURE' ??
-                                data.reLearnReason)
+                            if (data.taskTemplate == 'DOCTOR_LECTURE' && data.reLearnReason!=null)
                               Container(
                                   alignment: Alignment.centerLeft,
                                   margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
