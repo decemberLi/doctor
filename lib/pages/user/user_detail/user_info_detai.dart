@@ -1,6 +1,8 @@
+import 'package:doctor/pages/qualification/model/config_data_entity.dart';
 import 'package:doctor/pages/qualification/view_model/doctor_qualification_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/Picker.dart';
 
@@ -14,6 +16,7 @@ class DoctorUserInfo extends StatefulWidget {
 class _DoctorUserInfoState extends State<DoctorUserInfo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DoctorQualificationViewModel _model = DoctorQualificationViewModel();
+  SearchWidget<HospitalEntity> _hospitalSearchWidget;
   List DEPARTMENTS = [];
   List DOCTOR_TITLE = [];
   //跳转列表样式
@@ -55,6 +58,9 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             Navigator.pushNamed(context, RouteManager.EDIT_DOCTOR_PAGE,
                 arguments: {'lable': lable, 'value': value, 'editWay': edit});
           }
+          if (edit == 'hospital') {
+            _goHospitalSearchPage();
+          }
           if (edit == 'picker') {
             showPickerModal(context, lable);
           }
@@ -66,6 +72,18 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   @override
   void initState() {
     super.initState();
+    _hospitalSearchWidget = SearchWidget<HospitalEntity>(
+      '选择医院',
+      hintText: '输入医院名称',
+      searchConditionCallback: <T extends Search>(condition, streamSink) async {
+        var hospitals = await _model.queryHospital(condition);
+        streamSink.add(hospitals);
+      },
+      callback: <T extends Search>(value, position) {
+        _model.setHospital(value as HospitalEntity);
+        _model.changeDataNotify();
+      },
+    );
     //科室数据
     getSelectInfo({'type': 'DEPARTMENTS'}).then((res) {
       print(res);
@@ -75,6 +93,11 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     getSelectInfo({'type': 'DOCTOR_TITLE'}).then((res) {
       DOCTOR_TITLE = res;
     });
+  }
+
+  _goHospitalSearchPage() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => _hospitalSearchWidget));
   }
 
   showPickerModal(BuildContext context, lable) {
@@ -181,7 +204,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                 infoItem('姓名', args['doctorName'], doctorStatus, 'edit'),
                 infoItem(
                     '性别', args['sex'] == 0 ? '女' : '男', doctorStatus, 'picker'),
-                infoItem('医院', args['hospitalName'], doctorStatus, 'search'),
+                infoItem('医院', args['hospitalName'], doctorStatus, 'hospital'),
                 infoItem('科室', args['departmentsName'], doctorStatus, 'picker'),
                 infoItem('职称', args['jobGradeName'], doctorStatus, 'picker'),
               ],
