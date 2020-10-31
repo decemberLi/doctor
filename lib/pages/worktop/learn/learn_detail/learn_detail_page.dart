@@ -205,8 +205,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                     decorationStyle: TextDecorationStyle.solid),
               ),
               onTap: () {
-                EasyLoading.showToast('如何录制讲课视频？');
-                print('111');
+                Navigator.of(context).pushNamed(RouteManager.LOOK_COURSE_PAGE);
+                print('如何录制讲课视频？');
               },
             ),
         ]);
