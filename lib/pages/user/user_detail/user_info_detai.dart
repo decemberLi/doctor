@@ -44,7 +44,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             fontSize: 14,
           ),
         ),
-        enabled: !type, //TODO: 提交代码时修改为type
+        enabled: type, //TODO: 提交代码时修改为type
         trailing: type ? Icon(Icons.keyboard_arrow_right) : null,
         onTap: () {
           //跳转修改

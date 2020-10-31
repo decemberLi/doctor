@@ -78,7 +78,7 @@ class _UserEditPageState extends State<UserEditPage> {
         elevation: 1,
       ),
       body: Container(
-        // margin: EdgeInsets.all(16),
+        margin: EdgeInsets.all(16),
         child: Column(
           children: [
             if (widget.editWay == 'edit') editWidget(),
