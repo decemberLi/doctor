@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'doctor_detail_info_entity.g.dart';
 
 @JsonSerializable()
-class DoctorDetailInfoEntity {
+class DoctorInfoModel {
   /// 姓名
   String doctorName;
 
@@ -59,7 +59,7 @@ class DoctorDetailInfoEntity {
   /// 医生头像
   String headPicUrl;
 
-  DoctorDetailInfoEntity(
+  DoctorInfoModel(
       this.doctorName,
       this.doctorMobile,
       this.sex,
@@ -79,11 +79,11 @@ class DoctorDetailInfoEntity {
       this.doctorId,
       this.headPicUrl);
 
-  factory DoctorDetailInfoEntity.create() =>
-      DoctorDetailInfoEntity.fromJson(Map<String, dynamic>());
+  factory DoctorInfoModel.create() =>
+      DoctorInfoModel.fromJson(Map<String, dynamic>());
 
-  factory DoctorDetailInfoEntity.fromJson(Map<String, dynamic> param) =>
-      _$DoctorDetailInfoEntityFromJson(param);
+  factory DoctorInfoModel.fromJson(Map<String, dynamic> param) =>
+      _$DoctorInfoModelFromJson(param);
 
-  Map<String, dynamic> toJson() => _$DoctorDetailInfoEntityToJson(this);
+  Map<String, dynamic> toJson() => _$DoctorInfoModelToJson(this);
 }

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -315,6 +316,7 @@ class _UserPageState extends State<UserPage> {
                   }),
                   messageItem('设置', 'assets/images/setting.png', () {
                     print('设置');
+                    SessionManager.loginOutHandler();
                     // TODO: 设置页面
                   }),
                   messageItem('关于我们', 'assets/images/aboutus.png', () {

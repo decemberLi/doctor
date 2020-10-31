@@ -14,9 +14,10 @@ HttpManager medServer = HttpManager('server');
 HttpManager foundation = HttpManager('foundation');
 
 /// 查询当前登陆的医生信息，token 参数由 http 请求统一提供。接口地址：
-/// http://yapi.e-medclouds.com:3000/project/7/interface/api/1703
+/// http://yapi.e-medclouds.com:3000/project/7/interface/api/5025
 _obtainDoctorInfo() async {
-  var doctorInfo = await uCenter.post('/my/query', showLoading: false);
+  var doctorInfo =
+      await uCenter.post('/personal/query-doctor-detail', showLoading: false);
   return DoctorInfoEntity.fromJson(doctorInfo);
 }
 
