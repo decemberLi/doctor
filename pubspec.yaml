@@ -91,7 +91,8 @@ flutter:
   assets:
     - assets/images/
     # - assets/images/feedback.png
-    
+    # - assets/images/zzrz.png
+
     # - assets/images/avatar.png
     # - assets/images/2.0x/avatar.png
     # - assets/images/3.0x/avatar.png

@@ -3,7 +3,6 @@ import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/common_stack.dart';
-import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/material.dart';
 
 class UserPage extends StatefulWidget {
@@ -14,12 +13,25 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   var doctorData;
   var numData;
+  dynamic doctorStatus = {
+    'WAIT_VERIFY': '未认证',
+    'VERIFING': '审核中',
+    'FAIL': '需重新认证',
+    'PASS': '已认证',
+  };
+  dynamic doctorColor = {
+    'WAIT_VERIFY': Color(0XFFB9B9B9),
+    'VERIFING': Color(0XFFFFBA00),
+    'FAIL': Color(0XFFFFBA00),
+    'PASS': Color(0XFF489DFE),
+  };
   //获取医生基本信息和收藏患者信息
-
+  //authStatus:认证状态(WAIT_VERIFY-待认证、VERIFING-认证中、FAIL-认证失败、PASS-认证通过）
   _doctorInfo() async {
     var basicData = await getBasicData();
     print('res$basicData');
     if (basicData is! DioError) {
+      print(basicData);
       setState(() {
         doctorData = basicData;
       });
@@ -39,9 +51,10 @@ class _UserPageState extends State<UserPage> {
     super.initState();
   }
 
+//跳转列表样式
   Widget messageItem(String lable, String img, callBack) {
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
+      margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
       decoration: BoxDecoration(
         border: Border(bottom: Divider.createBorderSide(context)),
       ),
@@ -58,7 +71,33 @@ class _UserPageState extends State<UserPage> {
           width: 24,
           height: 24,
         ),
-        trailing: Icon(Icons.keyboard_arrow_right),
+        trailing: Stack(
+          overflow: Overflow.visible,
+          children: [
+            if (lable == '资质认证')
+              Positioned(
+                top: 2,
+                right: 20,
+                child: Container(
+                  width: 60,
+                  height: 20,
+                  margin: EdgeInsets.only(left: 5),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: doctorColor[doctorData['authStatus']],
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(28),
+                    ),
+                  ),
+                  child: Text(
+                    doctorStatus[doctorData['authStatus']],
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+              ),
+            Icon(Icons.keyboard_arrow_right),
+          ],
+        ),
         onTap: () {
           callBack();
         },
@@ -66,6 +105,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+//收藏患者样式
   Widget boxItem(
     String img,
     int counts,
@@ -77,12 +117,14 @@ class _UserPageState extends State<UserPage> {
         pushRoute();
       },
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            img,
-            width: 40,
-            height: 40,
+          Container(
+            margin: EdgeInsets.only(right: 12),
+            child: Image.asset(
+              img,
+              width: 40,
+              height: 40,
+            ),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -90,7 +132,9 @@ class _UserPageState extends State<UserPage> {
             children: [
               /*2*/
               Container(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(
+                  bottom: 8,
+                ),
                 child: Text(
                   '$counts',
                   style: TextStyle(
@@ -123,16 +167,19 @@ class _UserPageState extends State<UserPage> {
       body: SafeArea(
         child: Column(
           children: [
+            //头部
             Container(
-              padding: EdgeInsets.only(top: 20, left: 16),
+              padding: EdgeInsets.only(top: 60, left: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    // decoration:
-                    //     DashedDecoration(dashedColor: ThemeColor.colorFF222222),
-                    child: Image.asset("assets/images/avatar.png"),
+                    child: Image.asset(
+                      "assets/images/avatar.png",
+                      width: 80,
+                      fit: BoxFit.fitWidth,
+                    ),
                   ),
                   Container(
                     margin: EdgeInsets.only(left: 10),
@@ -141,12 +188,56 @@ class _UserPageState extends State<UserPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          child: Text(
-                            doctorData['doctorName'],
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                          child: Row(
+                            children: [
+                              Text(
+                                doctorData['doctorName'],
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Container(
+                                width: 80,
+                                height: 20,
+                                margin: EdgeInsets.only(left: 5),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: doctorData['authStatus'] == 'PASS'
+                                      ? Color(0xFFFAAD14)
+                                      : Color(0xFFB9B9B9),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(28),
+                                    bottomRight: Radius.circular(28),
+                                    topRight: Radius.circular(28),
+                                  ),
+                                ),
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    children: [
+                                      if (doctorData['authStatus'] == 'PASS')
+                                        WidgetSpan(
+                                          child: Icon(
+                                            Icons.keyboard_arrow_down,
+                                            color: Color(0xFFFAAD14),
+                                            size: 16,
+                                          ),
+                                        ),
+                                      TextSpan(
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                        ),
+                                        text: doctorData['authStatus'] == 'PASS'
+                                            ? '资质认证'
+                                            : '尚未认证',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
                         ),
                         Container(
@@ -168,10 +259,10 @@ class _UserPageState extends State<UserPage> {
                 ],
               ),
             ),
+            //收藏 患者
             Container(
-              margin: EdgeInsets.only(top: 40),
-              padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
-              width: 343,
+              margin: EdgeInsets.only(top: 20, left: 16, right: 16),
+              padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
               height: 80,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -185,23 +276,22 @@ class _UserPageState extends State<UserPage> {
                 ],
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  boxItem(
-                      'assets/images/learn.png', numData['favoriteNum'], '我的收藏',
-                      () {
+                  boxItem('assets/images/collectInfo.png',
+                      numData['favoriteNum'], '我的收藏', () {
                     Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
                   }),
                   VerticalDivider(),
-                  boxItem(
-                      'assets/images/learn.png', numData['patientNum'], '我的患者',
-                      () {
+                  boxItem('assets/images/patient.png', numData['patientNum'],
+                      '我的患者', () {
                     Navigator.pushNamed(context, RouteManager.PATIENT);
                   }),
                 ],
               ),
             ),
+            // 跳转页面
             Container(
               margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
               decoration: BoxDecoration(
@@ -211,16 +301,16 @@ class _UserPageState extends State<UserPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  messageItem('资质认证', 'assets/images/learn.png', () {
+                  messageItem('资质认证', 'assets/images/zzrz.png', () {
                     print('资质认证');
                     Navigator.pushNamed(
                         context, RouteManager.QUALIFICATION_PAGE);
                   }),
-                  messageItem('设置', 'assets/images/learn.png', () {
+                  messageItem('设置', 'assets/images/setting.png', () {
                     print('设置');
                     // TODO: 设置页面
                   }),
-                  messageItem('关于我们', 'assets/images/learn.png', () {
+                  messageItem('关于我们', 'assets/images/aboutus.png', () {
                     Navigator.pushNamed(context, RouteManager.ABOUT_US);
                   }),
                 ],

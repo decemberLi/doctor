@@ -23,6 +23,14 @@ import 'package:provider/provider.dart';
 
 /// 开处方主页面
 class PrescriptionPage extends StatefulWidget {
+  final String title;
+  final bool showActicons;
+
+  PrescriptionPage({
+    this.title: '开处方',
+    this.showActicons = true,
+  });
+
   @override
   _PrescriptionPageState createState() => _PrescriptionPageState();
 }
@@ -94,7 +102,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
         return AceButton(
           text: '重新提交',
           onPressed: () {
-            model.updatePrescription();
+            model.updatePrescription(() {
+              Navigator.of(context).pop(true);
+            });
           },
         );
       }
@@ -123,247 +133,251 @@ class _PrescriptionPageState extends State<PrescriptionPage>
     return CommonStack(
       appBar: AppBar(
         title: Text(
-          "开处方",
+          widget.title ?? '',
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(RouteManager.PRESCRIPTION_LIST);
-            },
-            child: Text(
-              '处方记录',
-              style: TextStyle(color: Colors.white),
+          if (widget.showActicons)
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(RouteManager.PRESCRIPTION_LIST);
+              },
+              child: Text(
+                '处方记录',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-          ),
         ],
         backgroundColor: Colors.transparent,
         elevation: 0.0,
       ),
-      body: Consumer<PrescriptionViewModel>(builder: (_, model, __) {
-        return Container(
-          child: ListView(
-            padding: EdgeInsets.symmetric(
-              horizontal: 16.0,
-            ),
-            children: [
-              PrescripionCard(
-                title: '患者信息',
-                trailing: TextButton(
-                  child: Text(
-                    '快速开方',
-                    style: MyStyles.primaryTextStyle_12,
-                  ),
-                  onPressed: () async {
-                    // String patientUserId = await Navigator.pushNamed(
-                    //   context,
-                    //   RouteManager.PATIENT,
-                    //   arguments: 'QUICK_CREATE',
-                    // );
-                    // print(patientUserId);
-                    SessionManager.loginOutHandler();
-                  },
-                ),
-                children: [
-                  FormItem(
-                    label: '姓名',
-                    child: TextFormField(
-                      controller: TextEditingController(),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                      ),
-                      validator: (val) => val.length < 1 ? '姓名不能为空' : null,
-                      onChanged: (String value) {
-                        model.data.prescriptionPatientName = value;
-                        // model.changeDataNotify();
-                      },
-                      obscureText: false,
-                      keyboardType: TextInputType.text,
-                      style: MyStyles.inputTextStyle,
-                      textAlign: TextAlign.right,
-                    )..controller.text =
-                        model.data.prescriptionPatientName ?? '',
-                  ),
-                  FormItem(
-                    label: '年龄',
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                      ),
-                      controller: TextEditingController(),
-                      validator: (val) => val.length < 1 ? '年龄不能为空' : null,
-                      onChanged: (String value) {
-                        if (value.isEmpty) {
-                          model.data.prescriptionPatientAge = null;
-                          return;
-                        }
-                        model.data.prescriptionPatientAge = int.parse(value);
-                        // model.changeDataNotify();
-                      },
-                      obscureText: false,
-                      keyboardType: TextInputType.number,
-                      style: MyStyles.inputTextStyle,
-                      textAlign: TextAlign.right,
-                    )..controller.text =
-                        model.data?.prescriptionPatientAge?.toString() ?? '',
-                  ),
-                  FormItem(
-                    label: '性别',
-                    child: SexRadioRow(
-                        groupValue: model.data.prescriptionPatientSex,
-                        onChanged: (int value) {
-                          model.data.prescriptionPatientSex = value;
-                        }),
-                  ),
-                ],
+      body: Consumer<PrescriptionViewModel>(
+        builder: (_, model, __) {
+          return Container(
+            child: ListView(
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.0,
               ),
-              PrescripionCard(
-                title: '临床诊断',
-                trailing: TextButton(
-                  child: Text(
-                    '处方模板',
-                    style: MyStyles.primaryTextStyle_12,
-                  ),
-                  onPressed: () {
-                    _showPrescriptionTemplateSheet(model.addByTemplate);
-                  },
-                ),
-                children: [
-                  FormItem(
-                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 0),
-                    child: Wrap(
-                      spacing: 16.0,
-                      runSpacing: 8.0,
-                      alignment: WrapAlignment.start,
-                      children: [
-                        ...model.clinicaList
-                            .map(
-                              (e) => RemoveButton(
-                                text: e,
-                                onPressed: () {
-                                  model.removeClinica(
-                                      model.clinicaList.indexOf(e));
-                                },
-                              ),
-                            )
-                            .toList(),
-                        AceButton(
-                          type: AceButtonType.secondary,
-                          onPressed: () {
-                            _showClinicalDiagnosisSheet(model.addClinica);
-                          },
-                          text: '添加诊断',
-                          width: 60,
-                          height: 30,
-                          fontSize: 10,
-                        ),
-                      ],
+              children: [
+                PrescripionCard(
+                  title: '患者信息',
+                  trailing: TextButton(
+                    child: Text(
+                      '快速开方',
+                      style: MyStyles.primaryTextStyle_12,
                     ),
-                  )
-                ],
-              ),
-              PrescripionCard(
-                title: 'RP(${model.data.drugRps.length})',
-                padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
-                children: [
-                  RpList(
-                    list: model.data.drugRps,
-                    onAdd: (addList) {
-                      model.data.drugRps = [...addList];
-                      model.changeDataNotify();
-                    },
-                    onItemQuantityChange: (item, value) {
-                      model.changeDataNotify();
-                    },
-                    onItemDelete: (val) {
-                      model.changeDataNotify();
-                    },
-                    onItemEdit: (val) {
-                      model.changeDataNotify();
+                    onPressed: () async {
+                      var patientUserId = await Navigator.of(context).pushNamed(
+                        RouteManager.PATIENT,
+                        arguments: 'QUICK_CREATE',
+                      );
+                      print(patientUserId);
+                      model.getDataByPatient(patientUserId);
+                      // SessionManager.loginOutHandler();
                     },
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 32),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '价格',
-                          style:
-                              MyStyles.inputTextStyle_12.copyWith(fontSize: 18),
-                        ),
-                        Text(
-                          '￥${model.totalPrice}',
-                          style: TextStyle(
-                            color: Color(0xFFFE4B40),
-                            fontSize: 24,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              PrescripionCard(
-                title: '纸质处方图片上传',
-                children: [
-                  ImageUpload(
-                    images: model.data?.attachments ?? [],
-                    customUploadImageType: 'PRESCRIPTION_PAPER',
-                    onChange: (newImages) {
-                      model.data.attachments = newImages;
-                      // model.changeDataNotify();
-                    },
-                  ),
-                ],
-                padding: EdgeInsets.fromLTRB(30, 0, 30, 16),
-              ),
-              PrescripionCard(
-                title: '是否为复诊患者',
-                trailing: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    RadioRow(
-                      title: Text(
-                        '是',
+                    FormItem(
+                      label: '姓名',
+                      child: TextFormField(
+                        controller: TextEditingController(),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                        validator: (val) => val.length < 1 ? '姓名不能为空' : null,
+                        onChanged: (String value) {
+                          model.data.prescriptionPatientName = value;
+                          // model.changeDataNotify();
+                        },
+                        obscureText: false,
+                        keyboardType: TextInputType.text,
                         style: MyStyles.inputTextStyle,
-                      ),
-                      value: true,
-                      groupValue: model.data.furtherConsultation,
-                      onChanged: (bool value) {
-                        model.data.furtherConsultation = value;
-                      },
+                        textAlign: TextAlign.right,
+                      )..controller.text =
+                          model.data.prescriptionPatientName ?? '',
                     ),
-                    RadioRow(
-                      title: Text(
-                        '否',
+                    FormItem(
+                      label: '年龄',
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                        controller: TextEditingController(),
+                        validator: (val) => val.length < 1 ? '年龄不能为空' : null,
+                        onChanged: (String value) {
+                          if (value.isEmpty) {
+                            model.data.prescriptionPatientAge = null;
+                            return;
+                          }
+                          model.data.prescriptionPatientAge = int.parse(value);
+                          // model.changeDataNotify();
+                        },
+                        obscureText: false,
+                        keyboardType: TextInputType.number,
                         style: MyStyles.inputTextStyle,
-                      ),
-                      value: false,
-                      groupValue: model.data.furtherConsultation,
-                      onChanged: (bool value) {
-                        showConsultationDialog();
-                      },
+                        textAlign: TextAlign.right,
+                      )..controller.text =
+                          model.data?.prescriptionPatientAge?.toString() ?? '',
+                    ),
+                    FormItem(
+                      label: '性别',
+                      child: SexRadioRow(
+                          groupValue: model.data.prescriptionPatientSex,
+                          onChanged: (int value) {
+                            model.data.prescriptionPatientSex = value;
+                          }),
                     ),
                   ],
                 ),
-                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  top: 35,
-                  bottom: 60,
+                PrescripionCard(
+                  title: '临床诊断',
+                  trailing: TextButton(
+                    child: Text(
+                      '处方模板',
+                      style: MyStyles.primaryTextStyle_12,
+                    ),
+                    onPressed: () {
+                      _showPrescriptionTemplateSheet(model.addByTemplate);
+                    },
+                  ),
+                  children: [
+                    FormItem(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 14, horizontal: 0),
+                      child: Wrap(
+                        spacing: 16.0,
+                        runSpacing: 8.0,
+                        alignment: WrapAlignment.start,
+                        children: [
+                          ...model.clinicaList
+                              .map(
+                                (e) => RemoveButton(
+                                  text: e,
+                                  onPressed: () {
+                                    model.removeClinica(
+                                        model.clinicaList.indexOf(e));
+                                  },
+                                ),
+                              )
+                              .toList(),
+                          AceButton(
+                            type: AceButtonType.secondary,
+                            onPressed: () {
+                              _showClinicalDiagnosisSheet(model.addClinica);
+                            },
+                            text: '添加诊断',
+                            width: 60,
+                            height: 30,
+                            fontSize: 10,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 25,
+                PrescripionCard(
+                  title: 'RP(${model.data.drugRps.length})',
+                  padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
+                  children: [
+                    RpList(
+                      list: model.data.drugRps,
+                      onAdd: (addList) {
+                        model.data.drugRps = [...addList];
+                        model.changeDataNotify();
+                      },
+                      onItemQuantityChange: (item, value) {
+                        model.changeDataNotify();
+                      },
+                      onItemDelete: (val) {
+                        model.changeDataNotify();
+                      },
+                      onItemEdit: (val) {
+                        model.changeDataNotify();
+                      },
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 32),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '价格',
+                            style: MyStyles.inputTextStyle_12
+                                .copyWith(fontSize: 18),
+                          ),
+                          Text(
+                            '￥${model.totalPrice}',
+                            style: TextStyle(
+                              color: Color(0xFFFE4B40),
+                              fontSize: 24,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
-                child: renderBottomBtns(),
-              ),
-            ],
-          ),
-        );
-      }),
+                PrescripionCard(
+                  title: '纸质处方图片上传',
+                  children: [
+                    ImageUpload(
+                      images: model.data?.attachments ?? [],
+                      customUploadImageType: 'PRESCRIPTION_PAPER',
+                      onChange: (newImages) {
+                        model.data.attachments = newImages;
+                        // model.changeDataNotify();
+                      },
+                    ),
+                  ],
+                  padding: EdgeInsets.fromLTRB(30, 0, 30, 16),
+                ),
+                PrescripionCard(
+                  title: '是否为复诊患者',
+                  trailing: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      RadioRow(
+                        title: Text(
+                          '是',
+                          style: MyStyles.inputTextStyle,
+                        ),
+                        value: true,
+                        groupValue: model.data.furtherConsultation,
+                        onChanged: (bool value) {
+                          model.data.furtherConsultation = value;
+                        },
+                      ),
+                      RadioRow(
+                        title: Text(
+                          '否',
+                          style: MyStyles.inputTextStyle,
+                        ),
+                        value: false,
+                        groupValue: model.data.furtherConsultation,
+                        onChanged: (bool value) {
+                          showConsultationDialog();
+                        },
+                      ),
+                    ],
+                  ),
+                  padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                    top: 35,
+                    bottom: 60,
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 25,
+                  ),
+                  child: renderBottomBtns(),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
