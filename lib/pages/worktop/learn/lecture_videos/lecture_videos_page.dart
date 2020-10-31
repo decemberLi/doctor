@@ -4,9 +4,10 @@ import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/worktop/learn/lecture_videos/upload_video.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
+import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/service.dart';
 import 'package:doctor/provider/provider_widget.dart';
-import 'package:doctor/route/route_manager.dart';
+// import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -157,14 +158,15 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
 
   // 上传提交
   void _onUpVideoClick(data, learnPlanId, resourceId) async {
-    print('$_upDoctorName--------$_upTaskName');
     if (_selectVideoData == null && data == null) {
       EasyLoading.showToast('请选择视频');
       return;
     }
     bool bindConfirm = await confirmDialog();
     if (bindConfirm) {
-      OssFileEntity entity = await OssService.upload(_selectVideoData.path);
+      OssFileEntity entity;
+      if (_selectVideoData != null)
+        entity = await OssService.upload(_selectVideoData.path);
       await addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
@@ -175,8 +177,13 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         EasyLoading.showToast('提交成功');
         // 延时1s执行返回
         Future.delayed(Duration(seconds: 1), () {
-          // 回到列表
-          Navigator.of(context).pushNamed(RouteManager.LEARN_PAGE);
+          //跳转并关闭当前页面--回到列表
+          Navigator.pushReplacement(context,
+              new MaterialPageRoute(builder: (BuildContext context) {
+            return LearnPlanPage();
+          }));
+
+          // Navigator.of(context).pushNamed(RouteManager.LEARN_PAGE);
         });
       });
     }
@@ -214,7 +221,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
 
               var _showDoctorName = _upDoctorName;
               var _showTaskName = _upTaskName;
-              if (data != null) {
+              if (data != null && data?.videoTitle != null) {
                 if (_upTaskName == null && data?.videoTitle != null) {
                   _showTaskName = data.videoTitle;
                 }
@@ -222,10 +229,13 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                   _showDoctorName = data.presenter;
                 }
               } else {
-                _showDoctorName = obj['doctorName'];
-                _showTaskName = obj['taskName'];
+                if (_upTaskName == null) {
+                  _showTaskName = obj['taskName'];
+                }
+                if (_upDoctorName == null) {
+                  _showDoctorName = obj['doctorName'];
+                }
               }
-
               return GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
