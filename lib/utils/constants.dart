@@ -23,6 +23,25 @@ const Map<String, String> MAP_RESOURCE_TYPE = {
   'QUESTIONNAIRE': '问卷',
 };
 
+const TASK_TYPE_MAP = [
+  {
+    'text': '全部',
+    'taskTemplate': [],
+  },
+  {
+    'text': '会议',
+    'taskTemplate': ['SALON', 'DEPART'],
+  },
+  {
+    'text': '拜访',
+    'taskTemplate': ['VISIT', 'DOCTOR_LECTURE'],
+  },
+  {
+    'text': '调研',
+    'taskTemplate': ['SURVEY'],
+  },
+];
+
 /// 药品用药频率列表
 const List<String> FREQUENCY_LIST = [
   '每日一次',

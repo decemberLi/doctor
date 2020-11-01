@@ -1,5 +1,6 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
+import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
@@ -105,13 +106,6 @@ class LearnListItemWiget extends StatelessWidget {
           width: 66,
           height: 66,
           margin: EdgeInsets.only(bottom: 8),
-          // child: CircularProgressIndicator(
-          //   backgroundColor: Color(0xFFDEDEE1),
-          //   value: 0.3,
-          //   valueColor: new AlwaysStoppedAnimation<Color>(
-          //       ThemeColor.colorFF4FD7C8),
-          //   strokeWidth: 8,
-          // ),
           child: CircularPercentIndicator(
             radius: 60.0,
             lineWidth: 6.0,
@@ -133,6 +127,9 @@ class LearnListItemWiget extends StatelessWidget {
 
   // 会议进行中
   Widget _meetingStatus(int end) {
+    if (listStatus == 'HISTORY') {
+      return Container();
+    }
     Color rendColor = Color(0xffF6A419);
     String text = '会议进行中';
     int time = new DateTime.now().millisecondsSinceEpoch;
@@ -140,170 +137,142 @@ class LearnListItemWiget extends StatelessWidget {
       text = '会议已结束';
       rendColor = Color(0xFFDEDEE1);
     }
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+    return LearnTextIcon(
+      text: text,
+      color: rendColor,
       margin: EdgeInsets.only(right: 16, bottom: 6, left: 10),
-      decoration: BoxDecoration(
-        color: rendColor,
-        boxShadow: [
-          BoxShadow(color: rendColor, offset: Offset(2.0, 2.0), blurRadius: 4.0)
-        ],
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28),
-            bottomRight: Radius.circular(28)),
-      ),
+    );
+  }
+
+  Widget _buildItem() {
+    Widget taskTemplateWidget = Container(
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.only(bottom: 10),
       child: Text(
-        text,
+        TASK_TEMPLATE[item.taskTemplate],
         style: TextStyle(
-            color: ThemeColor.colorFFFFFF,
-            fontSize: 12,
-            fontWeight: FontWeight.bold),
+            color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
       ),
+    );
+    Widget resourceTypeListWiget =
+        ResourceTypeListWiget(item.resourceTypeResult);
+    Widget taskNameWidget = Text(
+      item.taskName,
+      style: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+      ),
+      softWrap: true,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+    Widget representNameWidget = Text(
+      '医学信息推广专员：${item.representName}',
+      style: TextStyle(color: Color(0xFF666666), fontSize: 12),
+    );
+    if (listStatus == 'HISTORY') {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              taskTemplateWidget,
+              resourceTypeListWiget,
+              SizedBox(
+                height: 10,
+              ),
+              taskNameWidget,
+              SizedBox(
+                height: 10,
+              ),
+              representNameWidget,
+            ],
+          ),
+          Container(
+            width: 108,
+            child: circleRender(),
+          ),
+        ],
+      );
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          taskTemplateWidget,
+          if (item.reLearn)
+            LearnTextIcon(
+              text: item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
+              color: Color(0xffF6A419),
+            ),
+
+          // 新
+          if (item.status == 'WAIT_LEARN') LearnTextIcon(),
+        ]),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              resourceTypeListWiget,
+              if (this.item.taskTemplate == 'SALON' ||
+                  this.item.taskTemplate == 'DEPART')
+                _meetingStatus(this.item.meetingEndTime),
+            ]),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(vertical: 6),
+                decoration: BoxDecoration(
+                  border: Border(
+                    right: BorderSide(color: ThemeColor.colorFFF3F5F8),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    taskNameWidget,
+                    SizedBox(
+                      height: 10,
+                    ),
+                    representNameWidget,
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      timeRender(),
+                      style: TextStyle(color: Color(0xFF666666), fontSize: 10),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              width: 108,
+              child: circleRender(),
+            ),
+          ],
+        )
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.centerLeft,
       margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
       padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(bottom: 10),
-              child: Text(
-                TASK_TEMPLATE[item.taskTemplate],
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            if (item.reLearn && listStatus != 'HISTORY')
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                margin: EdgeInsets.only(bottom: 10, left: 10),
-                decoration: BoxDecoration(
-                  color: Color(0xffF6A419),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color(0xffF6A419),
-                        offset: Offset(2.0, 2.0),
-                        blurRadius: 4.0)
-                  ],
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(28),
-                      topRight: Radius.circular(28),
-                      bottomRight: Radius.circular(28)),
-                ),
-                child: Text(
-                  item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
-                  style: TextStyle(
-                      color: ThemeColor.colorFFFFFF,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            // 新
-            if (item.status == 'WAIT_LEARN')
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                margin: EdgeInsets.only(bottom: 10, left: 10),
-                decoration: BoxDecoration(
-                  color: ThemeColor.primaryColor,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color(0xff3AA7FF),
-                        offset: Offset(2.0, 2.0),
-                        blurRadius: 4.0)
-                  ],
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(28),
-                      topRight: Radius.circular(28),
-                      bottomRight: Radius.circular(28)),
-                ),
-                child: Text(
-                  '新',
-                  style: TextStyle(
-                      color: ThemeColor.colorFFFFFF,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-          ]),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ResourceTypeListWiget(item.resourceTypeResult),
-                if (this.item.taskTemplate == 'SALON' ||
-                    this.item.taskTemplate == 'DEPART')
-                  _meetingStatus(this.item.meetingEndTime),
-              ]),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(vertical: 6),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(color: ThemeColor.colorFFF3F5F8),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.taskName,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        softWrap: true,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        '医学信息推广专员：${item.representName}',
-                        style:
-                            TextStyle(color: Color(0xFF666666), fontSize: 12),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        timeRender(),
-                        style:
-                            TextStyle(color: Color(0xFF666666), fontSize: 10),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                width: 108,
-                child: circleRender(),
-              ),
-            ],
-          )
-        ],
-      ),
+      child: _buildItem(),
     );
   }
 }

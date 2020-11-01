@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
 import 'package:doctor/pages/medication/widgets/medication_add_btn.dart';
@@ -136,7 +137,7 @@ class _MedicationListItemState extends State<MedicationListItem> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '￥ ${widget.item.drugPrice}',
+                      '${MoneyUtil.changeF2YWithUnit(widget.item.drugPrice, unit: MoneyUnit.YUAN)}',
                       style: TextStyle(
                         color: ThemeColor.colorFFFD4B40,
                         fontSize: 16,

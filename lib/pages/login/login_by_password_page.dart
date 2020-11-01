@@ -48,94 +48,110 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         bottom: true,
-        child: Container(
-          padding: EdgeInsets.only(left: 18, right: 18),
-          child: Form(
-              key: _formKey,
-              child: Stack(
-                children: [
-                  Column(
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(top: 40, bottom: 30),
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          '密码登录',
-                          style: TextStyle(
-                              color: ThemeColor.colorFF000000,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 30),
-                        child: TextFormField(
-                          autofocus: false,
-                          initialValue:
-                              SessionManager().sp.getString(LAST_PHONE) ?? '',
-                          decoration: InputDecoration(hintText: '请输入手机号'),
-                          validator: (val) =>
-                              !captcha.hasMatch(val) ? '请输入正确的手机号' : null,
-                          onSaved: (val) => _mobile = val,
-                          obscureText: false,
-                          keyboardType: TextInputType.text,
-                          style: loginInputStyle,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 44),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            hintText: '请输入6位数字密码',
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            // 触摸收起键盘
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Container(
+            padding: EdgeInsets.only(left: 18, right: 18),
+            child: Form(
+                key: _formKey,
+                child: Stack(
+                  children: [
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 40, bottom: 30),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            '密码登录',
+                            style: TextStyle(
+                                color: ThemeColor.colorFF000000,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold),
                           ),
-                          validator: (val) =>
-                              val.length < 6 ? '请输入6位数字密码' : null,
-                          onSaved: (val) => _password = val,
-                          obscureText: true,
-                          keyboardType: TextInputType.text,
-                          autocorrect: false,
-                          style: loginInputStyle,
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: AceButton(
-                          text: '登录',
-                          onPressed: _submit,
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        width: 310,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton(
-                              child: Text('验证码登录'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                        Container(
+                          margin: EdgeInsets.only(bottom: 30),
+                          child: TextFormField(
+                            autofocus: false,
+                            maxLength: 11,
+                            initialValue:
+                                SessionManager().sp.getString(LAST_PHONE) ?? '',
+                            decoration: InputDecoration(
+                              hintText: '请输入手机号',
+                              counterText: '',
                             ),
-                            TextButton(
-                              child: Text('找回密码'),
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, RouteManager.FIND_PWD);
-                              },
-                            ),
-                          ],
+                            validator: (val) =>
+                                !captcha.hasMatch(val) ? '请输入正确的手机号' : null,
+                            onSaved: (val) => _mobile = val,
+                            obscureText: false,
+                            keyboardType: TextInputType.number,
+                            style: loginInputStyle,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Positioned(
-                    bottom: 20,
-                    child: LoginFooter(onChange: (bool value) {
-                      _agree = value;
-                    }),
-                  ),
-                ],
-              )),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 44),
+                          child: TextFormField(
+                            maxLength: 6,
+                            autofocus: false,
+                            decoration: InputDecoration(
+                              hintText: '请输入6位数字密码',
+                              counterText: '',
+                            ),
+                            validator: (val) =>
+                                val.length < 6 ? '请输入6位数字密码' : null,
+                            onSaved: (val) => _password = val,
+                            obscureText: true,
+                            keyboardType: TextInputType.text,
+                            autocorrect: false,
+                            style: loginInputStyle,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: AceButton(
+                            text: '登录',
+                            onPressed: _agree ? _submit : null,
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          width: 310,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                child: Text('验证码登录'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: Text('找回密码'),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, RouteManager.FIND_PWD);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      bottom: 20,
+                      child: LoginFooter(onChange: (bool value) {
+                        setState(() {
+                          _agree = value;
+                        });
+                      }),
+                    ),
+                  ],
+                )),
+          ),
         ),
       ),
     );

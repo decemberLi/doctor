@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
@@ -30,7 +31,13 @@ class PrescriptionViewModel extends ViewStateModel {
   double get totalPrice =>
       data.drugRps?.fold(
         0,
-        (previousValue, element) => previousValue + (element?.drugPrice ?? 0),
+        (previousValue, drugModel) => NumUtil.add(
+          previousValue,
+          NumUtil.multiply(
+            drugModel.drugPrice ?? 0,
+            drugModel.quantity ?? 0,
+          ),
+        ),
       ) ??
       0;
 
@@ -72,9 +79,19 @@ class PrescriptionViewModel extends ViewStateModel {
       EasyLoading.showToast('请输入姓名');
       return false;
     }
+    if (data.prescriptionPatientName.length < 2 ||
+        data.prescriptionPatientName.length > 6) {
+      EasyLoading.showToast('姓名需要在2-6字');
+      return false;
+    }
     if (this.data.prescriptionPatientAge == null ||
         this.data.prescriptionPatientAge < 1) {
       EasyLoading.showToast('请输入年龄');
+      return false;
+    }
+    if (this.data.prescriptionPatientAge < 1 ||
+        this.data.prescriptionPatientAge > 120) {
+      EasyLoading.showToast('年龄需要在0-120岁');
       return false;
     }
     if (this.data.clinicalDiagnosis == null ||
@@ -83,7 +100,7 @@ class PrescriptionViewModel extends ViewStateModel {
       return false;
     }
     if (this.data.drugRps == null || this.data.drugRps.isEmpty) {
-      EasyLoading.showToast('请添加药品');
+      EasyLoading.showToast('请添加药品信息');
       return false;
     }
     if (this.data.attachments == null || this.data.attachments.isEmpty) {

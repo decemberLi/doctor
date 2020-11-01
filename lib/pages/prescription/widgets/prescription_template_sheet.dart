@@ -81,53 +81,55 @@ class _PrescriptionTemplateListState extends State<PrescriptionTemplateList> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: [
-          Expanded(
-            child: ProviderWidget<PrescriptionTemplateViewModel>(
-              model: PrescriptionTemplateViewModel(),
-              onModelReady: (model) => model.initData(),
-              builder: (context, model, child) {
-                if (model.isError || model.isEmpty) {
-                  return ViewStateEmptyWidget(onPressed: model.initData);
-                }
-                return SmartRefresher(
-                  controller: model.refreshController,
-                  header: ClassicHeader(),
-                  footer: ClassicFooter(),
-                  enablePullDown: false,
-                  // onRefresh: model.refresh,
-                  onLoading: model.loadMore,
-                  enablePullUp: true,
-                  child: ListView.separated(
-                    itemBuilder: (context, index) {
-                      PrescriptionTemplateModel item = model.list[index];
-                      return PrescriptionTemplateItem(item, widget.onSelected);
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return Divider();
-                    },
-                    itemCount: model.list.length,
-                  ),
-                );
+      child: ProviderWidget<PrescriptionTemplateViewModel>(
+        model: PrescriptionTemplateViewModel(),
+        onModelReady: (model) => model.initData(),
+        builder: (context, model, child) {
+          Widget list = Container();
+          if (model.isError || model.isEmpty) {
+            list = ViewStateEmptyWidget(onPressed: model.initData);
+          }
+          list = SmartRefresher(
+            controller: model.refreshController,
+            header: ClassicHeader(),
+            footer: ClassicFooter(),
+            onRefresh: model.refresh,
+            onLoading: model.loadMore,
+            enablePullUp: true,
+            child: ListView.separated(
+              itemBuilder: (context, index) {
+                PrescriptionTemplateModel item = model.list[index];
+                return PrescriptionTemplateItem(item, widget.onSelected);
               },
+              separatorBuilder: (BuildContext context, int index) {
+                return Divider();
+              },
+              itemCount: model.list.length,
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          AceButton(
-            text: '+ 添加模板',
-            type: AceButtonType.secondary,
-            onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(RouteManager.PRESCRIPTION_TEMPLATE_ADD);
-            },
-          ),
-          SizedBox(
-            height: 16,
-          ),
-        ],
+          );
+          return Column(
+            children: [
+              Expanded(
+                child: list,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              AceButton(
+                text: '+ 添加模板',
+                type: AceButtonType.secondary,
+                onPressed: () async {
+                  await Navigator.of(context)
+                      .pushNamed(RouteManager.PRESCRIPTION_TEMPLATE_ADD);
+                  model.refreshController.requestRefresh(needMove: false);
+                },
+              ),
+              SizedBox(
+                height: 16,
+              ),
+            ],
+          );
+        },
       ),
     );
   }

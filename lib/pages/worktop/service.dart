@@ -55,6 +55,15 @@ _obtainRecentLearnPlan() async {
       .toList();
 }
 
+/// 获取学习计划新数量
+getPlanCount(params) {
+  return medServer.post(
+    '//learn-plan/status-count',
+    params: params,
+    showLoading: false,
+  );
+}
+
 /// 获取工作台页面数据
 Future<WorktopPageEntity> obtainWorktopData() async {
   // 医生信息

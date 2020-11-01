@@ -5,33 +5,17 @@ import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-const taskTypeMap = [
-  {
-    'text': '全部',
-    'taskTemplate': [],
-  },
-  {
-    'text': '会议',
-    'taskTemplate': ['SALON', 'DEPART'],
-  },
-  {
-    'text': '拜访',
-    'taskTemplate': ['VISIT', 'DOCTOR_LECTURE'],
-  },
-  {
-    'text': '调研',
-    'taskTemplate': ['SURVEY'],
-  },
-];
 
 /// 学习计划列表
 class LearnListPage extends StatefulWidget {
   final String learnStatus;
 
-  LearnListPage(this.learnStatus);
+  final ValueChanged<List> onTaskTypeChange;
+
+  LearnListPage(this.learnStatus, {this.onTaskTypeChange});
   @override
   _LearnListPageState createState() => _LearnListPageState();
 }
@@ -50,10 +34,14 @@ class _LearnListPageState extends State<LearnListPage>
   void initState() {
     super.initState();
     // 添加监听器
-    _tabController = TabController(vsync: this, length: taskTypeMap.length)
+    _tabController = TabController(vsync: this, length: TASK_TYPE_MAP.length)
       ..addListener(() {
         setState(() {
           _currentTabIndex = _tabController.index;
+          if (widget.onTaskTypeChange != null) {
+            widget.onTaskTypeChange(
+                TASK_TYPE_MAP[_currentTabIndex]['taskTemplate']);
+          }
         });
       });
   }
@@ -142,6 +130,7 @@ class _LearnListPageState extends State<LearnListPage>
         backgroundColor: ThemeColor.colorFFF3F5F8,
         title: Container(
           alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 8),
           child: TabBar(
             physics: NeverScrollableScrollPhysics(),
             controller: this._tabController,
@@ -149,10 +138,10 @@ class _LearnListPageState extends State<LearnListPage>
             labelPadding: EdgeInsets.symmetric(horizontal: 8),
             indicator: UnderlineTabIndicator(
                 borderSide: BorderSide(style: BorderStyle.none)),
-            tabs: taskTypeMap
+            tabs: TASK_TYPE_MAP
                 .map(
                   (e) => Tab(
-                    child: _renderTop(e['text'], taskTypeMap.indexOf(e)),
+                    child: _renderTop(e['text'], TASK_TYPE_MAP.indexOf(e)),
                   ),
                 )
                 .toList(),
@@ -163,7 +152,7 @@ class _LearnListPageState extends State<LearnListPage>
         child: TabBarView(
           physics: NeverScrollableScrollPhysics(),
           controller: this._tabController,
-          children: taskTypeMap
+          children: TASK_TYPE_MAP
               .map(
                 (e) => Container(
                   child: _renderList(e['taskTemplate']),

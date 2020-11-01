@@ -32,16 +32,25 @@ class LearnDetailViewModel extends ViewStateModel {
 
   LearnDetailItem data;
 
+  // 计划详情是否折叠
+  bool collapsed = false;
+
   LearnDetailViewModel(this.learnPlanId);
 
   initData() async {
     setBusy();
     try {
       data = await loadData();
+      this.collapsed = data.status != 'WAIT_LEARN';
       setIdle();
     } catch (e, s) {
       setError(e, s);
     }
+  }
+
+  toggleCollapsed() {
+    this.collapsed = !this.collapsed;
+    notifyListeners();
   }
 
   Future<LearnDetailItem> loadData() async {

@@ -92,17 +92,23 @@ class _FindPasswordState extends State<FindPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Text(APP_NAME),
-        ),
-        resizeToAvoidBottomInset: false,
-        body: Container(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(APP_NAME),
+      ),
+      // resizeToAvoidBottomInset: false,
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          // 触摸收起键盘
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
           padding: EdgeInsets.only(left: 18, right: 18),
           child: Form(
             key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: ListView(
+              // mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.only(top: 40, bottom: 30),
@@ -118,24 +124,37 @@ class _FindPasswordState extends State<FindPassword> {
                 Container(
                   margin: EdgeInsets.only(bottom: 30),
                   child: TextFormField(
-                    autofocus: true,
+                    autofocus: false,
+                    maxLength: 11,
                     initialValue:
                         SessionManager().sp.getString(LAST_PHONE) ?? '',
-                    decoration: InputDecoration(hintText: '请输入手机号'),
+                    decoration: InputDecoration(
+                      hintText: '请输入手机号',
+                      counterText: '',
+                    ),
                     validator: (val) =>
                         !captcha.hasMatch(val) ? '请输入正确的手机号' : null,
                     onSaved: (val) => _mobile = val,
                     obscureText: false,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     style: loginInputStyle,
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: 44),
                   child: TextFormField(
+                    maxLength: 4,
                     decoration: InputDecoration(
                       hintText: '请输入验证码',
-                      suffix: GestureDetector(
+                      counterText: '',
+                      suffixIcon: Padding(
+                        padding: EdgeInsets.only(
+                          top: 15,
+                          left: 10,
+                          right: 0,
+                          bottom: 0,
+                        ),
+                        child: GestureDetector(
                           onTap: () {
                             //获取验证码
                             if (_maxCount == 0) {
@@ -149,11 +168,13 @@ class _FindPasswordState extends State<FindPassword> {
                                     ? Colors.grey
                                     : ThemeColor.primaryColor,
                                 fontSize: 14),
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
                     validator: (val) => val.length < 4 ? '请输入4位验证码' : null,
                     onSaved: (val) => _captcha = val,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     autocorrect: false,
                     style: loginInputStyle,
                   ),
@@ -161,8 +182,10 @@ class _FindPasswordState extends State<FindPassword> {
                 Container(
                   margin: EdgeInsets.only(bottom: 44),
                   child: TextFormField(
+                    maxLength: 6,
                     decoration: InputDecoration(
                       hintText: '请输入新密码',
+                      counterText: '',
                       suffixIcon: IconButton(
                         icon: Icon(pwdNewVisible
                             ? Icons.visibility
@@ -180,7 +203,7 @@ class _FindPasswordState extends State<FindPassword> {
                         : null,
                     onSaved: (val) => newPassword = val,
                     obscureText: pwdNewVisible,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     autocorrect: false,
                     style: loginInputStyle,
                   ),
@@ -188,8 +211,10 @@ class _FindPasswordState extends State<FindPassword> {
                 Container(
                   margin: EdgeInsets.only(bottom: 44),
                   child: TextFormField(
+                    maxLength: 6,
                     decoration: InputDecoration(
                       hintText: '再次输入密码',
+                      counterText: '',
                       suffixIcon: IconButton(
                         icon: Icon(pwdConfirmVisible
                             ? Icons.visibility
@@ -207,7 +232,7 @@ class _FindPasswordState extends State<FindPassword> {
                         : null,
                     onSaved: (val) => confirmPassword = val,
                     obscureText: pwdConfirmVisible,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     autocorrect: false,
                     style: loginInputStyle,
                   ),
@@ -222,6 +247,8 @@ class _FindPasswordState extends State<FindPassword> {
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
