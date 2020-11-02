@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
@@ -117,8 +118,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
             textColor: Colors.white,
             text: '预览处方',
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamed(RouteManager.PRESCRIPTION_PREVIEW);
+              if (model.validateData()) {
+                Navigator.of(context)
+                    .pushNamed(RouteManager.PRESCRIPTION_PREVIEW);
+              }
             },
           ),
           PrescriptionCreateBtn(),
@@ -183,7 +186,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                         controller: TextEditingController(),
                         decoration: InputDecoration(
                           border: InputBorder.none,
+                          hintText: '请输入患者姓名',
+                          counterText: '',
                         ),
+                        maxLength: 6,
                         validator: (val) => val.length < 1 ? '姓名不能为空' : null,
                         onChanged: (String value) {
                           model.data.prescriptionPatientName = value;
@@ -201,6 +207,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       child: TextFormField(
                         decoration: InputDecoration(
                           border: InputBorder.none,
+                          hintText: '请输入患者年龄',
+                          counterText: '',
                         ),
                         controller: TextEditingController(),
                         validator: (val) => val.length < 1 ? '年龄不能为空' : null,
@@ -306,7 +314,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                                 .copyWith(fontSize: 18),
                           ),
                           Text(
-                            '￥${model.totalPrice}',
+                            '${MoneyUtil.changeF2YWithUnit(model.totalPrice.toInt(), unit: MoneyUnit.YUAN)}',
                             style: TextStyle(
                               color: Color(0xFFFE4B40),
                               fontSize: 24,

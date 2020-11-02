@@ -147,7 +147,7 @@ class _WorktopPageState extends State<WorktopPage>
           ),
         ),
         Container(
-          color: Color(0xFFF9FCFF),
+          color: Color(0xFFF3F5F8),
           margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
           child: learnPlan(entity),
         )

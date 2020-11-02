@@ -1,5 +1,6 @@
 // import 'package:doctor/route/route_manager.dart';
 import 'package:common_utils/common_utils.dart';
+import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
@@ -22,8 +23,6 @@ class LearnDetailPage extends StatefulWidget {
 }
 
 class _LearnDetailPageState extends State<LearnDetailPage> {
-  bool _isExpanded = true;
-
   List get formList => [
         {'field': 'taskTemplate', 'label': '学习计划类型'},
         {'field': 'companyName', 'label': '来自企业'},
@@ -104,6 +103,47 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 color: Colors.white,
               )),
         ));
+  }
+
+  Widget _buildListItem({
+    String label,
+    dynamic value,
+    Function format,
+  }) {
+    return new Container(
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: ThemeColor.colorFFF3F5F8),
+        ),
+      ),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(label,
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                )),
+            SizedBox(
+              height: 20,
+            ),
+            Expanded(
+              child: Text(
+                format != null ? format(value) : value.toString(),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ]),
+    );
   }
 
   // 头部计划信息
@@ -289,6 +329,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             return ViewStateEmptyWidget(onPressed: model.initData);
           }
           var data = model.data;
+          Map dataMap = data.toJson();
+          List learnListFields = LEARN_LIST[data.taskTemplate];
           return Container(
               color: ThemeColor.colorFFF3F5F8,
               alignment: Alignment.topCenter,
@@ -304,15 +346,16 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                             if (data.taskTemplate == 'DOCTOR_LECTURE' &&
                                 data.reLearnReason != null)
                               Container(
-                                  alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                                  padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
-                                  ),
-                                  child: Column(children: [
+                                alignment: Alignment.centerLeft,
+                                margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                                padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8)),
+                                ),
+                                child: Column(
+                                  children: [
                                     Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
@@ -344,7 +387,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                         .colorFFfece35,
                                                   )))
                                         ])
-                                  ])),
+                                  ],
+                                ),
+                              ),
                             Container(
                               child: Container(
                                 margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
@@ -395,11 +440,11 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                     CrossAxisAlignment.center,
                                                 children: [
                                                   Icon(
-                                                    _isExpanded
+                                                    model.collapsed
                                                         ? Icons
-                                                            .keyboard_arrow_up
+                                                            .keyboard_arrow_down
                                                         : Icons
-                                                            .keyboard_arrow_down,
+                                                            .keyboard_arrow_up,
                                                     color:
                                                         ThemeColor.primaryColor,
                                                   ),
@@ -407,59 +452,20 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                           ],
                                         ),
                                         onTap: () {
-                                          setState(() {
-                                            _isExpanded = !_isExpanded;
-                                          });
+                                          model.toggleCollapsed();
                                         },
                                       ),
                                     ),
-                                    Container(
-                                        alignment: Alignment.centerLeft,
-                                        margin:
-                                            EdgeInsets.fromLTRB(16, 0, 16, 0),
-                                        padding:
-                                            EdgeInsets.fromLTRB(0, 14, 0, 14),
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                            bottom: BorderSide(
-                                                color:
-                                                    ThemeColor.colorFFF3F5F8),
-                                          ),
-                                        ),
-                                        child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text('学习计划名称',
-                                                  textAlign: TextAlign.right,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 16,
-                                                  )),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  data.taskName,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 14,
-                                                  ),
-                                                  textAlign: TextAlign.right,
-                                                  softWrap: true,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              )
-                                            ])),
-                                    Column(
-                                        children: _isExpanded
-                                            ? [planTopList(data)]
-                                            : []),
+                                    ...learnListFields.map((e) {
+                                      if (model.collapsed &&
+                                          e['notCollapse'] == null) {
+                                        return Container();
+                                      }
+                                      return _buildListItem(
+                                          label: e['label'],
+                                          value: dataMap[e['field']],
+                                          format: e['format']);
+                                    }).toList(),
                                     Container(
                                       alignment: Alignment.centerLeft,
                                       margin:

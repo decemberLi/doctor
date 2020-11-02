@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
 import 'package:doctor/pages/medication/widgets/medication_page_list_item.dart';
@@ -183,7 +184,7 @@ class _MedicationPageState extends State<MedicationPage>
                         '合计：',
                       ),
                       Text(
-                        '￥${model.totalPrice}',
+                        '${MoneyUtil.changeF2YWithUnit(model.totalPrice.toInt(), unit: MoneyUnit.YUAN)}',
                         style: MyStyles.redTextStyle.copyWith(fontSize: 18),
                       ),
                       SizedBox(

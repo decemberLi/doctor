@@ -34,6 +34,7 @@ class AceButton extends StatelessWidget {
       onPressed: onPressed,
       color: color ?? ThemeColor.primaryColor,
       shape: shape,
+      disabledColor: ThemeColor.primaryColor.withOpacity(0.5),
       child: child ??
           Text(
             text,

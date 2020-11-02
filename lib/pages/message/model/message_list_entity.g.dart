@@ -10,7 +10,7 @@ MessageListEntity _$MessageListEntityFromJson(Map<String, dynamic> json) {
   return MessageListEntity(
     json['messageTitle'] as String,
     json['messageContent'] as String,
-    json['createTime'] as String,
+    json['createTime'] as num,
     json['readed'] as bool,
   );
 }

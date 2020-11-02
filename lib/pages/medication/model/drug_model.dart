@@ -23,8 +23,8 @@ class DrugModel {
   /// 剂型
   String drugType;
 
-  /// 药品单价
-  double drugPrice;
+  /// 药品单价(单位分)
+  int drugPrice;
 
   /// 生产厂家
   String producer;

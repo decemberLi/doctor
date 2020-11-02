@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:doctor/http/http_manager.dart';
+import 'package:doctor/model/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/qualification/model/config_data_entity.dart';
-import 'package:doctor/pages/qualification/model/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -68,9 +68,9 @@ class DoctorQualificationViewModel {
         await uCenter.post('/personal/query-doctor-detail', showLoading: false);
     if (doctorInfo is Exception) {
       _controller.sink.add(_dataModel);
-      _dataModel.doctorDetailInfo = DoctorDetailInfoEntity.create();
+      _dataModel.doctorDetailInfo = DoctorInfoModel.create();
     } else {
-      _dataModel.doctorDetailInfo = DoctorDetailInfoEntity.fromJson(doctorInfo);
+      _dataModel.doctorDetailInfo = DoctorInfoModel.fromJson(doctorInfo);
       _controller.sink.add(_dataModel);
     }
   }

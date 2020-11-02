@@ -14,7 +14,7 @@ DrugModel _$DrugModelFromJson(Map<String, dynamic> json) {
     generalName: json['generalName'] as String,
     approvalNo: json['approvalNo'] as String,
     drugType: json['drugType'] as String,
-    drugPrice: (json['drugPrice'] as num)?.toDouble(),
+    drugPrice: json['drugPrice'] as int,
     producer: json['producer'] as String,
     pictures: (json['pictures'] as List)?.map((e) => e as String)?.toList(),
     drugSize: json['drugSize'] as String,

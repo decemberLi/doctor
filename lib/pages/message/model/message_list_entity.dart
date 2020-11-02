@@ -6,7 +6,7 @@ part 'message_list_entity.g.dart';
 class MessageListEntity {
   String messageTitle;
   String messageContent;
-  String createTime;
+  num createTime;
   bool readed;
 
 

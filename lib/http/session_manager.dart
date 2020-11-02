@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:doctor/pages/login/model/login_info.dart';
-import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/route/navigation_service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/constants.dart';

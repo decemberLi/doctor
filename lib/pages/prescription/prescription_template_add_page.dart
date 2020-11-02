@@ -69,24 +69,23 @@ class _PrescriptionTemplageAddPageState
                 SizedBox(
                   height: 12,
                 ),
-                Container(
-                  color: Colors.white,
-                  child: TextFormField(
-                    initialValue: data.prescriptionTemplateName ?? '',
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                    ),
-                    validator: (val) => val.length < 1 ? '名称不能为空' : null,
-                    onSaved: (val) => {data.prescriptionTemplateName = val},
-                    obscureText: false,
-                    keyboardType: TextInputType.text,
-                    style: MyStyles.inputTextStyle,
-                    // onChanged: (value) {
-                    //   setState(() {
-                    //     data.prescriptionTemplateName = value;
-                    //   });
-                    // },
+                TextFormField(
+                  initialValue: data.prescriptionTemplateName ?? '',
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    fillColor: Colors.white,
+                    filled: true,
                   ),
+                  maxLength: 15,
+                  validator: (val) => val.length < 1 ? '名称不能为空' : null,
+                  onSaved: (val) => {data.prescriptionTemplateName = val},
+                  keyboardType: TextInputType.text,
+                  style: MyStyles.inputTextStyle,
+                  // onChanged: (value) {
+                  //   setState(() {
+                  //     data.prescriptionTemplateName = value;
+                  //   });
+                  // },
                 ),
                 SizedBox(
                   height: 12,
@@ -98,24 +97,24 @@ class _PrescriptionTemplageAddPageState
                 SizedBox(
                   height: 12,
                 ),
-                Container(
-                  color: Colors.white,
-                  child: TextFormField(
-                    initialValue: data.clinicalDiagnosis ?? '',
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                    ),
-                    validator: (val) => val.length < 1 ? '临床诊断不能为空' : null,
-                    onSaved: (val) => {data.clinicalDiagnosis = val},
-                    obscureText: false,
-                    keyboardType: TextInputType.text,
-                    style: MyStyles.inputTextStyle,
-                    // onChanged: (value) {
-                    //   setState(() {
-                    //     data.clinicalDiagnosis = value;
-                    //   });
-                    // },
+                TextFormField(
+                  initialValue: data.clinicalDiagnosis ?? '',
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    fillColor: Colors.white,
+                    filled: true,
                   ),
+                  maxLength: 15,
+                  validator: (val) => val.length < 1 ? '临床诊断不能为空' : null,
+                  onSaved: (val) => {data.clinicalDiagnosis = val},
+                  obscureText: false,
+                  keyboardType: TextInputType.text,
+                  style: MyStyles.inputTextStyle,
+                  // onChanged: (value) {
+                  //   setState(() {
+                  //     data.clinicalDiagnosis = value;
+                  //   });
+                  // },
                 ),
                 SizedBox(
                   height: 12,
@@ -129,6 +128,8 @@ class _PrescriptionTemplageAddPageState
                 ),
                 Container(
                   alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  // color: Colors.white,
                   child: RpList(
                     list: data.drugRps,
                     onAdd: (addList) {

@@ -103,94 +103,120 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         bottom: true,
-        child: Container(
-          padding: EdgeInsets.only(left: 18, right: 18),
-          child: Form(
-            key: _formKey,
-            child: Stack(
-              children: [
-                Column(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(top: 40, bottom: 30),
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        '验证码登录',
-                        style: TextStyle(
-                            color: ThemeColor.colorFF000000,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 30),
-                      child: TextFormField(
-                        autofocus: false,
-                        initialValue:
-                            SessionManager().sp.getString(LAST_PHONE) ?? '',
-                        decoration: InputDecoration(hintText: '请输入手机号'),
-                        validator: (val) =>
-                            !captcha.hasMatch(val) ? '请输入正确的手机号' : null,
-                        onSaved: (val) => _mobile = val,
-                        obscureText: false,
-                        keyboardType: TextInputType.number,
-                        style: loginInputStyle,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 44),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          hintText: '请输入验证码',
-                          suffix: GestureDetector(
-                              onTap: () {
-                                //获取验证码
-                                if (_maxCount == 0) {
-                                  _captchaClick();
-                                }
-                              },
-                              child: Text(
-                                _maxCount > 0 ? '$_maxCount s后重新获取' : '获取验证码',
-                                style: TextStyle(
-                                    color: _maxCount > 0
-                                        ? Colors.grey
-                                        : ThemeColor.primaryColor,
-                                    fontSize: 14),
-                              )),
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            // 触摸收起键盘
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Container(
+            padding: EdgeInsets.only(left: 18, right: 18),
+            child: Form(
+              key: _formKey,
+              child: Stack(
+                children: [
+                  Column(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: 40, bottom: 30),
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          '验证码登录',
+                          style: TextStyle(
+                              color: ThemeColor.colorFF000000,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold),
                         ),
-                        validator: (val) => val.length < 4 ? '请输入4位验证码' : null,
-                        onSaved: (val) => _captcha = val,
-                        keyboardType: TextInputType.number,
-                        autocorrect: false,
-                        style: loginInputStyle,
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: AceButton(
-                        text: '登录',
-                        onPressed: _submit,
+                      Container(
+                        margin: EdgeInsets.only(bottom: 30),
+                        child: TextFormField(
+                          autofocus: false,
+                          autovalidateMode: AutovalidateMode.always,
+                          maxLength: 11,
+                          initialValue:
+                              SessionManager().sp.getString(LAST_PHONE) ?? '',
+                          decoration: InputDecoration(
+                            hintText: '请输入手机号',
+                            counterText: '',
+                          ),
+                          validator: (val) =>
+                              !captcha.hasMatch(val) ? '请输入正确的手机号' : null,
+                          onSaved: (val) => _mobile = val,
+                          obscureText: false,
+                          keyboardType: TextInputType.number,
+                          style: loginInputStyle,
+                        ),
                       ),
-                    ),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      width: 310,
-                      child: TextButton(
-                          child: Text('账号密码登录'),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushNamed(RouteManager.LOGIN_PWD);
-                          }),
-                    ),
-                  ],
-                ),
-                Positioned(
-                  bottom: 20,
-                  child: LoginFooter(onChange: (bool value) {
-                    _agree = value;
-                  }),
-                ),
-              ],
+                      Container(
+                        margin: EdgeInsets.only(bottom: 44),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            hintText: '请输入验证码',
+                            counterText: '',
+                            suffixIcon: Padding(
+                              padding: EdgeInsets.only(
+                                top: 15,
+                                left: 10,
+                                right: 0,
+                                bottom: 0,
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  //获取验证码
+                                  if (_maxCount == 0) {
+                                    _captchaClick();
+                                  }
+                                },
+                                child: Text(
+                                  _maxCount > 0 ? '$_maxCount s后重新获取' : '获取验证码',
+                                  style: TextStyle(
+                                      color: _maxCount > 0
+                                          ? Colors.grey
+                                          : ThemeColor.primaryColor,
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
+                          maxLength: 4,
+                          validator: (val) =>
+                              val.length < 4 ? '请输入4位验证码' : null,
+                          onSaved: (val) => _captcha = val,
+                          keyboardType: TextInputType.number,
+                          autocorrect: false,
+                          style: loginInputStyle,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: AceButton(
+                          text: '登录',
+                          onPressed: _agree ? _submit : null,
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        width: 310,
+                        child: TextButton(
+                            child: Text('账号密码登录'),
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(RouteManager.LOGIN_PWD);
+                            }),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    bottom: 20,
+                    child: LoginFooter(onChange: (bool value) {
+                      setState(() {
+                        _agree = value;
+                      });
+                    }),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

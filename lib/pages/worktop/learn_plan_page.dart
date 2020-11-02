@@ -1,66 +1,108 @@
-import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
+import 'package:doctor/pages/worktop/service.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/material.dart';
 
-class LearnPlanPage extends StatelessWidget {
+class LearnPlanPage extends StatefulWidget {
+  @override
+  _LearnPlanPageState createState() => _LearnPlanPageState();
+}
+
+class _LearnPlanPageState extends State<LearnPlanPage>
+    with SingleTickerProviderStateMixin {
+  TabController _tabController;
+
+  int _currentTabIndex = 0;
+
+  int _waitLearnCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // 添加监听器
+    _tabController = TabController(vsync: this, length: 2)
+      ..addListener(() {
+        // 避免触发两次
+        if (_tabController.index.toDouble() == _tabController.animation.value) {
+          setState(() {
+            _currentTabIndex = _tabController.index;
+          });
+        }
+      });
+    getLearnCount([]);
+  }
+
+  void getLearnCount(List taskTemplate) async {
+    var res = await getPlanCount({
+      'taskTemplate': taskTemplate,
+    });
+    setState(() {
+      _waitLearnCount = res['waitLearnCount'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        child: DefaultTabController(
-          length: 2,
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(APP_NAME),
-              elevation: 1,
-              bottom: PreferredSize(
-                  child: Container(
-                    color: ThemeColor.colorFFF3F5F8,
-                    child: TabBar(
-                      labelColor: ThemeColor.primaryColor,
-                      labelStyle:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      unselectedLabelColor: ThemeColor.secondaryGeryColor,
-                      indicatorWeight: 4,
-                      // indicatorSize: TabBarIndicatorSize.label,
-                      indicatorPadding: EdgeInsets.only(left: 80, right: 80),
-                      indicatorColor: ThemeColor.primaryColor,
-                      tabs: [
-                        Tab(
-                          text: '学习中',
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(APP_NAME),
+        elevation: 1,
+        bottom: PreferredSize(
+            child: Container(
+              color: ThemeColor.colorFFF3F5F8,
+              child: TabBar(
+                controller: this._tabController,
+                labelColor: ThemeColor.primaryColor,
+                labelStyle:
+                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                unselectedLabelColor: ThemeColor.secondaryGeryColor,
+                indicatorWeight: 4,
+                // indicatorSize: TabBarIndicatorSize.label,
+                indicatorPadding: EdgeInsets.only(left: 80, right: 80),
+                indicatorColor: ThemeColor.primaryColor,
+                tabs: [
+                  Tab(
+                    // text: '学习中',
+                    child: Stack(
+                      overflow: Overflow.visible,
+                      children: [
+                        Text(
+                          '学习中',
                         ),
-                        Tab(
-                          text: '学习历史',
-                        ),
+                        if (_waitLearnCount > 0)
+                          Positioned(
+                            right: -30,
+                            top: -8,
+                            child: LearnTextIcon(
+                              text: '$_waitLearnCount',
+                              color: _currentTabIndex == 0
+                                  ? ThemeColor.primaryColor
+                                  : ThemeColor.secondaryGeryColor,
+                            ),
+                          ),
                       ],
                     ),
                   ),
-                  preferredSize: const Size.fromHeight(45.0)),
-            ),
-            body: Container(
-              color: ThemeColor.colorFFF3F5F8,
-              child: TabBarView(
-                children: [
-                  LearnListPage('LEARNING'),
-                  LearnListPage('HISTORY'),
+                  Tab(
+                    text: '学习历史',
+                  ),
                 ],
               ),
             ),
-          ),
+            preferredSize: const Size.fromHeight(45.0)),
+      ),
+      body: Container(
+        color: ThemeColor.colorFFF3F5F8,
+        child: TabBarView(
+          controller: this._tabController,
+          children: [
+            LearnListPage('LEARNING', onTaskTypeChange: getLearnCount),
+            LearnListPage('HISTORY'),
+          ],
         ),
-        onWillPop: () {
-          //跳转并关闭当前页面--回到首页
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-            ModalRoute.withName('/'),
-          );
-          // Navigator.pushReplacement(context,
-          //     new MaterialPageRoute(builder: (BuildContext context) {
-          //   return HomePage();
-          // }));
-          return;
-        });
+      ),
+    );
   }
 }

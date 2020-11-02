@@ -18,6 +18,8 @@ import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
 import 'package:doctor/pages/user/collect/collect_list.dart';
 import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
+import 'package:doctor/pages/user/user_detail/user_edit_page.dart';
+import 'package:doctor/pages/user/user_detail/user_info_detai.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/look_course_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
@@ -55,6 +57,8 @@ class RouteManager {
   static const String PATIENT = '/patient';
   static const String PATIENT_DETAIL = '/patient_detail';
   static const String COLLECT_DETAIL = '/collect_detail';
+  static const String USERINFO_DETAIL = '/user_detail';
+  static const String EDIT_DOCTOR_PAGE = '/edit_user_detail';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
@@ -87,5 +91,10 @@ class RouteManager {
     PATIENT: (context) => PatientListPage(),
     PATIENT_DETAIL: (context) => PatientDetailPage(),
     COLLECT_DETAIL: (context) => CollectDetailList(),
+    USERINFO_DETAIL: (context) => DoctorUserInfo(),
+    EDIT_DOCTOR_PAGE: (context) {
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return UserEditPage(obj['lable'], obj['value'],obj['editWay']);
+    }
   };
 }

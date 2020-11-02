@@ -5,10 +5,10 @@ part 'message_center_entity.g.dart';
 
 @JsonSerializable()
 class MessageCenterEntity {
-  String systemCount;
-  String prescriptionCount;
-  String leanPlanCount;
-  String interactiveCount;
+  int systemCount;
+  int prescriptionCount;
+  int leanPlanCount;
+  int interactiveCount;
 
 
   MessageCenterEntity(this.systemCount, this.prescriptionCount,

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -29,7 +30,6 @@ class _UserPageState extends State<UserPage> {
   //authStatus:认证状态(WAIT_VERIFY-待认证、VERIFING-认证中、FAIL-认证失败、PASS-认证通过）
   _doctorInfo() async {
     var basicData = await getBasicData();
-    print('res$basicData');
     if (basicData is! DioError) {
       print(basicData);
       setState(() {
@@ -37,7 +37,6 @@ class _UserPageState extends State<UserPage> {
       });
     }
     var basicNumData = await getBasicNum();
-    print('res$basicNumData');
     if (basicNumData is! DioError) {
       setState(() {
         numData = basicNumData;
@@ -168,95 +167,104 @@ class _UserPageState extends State<UserPage> {
         child: Column(
           children: [
             //头部
-            Container(
-              padding: EdgeInsets.only(top: 60, left: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    child: Image.asset(
-                      "assets/images/avatar.png",
-                      width: 80,
-                      fit: BoxFit.fitWidth,
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
+                    arguments: {'doctorData': doctorData});
+              },
+              child: Container(
+                padding: EdgeInsets.only(top: 60, left: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Image.asset(
+                        "assets/images/avatar.png",
+                        width: 80,
+                        fit: BoxFit.fitWidth,
+                      ),
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 10),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          child: Row(
-                            children: [
-                              Text(
-                                doctorData['doctorName'],
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Container(
-                                width: 80,
-                                height: 20,
-                                margin: EdgeInsets.only(left: 5),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: doctorData['authStatus'] == 'PASS'
-                                      ? Color(0xFFFAAD14)
-                                      : Color(0xFFB9B9B9),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(28),
-                                    bottomRight: Radius.circular(28),
-                                    topRight: Radius.circular(28),
-                                  ),
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Row(
+                              children: [
+                                Text(
+                                  doctorData['doctorName'],
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                child: RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    children: [
-                                      if (doctorData['authStatus'] == 'PASS')
-                                        WidgetSpan(
-                                          child: Icon(
-                                            Icons.keyboard_arrow_down,
-                                            color: Color(0xFFFAAD14),
-                                            size: 16,
+                                Container(
+                                  width: 80,
+                                  height: 20,
+                                  margin: EdgeInsets.only(left: 5),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: doctorData['authStatus'] == 'PASS'
+                                        ? Color(0xFFFAAD14)
+                                        : Color(0xFFB9B9B9),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(28),
+                                      bottomRight: Radius.circular(28),
+                                      topRight: Radius.circular(28),
+                                    ),
+                                  ),
+                                  child: RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        if (doctorData['authStatus'] == 'PASS')
+                                          WidgetSpan(
+                                            child: Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Color(0xFFFAAD14),
+                                              size: 16,
+                                            ),
                                           ),
+                                        TextSpan(
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                          ),
+                                          text:
+                                              doctorData['authStatus'] == 'PASS'
+                                                  ? '资质认证'
+                                                  : '尚未认证',
                                         ),
-                                      TextSpan(
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white,
-                                        ),
-                                        text: doctorData['authStatus'] == 'PASS'
-                                            ? '资质认证'
-                                            : '尚未认证',
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              )
-                            ],
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Text(
-                            doctorData['hospitalName'],
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          Container(
+                            padding: EdgeInsets.only(top: 8, bottom: 8),
+                            child: Text(
+                              doctorData['hospitalName'],
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 14),
+                            ),
                           ),
-                        ),
-                        Container(
-                          child: Text(
-                            '${doctorData['departmentsName']} ${doctorData['jobGradeName']}',
-                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          Container(
+                            child: Text(
+                              '${doctorData['departmentsName']} ${doctorData['jobGradeName']}',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 12),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             //收藏 患者
@@ -308,6 +316,7 @@ class _UserPageState extends State<UserPage> {
                   }),
                   messageItem('设置', 'assets/images/setting.png', () {
                     print('设置');
+                    SessionManager.loginOutHandler();
                     // TODO: 设置页面
                   }),
                   messageItem('关于我们', 'assets/images/aboutus.png', () {

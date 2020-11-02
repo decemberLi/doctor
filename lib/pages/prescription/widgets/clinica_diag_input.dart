@@ -18,7 +18,9 @@ class ClinicaDiagInput extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
-            decoration: InputDecoration(border: InputBorder.none),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+            ),
             onChanged: (String value) {
               input = value;
             },
@@ -34,8 +36,11 @@ class ClinicaDiagInput extends StatelessWidget {
             type: AceButtonType.secondary,
             onPressed: () {
               if (input == '' || input == null) {
-                // TODO: 改为输入框校验
                 EasyLoading.showToast('临床诊断不能为空');
+                return;
+              }
+              if (input.length > 15) {
+                EasyLoading.showToast('临床诊断字数不能超过15字');
                 return;
               }
               this.onSave(input);

@@ -12,7 +12,7 @@ class MessageCenterModel {
   get stream => _controller.stream;
 
   queryMessageCount() async {
-    var result = await foundation.post('/message/unread-count');
+    var result = await foundation.post('/message/unread-type-count');
     return MessageCenterEntity.fromJson(result);
   }
 
