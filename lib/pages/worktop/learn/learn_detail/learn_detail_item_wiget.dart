@@ -314,8 +314,8 @@ class PlanDetailList extends StatelessWidget {
                                         fit: BoxFit.cover),
                                     if (item.resourceType == 'VIDEO')
                                       Positioned(
-                                        right: 14,
-                                        bottom: 10,
+                                        right: 4,
+                                        bottom: -10,
                                         child: Container(
                                             padding: EdgeInsets.symmetric(
                                                 vertical: 6),
