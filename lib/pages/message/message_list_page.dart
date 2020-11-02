@@ -99,7 +99,7 @@ class _MessageListPageState extends State<MessageListPage> {
                             ),
                           ),
                           Text(
-                            entity?.createTime ?? '',
+                            '${entity?.createTime ?? ''}',
                             textAlign: TextAlign.right,
                             style: TextStyle(
                                 color: Color(0xFF0B0B0B), fontSize: 10),

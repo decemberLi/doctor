@@ -8,10 +8,10 @@ part of 'message_center_entity.dart';
 
 MessageCenterEntity _$MessageCenterEntityFromJson(Map<String, dynamic> json) {
   return MessageCenterEntity(
-    json['systemCount'] as String,
-    json['prescriptionCount'] as String,
-    json['leanPlanCount'] as String,
-    json['interactiveCount'] as String,
+    json['systemCount'] as int,
+    json['prescriptionCount'] as int,
+    json['leanPlanCount'] as int,
+    json['interactiveCount'] as int,
   );
 }
 
