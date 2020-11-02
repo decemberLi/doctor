@@ -33,6 +33,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   List doctorTitle = [];
   //修改信息
   void updateDoctorInfo(params, ifBack) {
+    //更新保存的数据到args作页面数据回填
     args.addAll(params);
     setState(() {
       args = args;
@@ -53,7 +54,12 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   }
 
   //跳转列表样式
-  Widget infoItem(String lable, value, bool type, edit) {
+  ///lable:label
+  ///value:初始值
+  ///type 是否可修改
+  ///edit 编辑方式 picker:下拉框 edit:编辑 hospital:医院搜索
+  ///defaultCode 用户下拉框回填数据的默认值
+  Widget infoItem(String lable, value, bool type, edit, defaultCode) {
     return Container(
       margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
       decoration: BoxDecoration(
@@ -100,7 +106,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             _goHospitalSearchPage();
           }
           if (edit == 'picker') {
-            showPickerModal(context, lable);
+            showPickerModal(context, lable, defaultCode);
           }
         },
       ),
@@ -140,9 +146,11 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         MaterialPageRoute(builder: (context) => _hospitalSearchWidget));
   }
 
-  showPickerModal(BuildContext context, lable) {
+  showPickerModal(BuildContext context, lable, defaultCode) {
     //下拉数据
     List<PickerItem<String>> listData = [];
+    //默认选择值 默认值是通过index来确定的
+    List<int> defaultSelect;
     if (lable == '性别') {
       listData = [
         new PickerItem(
@@ -160,8 +168,49 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
           value: '1',
         ),
       ];
+      if (defaultCode != null && defaultCode is! int) {
+        defaultCode = int.parse(defaultCode);
+      }
+      defaultSelect = defaultCode == null ? [0] : [defaultCode];
     }
+    if (lable == '职称') {
+      listData = [
+        ...doctorTitle
+            .map((e) => new PickerItem(
+                  text: Text(
+                    e['name'],
+                    textAlign: TextAlign.center,
+                  ),
+                  value: '${e['code']}',
+                ))
+            .toList()
+      ];
+      if (defaultCode != null && defaultCode is! int) {
+        int index =
+            doctorTitle.indexWhere((element) => element['code'] == defaultCode);
+        defaultCode = index;
+      }
+      defaultSelect = defaultCode == null ? [0] : [defaultCode];
+    }
+
     if (lable == '科室') {
+      //找到父亲
+      String parent;
+      int sonIndex;
+      departments.forEach((element) {
+        List child = element['children'];
+        List filterData =
+            child.where((element) => element['code'] == defaultCode).toList();
+        if (filterData.length > 0) {
+          parent = element['code'];
+          sonIndex =
+              child.indexWhere((element) => element['code'] == defaultCode);
+          return;
+        }
+      });
+      int parentIndex =
+          departments.indexWhere((element) => element['code'] == parent);
+      defaultSelect = defaultCode == null ? [0, 0] : [parentIndex, sonIndex];
       listData = [
         ...departments.map((e) {
           final children = e['children'];
@@ -186,24 +235,12 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         }).toList()
       ];
     }
-    if (lable == '职称') {
-      listData = [
-        ...doctorTitle
-            .map((e) => new PickerItem(
-                  text: Text(
-                    e['name'],
-                    textAlign: TextAlign.center,
-                  ),
-                  value: '${e['code']}',
-                ))
-            .toList()
-      ];
-    }
     Picker picker = Picker(
         title: Text(
           '选择$lable',
           style: TextStyle(fontSize: 18),
         ),
+        selecteds: defaultSelect,
         height: 200,
         columnPadding: EdgeInsets.all(30),
         itemExtent: 40,
@@ -276,13 +313,16 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             margin: EdgeInsets.only(left: 16, right: 16, top: 12),
             child: Column(
               children: [
-                infoItem('头像', args['fullFacePhoto'], false, null),
-                infoItem('姓名', args['doctorName'], doctorStatus, 'edit'),
+                infoItem('头像', args['fullFacePhoto'], false, null, null),
+                infoItem('姓名', args['doctorName'], doctorStatus, 'edit', null),
+                infoItem('性别', args['sex'] == 0 ? '女' : '男', doctorStatus,
+                    'picker', args['sex']),
                 infoItem(
-                    '性别', args['sex'] == 0 ? '女' : '男', doctorStatus, 'picker'),
-                infoItem('医院', args['hospitalName'], doctorStatus, 'hospital'),
-                infoItem('科室', args['departmentsName'], doctorStatus, 'picker'),
-                infoItem('职称', args['jobGradeName'], doctorStatus, 'picker'),
+                    '医院', args['hospitalName'], doctorStatus, 'hospital', null),
+                infoItem('科室', args['departmentsName'], doctorStatus, 'picker',
+                    args['departmentsCode']),
+                infoItem('职称', args['jobGradeName'], doctorStatus, 'picker',
+                    args['jobGradeCode']),
               ],
             ),
           ),
@@ -290,8 +330,8 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             margin: EdgeInsets.only(left: 16, right: 16, top: 12),
             child: Column(
               children: [
-                infoItem('个人简介', args['briefIntroduction'], true, 'edit'),
-                infoItem('擅长疾病', args['speciality'], true, 'edit'),
+                infoItem('个人简介', args['briefIntroduction'], true, 'edit', null),
+                infoItem('擅长疾病', args['speciality'], true, 'edit', null),
               ],
             ),
           ),
