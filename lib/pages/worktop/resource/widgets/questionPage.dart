@@ -125,7 +125,8 @@ class _QuestionPageState extends State<QuestionPage> {
         // 单选
         _questionsInit.forEach((element) {
           if (element['index'] == item.index) {
-            if (int.parse(element['groupValue']) != null) {
+            if ((element['groupValue']) != null &&
+                (element['groupValue']) != '') {
               item.options[int.parse(element['groupValue'])].checked =
                   (element['groupValue']);
             } else {
@@ -214,7 +215,8 @@ class _QuestionPageState extends State<QuestionPage> {
   Widget _radioListItem(question, optionContent, optionIndex, radioTitle) {
     String charCode = String.fromCharCode(65 + optionIndex);
     bool _dispatch = false;
-    if (widget.data.learnStatus == 'FINISHED' || widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
+    if (widget.data.learnStatus == 'FINISHED' ||
+        widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
       _dispatch = true;
     }
     return new Row(
@@ -230,25 +232,24 @@ class _QuestionPageState extends State<QuestionPage> {
         ),
 
         // 此处也可以使用RadioListTile，但是这个组件不满足我们这边的需求，所以自己后来写了布局
-       new Radio(
-          activeColor: _dispatch
-              ? ThemeColor.secondaryGeryColor
-              : ThemeColor.primaryColor, //选中时的颜色
-          value: question.options[optionIndex].index, // 该值为string类型
-          groupValue: _questionsInit[question.index]
-              ['groupValue'], // 与value一样是选中
-          // mouseCursor: MaterialStateMouseCursor.clickable,
-          onChanged: (val) {
-            // 收起键盘
-            FocusScope.of(context).requestFocus(FocusNode());
-            if (!_dispatch) {
-              setState(() {
-                _questionsInit[question.index]['groupValue'] = val;
-                print('选中了: ' + val);
-              });
-            }
-          }
-       )
+        new Radio(
+            activeColor: _dispatch
+                ? ThemeColor.secondaryGeryColor
+                : ThemeColor.primaryColor, //选中时的颜色
+            value: question.options[optionIndex].index, // 该值为string类型
+            groupValue: _questionsInit[question.index]
+                ['groupValue'], // 与value一样是选中
+            // mouseCursor: MaterialStateMouseCursor.clickable,
+            onChanged: (val) {
+              // 收起键盘
+              FocusScope.of(context).requestFocus(FocusNode());
+              if (!_dispatch) {
+                setState(() {
+                  _questionsInit[question.index]['groupValue'] = val;
+                  print('选中了: ' + val);
+                });
+              }
+            })
       ],
     );
   }
@@ -271,7 +272,8 @@ class _QuestionPageState extends State<QuestionPage> {
       question, optionContent, optionIndex, checkboxTitle) {
     String charCode = String.fromCharCode(65 + optionIndex);
     bool _dispatch = false;
-    if (widget.data.learnStatus == 'FINISHED' || widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
+    if (widget.data.learnStatus == 'FINISHED' ||
+        widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
       _dispatch = true;
     }
     return new Row(
@@ -338,12 +340,14 @@ class _QuestionPageState extends State<QuestionPage> {
   // 构建 输入框 组件
   Widget _buildTextField(question) {
     // 文本字段（`TextField`）组件，允许用户使用硬件键盘或屏幕键盘输入文本。
-     bool _dispatch = true;
-    if (widget.data.learnStatus == 'FINISHED' || widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
+    bool _dispatch = true;
+    if (widget.data.learnStatus == 'FINISHED' ||
+        widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
       _dispatch = false;
     }
+
     return new TextField(
-      maxLines: 8,
+      maxLines: 4,
       cursorColor: const Color(0xFFFE7C30),
       cursorWidth: 2.0,
       keyboardType: TextInputType.multiline, //多行
@@ -355,10 +359,12 @@ class _QuestionPageState extends State<QuestionPage> {
           borderRadius: BorderRadius.circular(8.0),
         ),
       ),
-      enabled:_dispatch, //禁用
+      enabled: _dispatch, //禁用
       onChanged: (text) {
         _questionsInit[question.index]['textField'] = text;
-        // print("输入框 组件: $text");
+        // _scrollToIndex(question.index);
+
+        print("${question.index}输入框 组件: $text");
       },
       controller: new TextEditingController(
           text: _questionsInit[question.index]['textField']), // 控制正在编辑的文本
@@ -405,8 +411,7 @@ class _QuestionPageState extends State<QuestionPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
-                                child: Text('widget.data.info.summary',
-                                    // 'widget.data.info.summary  书法家俄罗斯定金付了看见啊撒旦法按时来得快减肥卢卡斯',
+                                child: Text(widget.data.info.summary,
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w400,
@@ -440,6 +445,7 @@ class _QuestionPageState extends State<QuestionPage> {
                           itemBuilder: (context, index) {
                             // 列表显示
                             return Container(
+                              padding: EdgeInsets.all(8),
                               margin: EdgeInsets.fromLTRB(4, 24, 0, 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -467,11 +473,12 @@ class _QuestionPageState extends State<QuestionPage> {
                           },
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 120,
                         ),
                       ],
                     ),
-                    if (widget.data.learnStatus != 'FINISHED' && widget.data.learnPlanStatus != 'SUBMIT_LEARN') //已完成、已提交
+                    if (widget.data.learnStatus != 'FINISHED' &&
+                        widget.data.learnPlanStatus != 'SUBMIT_LEARN') //已完成、已提交
                       AceButton(
                         onPressed: _openFile,
                         text: '提交',
