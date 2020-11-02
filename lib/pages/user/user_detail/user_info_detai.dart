@@ -67,12 +67,19 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       ),
       child: ListTile(
         title: lable == '头像'
-            ? Image.asset(
-                value == null ? "assets/images/avatar.png" : value['url'],
-                width: 40,
-                height: 40,
-                alignment: Alignment.centerRight,
-              )
+            ? value == null
+                ? Image.asset(
+                    "assets/images/avatar.png",
+                    width: 40,
+                    height: 40,
+                    alignment: Alignment.centerRight,
+                  )
+                : Image.network(
+                    value['url'],
+                    width: 40,
+                    height: 40,
+                    alignment: Alignment.centerRight,
+                  )
             : Text(
                 value ?? '',
                 textAlign: TextAlign.end,
