@@ -1,9 +1,13 @@
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
+import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
+import 'package:doctor/widgets/photo_view_gallery_screen.dart';
+import 'package:doctor/widgets/photo_view_simple_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class ImageUpload extends StatefulWidget {
   final List<OssFileEntity> images;
@@ -82,17 +86,26 @@ class _ImageUploadState extends State<ImageUpload> {
     }
   }
 
+  Widget _imageWrapper({
+    child,
+  }) {
+    return Container(
+      width: widget.width,
+      height: widget.height,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: ThemeColor.colorLine,
+        ),
+      ),
+      child: child,
+    );
+  }
+
   /// 上传按钮
   Widget _uploadBtn() {
     return GestureDetector(
-      child: Container(
-        width: widget.width,
-        height: widget.height,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            border: Border.all(
-          color: ThemeColor.colorLine,
-        )),
+      child: _imageWrapper(
         child: Icon(
           Icons.add,
           color: ThemeColor.colorLine,
@@ -125,29 +138,65 @@ class _ImageUploadState extends State<ImageUpload> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&
                   image.url != null) {
-                return Image.network(
-                  image.url,
+                ImageProvider imageProvider = NetworkImage(image.url);
+                Image imageWidget = Image(
+                  image: imageProvider,
                   width: widget.width,
                   height: widget.height,
                   alignment: Alignment.topCenter,
                   fit: BoxFit.fitHeight,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return _imageWrapper(
+                      child: LinearPercentIndicator(
+                        percent: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes
+                            : 0.0,
+                        progressColor: ThemeColor.primaryColor,
+                      ),
+                    );
+                  },
+                );
+                return GestureDetector(
+                  child: imageWidget,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      FadeRoute(
+                        // page: PhotoViewSimpleScreen(
+                        //   imageProvider: imageProvider,
+                        //   heroTag: 'simple',
+                        // ),
+                        page: PhotoViewGalleryScreen(
+                          images: this._images.map((e) => e.url).toList(),
+                        ),
+                      ),
+                    );
+                  },
                 );
               }
-              return Container(
-                width: widget.width,
-                height: widget.height,
+              return _imageWrapper(
+                child: LinearPercentIndicator(
+                  percent: 0.0,
+                  progressColor: ThemeColor.primaryColor,
+                ),
               );
             },
           ),
           Positioned(
-            top: -12.0,
-            right: -12.0,
+            top: -16.0,
+            right: -16.0,
             child: IconButton(
               padding: EdgeInsets.all(4),
-              alignment: Alignment.topRight,
+              alignment: Alignment.center,
+              constraints: BoxConstraints(
+                minWidth: 30,
+                minHeight: 30,
+              ),
               icon: Icon(
                 Icons.remove_circle,
-                size: 16.0,
+                size: 24.0,
                 color: Color(0xFFF57575),
               ),
               onPressed: () {

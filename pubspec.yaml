@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.7.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -44,6 +44,10 @@ dependencies:
   flutter_swiper: ^1.1.6
   flutter_picker:
     git: git://github.com/yangyxd/flutter_picker.git
+
+  # 图片查看器 https://pub.flutter-io.cn/packages/photo_view
+  photo_view: ^0.10.2
+
   # 解析html标签
   # flutter_html: ^1.0.2
 

@@ -26,33 +26,21 @@ class MedicationViewModel extends ViewStateRefreshListModel<DrugModel> {
   @override
   initData() async {
     setBusy();
-    print(11);
     await refresh(init: true);
   }
 
   @override
   Future<List<DrugModel>> loadData({int pageNum}) async {
-    var data = await http.post('/drug/list', params: {'ps': 10, 'pn': pageNum});
-    List<DrugModel> list = data['records']
-        .map<DrugModel>((item) => DrugModel.fromJson(item))
-        .toList();
-    // for (var i = 0; i < 10; i++) {
-    //   String id = '$pageNum-$i';
-    //   DrugModel _model = DrugModel(
-    //     drugId: '$id',
-    //     drugName: '特制开菲尔-$id',
-    //     producer: '石家庄龙泽制药股份有限公司',
-    //     drugSize: '32',
-    //     drugPrice: '347',
-    //     pictures: [
-    //       'https://oss-dev.e-medclouds.com/Business-attachment/2020-07/100027/21212508-1595338102423.jpg'
-    //     ],
-    //   );
-    //   list.add(_model);
-    // }
-    combineListToCart(list);
-    print(cartList);
-    // Future.delayed(Duration(seconds: 2), () => list);
+    List<DrugModel> list = [];
+    try {
+      var data =
+          await http.post('/drug/list', params: {'ps': 10, 'pn': pageNum});
+      list = data['records']
+          .map<DrugModel>((item) => DrugModel.fromJson(item))
+          .toList();
+      combineListToCart(list);
+    } catch (e) {}
+
     return list;
   }
 

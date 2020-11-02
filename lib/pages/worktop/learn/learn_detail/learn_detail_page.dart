@@ -23,20 +23,6 @@ class LearnDetailPage extends StatefulWidget {
 }
 
 class _LearnDetailPageState extends State<LearnDetailPage> {
-  List get formList => [
-        {'field': 'taskTemplate', 'label': '学习计划类型'},
-        {'field': 'companyName', 'label': '来自企业'},
-        {'field': 'representName', 'label': '医学信息推广专员'},
-        {
-          'field': 'createTime',
-          'label': '收到学习计划日期',
-        },
-        {
-          'field': 'meetingEndTime',
-          'label': '截止日期',
-        }
-      ];
-
   //确认弹窗
   Future<bool> confirmDialog(int learnProgress) {
     return showCupertinoDialog<bool>(
@@ -144,70 +130,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             ),
           ]),
     );
-  }
-
-  // 头部计划信息
-  Widget planTopList(LearnDetailItem data) {
-    List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
-    Widget content;
-    String fieldText = '开始学习'; //单独一个widget组件，用于返回需要生成的内容widget
-    for (var item in formList) {
-      if (item['field'] == 'taskTemplate') {
-        fieldText = TASK_TEMPLATE[data.taskTemplate];
-      }
-      if (item['field'] == 'companyName') {
-        fieldText = data.companyName;
-      }
-      if (item['field'] == 'representName') {
-        fieldText = data.representName;
-      }
-      if (item['field'] == 'createTime') {
-        fieldText =
-            DateUtil.formatDateMs(data.createTime, format: 'yyyy年MM月dd ');
-      }
-      if (item['field'] == 'meetingEndTime') {
-        fieldText =
-            DateUtil.formatDateMs(data.meetingEndTime, format: 'yyyy年MM月dd ');
-      }
-      tiles.add(new Container(
-          alignment: Alignment.centerLeft,
-          margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
-          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: ThemeColor.colorFFF3F5F8),
-            ),
-          ),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(item['label'],
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                    )),
-                SizedBox(
-                  height: 20,
-                ),
-                Expanded(
-                  child: Text(
-                    fieldText,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ])));
-    }
-    content = new Column(
-        children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
-        //此时如果我们直接把生成的tiles放在<Widget>[]中是会报一个类型不匹配的错误，把<Widget>[]删了就可以了
-        );
-    return content;
   }
 
   // 提交按钮
