@@ -118,8 +118,11 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         streamSink.add(hospitals);
       },
       callback: <T extends Search>(value, position) {
-        _model.setHospital(value as HospitalEntity);
-        _model.changeDataNotify();
+        HospitalEntity data = value as HospitalEntity;
+        updateDoctorInfo({
+          'hospitalCode': data.hospitalCode,
+          'hospitalName': data.hospitalName
+        }, false);
       },
     );
     //科室数据
