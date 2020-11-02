@@ -362,8 +362,6 @@ class _QuestionPageState extends State<QuestionPage> {
       enabled: _dispatch, //禁用
       onChanged: (text) {
         _questionsInit[question.index]['textField'] = text;
-        // _scrollToIndex(question.index);
-
         print("${question.index}输入框 组件: $text");
       },
       controller: new TextEditingController(
@@ -373,16 +371,16 @@ class _QuestionPageState extends State<QuestionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () {
-          // 触摸收起键盘
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: ListView(
-          shrinkWrap: true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
-          children: [
-            Container(
+    return ListView(
+      // shrinkWrap: true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
+      children: <Widget>[
+        GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              // 触摸收起键盘
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Container(
               padding: EdgeInsets.fromLTRB(14, 14, 14, 60),
               margin: EdgeInsets.fromLTRB(14, 14, 14, 14),
               decoration: BoxDecoration(
@@ -435,47 +433,39 @@ class _QuestionPageState extends State<QuestionPage> {
                                 color: ThemeColor.colorFF444444,
                               )),
                         ]),
-                        ListView.builder(
-                          shrinkWrap:
-                              true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
-                          physics:
-                              new NeverScrollableScrollPhysics(), // 禁用问题列表子组件的滚动事件
-                          //itemCount +1 为了显示加载中和暂无数据progressbar
-                          itemCount: widget.data.questions.length,
-                          itemBuilder: (context, index) {
-                            // 列表显示
-                            return Container(
-                              padding: EdgeInsets.all(8),
-                              margin: EdgeInsets.fromLTRB(4, 24, 0, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                      '${index + 1}、${widget.data.questions[index].question}',
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                        color: ThemeColor.colorFF444444,
-                                      )),
-                                  widget.data.questions[index].type == 'RADIO'
-                                      ? _buildRadioChoiceRow(
-                                          widget.data.questions[index])
-                                      : widget.data.questions[index].type ==
-                                              "CHECKBOX"
-                                          ? _buildCheckboxChoiceRow(
-                                              widget.data.questions[index])
-                                          : _buildTextControllerRow(
-                                              widget.data.questions[index])
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 120,
-                        ),
+                        ...(widget.data.questions).map((item) {
+                          return Container(
+                            padding: EdgeInsets.all(8),
+                            margin: EdgeInsets.fromLTRB(4, 24, 0, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                    '${item.index + 1}、${widget.data.questions[item.index].question}',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      color: ThemeColor.colorFF444444,
+                                    )),
+                                widget.data.questions[item.index].type ==
+                                        'RADIO'
+                                    ? _buildRadioChoiceRow(
+                                        widget.data.questions[item.index])
+                                    : widget.data.questions[item.index].type ==
+                                            "CHECKBOX"
+                                        ? _buildCheckboxChoiceRow(
+                                            widget.data.questions[item.index])
+                                        : _buildTextControllerRow(
+                                            widget.data.questions[item.index])
+                              ],
+                            ),
+                          );
+                        }).toList(),
                       ],
+                    ),
+                    SizedBox(
+                      height: 60,
                     ),
                     if (widget.data.learnStatus != 'FINISHED' &&
                         widget.data.learnPlanStatus != 'SUBMIT_LEARN') //已完成、已提交
@@ -483,9 +473,14 @@ class _QuestionPageState extends State<QuestionPage> {
                         onPressed: _openFile,
                         text: '提交',
                       ),
+                    if (widget.data.learnStatus != 'FINISHED' &&
+                        widget.data.learnPlanStatus != 'SUBMIT_LEARN') //已完成、已提交
+                      SizedBox(
+                        height: 130,
+                      ),
                   ]),
-            )
-          ],
-        ));
+            ))
+      ],
+    );
   }
 }

@@ -2,7 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:doctor/utils/constants.dart';
 
 defaultFormatDate(int value) =>
-    DateUtil.formatDateMs(value, format: 'yyyy年MM月dd HH:mm');
+    DateUtil.formatDateMs(value, format: 'yyyy年MM月dd');
 
 taskTemplateFormat(String value) => TASK_TEMPLATE[value];
 
@@ -36,7 +36,7 @@ const meetingStartTime = {
 };
 const meetingEndTime = {
   'field': 'meetingEndTime',
-  'label': '会议结束时间',
+  'label': '结束时间',
   'format': defaultFormatDate,
 };
 
@@ -50,9 +50,23 @@ const SALON = [
   meetingEndTime,
 ];
 
-const VISIT = [taskName, taskTemplate, companyName, representName, createTime];
+const VISIT = [
+  taskName,
+  taskTemplate,
+  companyName,
+  representName,
+  createTime,
+  meetingEndTime
+];
 
-const SURVEY = [taskName, taskTemplate, companyName, representName, createTime];
+const SURVEY = [
+  taskName,
+  taskTemplate,
+  companyName,
+  representName,
+  createTime,
+  meetingEndTime
+];
 
 const DOCTOR_LECTURE = [
   taskName,
