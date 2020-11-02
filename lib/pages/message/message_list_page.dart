@@ -57,8 +57,11 @@ class _MessageListPageState extends State<MessageListPage> {
       return Column(
         children: [
           Container(
-            color: Colors.white,
             padding: EdgeInsets.only(right: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(6),
+            ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -72,7 +75,7 @@ class _MessageListPageState extends State<MessageListPage> {
                           // padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
                               color:
-                                  alreadyRead ? Colors.red : Colors.transparent,
+                                  alreadyRead ? Colors.transparent : Colors.red,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12))),
                           constraints: BoxConstraints(
@@ -99,7 +102,7 @@ class _MessageListPageState extends State<MessageListPage> {
                             ),
                           ),
                           Text(
-                            '${entity?.createTime ?? ''}',
+                            _dateFormat(entity?.createTime),
                             textAlign: TextAlign.right,
                             style: TextStyle(
                                 color: Color(0xFF0B0B0B), fontSize: 10),
@@ -127,6 +130,7 @@ class _MessageListPageState extends State<MessageListPage> {
     }
 
     return Scaffold(
+      backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
         title: Text('${widget._map[widget._type]}'),
       ),
@@ -158,5 +162,29 @@ class _MessageListPageState extends State<MessageListPage> {
         },
       ),
     );
+  }
+
+  _dateFormat(num timeMillis) {
+    if (timeMillis == null) {
+      return '';
+    }
+    var msgDateTime = DateTime.fromMillisecondsSinceEpoch(timeMillis);
+    var now = DateTime.now();
+    var toDayStartTime = DateTime(now.year, now.month, now.day);
+    // 当日
+    if (timeMillis >= toDayStartTime.millisecondsSinceEpoch) {
+      return '${msgDateTime.hour}:${msgDateTime.minute}';
+    }
+    // 昨天
+    var yesterday = now.subtract(new Duration(days: 1));
+    var yesterdayStartTime =
+        DateTime(yesterday.year, yesterday.month, yesterday.day);
+    if (timeMillis >= yesterdayStartTime.millisecondsSinceEpoch) {
+      return '昨天';
+    } else {
+      // 其他
+      //2020/10/12
+      return '${msgDateTime.year}/${msgDateTime.month}/${msgDateTime.day}';
+    }
   }
 }
