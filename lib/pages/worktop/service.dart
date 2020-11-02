@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:doctor/http/http_manager.dart';
-import 'package:doctor/pages/worktop/model/doctor_info_entity.dart';
+import 'package:doctor/model/ucenter/doctor_info_entity.dart';
 import 'package:doctor/pages/worktop/model/learn_plan_statistical_entity.dart';
 import 'package:doctor/pages/worktop/model/work_top_entity.dart';
 

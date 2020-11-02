@@ -21,3 +21,7 @@ getBasicNum() {
 getSelectInfo(params) {
   return foundation.post('/pull-down-config/list', params: params);
 }
+
+updateUserInfo(params) {
+  return http.post('/personal/edit-doctor-info', params: params);
+}

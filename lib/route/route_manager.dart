@@ -94,7 +94,8 @@ class RouteManager {
     USERINFO_DETAIL: (context) => DoctorUserInfo(),
     EDIT_DOCTOR_PAGE: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
-      return UserEditPage(obj['lable'], obj['value'],obj['editWay']);
+      return UserEditPage(
+          obj['lable'], obj['value'], obj['editWay'], obj['function']);
     }
   };
 }
