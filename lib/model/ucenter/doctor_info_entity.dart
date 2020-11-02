@@ -1,3 +1,9 @@
+
+import 'package:json_annotation/json_annotation.dart';
+
+part 'doctor_info_entity.g.dart';
+
+@JsonSerializable()
 class DoctorInfoEntity {
   /// 姓名
   String doctorName;
@@ -20,6 +26,7 @@ class DoctorInfoEntity {
   /// 医生 ID
   int doctorId;
 
+
   DoctorInfoEntity(
       this.doctorName,
       this.doctorMobile,
@@ -32,15 +39,8 @@ class DoctorInfoEntity {
       this.doctorUserId,
       this.doctorId);
 
-  DoctorInfoEntity.fromJson(Map<String, dynamic> json)
-      : doctorName = json['doctorName'],
-        doctorMobile = json['doctorMobile'],
-        hospitalName = json['hospitalName'],
-        hospitalCode = json['hospitalCode'],
-        departmentsName = json['departmentsName'],
-        departmentsCode = json['departmentsCode'],
-        jobGradeName = json['jobGradeName'],
-        jobGradeCode = json['jobGradeCode'],
-        doctorUserId = json['doctorUserId'],
-        doctorId = json['doctorId'];
+  factory DoctorInfoEntity.fromJson(Map<String, dynamic> param) =>
+      _$DoctorInfoEntityFromJson(param);
+
+  Map<String, dynamic> toJson() => _$DoctorInfoEntityToJson(this);
 }
