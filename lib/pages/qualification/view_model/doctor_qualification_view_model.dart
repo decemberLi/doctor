@@ -68,9 +68,9 @@ class DoctorQualificationViewModel {
         await uCenter.post('/personal/query-doctor-detail', showLoading: false);
     if (doctorInfo is Exception) {
       _controller.sink.add(_dataModel);
-      _dataModel.doctorDetailInfo = DoctorInfoModel.create();
+      _dataModel.doctorDetailInfo = DoctorDetailInfoEntity.create();
     } else {
-      _dataModel.doctorDetailInfo = DoctorInfoModel.fromJson(doctorInfo);
+      _dataModel.doctorDetailInfo = DoctorDetailInfoEntity.fromJson(doctorInfo);
       _controller.sink.add(_dataModel);
     }
   }

@@ -6,8 +6,9 @@ part of 'doctor_detail_info_entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-DoctorInfoModel _$DoctorInfoModelFromJson(Map<String, dynamic> json) {
-  return DoctorInfoModel(
+DoctorDetailInfoEntity _$DoctorDetailInfoEntityFromJson(
+    Map<String, dynamic> json) {
+  return DoctorDetailInfoEntity(
     json['doctorName'] as String,
     json['doctorMobile'] as String,
     json['sex'] as int,
@@ -29,7 +30,8 @@ DoctorInfoModel _$DoctorInfoModelFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$DoctorInfoModelToJson(DoctorInfoModel instance) =>
+Map<String, dynamic> _$DoctorDetailInfoEntityToJson(
+        DoctorDetailInfoEntity instance) =>
     <String, dynamic>{
       'doctorName': instance.doctorName,
       'doctorMobile': instance.doctorMobile,

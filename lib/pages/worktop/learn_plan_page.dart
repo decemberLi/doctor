@@ -6,6 +6,10 @@ import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/material.dart';
 
 class LearnPlanPage extends StatefulWidget {
+  final int index;
+
+  LearnPlanPage({int index = 0}) : this.index = index;
+
   @override
   _LearnPlanPageState createState() => _LearnPlanPageState();
 }
@@ -31,7 +35,7 @@ class _LearnPlanPageState extends State<LearnPlanPage>
           });
         }
       });
-    getLearnCount([]);
+    getLearnCount(TASK_TYPE_MAP[widget.index]['taskTemplate']);
   }
 
   void getLearnCount(List taskTemplate) async {
@@ -98,7 +102,7 @@ class _LearnPlanPageState extends State<LearnPlanPage>
         child: TabBarView(
           controller: this._tabController,
           children: [
-            LearnListPage('LEARNING', onTaskTypeChange: getLearnCount),
+            LearnListPage('LEARNING',index: widget.index, onTaskTypeChange: getLearnCount),
             LearnListPage('HISTORY'),
           ],
         ),

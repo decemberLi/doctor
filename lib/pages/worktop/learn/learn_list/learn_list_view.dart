@@ -14,8 +14,11 @@ class LearnListPage extends StatefulWidget {
   final String learnStatus;
 
   final ValueChanged<List> onTaskTypeChange;
+  int index;
 
-  LearnListPage(this.learnStatus, {this.onTaskTypeChange});
+  LearnListPage(this.learnStatus, {int index = 0, this.onTaskTypeChange})
+      : this.index = index;
+
   @override
   _LearnListPageState createState() => _LearnListPageState();
 }
@@ -33,6 +36,7 @@ class _LearnListPageState extends State<LearnListPage>
   @override
   void initState() {
     super.initState();
+    _currentTabIndex = widget.index;
     // 添加监听器
     _tabController = TabController(vsync: this, length: TASK_TYPE_MAP.length)
       ..addListener(() {

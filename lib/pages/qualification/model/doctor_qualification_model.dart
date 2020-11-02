@@ -3,7 +3,7 @@ import 'package:doctor/pages/qualification/model/config_data_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_physician_qualification_entity.dart';
 
 class DoctorQualificationModel {
-  DoctorInfoModel doctorDetailInfo;
+  DoctorDetailInfoEntity doctorDetailInfo;
   HospitalEntity hospitalEntity;
   ConfigDataEntity configDataEntity;
   DoctorPhysicianInfoEntity physicianInfoEntity;

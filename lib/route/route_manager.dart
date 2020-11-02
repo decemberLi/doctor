@@ -79,7 +79,10 @@ class RouteManager {
     },
     UPDATE_PWD: (context) => UpdatePwdPage(),
     ABOUT_US: (context) => AboutUs(),
-    LEARN_PAGE: (context) => LearnPlanPage(),
+    LEARN_PAGE: (context) {
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return LearnPlanPage(index: obj['index']);
+    },
     QUALIFICATION_PAGE: (context) => DoctorBasicInfoPage(),
     MEDICATION_LIST: (context) => MedicationPage(),
     MEDICATION_DETAIL: (context) => MedicationDetailPage(),
