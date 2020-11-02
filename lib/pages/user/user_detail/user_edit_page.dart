@@ -1,15 +1,21 @@
-import 'package:doctor/pages/qualification/model/config_data_entity.dart';
-import 'package:doctor/pages/qualification/view_model/doctor_qualification_view_model.dart';
-import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
-import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import '../service.dart';
+
+final uploadData = {
+  '姓名': 'doctorName',
+  '个人简介': 'briefIntroduction',
+  '擅长疾病': 'speciality',
+};
 
 class UserEditPage extends StatefulWidget {
   final lable;
   final value;
   final editWay;
-  UserEditPage(this.lable, this.value, this.editWay);
+  final function;
+  UserEditPage(this.lable, this.value, this.editWay, this.function);
   @override
   _UserEditPageState createState() => _UserEditPageState();
 }
@@ -17,9 +23,6 @@ class UserEditPage extends StatefulWidget {
 class _UserEditPageState extends State<UserEditPage> {
   //设置编辑时的值
   TextEditingController dataText = new TextEditingController();
-  //医院model
-  DoctorQualificationViewModel _model = DoctorQualificationViewModel();
-  SearchWidget<HospitalEntity> _hospitalSearchWidget;
   //编辑
   Widget editWidget() {
     return Container(
@@ -48,22 +51,6 @@ class _UserEditPageState extends State<UserEditPage> {
     );
   }
 
-  //search选择医院
-  Widget pickerWidget() {
-    return SearchWidget<HospitalEntity>(
-      '选择医院',
-      hintText: '输入医院名称',
-      searchConditionCallback: <T extends Search>(condition, streamSink) async {
-        var hospitals = await _model.queryHospital(condition);
-        streamSink.add(hospitals);
-      },
-      callback: <T extends Search>(value, position) {
-        _model.setHospital(value as HospitalEntity);
-        _model.changeDataNotify();
-      },
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -82,9 +69,18 @@ class _UserEditPageState extends State<UserEditPage> {
         child: Column(
           children: [
             if (widget.editWay == 'edit') editWidget(),
-            if (widget.editWay == 'search') pickerWidget(),
             AceButton(
-              onPressed: () {},
+              onPressed: () {
+                updateUserInfo({uploadData[widget.lable]: dataText.text})
+                    .then((res) {
+                  if (res['status'] == 'ERROR') {
+                    EasyLoading.showToast(res['errorMsg']);
+                  } else {
+                    widget.function(
+                        {uploadData[widget.lable]: dataText.text}, true);
+                  }
+                });
+              },
               text: '保存',
             )
           ],

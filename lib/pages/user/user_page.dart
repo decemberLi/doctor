@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:doctor/http/session_manager.dart';
+import 'package:doctor/main.dart';
 import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -11,7 +12,7 @@ class UserPage extends StatefulWidget {
   _UserPageState createState() => _UserPageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _UserPageState extends State<UserPage> with RouteAware {
   var doctorData;
   var numData;
   dynamic doctorStatus = {
@@ -31,7 +32,6 @@ class _UserPageState extends State<UserPage> {
   _doctorInfo() async {
     var basicData = await getBasicData();
     if (basicData is! DioError) {
-      print(basicData);
       setState(() {
         doctorData = basicData;
       });
@@ -48,6 +48,24 @@ class _UserPageState extends State<UserPage> {
   void initState() {
     _doctorInfo();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    routeObserver.subscribe(this, ModalRoute.of(context)); //订阅
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    _doctorInfo();
+    super.didPopNext();
   }
 
 //跳转列表样式
@@ -222,10 +240,10 @@ class _UserPageState extends State<UserPage> {
                                       children: [
                                         if (doctorData['authStatus'] == 'PASS')
                                           WidgetSpan(
-                                            child: Icon(
-                                              Icons.keyboard_arrow_down,
-                                              color: Color(0xFFFAAD14),
-                                              size: 16,
+                                            child: Image.asset(
+                                              "assets/images/rz.png",
+                                              width: 14,
+                                              height: 14,
                                             ),
                                           ),
                                         TextSpan(
@@ -310,12 +328,10 @@ class _UserPageState extends State<UserPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   messageItem('资质认证', 'assets/images/zzrz.png', () {
-                    print('资质认证');
                     Navigator.pushNamed(
                         context, RouteManager.QUALIFICATION_PAGE);
                   }),
                   messageItem('设置', 'assets/images/setting.png', () {
-                    print('设置');
                     SessionManager.loginOutHandler();
                     // TODO: 设置页面
                   }),

@@ -4,9 +4,20 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_picker/Picker.dart';
 
 import '../service.dart';
+
+final uploadData = {
+  '性别': 'sex',
+  '科室': 'departmentsCode',
+  '职称': 'jobGradeCode',
+  '姓名': 'doctorName',
+  '个人简介': 'briefIntroduction',
+  '擅长疾病': 'speciality',
+  '医院': 'hospitalCode',
+};
 
 class DoctorUserInfo extends StatefulWidget {
   @override
@@ -17,8 +28,30 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DoctorQualificationViewModel _model = DoctorQualificationViewModel();
   SearchWidget<HospitalEntity> _hospitalSearchWidget;
-  List DEPARTMENTS = [];
-  List DOCTOR_TITLE = [];
+  Map args;
+  List departments = [];
+  List doctorTitle = [];
+  //修改信息
+  void updateDoctorInfo(params, ifBack) {
+    args.addAll(params);
+    setState(() {
+      args = args;
+    });
+    updateUserInfo(params).then((res) {
+      if (res['status'] == 'ERROR') {
+        EasyLoading.showToast(res['errorMsg']);
+      } else {
+        if (ifBack) {
+          //返回 编辑页面返回
+          Navigator.pop(context);
+        } else {
+          //当前页面toast
+          EasyLoading.showToast('修改成功');
+        }
+      }
+    });
+  }
+
   //跳转列表样式
   Widget infoItem(String lable, value, bool type, edit) {
     return Container(
@@ -47,16 +80,21 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             fontSize: 14,
           ),
         ),
-        enabled: type, //TODO: 提交代码时修改为type
+        enabled: type,
         trailing: type ? Icon(Icons.keyboard_arrow_right) : null,
         onTap: () {
           //跳转修改
           //照片调摄像头
           //姓名、个人简介、擅长疾病填写
           //性别、医院、科室、职称选择
-          if (edit == 'edit' || edit == 'search') {
+          if (edit == 'edit') {
             Navigator.pushNamed(context, RouteManager.EDIT_DOCTOR_PAGE,
-                arguments: {'lable': lable, 'value': value, 'editWay': edit});
+                arguments: {
+                  'lable': lable,
+                  'value': value,
+                  'editWay': edit,
+                  'function': updateDoctorInfo
+                });
           }
           if (edit == 'hospital') {
             _goHospitalSearchPage();
@@ -86,12 +124,11 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     );
     //科室数据
     getSelectInfo({'type': 'DEPARTMENTS'}).then((res) {
-      print(res);
-      DEPARTMENTS = res;
+      departments = res;
     });
     //职称数据
     getSelectInfo({'type': 'DOCTOR_TITLE'}).then((res) {
-      DOCTOR_TITLE = res;
+      doctorTitle = res;
     });
   }
 
@@ -123,7 +160,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     }
     if (lable == '科室') {
       listData = [
-        ...DEPARTMENTS.map((e) {
+        ...departments.map((e) {
           final children = e['children'];
           List<PickerItem<String>> childList = [
             ...children
@@ -148,7 +185,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     }
     if (lable == '职称') {
       listData = [
-        ...DOCTOR_TITLE
+        ...doctorTitle
             .map((e) => new PickerItem(
                   text: Text(
                     e['name'],
@@ -160,6 +197,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       ];
     }
     Picker picker = Picker(
+        title: Text(
+          '选择$lable',
+          style: TextStyle(fontSize: 18),
+        ),
         height: 200,
         columnPadding: EdgeInsets.all(30),
         itemExtent: 40,
@@ -172,9 +213,38 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         confirmTextStyle:
             TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
         onConfirm: (Picker picker, List value) {
-          print(value.toString());
-          print(picker.getSelectedValues());
           //保存
+          List pickerData = picker.getSelectedValues();
+          if (pickerData.length > 1) {
+            String departmentsName;
+            final departChild = departments
+                .where((element) => element['code'] == pickerData[0])
+                .toList();
+            if (departChild != null) {
+              List children = departChild[0]['children'];
+              departmentsName = children
+                  .where((element) => element['code'] == pickerData[1])
+                  .toList()[0]['name'];
+            }
+            updateDoctorInfo({
+              'departmentsName': departmentsName,
+              'departmentsCode': pickerData[1]
+            }, false);
+          } else {
+            dynamic param = {
+              uploadData[lable]: int.parse(pickerData[0]),
+            };
+            if (lable == '职称') {
+              String jobGradeName = doctorTitle
+                  .where((element) => element['code'] == pickerData[0])
+                  .toList()[0]['name'];
+              param = {
+                uploadData[lable]: pickerData[0],
+                'jobGradeName': jobGradeName
+              };
+            }
+            updateDoctorInfo(param, false);
+          }
         });
     picker.showModal(this.context);
   }
@@ -182,7 +252,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   @override
   Widget build(BuildContext context) {
     final data = ModalRoute.of(context).settings.arguments as Map;
-    final args = data['doctorData'];
+    if (args == null) {
+      args = data['doctorData'];
+    }
+
     bool doctorStatus = args['authStatus'] == 'WAIT_VERIFY';
     return Scaffold(
       key: _scaffoldKey,
