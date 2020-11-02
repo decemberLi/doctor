@@ -65,6 +65,9 @@ dependencies:
   # 图片选择
   image_picker: ^0.6.7+12
 
+  # 滚动到指数＃
+  # scroll_to_index: ^1.0.6
+
   spinner_input: ^0.1.2
 
   # The following adds the Cupertino Icons font to your application.

@@ -231,7 +231,7 @@ class PlanDetailList extends StatelessWidget {
   }
 
   Widget resourcesList(
-    LearnDetailItem data, Iterable resources, BuildContext context) {
+      LearnDetailItem data, Iterable resources, BuildContext context) {
     List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
     Widget content; //单独一个widget组件，用于返回需要生成的内容widget
     if (resources.isEmpty) {
@@ -303,21 +303,29 @@ class PlanDetailList extends StatelessWidget {
                       Row(children: [
                         if (item.thumbnailUrl != null)
                           Container(
-                            padding: EdgeInsets.only(left: 10, right: 14),
-                            child: Image.network(item.thumbnailUrl,
-                                width: 108, height: 70, fit: BoxFit.cover),
-                          ),
+                              padding: EdgeInsets.only(left: 10, right: 14),
+                              child: Stack(
+                                  alignment:
+                                      Alignment.center, //指定未定位或部分定位widget的对齐方式
+                                  children: <Widget>[
+                                    Image.network(item.thumbnailUrl,
+                                        width: 108,
+                                        height: 70,
+                                        fit: BoxFit.cover),
+                                    if (item.resourceType == 'VIDEO')
+                                      Positioned(
+                                        right: 14,
+                                        bottom: 10,
+                                        child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 6),
+                                            child: _durationBox(
+                                                item.info.duration)),
+                                      ),
+                                  ])),
                       ]),
                     ],
                   ),
-                  if (item.resourceType == 'VIDEO')
-                    Positioned(
-                      right: 14,
-                      bottom: 10,
-                      child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 6),
-                          child: _durationBox(item.info.duration)),
-                    ),
                 ],
               ))));
     }
