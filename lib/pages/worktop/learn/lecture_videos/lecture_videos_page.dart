@@ -62,8 +62,6 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         _controller = VideoPlayerController.file(File(file.path));
         await _controller.setVolume(1.0);
 
-        print('file.path:>>${file.path}');
-        print('_controller:>>$_controller');
         setState(() {
           _selectVideoData = file;
         });

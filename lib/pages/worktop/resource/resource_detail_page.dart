@@ -142,12 +142,12 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   void didChangeMetrics() {
     super.didChangeMetrics();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print(MediaQuery.of(context).viewInsets.bottom);
-//当前是安卓系统并且在焦点聚焦的情况下
+      print('输入框==>>${MediaQuery.of(context).viewInsets.bottom}');
+      //当前是安卓系统并且在焦点聚焦的情况下
       if (Platform.isAndroid && commentFocusNode.hasFocus) {
         if (isKeyboardActived) {
           isKeyboardActived = false;
-// 使输入框失去焦点
+          // 使输入框失去焦点
           commentFocusNode.unfocus();
           return;
         }

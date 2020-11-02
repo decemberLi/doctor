@@ -301,7 +301,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            if (data.taskTemplate == 'DOCTOR_LECTURE' && data.reLearnReason!=null)
+                            if (data.taskTemplate == 'DOCTOR_LECTURE' &&
+                                data.reLearnReason != null)
                               Container(
                                   alignment: Alignment.centerLeft,
                                   margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -334,7 +335,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                         children: [
                                           Expanded(
                                               child: Text(
-                                                  '${data.reLearnReason}推广员推给',
+                                                  '${data.reLearnReason}',
                                                   textAlign: TextAlign.left,
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w400,
