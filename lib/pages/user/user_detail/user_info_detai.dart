@@ -84,7 +84,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         trailing: type ? Icon(Icons.keyboard_arrow_right) : null,
         onTap: () {
           //跳转修改
-          //照片调摄像头
+          //照片调摄像头，不修改头像
           //姓名、个人简介、擅长疾病填写
           //性别、医院、科室、职称选择
           if (edit == 'edit') {
@@ -276,7 +276,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             margin: EdgeInsets.only(left: 16, right: 16, top: 12),
             child: Column(
               children: [
-                infoItem('头像', args['fullFacePhoto'], doctorStatus, null),
+                infoItem('头像', args['fullFacePhoto'], false, null),
                 infoItem('姓名', args['doctorName'], doctorStatus, 'edit'),
                 infoItem(
                     '性别', args['sex'] == 0 ? '女' : '男', doctorStatus, 'picker'),
