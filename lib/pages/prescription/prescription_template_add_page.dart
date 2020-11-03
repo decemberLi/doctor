@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
@@ -5,6 +6,7 @@ import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/pages/prescription/widgets/rp_list.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/app_regex_util.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -54,7 +56,7 @@ class _PrescriptionTemplageAddPageState
         ),
         body: Form(
           key: _formKey, //设置globalKey，用于后面获取FormState
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          // autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Container(
             color: ThemeColor.colorFFF3F5F8,
             alignment: Alignment.topLeft,
@@ -77,7 +79,18 @@ class _PrescriptionTemplageAddPageState
                     filled: true,
                   ),
                   maxLength: 15,
-                  validator: (val) => val.length < 1 ? '名称不能为空' : null,
+                  validator: (val) {
+                    if (val.length < 1) {
+                      return '名称不能为空';
+                    }
+                    if (val.length > 15) {
+                      return '名称超过15个字符';
+                    }
+                    if (AppRegexUtil.isSpecialChart(val)) {
+                      return '名称不能含有特殊字符';
+                    }
+                    return null;
+                  },
                   onSaved: (val) => {data.prescriptionTemplateName = val},
                   keyboardType: TextInputType.text,
                   style: MyStyles.inputTextStyle,

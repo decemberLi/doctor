@@ -2,7 +2,8 @@ import 'package:common_utils/common_utils.dart';
 import 'package:doctor/utils/constants.dart';
 
 defaultFormatDate(int value) =>
-    DateUtil.formatDateMs(value, format: 'yyyy年MM月dd');
+    DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日 HH:mm');
+formatDateDay(int value) => DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日');
 
 taskTemplateFormat(String value) => TASK_TEMPLATE[value];
 
@@ -29,11 +30,17 @@ const createTime = {
   'label': '收到学习计划日期',
   'format': defaultFormatDate,
 };
+const planImplementEndTime = {
+  'field': 'meetingStartTime',
+  'label': '截止日期',
+  'format': formatDateDay,
+};
 const meetingStartTime = {
   'field': 'meetingStartTime',
   'label': '会议开始时间',
   'format': defaultFormatDate,
 };
+
 const meetingEndTime = {
   'field': 'meetingEndTime',
   'label': '结束时间',
@@ -46,6 +53,7 @@ const SALON = [
   companyName,
   representName,
   createTime,
+  planImplementEndTime,
   meetingStartTime,
   meetingEndTime,
 ];
@@ -56,7 +64,7 @@ const VISIT = [
   companyName,
   representName,
   createTime,
-  meetingEndTime
+  planImplementEndTime,
 ];
 
 const SURVEY = [
@@ -65,7 +73,7 @@ const SURVEY = [
   companyName,
   representName,
   createTime,
-  meetingEndTime
+  planImplementEndTime,
 ];
 
 const DOCTOR_LECTURE = [
@@ -73,7 +81,7 @@ const DOCTOR_LECTURE = [
   taskTemplate,
   companyName,
   representName,
-  createTime
+  planImplementEndTime,
 ];
 
 // 学习计划列表显示字段

@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/login_footer.dart';
@@ -22,7 +23,6 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   Timer _timer;
   int _maxCount = 0;
   String _mobile, _captcha;
-  RegExp captcha = new RegExp(r'(^1\d{10}$)');
 
   bool _agree = false;
 
@@ -45,7 +45,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   void _captchaClick() async {
     final form = _formKey.currentState;
     form.save();
-    if (captcha.hasMatch(_mobile)) {
+    if (RegexUtil.isMobileSimple(_mobile)) {
       String system = 'DOCTOR';
       // // 查询用户是否存在
       // var res = await checkUserExists({
@@ -140,8 +140,9 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                             hintText: '请输入手机号',
                             counterText: '',
                           ),
-                          validator: (val) =>
-                              !captcha.hasMatch(val) ? '请输入正确的手机号' : null,
+                          validator: (val) => !RegexUtil.isMobileSimple(val)
+                              ? '请输入正确的手机号'
+                              : null,
                           onSaved: (val) => _mobile = val,
                           obscureText: false,
                           keyboardType: TextInputType.number,

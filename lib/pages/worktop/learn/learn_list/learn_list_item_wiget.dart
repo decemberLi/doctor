@@ -76,7 +76,7 @@ class LearnListItemWiget extends StatelessWidget {
             '${duration.inMinutes - 60 * duration.inHours}分钟';
       }
     }
-    return '收到学习计划时间：${DateUtil.formatDateMs(item.createTime, format: 'yyyy年MM月dd HH:mm')}';
+    return '截止日期：${DateUtil.formatDateMs(item.planImplementEndTime, format: 'yyyy年MM月dd日')}';
   }
 
   Widget circleRender() {

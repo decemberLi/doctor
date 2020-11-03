@@ -21,23 +21,24 @@ Map<String, dynamic> _$ResourceTypeResultToJson(ResourceTypeResult instance) =>
 
 LearnListItem _$LearnListItemFromJson(Map<String, dynamic> json) {
   return LearnListItem(
-    json['learnPlanId'] as int,
-    json['taskDetailId'] as int,
-    json['taskTemplate'] as String,
-    json['taskName'] as String,
-    (json['resourceTypeResult'] as List)
+    learnPlanId: json['learnPlanId'] as int,
+    taskDetailId: json['taskDetailId'] as int,
+    taskTemplate: json['taskTemplate'] as String,
+    taskName: json['taskName'] as String,
+    resourceTypeResult: (json['resourceTypeResult'] as List)
         ?.map((e) => e == null
             ? null
             : ResourceTypeResult.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    json['representId'] as int,
-    json['representName'] as String,
-    json['createTime'] as int,
-    json['meetingStartTime'] as int,
-    json['meetingEndTime'] as int,
-    json['learnProgress'] as int,
-    json['status'] as String,
-    json['reLearn'] as bool,
+    representId: json['representId'] as int,
+    representName: json['representName'] as String,
+    createTime: json['createTime'] as int,
+    meetingStartTime: json['meetingStartTime'] as int,
+    meetingEndTime: json['meetingEndTime'] as int,
+    learnProgress: json['learnProgress'] as int,
+    status: json['status'] as String,
+    reLearn: json['reLearn'] as bool,
+    planImplementEndTime: json['planImplementEndTime'] as int,
   );
 }
 
@@ -54,6 +55,7 @@ Map<String, dynamic> _$LearnListItemToJson(LearnListItem instance) =>
       'createTime': instance.createTime,
       'meetingStartTime': instance.meetingStartTime,
       'meetingEndTime': instance.meetingEndTime,
+      'planImplementEndTime': instance.planImplementEndTime,
       'learnProgress': instance.learnProgress,
       'status': instance.status,
       'reLearn': instance.reLearn,

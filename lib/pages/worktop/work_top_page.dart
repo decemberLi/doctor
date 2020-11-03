@@ -8,6 +8,7 @@ import 'package:doctor/pages/worktop/learn/learn_list/learn_list_item_wiget.dart
 import 'package:doctor/pages/worktop/model/work_top_entity.dart';
 import 'package:doctor/pages/worktop/resource/view_model/work_top_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
+import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
@@ -15,6 +16,7 @@ import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class WorktopPage extends StatefulWidget {
@@ -31,17 +33,28 @@ class _WorktopPageState extends State<WorktopPage>
   @override
   bool get wantKeepAlive => true;
 
+  init() async {
+    await _model.initData();
+    WorktopPageEntity entity = _model?.list != null && _model?.list.length >= 1
+        ? _model.list[0]
+        : null;
+    if (entity?.doctorInfoEntity != null &&
+        entity.doctorInfoEntity.basicInfoAuthStatus == 'NOT_COMPLETE') {
+      _showGoToQualificationDialog();
+    }
+  }
+
   @override
   void initState() {
-    LoginInfoModel loginInfo = SessionManager.getLoginInfo();
-    // if (loginInfo.authStatus == 'WAIT_VERIFY') {
-    //   WidgetsBinding.instance.addPostFrameCallback((callback) {
-    //     _showGoToQualificationDialog();
-    //   });
-    // } else {
-    //   _refreshData();
-    // }
+    this.init();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    print('work_top_dispose');
+    _model.dispose();
+    super.dispose();
   }
 
   /// 显示完善信息弹窗
@@ -57,6 +70,18 @@ class _WorktopPageState extends State<WorktopPage>
           actions: <Widget>[
             FlatButton(
               child: Text(
+                "退出登录",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                SessionManager.loginOutHandler();
+              },
+            ),
+            FlatButton(
+              child: Text(
                 "现在去完善",
                 style: TextStyle(
                   color: ThemeColor.primaryColor,
@@ -69,18 +94,6 @@ class _WorktopPageState extends State<WorktopPage>
                     .pushNamed(RouteManager.QUALIFICATION_PAGE);
               },
             ),
-            FlatButton(
-              child: Text(
-                "退出登录",
-                style: TextStyle(
-                  color: ThemeColor.primaryColor,
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                SessionManager.loginOutHandler();
-              },
-            ),
           ],
         );
       },
@@ -91,22 +104,23 @@ class _WorktopPageState extends State<WorktopPage>
   Widget build(BuildContext context) {
     super.build(context);
     return CommonStack(
-      body: ProviderWidget<WorkTopViewModel>(
-        model: _model,
-        onModelReady: (model) => model.initData(),
-        builder: (context, model, child) {
-          WorktopPageEntity entity =
-              model?.list != null && model?.list.length >= 1
-                  ? model.list[0]
-                  : null;
-          return SmartRefresher(
-            physics: AlwaysScrollableScrollPhysics(),
-            header: ClassicHeader(),
-            onRefresh: model.refresh,
-            controller: model.refreshController,
-            child: bodyWidget(entity),
-          );
-        },
+      body: ChangeNotifierProvider<WorkTopViewModel>.value(
+        value: _model,
+        child: Consumer<WorkTopViewModel>(
+          builder: (context, model, child) {
+            WorktopPageEntity entity =
+                model?.list != null && model?.list.length >= 1
+                    ? model.list[0]
+                    : null;
+            return SmartRefresher(
+              physics: AlwaysScrollableScrollPhysics(),
+              header: ClassicHeader(),
+              onRefresh: model.refresh,
+              controller: model.refreshController,
+              child: bodyWidget(entity),
+            );
+          },
+        ),
       ),
     );
   }
@@ -139,26 +153,8 @@ class _WorktopPageState extends State<WorktopPage>
       if (entity == null ||
           entity.learnPlanList == null ||
           entity.learnPlanList.length == 0) {
-        print("entity || entity.learnPlanList is null ");
-        return Container(
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/none_learn_plan.png',
-                width: 110,
-                height: 110,
-              ),
-              Container(
-                child: Text(
-                  '暂无学习计划',
-                  style: TextStyle(
-                      fontSize: 12, color: ThemeColor.secondaryGeryColor),
-                ),
-              )
-            ],
-          ),
+        return ViewStateEmptyWidget(
+          message: '暂无学习计划',
         );
       } else {
         return Container();
@@ -224,7 +220,6 @@ class _WorktopPageState extends State<WorktopPage>
                             fontSize: 22,
                             color: ThemeColor.colorFF222222,
                             fontWeight: FontWeight.bold)),
-
                     _buildAuthStatusWidget(doctorInfoEntity),
                   ],
                 ),

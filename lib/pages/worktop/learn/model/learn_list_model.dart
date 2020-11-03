@@ -28,23 +28,26 @@ class LearnListItem {
   int createTime;
   int meetingStartTime;
   int meetingEndTime;
+  int planImplementEndTime;
   int learnProgress;
   String status;
   bool reLearn;
-  LearnListItem(
-      this.learnPlanId,
-      this.taskDetailId,
-      this.taskTemplate,
-      this.taskName,
-      this.resourceTypeResult,
-      this.representId,
-      this.representName,
-      this.createTime,
-      this.meetingStartTime,
-      this.meetingEndTime,
-      this.learnProgress,
-      this.status,
-      this.reLearn);
+  LearnListItem({
+    this.learnPlanId,
+    this.taskDetailId,
+    this.taskTemplate,
+    this.taskName,
+    this.resourceTypeResult,
+    this.representId,
+    this.representName,
+    this.createTime,
+    this.meetingStartTime,
+    this.meetingEndTime,
+    this.learnProgress,
+    this.status,
+    this.reLearn,
+    this.planImplementEndTime,
+  });
 
   factory LearnListItem.fromJson(Map<String, dynamic> json) =>
       _$LearnListItemFromJson(json);

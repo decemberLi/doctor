@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
@@ -20,7 +21,6 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
   final _formKey = GlobalKey<FormState>();
 
   String _mobile, _password;
-  RegExp captcha = new RegExp(r'(^1\d{10}$)');
   bool _agree = false;
 
   Future _submit() async {
@@ -84,8 +84,9 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                               hintText: '请输入手机号',
                               counterText: '',
                             ),
-                            validator: (val) =>
-                                !captcha.hasMatch(val) ? '请输入正确的手机号' : null,
+                            validator: (val) => !RegexUtil.isMobileSimple(val)
+                                ? '请输入正确的手机号'
+                                : null,
                             onSaved: (val) => _mobile = val,
                             obscureText: false,
                             keyboardType: TextInputType.number,

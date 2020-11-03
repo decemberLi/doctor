@@ -28,7 +28,7 @@ class ViewStateWidget extends StatelessWidget {
       this.title,
       this.message,
       this.buttonText,
-      @required this.onPressed,
+      this.onPressed,
       this.buttonTextData})
       : super(key: key);
 
@@ -45,7 +45,7 @@ class ViewStateWidget extends StatelessWidget {
         image ??
             Icon(
               MyIcons.icon_no_data,
-              size: 100,
+              size: 120,
               color: Color(0xFF70BEE8),
             ),
         Padding(
@@ -98,7 +98,7 @@ class ViewStateErrorWidget extends StatelessWidget {
     this.message,
     this.buttonText,
     this.buttonTextData,
-    @required this.onPressed,
+    this.onPressed,
   }) : super(key: key);
 
   @override
@@ -126,11 +126,7 @@ class ViewStateEmptyWidget extends StatelessWidget {
   final VoidCallback onPressed;
 
   const ViewStateEmptyWidget(
-      {Key key,
-      this.image,
-      this.message,
-      this.buttonText,
-      @required this.onPressed})
+      {Key key, this.image, this.message, this.buttonText, this.onPressed})
       : super(key: key);
 
   @override
@@ -151,11 +147,14 @@ class ViewStateButton extends StatelessWidget {
   final Widget child;
   final String textData;
 
-  const ViewStateButton({@required this.onPressed, this.child, this.textData})
+  const ViewStateButton({this.onPressed, this.child, this.textData})
       : assert(child == null || textData == null);
 
   @override
   Widget build(BuildContext context) {
+    if (onPressed == null) {
+      return Container();
+    }
     return OutlineButton(
       child: child ??
           Text(

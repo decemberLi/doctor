@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/service.dart';
@@ -23,7 +24,6 @@ class _FindPasswordState extends State<FindPassword> {
   Timer _timer;
   int _maxCount = 0;
   String _mobile, _captcha;
-  RegExp captcha = new RegExp(r'(^1\d{10}$)');
   Future _submit() async {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -41,7 +41,7 @@ class _FindPasswordState extends State<FindPassword> {
         if (response is! DioError) {
           SessionManager.loginOutHandler();
           Timer(Duration(seconds: 1), () {
-            EasyLoading.showToast('修改密码成功，请重新登陆');
+            EasyLoading.showToast('修改密码成功，请重新登录');
           });
         }
       }
@@ -51,7 +51,7 @@ class _FindPasswordState extends State<FindPassword> {
   void _captchaClick() {
     final form = _formKey.currentState;
     form.save();
-    if (captcha.hasMatch(_mobile)) {
+    if (RegexUtil.isMobileSimple(_mobile)) {
       //获取验证码
       sendSms({'phone': _mobile, 'system': 'DOCTOR', 'type': 'FORGET_PASSWORD'})
           .then((response) {
@@ -133,7 +133,7 @@ class _FindPasswordState extends State<FindPassword> {
                       counterText: '',
                     ),
                     validator: (val) =>
-                        !captcha.hasMatch(val) ? '请输入正确的手机号' : null,
+                        !RegexUtil.isMobileSimple(val) ? '请输入正确的手机号' : null,
                     onSaved: (val) => _mobile = val,
                     obscureText: false,
                     keyboardType: TextInputType.number,
