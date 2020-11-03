@@ -55,6 +55,9 @@ dependencies:
   # 启动第三方app
   url_launcher: ^5.7.2
 
+  device_info: ^0.4.2+7
+  package_info: ^0.4.3
+
   open_file: ^3.0.1
 
   webview_flutter: ^1.0.1
