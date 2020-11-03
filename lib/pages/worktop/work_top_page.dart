@@ -26,6 +26,8 @@ class WorktopPage extends StatefulWidget {
 
 class _WorktopPageState extends State<WorktopPage>
     with AutomaticKeepAliveClientMixin {
+
+  final WorkTopViewModel _model = WorkTopViewModel();
   @override
   bool get wantKeepAlive => true;
 
@@ -90,7 +92,7 @@ class _WorktopPageState extends State<WorktopPage>
     super.build(context);
     return CommonStack(
       body: ProviderWidget<WorkTopViewModel>(
-        model: WorkTopViewModel(),
+        model: _model,
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           WorktopPageEntity entity =
@@ -102,14 +104,14 @@ class _WorktopPageState extends State<WorktopPage>
             header: ClassicHeader(),
             onRefresh: model.refresh,
             controller: model.refreshController,
-            child: bodyWidget(entity, model),
+            child: bodyWidget(entity),
           );
         },
       ),
     );
   }
 
-  Widget bodyWidget(WorktopPageEntity entity, WorkTopViewModel model) {
+  Widget bodyWidget(WorktopPageEntity entity) {
     _buildSliverBuildDelegate() {
       return SliverChildBuilderDelegate((context, index) {
         if (entity == null || entity.learnPlanList == null) {
@@ -129,8 +131,7 @@ class _WorktopPageState extends State<WorktopPage>
                 },
               );
               // 从详情页回来后刷新数据
-              model.initData();
-              // _refreshController.requestRefresh(needMove: false);
+              _model.initData();
             },
             child: LearnListItemWiget(item, 'LEARNING'),
           ),
@@ -347,9 +348,10 @@ class _WorktopPageState extends State<WorktopPage>
     );
   }
 
-  _goLearnPlanPage(int index) {
-    Navigator.pushNamed(context, RouteManager.LEARN_PAGE, arguments: {
+  _goLearnPlanPage(int index)async {
+    await Navigator.pushNamed(context, RouteManager.LEARN_PAGE, arguments: {
       'index': index,
     });
+    _model.refresh();
   }
 }
