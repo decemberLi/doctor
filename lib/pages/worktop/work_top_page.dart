@@ -224,15 +224,16 @@ class _WorktopPageState extends State<WorktopPage>
                             fontSize: 22,
                             color: ThemeColor.colorFF222222,
                             fontWeight: FontWeight.bold)),
-                    Text(
-                      doctorInfoEntity?.jobGradeName ?? '',
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: ThemeColor.colorFF222222,
-                          fontWeight: FontWeight.bold),
-                    ),
+
                     _buildAuthStatusWidget(doctorInfoEntity),
                   ],
+                ),
+                Text(
+                  doctorInfoEntity?.jobGradeName ?? '',
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: ThemeColor.colorFF222222,
+                      fontWeight: FontWeight.bold),
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 5),
