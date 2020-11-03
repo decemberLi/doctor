@@ -10,11 +10,14 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ShowCommentItems extends StatefulWidget {
   final CommentListItem item;
   final onCommentClick;
-  ShowCommentItems(this.item, this.onCommentClick);
+  final controller;
+  final index;
+  ShowCommentItems(this.item, this.onCommentClick, this.controller, this.index);
   @override
   _ShowCommentItemsState createState() => _ShowCommentItemsState();
 }
@@ -129,76 +132,84 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
       }
     }
 
-    return Container(
-      padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-      child: GestureDetector(
-        onTap: () {
-          // Navigator.pushNamed(context, RouteManager.FIND_PWD);
-          widget.onCommentClick(
-            widget.item.id,
-            widget.item.id,
-            widget.item.commentUserName,
-            widget.item.commentUserType,
-          );
-        },
-        child: Column(
-          children: [
-            //主回复
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.asset(
-                  "assets/images/avatar.png",
-                  width: 40,
-                ),
-                // Image.network(
-                //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
-                // ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      repplyItem(widget.item.commentUserName,
-                          widget.item.commentUserType),
-                      Container(
-                        margin: EdgeInsets.all(5),
-                        child: Text(
-                          widget.item.commentContent,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(5),
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                            RelativeDateFormat.format(widget.item.createTime)),
-                      )
-                    ],
+    return AutoScrollTag(
+      key: ValueKey(widget.index),
+      controller: widget.controller,
+      index: widget.index,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+        child: GestureDetector(
+          onTap: () {
+            // Navigator.pushNamed(context, RouteManager.FIND_PWD);
+            widget.onCommentClick(
+              widget.item.id,
+              widget.item.id,
+              widget.item.commentUserName,
+              widget.item.commentUserType,
+            );
+          },
+          child: Column(
+            children: [
+              //主回复
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    "assets/images/avatar.png",
+                    width: 40,
                   ),
-                ),
-              ],
-            ),
-            // 子回复
-            ...applyContentByLength(),
-            secondLength > 2
-                ? GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        showAllReply = !showAllReply;
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Text(
-                        showAllReply ? '收起' : '查看全部${secondItem.length}条回复>',
-                        style: TextStyle(color: ThemeColor.primaryColor),
-                      ),
-                    ))
-                : Container(),
-            Divider(
-              height: 1,
-            ),
-          ],
+                  // Image.network(
+                  //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
+                  // ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        repplyItem(widget.item.commentUserName,
+                            widget.item.commentUserType),
+                        Container(
+                          margin: EdgeInsets.all(5),
+                          child: Text(
+                            widget.item.commentContent,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(5),
+                          alignment: Alignment.centerRight,
+                          child: Text(RelativeDateFormat.format(
+                              widget.item.createTime)),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              // 子回复
+              ...applyContentByLength(),
+              secondLength > 2
+                  ? GestureDetector(
+                      onTap: () {
+                        //滚动到当前评论
+                        widget.controller.scrollToIndex(widget.index,
+                            preferPosition: AutoScrollPosition.begin);
+                        setState(() {
+                          showAllReply = !showAllReply;
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          showAllReply ? '收起' : '查看全部${secondItem.length}条回复>',
+                          style: TextStyle(color: ThemeColor.primaryColor),
+                        ),
+                      ))
+                  : Container(),
+              Divider(
+                height: 1,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -219,7 +230,9 @@ class CommentListPage extends StatefulWidget {
 class _CommentListPageState extends State<CommentListPage>
     with AutomaticKeepAliveClientMixin {
   // 保持不被销毁
+  final scrollDirection = Axis.vertical;
 
+  AutoScrollController controller;
   CommentListViewModel model;
 
   @override
@@ -238,6 +251,10 @@ class _CommentListPageState extends State<CommentListPage>
     model = CommentListViewModel(widget.resourceId, widget.learnPlanId);
     model.initData();
     super.initState();
+    controller = AutoScrollController(
+        viewportBoundaryGetter: () =>
+            Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+        axis: scrollDirection);
   }
 
   @override
@@ -324,10 +341,13 @@ class _CommentListPageState extends State<CommentListPage>
                   onLoading: model.loadMore,
                   enablePullUp: true,
                   child: ListView.builder(
+                    scrollDirection: scrollDirection,
+                    controller: controller,
                     itemCount: model.list.length,
                     itemBuilder: (context, index) {
                       CommentListItem item = model.list[index];
-                      return ShowCommentItems(item, onCommentClick);
+                      return ShowCommentItems(
+                          item, onCommentClick, controller, index);
                     },
                   ),
                 );

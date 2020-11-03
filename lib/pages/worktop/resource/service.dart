@@ -48,3 +48,8 @@ updateLearnTime(params) {
     params: params,
   );
 }
+
+// 会议签到
+meetingSign(params) {
+  return http.post('/meeting/sign-in', params: params);
+}

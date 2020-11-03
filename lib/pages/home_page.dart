@@ -3,6 +3,7 @@ import 'package:doctor/pages/prescription/prescription_page.dart';
 import 'package:doctor/pages/user/user_page.dart';
 import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:flutter/material.dart';
+import 'package:doctor/pages/user/setting/update/app_update.dart';
 
 /// 首页
 class HomePage extends StatefulWidget {
@@ -34,8 +35,14 @@ class _HomePageState extends State<HomePage>
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
+    AppUpdateHelper.checkUpdate(context);
     return Scaffold(
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -49,8 +56,10 @@ class _HomePageState extends State<HomePage>
         backgroundColor: Colors.white,
         unselectedItemColor: Colors.black,
         // selectedFontSize: 12.0,
-        onTap: onTabTapped, // new
-        currentIndex: _currentIndex, // new
+        onTap: onTabTapped,
+        // new
+        currentIndex: _currentIndex,
+        // new
         type: BottomNavigationBarType.fixed,
         items: [
           new BottomNavigationBarItem(

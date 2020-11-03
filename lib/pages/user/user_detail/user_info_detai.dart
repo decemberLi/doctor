@@ -1,13 +1,20 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:doctor/http/oss_service.dart';
+import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/qualification/model/config_data_entity.dart';
 import 'package:doctor/pages/qualification/view_model/doctor_qualification_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_picker/Picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../service.dart';
+import 'uploadImage.dart';
 
 final uploadData = {
   '性别': 'sex',
@@ -28,9 +35,47 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DoctorQualificationViewModel _model = DoctorQualificationViewModel();
   SearchWidget<HospitalEntity> _hospitalSearchWidget;
-  Map args;
+  dynamic args;
   List departments = [];
   List doctorTitle = [];
+
+  _pickImage() async {
+    int index = await DialogHelper.showBottom(context);
+    if (index == null || index == 2) {
+      return;
+    }
+    var source = index == 0 ? ImageSource.camera : ImageSource.gallery;
+    ImagePicker.pickImage(source: source).then((value) => cropImage(value));
+  }
+
+  cropImage(File value) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CropImageRoute(value, _uploadImage),
+      ),
+    );
+  }
+
+  _uploadImage(image) async {
+    try {
+      if (image == null || image.path == null) {
+        return;
+      }
+      OssFileEntity entity = await OssService.upload(image.path);
+      updateHeadPic({'fullFacePhoto': entity}).then((res) {
+        if (res is! DioError) {
+          args.addAll({
+            'fullFacePhoto': {'url': entity.url}
+          });
+          Navigator.pop(context);
+        }
+      });
+    } catch (e) {
+      debugPrint(e);
+    }
+  }
+
   //修改信息
   void updateDoctorInfo(params, ifBack) {
     //更新保存的数据到args作页面数据回填
@@ -57,7 +102,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   ///lable:label
   ///value:初始值
   ///type 是否可修改
-  ///edit 编辑方式 picker:下拉框 edit:编辑 hospital:医院搜索
+  ///edit 编辑方式 picker:下拉框 edit:编辑 hospital:医院搜索 photo:图片
   ///defaultCode 用户下拉框回填数据的默认值
   Widget infoItem(String lable, value, bool type, edit, defaultCode) {
     return Container(
@@ -98,8 +143,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         onTap: () {
           //跳转修改
           //照片调摄像头，不修改头像
+          if (edit == 'photo') {
+            _pickImage();
+          }
           //姓名、个人简介、擅长疾病填写
-          //性别、医院、科室、职称选择
           if (edit == 'edit') {
             Navigator.pushNamed(context, RouteManager.EDIT_DOCTOR_PAGE,
                 arguments: {
@@ -112,6 +159,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
           if (edit == 'hospital') {
             _goHospitalSearchPage();
           }
+          //性别、医院、科室、职称选择
           if (edit == 'picker') {
             showPickerModal(context, lable, defaultCode);
           }
@@ -320,7 +368,8 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             margin: EdgeInsets.only(left: 16, right: 16, top: 12),
             child: Column(
               children: [
-                infoItem('头像', args['fullFacePhoto'], false, null, null),
+                infoItem(
+                    '头像', args['fullFacePhoto'], doctorStatus, 'photo', null),
                 infoItem('姓名', args['doctorName'], doctorStatus, 'edit', null),
                 infoItem('性别', args['sex'] == 0 ? '女' : '男', doctorStatus,
                     'picker', args['sex']),

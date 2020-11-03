@@ -47,6 +47,7 @@ dependencies:
 
   # 图片查看器 https://pub.flutter-io.cn/packages/photo_view
   photo_view: ^0.10.2
+  path_provider: ^1.6.22
 
   # 解析html标签
   # flutter_html: ^1.0.2
@@ -75,6 +76,8 @@ dependencies:
   # 图片占位符
   transparent_image: ^1.0.0
 
+  #图片截取
+  image_crop: ^0.3.4
   # 滚动到指数＃
   scroll_to_index: ^1.0.6
 
