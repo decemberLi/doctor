@@ -59,7 +59,7 @@ class _MessageListPageState extends State<MessageListPage> {
         children: [
           GestureDetector(
             child: Container(
-              padding: EdgeInsets.only(right: 16),
+              padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(6),
@@ -69,7 +69,11 @@ class _MessageListPageState extends State<MessageListPage> {
                 children: [
                   Stack(
                     children: [
-                      Image.asset('assets/images/avatar.png'),
+                      Image.asset(
+                        'assets/images/avatar.png',
+                        width: 40,
+                        height: 40,
+                      ),
                       Positioned(
                           right: 15,
                           top: 8,
@@ -196,11 +200,11 @@ class _MessageListPageState extends State<MessageListPage> {
   _openDetail(String type, MessageListEntity entity) {
     if (type == MessageType.TYPE_SYSTEM) {
       Navigator.pushNamed(context, RouteManager.QUALIFICATION_PAGE);
-    }else if(type == MessageType.TYPE_LEAN_PLAN){
+    } else if (type == MessageType.TYPE_LEAN_PLAN) {
       Navigator.pushNamed(context, RouteManager.LEARN_DETAIL);
-    }else if(type == MessageType.TYPE_PRESCRIPTION){
+    } else if (type == MessageType.TYPE_PRESCRIPTION) {
       Navigator.pushNamed(context, RouteManager.PRESCRIPTION_DETAIL);
-    }else if(type == MessageType.TYPE_INTERACTIVE){
+    } else if (type == MessageType.TYPE_INTERACTIVE) {
       Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
     }
   }
