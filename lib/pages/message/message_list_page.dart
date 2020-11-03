@@ -182,7 +182,7 @@ class _MessageListPageState extends State<MessageListPage> {
     var toDayStartTime = DateTime(now.year, now.month, now.day);
     // 当日
     if (timeMillis >= toDayStartTime.millisecondsSinceEpoch) {
-      return '${msgDateTime.hour}:${msgDateTime.minute}';
+      return '${_format(msgDateTime.hour)}:${_format(msgDateTime.minute)}';
     }
     // 昨天
     var yesterday = now.subtract(new Duration(days: 1));
@@ -193,8 +193,15 @@ class _MessageListPageState extends State<MessageListPage> {
     } else {
       // 其他
       //2020/10/12
-      return '${msgDateTime.year}/${msgDateTime.month}/${msgDateTime.day}';
+      return '${_format(msgDateTime.year)}/${_format(msgDateTime.day)}/${_format(msgDateTime.month)}';
     }
+  }
+
+  _format(int number) {
+    if (number < 10) {
+      return '0$number';
+    }
+    return '$number';
   }
 
   _openDetail(String type, MessageListEntity entity) {
