@@ -9,7 +9,9 @@ import 'package:flutter_file_preview/flutter_file_preview.dart';
 
 class Attacement extends StatelessWidget {
   final ResourceModel data;
-  Attacement(this.data);
+  final openTimer;
+  final closeTimer;
+  Attacement(this.data, this.openTimer, this.closeTimer);
 
   _openFile() async {
     var files = await CommonService.getFile({
@@ -21,6 +23,8 @@ class Attacement extends StatelessWidget {
     // TODO: 预览器UI修改
     FlutterFilePreview.openFile(files[0]['tmpUrl'],
         title: data.title ?? data.resourceName);
+    //计时器
+    openTimer();
   }
 
   @override

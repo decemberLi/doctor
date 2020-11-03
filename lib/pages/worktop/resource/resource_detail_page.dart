@@ -75,7 +75,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       return VideoDetail(data, openTimer, closeTimer);
     }
     if (data.contentType == 'ATTACHMENT') {
-      return Attacement(data);
+      return Attacement(data, openTimer, closeTimer);
     }
     if (data.resourceType == 'QUESTIONNAIRE') {
       return QuestionPage(data);
@@ -201,7 +201,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     int learnedTime = data.learnTime ?? 0;
     String tips = data.resourceType == 'VIDEO' ? '已观看' : '已浏览';
     //文章阅读进入页面直接触发定时器
-    if (_timer == null && needReport && data.resourceType == 'ARTICLE') {
+    if (_timer == null && needReport && data.contentType == 'RICH_TEXT') {
       startCountTimer();
     }
     //视频观看需点击视频观看按钮触发定时器

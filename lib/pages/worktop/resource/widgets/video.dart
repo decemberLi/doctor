@@ -31,11 +31,9 @@ class _VideoDetailState extends State<VideoDetail> {
           _isPlaying = isPlaying;
         });
         //计时器
-        print('开');
         widget.openTimer();
       }
       if (!isPlaying && isPlaying != _isPlaying) {
-        print('关');
         setState(() {
           _isPlaying = isPlaying;
         });
