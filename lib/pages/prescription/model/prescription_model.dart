@@ -67,6 +67,13 @@ class PrescriptionModel {
       ? DateUtil.formatDateMs(createTime, format: 'yyyy.MM.dd HH:mm')
       : '';
 
+  /// 处方过期时间
+  num expireTime;
+
+  String get expireTimeText => expireTime != null
+      ? DateUtil.formatDateMs(expireTime, format: 'yyyy.MM.dd HH:mm')
+      : '';
+
   /// 处方纸质图片附件信息
   List<OssFileEntity> attachments;
 

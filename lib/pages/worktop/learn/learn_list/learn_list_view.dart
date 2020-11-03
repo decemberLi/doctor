@@ -38,8 +38,11 @@ class _LearnListPageState extends State<LearnListPage>
     super.initState();
     _currentTabIndex = widget.index;
     // 添加监听器
-    _tabController = TabController(vsync: this, length: TASK_TYPE_MAP.length)
-      ..addListener(() {
+    _tabController = TabController(
+      vsync: this,
+      initialIndex: widget.index,
+      length: TASK_TYPE_MAP.length,
+    )..addListener(() {
         setState(() {
           _currentTabIndex = _tabController.index;
           if (widget.onTaskTypeChange != null) {

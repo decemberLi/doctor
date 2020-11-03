@@ -3,7 +3,6 @@ import 'package:doctor/pages/medication/widgets/medication_add_sheet.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/widgets/common_spinner_input.dart';
 import 'package:doctor/widgets/form_item.dart';
-import 'package:doctor/widgets/one_line_text.dart';
 import 'package:flutter/material.dart';
 
 /// 处方药列表项
@@ -28,7 +27,7 @@ class RpListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormItem(
       padding: EdgeInsets.symmetric(vertical: 16.0),
-      height: 95.0,
+      // height: 95.0,
       child: Row(
         children: [
           Expanded(
@@ -36,15 +35,15 @@ class RpListItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                OneLineText(
+                Text(
                   data.drugName,
                   style: MyStyles.inputTextStyle_12,
                 ),
-                OneLineText(
+                Text(
                   '规格： ${data.drugSize}',
                   style: MyStyles.labelTextStyle_12,
                 ),
-                OneLineText(
+                Text(
                   '用法用量：${data.useInfo}',
                   style: MyStyles.inputTextStyle_12,
                 ),

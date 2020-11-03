@@ -50,8 +50,15 @@ class MedicationViewModel extends ViewStateRefreshListModel<DrugModel> {
       int index =
           cartList.indexWhere((element) => element.drugId == _model.drugId);
       if (index != -1) {
-        _model.quantity = cartList[index].quantity;
-        cartList[index] = _model;
+        DrugModel _cartModel = cartList[index];
+        _model.quantity = _cartModel.quantity;
+        _model.frequency = _cartModel.frequency;
+        _model.doseUnit = _cartModel.doseUnit;
+        _model.singleDose = _cartModel.singleDose;
+        _model.usePattern = _cartModel.usePattern;
+        _cartModel.drugName = _model.drugName;
+        _cartModel.drugSize = _model.drugSize;
+        _cartModel.pictures = _model.pictures;
       } else {
         /// 如果购物车为空，则全部置为空
         _model.quantity = null;
@@ -102,25 +109,25 @@ class MedicationDetailViewModel extends ViewStateModel {
 
   /// 获取处方详情
   Future<DrugModel> loadData() async {
-    // var res = await httpFoundation.post(
-    //   '/drug/query',
-    //   params: {
-    //     'drugId': this.drugId,
-    //   },
-    // );
-    // return DrugModel.fromJson(res);
-    DrugModel res = DrugModel(
-      drugId: drugId,
-      drugName: '特制开菲尔-$drugId',
-      producer: '石家庄龙泽制药股份有限公司',
-      drugSize: '32',
-      drugPrice: 347,
-      frequency: '每日一次',
-      singleDose: '32',
-      doseUnit: '片/次',
-      usePattern: '口服',
-      quantity: 3,
+    var res = await http.post(
+      '/drug/query',
+      params: {
+        'drugId': this.drugId,
+      },
     );
-    return Future.delayed(Duration(seconds: 1), () => res);
+    return DrugModel.fromJson(res);
+    // DrugModel res = DrugModel(
+    //   drugId: drugId,
+    //   drugName: '特制开菲尔-$drugId',
+    //   producer: '石家庄龙泽制药股份有限公司',
+    //   drugSize: '32',
+    //   drugPrice: 347,
+    //   frequency: '每日一次',
+    //   singleDose: '32',
+    //   doseUnit: '片/次',
+    //   usePattern: '口服',
+    //   quantity: 3,
+    // );
+    // return Future.delayed(Duration(seconds: 1), () => res);
   }
 }

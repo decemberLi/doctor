@@ -72,6 +72,8 @@ dependencies:
       url: git://github.com/aliyoge/flutter_file_preview.git
   # 图片选择
   image_picker: ^0.6.7+12
+  # 图片占位符
+  transparent_image: ^1.0.0
 
   # 滚动到指数＃
   scroll_to_index: ^1.0.6

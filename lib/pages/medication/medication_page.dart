@@ -5,6 +5,7 @@ import 'package:doctor/pages/medication/widgets/medication_page_list_item.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
@@ -207,13 +208,47 @@ class _MedicationPageState extends State<MedicationPage>
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xFFFDA705),
-        //悬浮按钮
-        child: Icon(Icons.add),
-        onPressed: () {
-          _showCartSheet();
-        },
+      floatingActionButton: Stack(
+        overflow: Overflow.visible,
+        children: [
+          FloatingActionButton(
+            backgroundColor: Color(0xFFFDA705),
+            //悬浮按钮
+            child: Text(
+              'RX',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            onPressed: () {
+              _showCartSheet();
+            },
+          ),
+          Positioned(
+            top: -8,
+            right: -12,
+            child: Container(
+              padding: EdgeInsets.all(8),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: ThemeColor.colorFFFD4B40,
+                shape: BoxShape.circle,
+              ),
+              child: Consumer<MedicationViewModel>(
+                  builder: (context, model, child) {
+                return Text(
+                  '${model.cartList.length ?? ''}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
     );

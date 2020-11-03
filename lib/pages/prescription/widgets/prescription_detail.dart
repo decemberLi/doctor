@@ -1,10 +1,13 @@
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_status.dart';
+import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/form_item.dart';
 import 'package:doctor/widgets/one_line_text.dart';
+import 'package:doctor/widgets/photo_view_gallery_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class PerscriptionDetail extends StatelessWidget {
   final PrescriptionModel data;
@@ -55,7 +58,7 @@ class PerscriptionDetail extends StatelessWidget {
         ?.toList();
   }
 
-  List<Widget> renderImages() {
+  List<Widget> renderImages(BuildContext context) {
     if (data == null || data.attachments == null || data.attachments.isEmpty) {
       return [];
     }
@@ -64,10 +67,21 @@ class PerscriptionDetail extends StatelessWidget {
         if (e.url == null) {
           return Container();
         }
-        return Image.network(
-          e.url,
-          width: 74,
-          fit: BoxFit.fitWidth,
+        return GestureDetector(
+          child: Image.network(
+            e.url,
+            width: 74,
+            fit: BoxFit.fitWidth,
+          ),
+          onTap: () {
+            Navigator.of(context).push(
+              FadeRoute(
+                page: PhotoViewGalleryScreen(
+                  images: this.data.attachments.map((e) => e.url).toList(),
+                ),
+              ),
+            );
+          },
         );
       },
     ).toList();
@@ -93,7 +107,7 @@ class PerscriptionDetail extends StatelessWidget {
                   Column(
                     children: [
                       Text(
-                        '易问询互联网医院',
+                        '易学术互联网医院',
                         style: MyStyles.primaryTextStyle,
                       ),
                       Text(
@@ -206,11 +220,46 @@ class PerscriptionDetail extends StatelessWidget {
                               Wrap(
                                 spacing: 6,
                                 runSpacing: 10,
-                                children: renderImages(),
+                                children: renderImages(context),
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
+                            ],
+                          ),
+                        ),
+                        if (data?.doctorName != null)
+                          FormItem(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: OneLineText(
+                              '处方医生：${data?.doctorName ?? ''}',
+                              style: MyStyles.inputTextStyle,
+                            ),
+                          ),
+                        if (data?.pharmacist != null)
+                          FormItem(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '处方药师：',
+                                  style: MyStyles.inputTextStyle,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                FadeInImage.memoryNetwork(
+                                  placeholder: kTransparentImage,
+                                  image: data?.pharmacist,
+                                  width: 54,
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ],
+                            ),
+                          ),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                               Text(
                                 '特别提醒',
                                 style: MyStyles.greyTextStyle_12,

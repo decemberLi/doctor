@@ -134,7 +134,8 @@ class _WorktopPageState extends State<WorktopPage>
         );
       }, childCount: entity?.learnPlanList?.length ?? 0);
     }
-    _buildEmptyContainer(){
+
+    _buildEmptyContainer() {
       if (entity == null ||
           entity.learnPlanList == null ||
           entity.learnPlanList.length == 0) {
@@ -159,10 +160,11 @@ class _WorktopPageState extends State<WorktopPage>
             ],
           ),
         );
-      }else{
+      } else {
         return Container();
       }
     }
+
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -444,10 +446,7 @@ class _WorktopPageState extends State<WorktopPage>
                 fontSize: 12,
                 color: Colors.white,
               ),
-              text:
-              doctorInfoEntity?.authStatus == 'PASS'
-                  ? '资质认证'
-                  : '尚未认证',
+              text: doctorInfoEntity?.authStatus == 'PASS' ? '资质认证' : '尚未认证',
             ),
           ],
         ),

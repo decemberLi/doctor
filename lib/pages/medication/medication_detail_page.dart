@@ -1,4 +1,5 @@
 import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
+import 'package:doctor/pages/medication/widgets/medication_add_btn.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
@@ -88,6 +89,8 @@ class MedicationIntroduce extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MedicationDetailViewModel>(
       builder: (context, model, child) {
+        bool morePics =
+            model.data != null ? model.data.pictures.length > 1 : false;
         return Container(
           alignment: Alignment.topCenter,
           padding: EdgeInsets.all(16),
@@ -100,14 +103,18 @@ class MedicationIntroduce extends StatelessWidget {
                     Container(
                       height: 260,
                       child: Swiper(
-                        autoplay: true,
+                        autoplay: morePics,
+                        loop: morePics,
                         itemBuilder: (BuildContext context, int index) {
-                          return new Image.network(
-                            "http://via.placeholder.com/350x150",
-                            fit: BoxFit.fill,
+                          if (model.data == null) {
+                            return Container();
+                          }
+                          return Image.network(
+                            model.data.pictures[index],
+                            fit: BoxFit.fitWidth,
                           );
                         },
-                        itemCount: 3,
+                        itemCount: model.data?.pictures?.length ?? 0,
                         pagination: SwiperPagination(
                           alignment: Alignment.bottomRight,
                           builder: FractionPaginationBuilder(
@@ -163,12 +170,13 @@ class MedicationIntroduce extends StatelessWidget {
                               ),
                             ],
                           ),
-                          AceButton(
-                            width: 90,
-                            height: 30,
-                            text: '加入处方',
-                            onPressed: () {},
-                          ),
+                          Consumer<MedicationViewModel>(builder:
+                              (context, MedicationViewModel viewModel, child) {
+                            return MedicationAddBtn(
+                              viewModel.list.firstWhere(
+                                  (data) => model.drugId == data.drugId),
+                            );
+                          }),
                         ],
                       ),
                     ),

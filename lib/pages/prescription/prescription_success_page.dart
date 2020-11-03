@@ -1,5 +1,6 @@
 import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
+import 'package:doctor/pages/prescription/widgets/prescription_qr_code.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
@@ -55,36 +56,7 @@ class PrescriptionSuccessPage extends StatelessWidget {
                           SizedBox(
                             height: 20,
                           ),
-                          // Image.asset(
-                          //   'assets/images/company.png',
-                          //   width: 162,
-                          //   height: 162,
-                          // ),
-                          FutureBuilder(
-                              future: loadBindQRCode(prescriptionNo),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                        ConnectionState.done &&
-                                    snapshot.data != null) {
-                                  return Image.network(
-                                    snapshot.data,
-                                    width: 162,
-                                    height: 162,
-                                    alignment: Alignment.topCenter,
-                                    fit: BoxFit.fitWidth,
-                                  );
-                                }
-                                return Container(
-                                  width: 162,
-                                  height: 162,
-                                );
-                              }),
-
-                          // Image.asset(
-                          //   'assets/images/company.png',
-                          //   width: 162,
-                          //   height: 162,
-                          // ),
+                          PrescriptionQRCode(prescriptionNo),
                           SizedBox(
                             height: 34,
                           ),

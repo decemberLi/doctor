@@ -101,6 +101,8 @@ class _MedicationListItemState extends State<MedicationListItem> {
           Image.network(
             widget.item.pictures[0],
             width: 60.0,
+            height: 60.0,
+            fit: BoxFit.fitWidth,
           ),
           SizedBox(
             width: 16,

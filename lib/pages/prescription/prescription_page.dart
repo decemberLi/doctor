@@ -174,9 +174,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                         RouteManager.PATIENT,
                         arguments: 'QUICK_CREATE',
                       );
-                      print(patientUserId);
-                      model.getDataByPatient(patientUserId);
-                      // SessionManager.loginOutHandler();
+                      if (patientUserId != null) {
+                        model.getDataByPatient(patientUserId);
+                      }
                     },
                   ),
                   children: [
