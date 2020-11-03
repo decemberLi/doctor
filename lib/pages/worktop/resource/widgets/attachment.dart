@@ -11,7 +11,8 @@ class Attacement extends StatelessWidget {
   final ResourceModel data;
   final openTimer;
   final closeTimer;
-  Attacement(this.data, this.openTimer, this.closeTimer);
+  final _clickWebView;
+  Attacement(this.data, this.openTimer, this.closeTimer, this._clickWebView);
 
   _openFile() async {
     var files = await CommonService.getFile({
@@ -29,33 +30,40 @@ class Attacement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.only(top: 100),
-      child: Column(
-        children: [
-          Icon(
-            MyIcons.icon_article,
-            size: 80,
-          ),
-          SizedBox(
-            height: 16,
-          ),
-          Text(
-            data.title ?? data.resourceName,
-            style: TextStyle(
-              color: ThemeColor.colorFF444444,
-              fontSize: 16,
+    return GestureDetector(
+      onTap: () {
+        _clickWebView();
+      },
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        alignment: Alignment.center,
+        padding: EdgeInsets.only(top: 100),
+        child: Column(
+          children: [
+            Icon(
+              MyIcons.icon_article,
+              size: 80,
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          AceButton(
-            onPressed: _openFile,
-            text: '在线阅读',
-          ),
-        ],
+            SizedBox(
+              height: 16,
+            ),
+            Text(
+              data.title ?? data.resourceName,
+              style: TextStyle(
+                color: ThemeColor.colorFF444444,
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            AceButton(
+              onPressed: _openFile,
+              text: '在线阅读',
+            ),
+          ],
+        ),
       ),
     );
   }
