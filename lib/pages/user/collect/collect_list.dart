@@ -1,3 +1,4 @@
+import 'package:doctor/main.dart';
 import 'package:doctor/pages/user/collect/view_model/collect_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
@@ -16,7 +17,26 @@ class CollectDetailList extends StatefulWidget {
   _CollectDetailListState createState() => _CollectDetailListState();
 }
 
-class _CollectDetailListState extends State<CollectDetailList> {
+class _CollectDetailListState extends State<CollectDetailList> with RouteAware {
+  CollectListViewModel _model = CollectListViewModel();
+  @override
+  void didChangeDependencies() {
+    routeObserver.subscribe(this, ModalRoute.of(context)); //订阅
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    _model.refresh();
+    super.didPopNext();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +46,7 @@ class _CollectDetailListState extends State<CollectDetailList> {
         elevation: 0,
       ),
       body: ProviderWidget<CollectListViewModel>(
-        model: CollectListViewModel(),
+        model: _model,
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           if (model.isError || model.isEmpty) {
