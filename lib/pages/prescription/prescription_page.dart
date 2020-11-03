@@ -177,6 +177,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                       if (patientUserId != null) {
                         model.getDataByPatient(patientUserId);
                       }
+                      // SessionManager.loginOutHandler();
                     },
                   ),
                   children: [

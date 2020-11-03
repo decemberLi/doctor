@@ -29,18 +29,20 @@ class _UserPageState extends State<UserPage> with RouteAware {
   //获取医生基本信息和收藏患者信息
   //authStatus:认证状态(WAIT_VERIFY-待认证、VERIFING-认证中、FAIL-认证失败、PASS-认证通过）
   _doctorInfo() async {
-    var basicData = await getBasicData();
-    if (basicData is! DioError) {
-      setState(() {
-        doctorData = basicData;
-      });
-    }
-    var basicNumData = await getBasicNum();
-    if (basicNumData is! DioError) {
-      setState(() {
-        numData = basicNumData;
-      });
-    }
+    try {
+      var basicData = await getBasicData();
+      if (basicData is! DioError) {
+        setState(() {
+          doctorData = basicData;
+        });
+      }
+      var basicNumData = await getBasicNum();
+      if (basicNumData is! DioError) {
+        setState(() {
+          numData = basicNumData;
+        });
+      }
+    } catch (e) {}
   }
 
   @override
