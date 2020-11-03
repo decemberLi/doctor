@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/main.dart';
 import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -332,8 +331,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                         context, RouteManager.QUALIFICATION_PAGE);
                   }),
                   messageItem('设置', 'assets/images/setting.png', () {
-                    SessionManager.loginOutHandler();
-                    // TODO: 设置页面
+                    Navigator.pushNamed(context, RouteManager.SETTING);
                   }),
                   messageItem('关于我们', 'assets/images/aboutus.png', () {
                     Navigator.pushNamed(context, RouteManager.ABOUT_US);

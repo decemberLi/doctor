@@ -17,6 +17,7 @@ import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
 import 'package:doctor/pages/user/collect/collect_list.dart';
+import 'package:doctor/pages/user/setting/setting_page.dart';
 import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
 import 'package:doctor/pages/user/user_detail/user_edit_page.dart';
 import 'package:doctor/pages/user/user_detail/user_info_detai.dart';
@@ -59,6 +60,8 @@ class RouteManager {
   static const String COLLECT_DETAIL = '/collect_detail';
   static const String USERINFO_DETAIL = '/user_detail';
   static const String EDIT_DOCTOR_PAGE = '/edit_user_detail';
+  static const String SETTING = '/setting';
+  static const String MODIFY_PWD = '/modify_pwd';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
@@ -95,6 +98,8 @@ class RouteManager {
     PATIENT_DETAIL: (context) => PatientDetailPage(),
     COLLECT_DETAIL: (context) => CollectDetailList(),
     USERINFO_DETAIL: (context) => DoctorUserInfo(),
+    SETTING: (context) => SettingPage(),
+    MODIFY_PWD: (context) => UpdatePwdPage(),
     EDIT_DOCTOR_PAGE: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return UserEditPage(
