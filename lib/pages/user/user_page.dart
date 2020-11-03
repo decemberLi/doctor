@@ -196,11 +196,17 @@ class _UserPageState extends State<UserPage> with RouteAware {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      child: Image.asset(
-                        "assets/images/avatar.png",
-                        width: 80,
-                        fit: BoxFit.fitWidth,
-                      ),
+                      child: doctorData['fullFacePhoto']['url'] == null
+                          ? Image.asset(
+                              "assets/images/avatar.png",
+                              width: 80,
+                              fit: BoxFit.fitWidth,
+                            )
+                          : Image.network(
+                              doctorData['fullFacePhoto']['url'],
+                              width: 80,
+                              fit: BoxFit.fitWidth,
+                            ),
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 10),

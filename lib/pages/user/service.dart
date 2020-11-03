@@ -25,3 +25,8 @@ getSelectInfo(params) {
 updateUserInfo(params) {
   return http.post('/personal/edit-doctor-info', params: params);
 }
+
+// 修改头像
+updateHeadPic(params) {
+  return http.post('/personal/change-head-pic', params: params);
+}
