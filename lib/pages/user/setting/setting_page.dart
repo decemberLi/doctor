@@ -200,8 +200,8 @@ class _SettingPageState extends State<SettingPage> {
   _getCacheData() async {
     var preference = await SharedPreferences.getInstance();
     var toggle = preference.getBool('only_wifi');
-    if(toggle == null){
-      toggle = false;
+    if(toggle != null){
+      _flag = toggle;
     }
     _version = await PlatformUtils.getAppVersion();
     setState(() {});
