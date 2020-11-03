@@ -18,6 +18,7 @@ final servers = {
   'foundation': '$host/medclouds-foundation/$client',
   'foundationWeb': '$host/medclouds-foundation/web',
   'foundationSystem': '$host/medclouds-foundation/$system/$client',
+  'foundationClient': '$host/medclouds-foundation/$client',
   'developer': '$host/medclouds-foundation/developer/$client',
   'dtp': '$host/medclouds-dtp/$system/$client',
   'sso': '$host/medclouds-ucenter/$client',

@@ -1,9 +1,9 @@
-import 'dart:io';
-
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'app_update_info.dart';
 
 const kAppFirstEntry = 'kAppFirstEntry';
 
@@ -24,8 +24,8 @@ class AppUpdateModel extends ViewStateModel {
     setBusy();
     try {
       var appVersion = await PlatformUtils.getAppVersion();
-      appUpdateInfo =
-          await AppRepository.checkUpdate(Platform.operatingSystem, appVersion);
+      // appUpdateInfo =
+      //     await AppRepository.checkUpdate(Platform.operatingSystem, appVersion);
       setIdle();
     } catch (e, s) {
       setError(e, s);
