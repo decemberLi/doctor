@@ -8,7 +8,8 @@ import 'package:doctor/model/face_photo.dart';
 import 'package:doctor/model/oss_policy.dart';
 import 'package:doctor/pages/qualification/model/doctor_physician_qualification_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
-import 'package:doctor/pages/qualification/model/uploaded_file_entity.dart';
+import 'package:doctor/model/uploaded_file_entity.dart';
+import 'package:doctor/utils/upload_file_helper.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 HttpManager uCenter = HttpManager('ucenter');
@@ -65,23 +66,7 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   _uploadImageToOss(String path) async {
-    OssPolicy policy = await _querySignature();
-
-    String originName = path.substring(path.lastIndexOf('/') + 1, path.length);
-    String suffix = path.substring(path.lastIndexOf('.') + 1, path.length);
-
-    var ossFileName = '${policy.fileNamePrefix}$originName';
-    CommonService().uploadToOss(policy.host, path, originName, ossFileName,
-        policy.accessKeyId, policy.signature, policy.policy);
-    Map<String, dynamic> param = {
-      'ossFileName': ossFileName,
-      'attachName': originName,
-      'publicRead': false,
-      'type': suffix,
-    };
-    UploadFileEntity entity =  await _saveImage(param);
-    entity.ossFileName = ossFileName;
-    return entity;
+    return await uploadImageToOss(path);
   }
 
   setAvatar(String path) async {
