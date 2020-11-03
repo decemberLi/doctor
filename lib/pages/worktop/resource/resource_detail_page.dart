@@ -75,7 +75,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       return Article(data, _clickWebView);
     }
     if (data.resourceType == 'VIDEO') {
-      return VideoDetail(data, openTimer, closeTimer,widget.meetingStartTime,widget.meetingEndTime,widget.taskDetailId);
+      return VideoDetail(data, openTimer, closeTimer,widget.meetingStartTime,widget.meetingEndTime,widget.taskDetailId,widget.learnPlanId);
     }
     if (data.contentType == 'ATTACHMENT') {
       return Attacement(data, openTimer, closeTimer, _clickWebView);

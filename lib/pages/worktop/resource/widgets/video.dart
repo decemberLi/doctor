@@ -16,8 +16,9 @@ class VideoDetail extends StatefulWidget {
   final meetingStartTime;
   final meetingEndTime;
   final taskDetailId;
+  final learnPlanId;
   VideoDetail(this.data, this.openTimer, this.closeTimer, this.meetingStartTime,
-      this.meetingEndTime, this.taskDetailId);
+      this.meetingEndTime, this.taskDetailId, this.learnPlanId);
   @override
   _VideoDetailState createState() => _VideoDetailState();
 }
@@ -51,7 +52,7 @@ class _VideoDetailState extends State<VideoDetail> {
     print(files[0]['tmpUrl']);
     setState(() {});
     //签到时间为空 且当前时间在会议时间内
-    if (widget.data.meetingSignInTime == null) {
+    if (widget.learnPlanId != null && widget.data.meetingSignInTime == null) {
       num start = widget.meetingStartTime;
       num end = widget.meetingEndTime;
       num nowDate = DateTime.now().millisecondsSinceEpoch;
