@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_picker/Picker.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../service.dart';
+import 'uploadImage.dart';
 
 final uploadData = {
   '性别': 'sex',
@@ -33,34 +35,40 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DoctorQualificationViewModel _model = DoctorQualificationViewModel();
   SearchWidget<HospitalEntity> _hospitalSearchWidget;
-  final _imagePicker = ImagePicker(); //上传头像
   dynamic args;
   List departments = [];
   List doctorTitle = [];
+
   _pickImage() async {
     int index = await DialogHelper.showBottom(context);
     if (index == null || index == 2) {
       return;
     }
     var source = index == 0 ? ImageSource.camera : ImageSource.gallery;
-    return await _imagePicker.getImage(source: source);
+    ImagePicker.pickImage(source: source).then((value) => cropImage(value));
   }
 
-  _uploadImage() async {
+  cropImage(File value) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CropImageRoute(value, _uploadImage),
+      ),
+    );
+  }
+
+  _uploadImage(image) async {
     try {
-      PickedFile image = await _pickImage();
-      print('image$image');
       if (image == null || image.path == null) {
         return;
       }
       OssFileEntity entity = await OssService.upload(image.path);
-      print(entity);
       updateHeadPic({'fullFacePhoto': entity}).then((res) {
-        print(res);
         if (res is! DioError) {
           args.addAll({
             'fullFacePhoto': {'url': entity.url}
           });
+          Navigator.pop(context);
         }
       });
     } catch (e) {
@@ -136,7 +144,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
           //跳转修改
           //照片调摄像头，不修改头像
           if (edit == 'photo') {
-            _uploadImage();
+            _pickImage();
           }
           //姓名、个人简介、擅长疾病填写
           if (edit == 'edit') {
