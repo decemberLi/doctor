@@ -26,8 +26,8 @@ class WorktopPage extends StatefulWidget {
 
 class _WorktopPageState extends State<WorktopPage>
     with AutomaticKeepAliveClientMixin {
-
   final WorkTopViewModel _model = WorkTopViewModel();
+
   @override
   bool get wantKeepAlive => true;
 
@@ -114,10 +114,6 @@ class _WorktopPageState extends State<WorktopPage>
   Widget bodyWidget(WorktopPageEntity entity) {
     _buildSliverBuildDelegate() {
       return SliverChildBuilderDelegate((context, index) {
-        if (entity == null || entity.learnPlanList == null) {
-          print("entity || entity.learnPlanList is null ");
-          return Container();
-        }
         var item = entity.learnPlanList[index];
         return Container(
           color: Color(0xFFF3F5F8),
@@ -138,7 +134,35 @@ class _WorktopPageState extends State<WorktopPage>
         );
       }, childCount: entity?.learnPlanList?.length ?? 0);
     }
-
+    _buildEmptyContainer(){
+      if (entity == null ||
+          entity.learnPlanList == null ||
+          entity.learnPlanList.length == 0) {
+        print("entity || entity.learnPlanList is null ");
+        return Container(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/none_learn_plan.png',
+                width: 110,
+                height: 110,
+              ),
+              Container(
+                child: Text(
+                  '暂无学习计划',
+                  style: TextStyle(
+                      fontSize: 12, color: ThemeColor.secondaryGeryColor),
+                ),
+              )
+            ],
+          ),
+        );
+      }else{
+        return Container();
+      }
+    }
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -147,18 +171,21 @@ class _WorktopPageState extends State<WorktopPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 cardPart(entity),
-                Container(
-                  width: double.infinity,
-                  color: Color(0xFFF3F5F8),
-                  padding: EdgeInsets.only(left: 16, top: 12),
-                  child: const Text(
-                    "最近收到",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF222222),
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
+                _isLearnPlanEmpty(entity)
+                    ? Container()
+                    : Container(
+                        width: double.infinity,
+                        color: Color(0xFFF3F5F8),
+                        padding: EdgeInsets.only(left: 16, top: 12),
+                        child: const Text(
+                          "最近收到",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF222222),
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                _buildEmptyContainer(),
               ],
             ),
           ),
@@ -202,6 +229,7 @@ class _WorktopPageState extends State<WorktopPage>
                           color: ThemeColor.colorFF222222,
                           fontWeight: FontWeight.bold),
                     ),
+                    _buildAuthStatusWidget(doctorInfoEntity),
                   ],
                 ),
                 Container(
@@ -220,9 +248,8 @@ class _WorktopPageState extends State<WorktopPage>
         ],
       ),
       onTap: () {
-        Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,arguments: {
-          'doctorData':doctorInfoEntity.toJson()
-        });
+        Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
+            arguments: {'doctorData': doctorInfoEntity.toJson()});
       },
     );
   }
@@ -333,13 +360,7 @@ class _WorktopPageState extends State<WorktopPage>
                       children:
                           convertStatics(entity?.learnPlanStatisticalEntity)),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 20, bottom: 12),
-                  child: AceButton(
-                    text: "处理一下",
-                    onPressed: () => {_goLearnPlanPage(0)},
-                  ),
-                ),
+                _showOperatorBtn(entity),
               ],
             ),
           ),
@@ -348,10 +369,89 @@ class _WorktopPageState extends State<WorktopPage>
     );
   }
 
-  _goLearnPlanPage(int index)async {
+  _isLearnPlanEmpty(WorktopPageEntity entity) {
+    List<LearnPlanStatisticalEntity> list = entity?.learnPlanStatisticalEntity;
+
+    if (list == null || list.length == 0) {
+      return true;
+    }
+    bool isEmpty = true;
+    for (var each in list) {
+      if (each.unSubmitNum != 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Container _showOperatorBtn(WorktopPageEntity entity) {
+    if (_isLearnPlanEmpty(entity)) {
+      return Container(
+        margin: EdgeInsets.only(top: 20, bottom: 12),
+        child: AceButton(
+          color: ThemeColor.colorFFBCBCBC,
+          text: "暂无待处理学习计划",
+          onPressed: () {},
+        ),
+      );
+    }
+    return Container(
+      margin: EdgeInsets.only(top: 20, bottom: 12),
+      child: AceButton(
+        text: "处理一下",
+        onPressed: () => {_goLearnPlanPage(0)},
+      ),
+    );
+  }
+
+  _goLearnPlanPage(int index) async {
     await Navigator.pushNamed(context, RouteManager.LEARN_PAGE, arguments: {
       'index': index,
     });
     _model.refresh();
+  }
+
+  _buildAuthStatusWidget(DoctorDetailInfoEntity doctorInfoEntity) {
+    return Container(
+      width: 80,
+      height: 20,
+      margin: EdgeInsets.only(left: 5),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: doctorInfoEntity?.authStatus == 'PASS'
+            ? Color(0xFFFAAD14)
+            : Color(0xFFB9B9B9),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(28),
+          bottomRight: Radius.circular(28),
+          topRight: Radius.circular(28),
+        ),
+      ),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          children: [
+            if (doctorInfoEntity?.authStatus == 'PASS')
+              WidgetSpan(
+                child: Image.asset(
+                  "assets/images/rz.png",
+                  width: 14,
+                  height: 14,
+                ),
+              ),
+            TextSpan(
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.white,
+              ),
+              text:
+              doctorInfoEntity?.authStatus == 'PASS'
+                  ? '资质认证'
+                  : '尚未认证',
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
