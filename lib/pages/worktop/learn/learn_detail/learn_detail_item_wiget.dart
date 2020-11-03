@@ -249,6 +249,9 @@ class PlanDetailList extends StatelessWidget {
               "learnPlanId": data.learnPlanId,
               "resourceId": item.resourceId,
               "taskTemplate": data.taskTemplate,
+              "meetingStartTime": data.meetingStartTime,
+              "meetingEndTime": data.meetingEndTime,
+              "taskDetailId": data.taskDetailId,
             });
             LearnDetailViewModel _model =
                 Provider.of<LearnDetailViewModel>(context, listen: false);

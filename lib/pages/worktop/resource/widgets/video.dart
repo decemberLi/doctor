@@ -1,15 +1,23 @@
+import 'package:dio/dio.dart';
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_video.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:video_player/video_player.dart';
+
+import '../service.dart';
 
 class VideoDetail extends StatefulWidget {
   final ResourceModel data;
   final openTimer;
   final closeTimer;
-  VideoDetail(this.data, this.openTimer, this.closeTimer);
+  final meetingStartTime;
+  final meetingEndTime;
+  final taskDetailId;
+  VideoDetail(this.data, this.openTimer, this.closeTimer, this.meetingStartTime,
+      this.meetingEndTime, this.taskDetailId);
   @override
   _VideoDetailState createState() => _VideoDetailState();
 }
@@ -42,6 +50,56 @@ class _VideoDetailState extends State<VideoDetail> {
     });
     print(files[0]['tmpUrl']);
     setState(() {});
+    //签到时间为空 且当前时间在会议时间内
+    if (widget.data.meetingSignInTime == null) {
+      num start = widget.meetingStartTime;
+      num end = widget.meetingEndTime;
+      num nowDate = DateTime.now().millisecondsSinceEpoch;
+      if (start < nowDate && nowDate < end) {
+        showDialog<void>(context: context, builder: (context) => dialog());
+      }
+    }
+  }
+
+//签到框
+  SimpleDialog dialog() {
+    return SimpleDialog(
+      title: Text(
+        '会议签到',
+        textAlign: TextAlign.center,
+      ),
+      children: [
+        Container(
+          padding: EdgeInsets.only(bottom: 10),
+          child: Text(
+            '当前会议正在进行中\r\n您是第${widget.data.meetingSignInCount}位进入会议的医生',
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Divider(),
+        Container(
+          margin: EdgeInsets.only(top: 10),
+          height: 20,
+          alignment: Alignment.center,
+          child: FlatButton(
+            textColor: ThemeColor.primaryColor,
+            onPressed: () {
+              //签到接口
+              meetingSign({'taskDetailId': widget.taskDetailId}).then((res) {
+                if (res is! DioError) {
+                  EasyLoading.showToast('签到成功');
+                }
+              });
+              Navigator.pop(context);
+            },
+            child: Text(
+              '签到',
+              style: TextStyle(fontSize: 14),
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   @override

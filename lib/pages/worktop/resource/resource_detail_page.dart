@@ -25,8 +25,11 @@ class ResourceDetailPage extends StatefulWidget {
   final resourceId;
   final favoriteId; //收藏id
   final taskTemplate; //类型
-  ResourceDetailPage(
-      this.learnPlanId, this.resourceId, this.favoriteId, this.taskTemplate);
+  final meetingStartTime;
+  final meetingEndTime;
+  final taskDetailId;
+  ResourceDetailPage(this.learnPlanId, this.resourceId, this.favoriteId,
+      this.taskTemplate, this.meetingStartTime, this.meetingEndTime,this.taskDetailId);
   @override
   _ResourceDetailPageState createState() => _ResourceDetailPageState();
 }
@@ -72,10 +75,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       return Article(data, _clickWebView);
     }
     if (data.resourceType == 'VIDEO') {
-      return VideoDetail(data, openTimer, closeTimer);
+      return VideoDetail(data, openTimer, closeTimer,widget.meetingStartTime,widget.meetingEndTime,widget.taskDetailId);
     }
     if (data.contentType == 'ATTACHMENT') {
-      return Attacement(data, openTimer, closeTimer,_clickWebView);
+      return Attacement(data, openTimer, closeTimer, _clickWebView);
     }
     if (data.resourceType == 'QUESTIONNAIRE') {
       return QuestionPage(data);

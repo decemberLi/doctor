@@ -77,8 +77,15 @@ class RouteManager {
     LOOK_COURSE_PAGE: (context) => LookCoursePage(),
     RESOURCE_DETAIL: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
-      return ResourceDetailPage(obj["learnPlanId"], obj['resourceId'],
-          obj['favoriteId'], obj['taskTemplate']);
+      return ResourceDetailPage(
+        obj["learnPlanId"],
+        obj['resourceId'],
+        obj['favoriteId'],
+        obj['taskTemplate'],
+        obj['meetingStartTime'],
+        obj['meetingEndTime'],
+        obj['taskDetailId'],
+      );
     },
     UPDATE_PWD: (context) => UpdatePwdPage(),
     ABOUT_US: (context) => AboutUs(),
