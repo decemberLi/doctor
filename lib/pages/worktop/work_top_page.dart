@@ -164,8 +164,21 @@ class _WorktopPageState extends State<WorktopPage>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            // decoration: DashedDecoration(dashedColor: ThemeColor.colorFF222222),
-            child: avatar,
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                fit: BoxFit.fill,
+                image: doctorInfoEntity?.fullFacePhoto == null
+                    ? AssetImage(
+                        "assets/images/avatar.png",
+                      )
+                    : NetworkImage(
+                        '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}',
+                      ),
+              ),
+            ),
           ),
           Container(
             margin: EdgeInsets.only(left: 10),
