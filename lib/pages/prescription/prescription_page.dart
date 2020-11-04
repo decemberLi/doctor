@@ -7,6 +7,7 @@ import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_create_btn.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_template_sheet.dart';
 import 'package:doctor/pages/prescription/widgets/rp_list.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
@@ -68,7 +69,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
     );
   }
 
-  Future<bool> showConsultationDialog() {
+  Future<bool> _showConsultationDialog() {
     return showCupertinoDialog<bool>(
       context: context,
       builder: (context) {
@@ -364,7 +365,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                         value: false,
                         groupValue: model.data.furtherConsultation,
                         onChanged: (bool value) {
-                          showConsultationDialog();
+                          _showConsultationDialog();
                         },
                       ),
                     ],

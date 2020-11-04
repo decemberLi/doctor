@@ -1,18 +1,15 @@
-import 'dart:async';
-
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/model/biz/learn_plan_statistical_entity.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
-import 'package:doctor/pages/login/model/login_info.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_item_wiget.dart';
 import 'package:doctor/pages/worktop/model/work_top_entity.dart';
 import 'package:doctor/pages/worktop/resource/view_model/work_top_view_model.dart';
-import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
+import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -35,13 +32,6 @@ class _WorktopPageState extends State<WorktopPage>
 
   init() async {
     await _model.initData();
-    WorktopPageEntity entity = _model?.list != null && _model?.list.length >= 1
-        ? _model.list[0]
-        : null;
-    if (entity?.doctorInfoEntity != null &&
-        entity.doctorInfoEntity.basicInfoAuthStatus == 'NOT_COMPLETE') {
-      _showGoToQualificationDialog();
-    }
   }
 
   @override
@@ -55,49 +45,6 @@ class _WorktopPageState extends State<WorktopPage>
     print('work_top_dispose');
     _model.dispose();
     super.dispose();
-  }
-
-  /// 显示完善信息弹窗
-  Future<bool> _showGoToQualificationDialog() {
-    return showCupertinoDialog<bool>(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          content: Container(
-            padding: EdgeInsets.only(top: 12),
-            child: Text("您还没有完善医生基础信息"),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(
-                "退出登录",
-                style: TextStyle(
-                  color: ThemeColor.primaryColor,
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                SessionManager.loginOutHandler();
-              },
-            ),
-            FlatButton(
-              child: Text(
-                "现在去完善",
-                style: TextStyle(
-                  color: ThemeColor.primaryColor,
-                ),
-              ),
-              onPressed: () {
-                //关闭对话框并返回true
-                // Navigator.of(context).pop();
-                Navigator.of(context)
-                    .pushNamed(RouteManager.QUALIFICATION_PAGE);
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -193,12 +140,13 @@ class _WorktopPageState extends State<WorktopPage>
     );
   }
 
-  doctorInfoWidget(DoctorDetailInfoEntity doctorInfoEntity) {
+  doctorAvatarWidget(DoctorDetailInfoEntity doctorInfoEntity) {
     var avatar;
     if (doctorInfoEntity?.fullFacePhoto?.url != null) {
-      avatar = Image.network(
-        doctorInfoEntity.fullFacePhoto.url,
+      avatar = ImageWidget(
+        url: doctorInfoEntity.fullFacePhoto.url,
         width: 80,
+        height: 80,
         fit: BoxFit.fill,
       );
     } else {
@@ -225,30 +173,38 @@ class _WorktopPageState extends State<WorktopPage>
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   children: [
-                    Text(doctorInfoEntity?.doctorName ?? '',
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      children: [
+                        Text(
+                          doctorInfoEntity?.doctorName ?? '',
+                          style: TextStyle(
+                              fontSize: 22,
+                              color: ThemeColor.colorFF222222,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        if (doctorInfoEntity != null)
+                          _buildAuthStatusWidget(doctorInfoEntity),
+                      ],
+                    ),
+                    Text(
+                      doctorInfoEntity?.jobGradeName ?? '',
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: ThemeColor.colorFF222222,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(
+                        "欢迎来到易学术",
                         style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 14,
                             color: ThemeColor.colorFF222222,
-                            fontWeight: FontWeight.bold)),
-                    _buildAuthStatusWidget(doctorInfoEntity),
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ],
-                ),
-                Text(
-                  doctorInfoEntity?.jobGradeName ?? '',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: ThemeColor.colorFF222222,
-                      fontWeight: FontWeight.bold),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 5),
-                  child: Text(
-                    "欢迎来到易学术",
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: ThemeColor.colorFF222222,
-                        fontWeight: FontWeight.bold),
-                  ),
                 ),
               ],
             ),
@@ -351,7 +307,11 @@ class _WorktopPageState extends State<WorktopPage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                doctorInfoWidget(entity?.doctorInfoEntity),
+                Consumer<UserInfoViewModel>(
+                  builder: (_, model, __) {
+                    return doctorAvatarWidget(model.data);
+                  },
+                ),
                 Container(
                   margin: EdgeInsets.only(top: 13),
                   child: Text(

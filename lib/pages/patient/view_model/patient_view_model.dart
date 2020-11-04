@@ -6,11 +6,12 @@ import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 
 class PatientListViewModel extends ViewStateRefreshListModel {
-  PatientListViewModel();
-
+  String patientName;
+  PatientListViewModel(this.patientName);
   @override
   Future<List<PatientModel>> loadData({int pageNum}) async {
-    var list = await loadPatientList({'ps': 10, 'pn': pageNum});
+    var list = await loadPatientList(
+        {'ps': 10, 'pn': pageNum, 'patientName': patientName});
     return list['records']
         .map<PatientModel>((item) => PatientModel.fromJson(item))
         .toList();

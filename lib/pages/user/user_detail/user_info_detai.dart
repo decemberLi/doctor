@@ -2,11 +2,13 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
+import 'package:doctor/pages/qualification/doctor_physician_qualification_page.dart';
 import 'package:doctor/pages/qualification/model/config_data_entity.dart';
 import 'package:doctor/pages/qualification/view_model/doctor_qualification_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
+import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -36,6 +38,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   DoctorQualificationViewModel _model = DoctorQualificationViewModel();
   SearchWidget<HospitalEntity> _hospitalSearchWidget;
   dynamic args;
+  bool qualification = false;
   List departments = [];
   List doctorTitle = [];
 
@@ -354,6 +357,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     final data = ModalRoute.of(context).settings.arguments as Map;
     if (args == null) {
       args = data['doctorData'];
+      qualification = data['qualification'] ?? false;
     }
 
     bool doctorStatus = args['authStatus'] == 'WAIT_VERIFY';
@@ -367,37 +371,120 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         elevation: 1,
       ),
       resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          Card(
-            margin: EdgeInsets.only(left: 16, right: 16, top: 12),
-            child: Column(
-              children: [
-                infoItem(
-                    '头像', args['fullFacePhoto'], doctorStatus, 'photo', null),
-                infoItem('姓名', args['doctorName'], doctorStatus, 'edit', null),
-                infoItem('性别', args['sex'] == 0 ? '女' : '男', doctorStatus,
-                    'picker', args['sex']),
-                infoItem(
-                    '医院', args['hospitalName'], doctorStatus, 'hospital', null),
-                infoItem('科室', args['departmentsName'], doctorStatus, 'picker',
-                    args['departmentsCode']),
-                infoItem('职称', args['jobGradeName'], doctorStatus, 'picker',
-                    args['jobGradeCode']),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildRejectInfoIfNeeded(),
+            _buildNoticeInfoIfNeeded(),
+            Card(
+              margin: EdgeInsets.only(left: 16, right: 16, top: 12),
+              child: Column(
+                children: [
+                  !qualification
+                      ? infoItem('头像', args['fullFacePhoto'], doctorStatus,
+                      'photo', null)
+                      : Container(),
+                  infoItem('姓名', args['doctorName'], doctorStatus, 'edit', null),
+                  infoItem('性别', args['sex'] == 0 ? '女' : '男', doctorStatus,
+                      'picker', args['sex']),
+                  infoItem(
+                      '医院', args['hospitalName'], doctorStatus, 'hospital', null),
+                  infoItem('科室', args['departmentsName'], doctorStatus, 'picker',
+                      args['departmentsCode']),
+                  infoItem('职称', args['jobGradeName'], doctorStatus, 'picker',
+                      args['jobGradeCode']),
+                ],
+              ),
             ),
-          ),
-          Card(
-            margin: EdgeInsets.only(left: 16, right: 16, top: 12),
-            child: Column(
-              children: [
-                infoItem('个人简介', args['briefIntroduction'], true, 'edit', null),
-                infoItem('擅长疾病', args['speciality'], true, 'edit', null),
-              ],
-            ),
-          ),
-        ],
+            !qualification
+                ? Card(
+              margin: EdgeInsets.only(left: 16, right: 16, top: 12),
+              child: Column(
+                children: [
+                  infoItem('个人简介', args['briefIntroduction'], true, 'edit',
+                      null),
+                  infoItem('擅长疾病', args['speciality'], true, 'edit', null),
+                ],
+              ),
+            )
+                : Container(),
+            _buildNextBtnIfNeeded(),
+          ],
+        ),
       ),
     );
+  }
+
+  _buildNextBtnIfNeeded() {
+    if (qualification) {
+      return Container(
+        margin: EdgeInsets.only(top: 36,bottom: 36),
+        child: AceButton(
+          text: '下一步',
+          onPressed: () async {
+            var needPop = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PhysicianQualificationWidget()));
+            if (needPop) {
+              Navigator.pop(context);
+            }
+          },
+        ),
+      );
+    }
+    return Container();
+  }
+
+  _buildNoticeInfoIfNeeded() {
+    if (qualification) {
+      // 确认基本信息提示
+      TextStyle style =
+          const TextStyle(color: ThemeColor.colorFF222222, fontSize: 12);
+      return Container(
+        width: double.infinity,
+        margin: EdgeInsets.only(left: 26, top: 10, right: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('确认基础信息', style: style),
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Text('确认基础信息后，方可进行医师资质认证', style: style),
+            ),
+            Text('请您放心填写，一下信息仅供认证使用，我们将严格保密', style: style)
+          ],
+        ),
+      );
+    }
+    return Container();
+  }
+
+  _buildRejectInfoIfNeeded() {
+
+    if (qualification) {
+      // 确认基本信息提示
+      return Container(
+        width: double.infinity,
+        margin: EdgeInsets.only(left: 15, top: 10, right: 16),
+        child: Card(
+          child: Container(
+            margin: EdgeInsets.only(left: 15, top: 15, bottom: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('驳回理由',
+                    style: TextStyle(
+                        color: ThemeColor.primaryColor, fontSize: 12)),
+                Text('请您放心填写，一下信息仅供认证使用，我们将严格保密',
+                    style:
+                        TextStyle(color: ThemeColor.primaryColor, fontSize: 12))
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    return Container();
   }
 }

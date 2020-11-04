@@ -28,8 +28,14 @@ class ResourceDetailPage extends StatefulWidget {
   final meetingStartTime;
   final meetingEndTime;
   final taskDetailId;
-  ResourceDetailPage(this.learnPlanId, this.resourceId, this.favoriteId,
-      this.taskTemplate, this.meetingStartTime, this.meetingEndTime,this.taskDetailId);
+  ResourceDetailPage(
+      this.learnPlanId,
+      this.resourceId,
+      this.favoriteId,
+      this.taskTemplate,
+      this.meetingStartTime,
+      this.meetingEndTime,
+      this.taskDetailId);
   @override
   _ResourceDetailPageState createState() => _ResourceDetailPageState();
 }
@@ -75,7 +81,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       return Article(data, _clickWebView);
     }
     if (data.resourceType == 'VIDEO') {
-      return VideoDetail(data, openTimer, closeTimer,widget.meetingStartTime,widget.meetingEndTime,widget.taskDetailId,widget.learnPlanId);
+      return VideoDetail(data, openTimer, closeTimer, widget.meetingStartTime,
+          widget.meetingEndTime, widget.taskDetailId, widget.learnPlanId);
     }
     if (data.contentType == 'ATTACHMENT') {
       return Attacement(data, openTimer, closeTimer, _clickWebView);

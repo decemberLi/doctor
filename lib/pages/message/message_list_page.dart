@@ -5,6 +5,7 @@ import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -69,14 +70,10 @@ class _MessageListPageState extends State<MessageListPage> {
                 children: [
                   Stack(
                     children: [
-                      Image.asset(
-                        'assets/images/avatar.png',
-                        width: 40,
-                        height: 40,
-                      ),
+                      _icon(entity),
                       Positioned(
-                          right: 5,
-                          top: -1,
+                          right: 3,
+                          top: 0,
                           child: Container(
                             // padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -93,41 +90,44 @@ class _MessageListPageState extends State<MessageListPage> {
                     ],
                   ),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                entity?.messageTitle ?? '',
-                                textDirection: TextDirection.ltr,
-                                textAlign: TextAlign.left,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    color: Color(0xFF0B0B0B), fontSize: 14),
+                    child: Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  entity?.messageTitle ?? '',
+                                  textDirection: TextDirection.ltr,
+                                  textAlign: TextAlign.left,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Color(0xFF0B0B0B), fontSize: 14),
+                                ),
                               ),
-                            ),
-                            Text(
-                              _dateFormat(entity?.createTime),
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                  color: Color(0xFF0B0B0B), fontSize: 10),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 5),
-                          child: Text(
-                            entity?.messageContent ?? '',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: true,
+                              Text(
+                                _dateFormat(entity?.createTime),
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                    color: Color(0xFF0B0B0B), fontSize: 10),
+                              ),
+                            ],
                           ),
-                        )
-                      ],
+                          Container(
+                            margin: EdgeInsets.only(top: 5),
+                            child: Text(
+                              entity?.messageContent ?? '',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -179,6 +179,43 @@ class _MessageListPageState extends State<MessageListPage> {
     );
   }
 
+  _icon(MessageListEntity entity) {
+    if (entity.bizType == 'DOCTOR_RE_LEARN' ||
+        entity.bizType == 'PRESCRIPTION_REJECT' ||
+        entity.bizType == 'AUTH_STATUS_FAIL') {
+      return Image.asset(
+        'assets/images/reject.png',
+        width: 40,
+        height: 40,
+      );
+    }
+    if (entity.bizType == 'DOCTOR_RE_LEARN') {
+      return Image.asset(
+        'assets/images/re_visit.png',
+        width: 40,
+        height: 40,
+      );
+    }
+    if (entity.bizType == 'AUTH_STATUS_PASS') {
+      return Image.asset(
+        'assets/images/pass.png',
+        width: 40,
+        height: 40,
+      );
+    }
+    var image = Image.network(
+      entity.createUserHeadPic,
+      width: 40,
+      height: 40,
+    );
+
+    return ImageWidget(
+      url: entity.createUserHeadPic,
+      width: 40,
+      height: 40,
+    );
+  }
+
   _dateFormat(num timeMillis) {
     if (timeMillis == null) {
       return '';
@@ -214,9 +251,14 @@ class _MessageListPageState extends State<MessageListPage> {
     if (type == MessageType.TYPE_SYSTEM) {
       Navigator.pushNamed(context, RouteManager.QUALIFICATION_PAGE);
     } else if (type == MessageType.TYPE_LEAN_PLAN) {
-      Navigator.pushNamed(context, RouteManager.LEARN_DETAIL);
+      Navigator.pushNamed(context, RouteManager.LEARN_DETAIL, arguments: {
+        'learnPlanId': entity.params['learnPlanId'],
+      });
     } else if (type == MessageType.TYPE_PRESCRIPTION) {
-      Navigator.pushNamed(context, RouteManager.PRESCRIPTION_DETAIL);
+      Navigator.pushNamed(context, RouteManager.PRESCRIPTION_DETAIL,
+          arguments: {
+            'prescriptionNo': entity.params['prescriptionNo'],
+          });
     } else if (type == MessageType.TYPE_INTERACTIVE) {
       Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
         "resourceId": entity.params['resourceId'],
