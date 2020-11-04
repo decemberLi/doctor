@@ -106,7 +106,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                                 val.length < 6 ? '请输入6位数字密码' : null,
                             onSaved: (val) => _password = val,
                             obscureText: true,
-                            keyboardType: TextInputType.text,
+                            keyboardType: TextInputType.number,
                             autocorrect: false,
                             style: loginInputStyle,
                           ),
