@@ -65,6 +65,6 @@ class RelativeDateFormat {
   }
 
   static num toYears(num date) {
-    return toMonths(date) / 365;
+    return toMonths(date) / 12;
   }
 }

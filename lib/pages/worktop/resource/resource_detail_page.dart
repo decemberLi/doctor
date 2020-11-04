@@ -58,7 +58,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   bool _addFeedback = false; //撰写评论
   String feedbackType;
   bool isKeyboardActived = false; //当前键盘是否激活
-
+  int backfocus = 0; //点击返回按钮状态，第二次点击直接返回
   Widget resourceRender(ResourceModel data) {
     void openTimer() {
       //需要记录浏览时间
@@ -601,7 +601,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                   left: 0,
                   right: 0,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
-                      ? MediaQuery.of(context).viewInsets.bottom - 115
+                      ? MediaQuery.of(context).viewInsets.bottom - 100
                       : 115,
                   child: Column(
                     children: [
@@ -782,6 +782,12 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
           ),
         ),
         onWillPop: () {
+          if (backfocus == 1) {
+            //第二次点击返回直接退出页面
+            Navigator.pop(context);
+          } else {
+            backfocus = backfocus + 1;
+          }
           if (_timer != null) {
             _timer.cancel();
           }
