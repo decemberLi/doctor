@@ -33,6 +33,10 @@ class _HomePageState extends State<HomePage>
     // TestPage()
   ];
 
+  initData() async {
+    await AppUpdateHelper.checkUpdate(context);
+  }
+
   void onTabTapped(int index) {
     int preTabIndex = _currentIndex;
     // TODO: 接RDM控制处方是否可见
@@ -156,12 +160,12 @@ class _HomePageState extends State<HomePage>
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       this.initDoctorInfo();
     });
+    initData();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    AppUpdateHelper.checkUpdate(context);
     return Scaffold(
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,

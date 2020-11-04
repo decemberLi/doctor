@@ -21,6 +21,7 @@ class ViewStateWidget extends StatelessWidget {
   final Widget buttonText;
   final String buttonTextData;
   final VoidCallback onPressed;
+  final isShowRefreshBtn;
 
   ViewStateWidget(
       {Key key,
@@ -29,7 +30,8 @@ class ViewStateWidget extends StatelessWidget {
       this.message,
       this.buttonText,
       this.onPressed,
-      this.buttonTextData})
+      this.buttonTextData,
+      this.isShowRefreshBtn = true})
       : super(key: key);
 
   @override
@@ -68,13 +70,15 @@ class ViewStateWidget extends StatelessWidget {
             ],
           ),
         ),
-        Center(
-          child: ViewStateButton(
-            child: buttonText,
-            textData: buttonTextData,
-            onPressed: onPressed,
-          ),
-        ),
+        isShowRefreshBtn
+            ? Center(
+                child: ViewStateButton(
+                  child: buttonText,
+                  textData: buttonTextData,
+                  onPressed: onPressed,
+                ),
+              )
+            : Container(),
       ],
     );
   }
@@ -124,9 +128,15 @@ class ViewStateEmptyWidget extends StatelessWidget {
   final Widget image;
   final Widget buttonText;
   final VoidCallback onPressed;
+  final bool isShowRefreshBtn;
 
   const ViewStateEmptyWidget(
-      {Key key, this.image, this.message, this.buttonText, this.onPressed})
+      {Key key,
+      this.image,
+      this.message,
+      this.buttonText,
+      this.onPressed,
+      this.isShowRefreshBtn = true})
       : super(key: key);
 
   @override
@@ -137,6 +147,7 @@ class ViewStateEmptyWidget extends StatelessWidget {
       title: message ?? '暂无数据',
       buttonText: buttonText,
       buttonTextData: '刷新',
+      isShowRefreshBtn: isShowRefreshBtn,
     );
   }
 }

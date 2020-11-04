@@ -139,27 +139,37 @@ class _WorktopPageState extends State<WorktopPage>
     );
   }
 
-  doctorInfoWidget() {
+  doctorInfoWidget(DoctorDetailInfoEntity doctorInfoEntity) {
+    var avatar;
+    if (doctorInfoEntity?.fullFacePhoto?.url != null) {
+      avatar = Image.network(
+        doctorInfoEntity.fullFacePhoto.url,
+        width: 80,
+        fit: BoxFit.fill,
+      );
+    } else {
+      avatar = Image.asset(
+        "assets/images/avatar.png",
+        width: 80,
+        fit: BoxFit.fill,
+      );
+    }
     // 医生个人信息部分
-    return Consumer<UserInfoViewModel>(
-      builder: (_, model, __) {
-        DoctorDetailInfoEntity doctorInfoEntity = model.data;
-        return GestureDetector(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                // decoration: DashedDecoration(dashedColor: ThemeColor.colorFF222222),
-                child: Image.asset(
-                  "assets/images/avatar.png",
-                  width: 80,
-                  fit: BoxFit.fitWidth,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            // decoration: DashedDecoration(dashedColor: ThemeColor.colorFF222222),
+            child: avatar,
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -194,14 +204,14 @@ class _WorktopPageState extends State<WorktopPage>
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          onTap: () {
-            Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
-                arguments: {'doctorData': doctorInfoEntity.toJson()});
-          },
-        );
+        ],
+      ),
+      onTap: () {
+        Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
+            arguments: {'doctorData': doctorInfoEntity.toJson()});
       },
     );
   }
@@ -295,7 +305,11 @@ class _WorktopPageState extends State<WorktopPage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                doctorInfoWidget(),
+                Consumer<UserInfoViewModel>(
+                  builder: (_, model, __) {
+                    return doctorInfoWidget(model.data);
+                  },
+                ),
                 Container(
                   margin: EdgeInsets.only(top: 13),
                   child: Text(

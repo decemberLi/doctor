@@ -183,6 +183,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
       text = '会议已结束';
       rendColor = Color(0xFFDEDEE1);
     }
+    if (time < start) {
+      return Container();
+    }
     return Container(
       alignment: Alignment.centerLeft,
       padding: EdgeInsets.fromLTRB(10, 2, 10, 2),

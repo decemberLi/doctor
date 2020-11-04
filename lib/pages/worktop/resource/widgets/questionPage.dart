@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class QuestionPage extends StatefulWidget {
   final ResourceModel data;
@@ -16,11 +17,17 @@ class QuestionPage extends StatefulWidget {
 
 class _QuestionPageState extends State<QuestionPage> {
   List _questionsInit;
+  final scrollDirection = Axis.vertical;
+  AutoScrollController controller;
+
   @override
   void initState() {
     // 在initState中发出请求
     _questionsInit = _getQuestionsInit();
-
+    controller = AutoScrollController(
+        viewportBoundaryGetter: () =>
+            Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+        axis: scrollDirection);
     super.initState();
   }
 
@@ -244,10 +251,12 @@ class _QuestionPageState extends State<QuestionPage> {
             onChanged: (val) {
               // 收起键盘
               FocusScope.of(context).requestFocus(FocusNode());
+              // 滚动页面
+              _scrollToIndex(question.index);
               if (!_dispatch) {
                 setState(() {
                   _questionsInit[question.index]['groupValue'] = val;
-                  print('选中了: ' + val);
+                  // print('选中了: ' + val);
                 });
               }
             })
@@ -300,6 +309,8 @@ class _QuestionPageState extends State<QuestionPage> {
           onChanged: (isCheck) {
             // 收起键盘
             FocusScope.of(context).requestFocus(FocusNode());
+            // 滚动页面
+            _scrollToIndex(question.index);
             if (!_dispatch) {
               _checkMaxChoise(question, optionIndex, isCheck);
             }
@@ -318,11 +329,11 @@ class _QuestionPageState extends State<QuestionPage> {
       if (isCheck) {
         _questionsInit[question.index]['checked'].add(optionId);
         question.options[optionIndex].checked = optionIndex.toString();
-        print('选中了: ' + optionId);
+        // print('选中了: ' + optionId);
       } else {
         question.options[optionIndex].checked = null;
         _questionsInit[question.index]['checked'].remove(optionId);
-        print('选中了: ' + optionId);
+        // print('选中了: ' + optionId);
       }
     });
   }
@@ -366,17 +377,32 @@ class _QuestionPageState extends State<QuestionPage> {
       enabled: _dispatch, //禁用
       onChanged: (text) {
         _questionsInit[question.index]['textField'] = text;
-        print("${question.index}输入框 组件: $text");
+        // print("${question.index}输入框 组件: $text");
+        // 滚动页面
+        _scrollToIndex(question.index);
       },
       controller: new TextEditingController(
           text: _questionsInit[question.index]['textField']), // 控制正在编辑的文本
     );
   }
 
+  // 渲染不同类型问卷题目
+  Widget _renderQuestionsType(Question questionsItem) {
+    if (questionsItem.type == 'RADIO') {
+      return _buildRadioChoiceRow(questionsItem);
+    } else if (questionsItem.type == 'CHECKBOX') {
+      return _buildCheckboxChoiceRow(questionsItem);
+    } else {
+      return _buildTextControllerRow(questionsItem);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
       // shrinkWrap: true, //是否根据子widget的总长度来设置ListView的长度，默认值为false
+      scrollDirection: scrollDirection,
+      controller: controller,
       children: <Widget>[
         GestureDetector(
             behavior: HitTestBehavior.translucent,
@@ -438,33 +464,27 @@ class _QuestionPageState extends State<QuestionPage> {
                               )),
                         ]),
                         ...(widget.data.questions).map((item) {
-                          return Container(
-                            padding: EdgeInsets.all(8),
-                            margin: EdgeInsets.fromLTRB(4, 24, 0, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                    '${item.index + 1}、${widget.data.questions[item.index].question}',
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      color: ThemeColor.colorFF444444,
-                                    )),
-                                widget.data.questions[item.index].type ==
-                                        'RADIO'
-                                    ? _buildRadioChoiceRow(
+                          return _wrapScrollTag(
+                              index: item.index,
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                margin: EdgeInsets.fromLTRB(4, 24, 0, 0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                        '${item.index + 1}、${widget.data.questions[item.index].question}',
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                          color: ThemeColor.colorFF444444,
+                                        )),
+                                    _renderQuestionsType(
                                         widget.data.questions[item.index])
-                                    : widget.data.questions[item.index].type ==
-                                            "CHECKBOX"
-                                        ? _buildCheckboxChoiceRow(
-                                            widget.data.questions[item.index])
-                                        : _buildTextControllerRow(
-                                            widget.data.questions[item.index])
-                              ],
-                            ),
-                          );
+                                  ],
+                                ),
+                              ));
                         }).toList(),
                       ],
                     ),
@@ -480,11 +500,32 @@ class _QuestionPageState extends State<QuestionPage> {
                     if (widget.data.learnStatus != 'FINISHED' &&
                         widget.data.learnPlanStatus != 'SUBMIT_LEARN') //已完成、已提交
                       SizedBox(
-                        height: 130,
+                        height: 360,
                       ),
                   ]),
             ))
       ],
     );
   }
+
+  // 滚动定位
+
+  int scrollTocounter = -1;
+  Future _scrollToIndex(counter) async {
+    if (counter != scrollTocounter) {
+      print('$scrollTocounter----滚动定位：$counter');
+      await controller.scrollToIndex(counter,
+          preferPosition: AutoScrollPosition.begin);
+      controller.highlight(counter);
+      scrollTocounter = counter;
+    }
+  }
+
+  Widget _wrapScrollTag({int index, Widget child}) => AutoScrollTag(
+        key: ValueKey(index),
+        controller: controller,
+        index: index,
+        child: child,
+        highlightColor: Colors.black.withOpacity(0.02),
+      );
 }
