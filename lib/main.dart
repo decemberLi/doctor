@@ -6,6 +6,7 @@ import 'package:doctor/route/navigation_service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/pages/home_page.dart';
@@ -13,18 +14,28 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
   await AppUtils.init();
   await SessionManager.init();
-  runApp(MyApp());
+  dynamic version = await PlatformUtils.getAppVersion();
+  var reference = await SharedPreferences.getInstance();
+  var lastVerson = reference.getString('version');
+  if (lastVerson == null || lastVerson != version) {
+    reference.setString('version', version);
+  }
+  bool showGuide = lastVerson != version;
+  runApp(MyApp({'showGuide': showGuide}));
 }
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 class MyApp extends StatelessWidget {
+  final showGuide;
+  MyApp(this.showGuide);
   @override
   Widget build(BuildContext context) {
     String session = SessionManager().getSession();
@@ -72,7 +83,8 @@ class MyApp extends StatelessWidget {
         ],
         navigatorKey: NavigationService().navigatorKey,
         routes: RouteManager.routes,
-        initialRoute: session == null ? RouteManager.GUIDE : RouteManager.HOME,
+        initialRoute:
+            showGuide['showGuide'] ? RouteManager.GUIDE : RouteManager.HOME,
         builder: (BuildContext context, Widget child) {
           /// 确保 loading 组件能覆盖在其他组件之上.
           return FlutterEasyLoading(
