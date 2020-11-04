@@ -32,8 +32,6 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
   final ImagePicker _picker = ImagePicker();
   PickedFile _selectVideoData;
 
-  String _upDoctorName;
-  String _upTaskName;
   String _doctorName;
   String _taskName;
 
@@ -168,8 +166,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       await addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
-        'videoTitle': _upTaskName,
-        'presenter': _upDoctorName,
+        'videoTitle': _taskName,
+        'presenter': _doctorName,
         'videoOssId': entity != null ? entity.ossId : data.videoOssId,
       }).then((res) {
         EasyLoading.showToast('提交成功');
@@ -183,6 +181,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
 
           // Navigator.of(context).pushNamed(RouteManager.LEARN_PAGE);
         });
+      }).catchError((error) {
+        EasyLoading.showToast(error.errorMsg);
       });
     }
   }
@@ -195,9 +195,6 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
     if (obj != null) {
       learnPlanId = obj["learnPlanId"].toString();
       resourceId = obj['resourceId'].toString();
-
-      // _upDoctorName = obj['doctorName'];
-      // _upTaskName = obj['taskName'];
     }
 
     return Scaffold(
@@ -217,20 +214,20 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
               // }
               var data = model.data;
 
-              var _showDoctorName = _upDoctorName;
-              var _showTaskName = _upTaskName;
+              var _showDoctorName = _doctorName;
+              var _showTaskName = _taskName;
               if (data != null && data?.videoTitle != null) {
-                if (_upTaskName == null && data?.videoTitle != null) {
+                if (_taskName == null && data?.videoTitle != null) {
                   _showTaskName = data.videoTitle;
                 }
-                if (_upDoctorName == null && data?.presenter != null) {
+                if (_doctorName == null && data?.presenter != null) {
                   _showDoctorName = data.presenter;
                 }
               } else {
-                if (_upTaskName == null) {
+                if (_taskName == null) {
                   _showTaskName = obj['taskName'];
                 }
-                if (_upDoctorName == null) {
+                if (_doctorName == null) {
                   _showDoctorName = obj['doctorName'];
                 }
               }
@@ -239,10 +236,6 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                   onTap: () {
                     // 触摸收起键盘
                     FocusScope.of(context).requestFocus(FocusNode());
-                    setState(() {
-                      _upDoctorName = _doctorName;
-                      _upTaskName = _taskName;
-                    });
                   },
                   child: Container(
                     alignment: Alignment.topCenter,

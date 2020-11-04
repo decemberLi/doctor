@@ -5,6 +5,7 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class QuestionPage extends StatefulWidget {
@@ -351,6 +352,9 @@ class _QuestionPageState extends State<QuestionPage> {
       cursorColor: const Color(0xFFFE7C30),
       cursorWidth: 2.0,
       keyboardType: TextInputType.multiline, //多行
+      inputFormatters: <TextInputFormatter>[
+        LengthLimitingTextInputFormatter(200) //限制长度200
+      ],
       decoration: InputDecoration(
         hintText: "请输入",
         contentPadding: EdgeInsets.all(10.0),
