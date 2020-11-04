@@ -120,6 +120,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                 height: 40,
                 alignment: Alignment.centerRight,
                 child: CircleAvatar(
+                  backgroundColor: Colors.white,
                   backgroundImage: value == null
                       ? AssetImage(
                           "assets/images/avatar.png",
