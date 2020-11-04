@@ -28,24 +28,20 @@ class AppUpdateHelper {
           ),
           actions: <Widget>[
             FlatButton(
-              child: GestureDetector(
-                child: Expanded(
-                  child: Text(
-                    "稍后再说",
-                    style: TextStyle(
-                      color: ThemeColor.primaryColor,
-                    ),
+              child: Expanded(
+                child: Text(
+                  "稍后再说",
+                  style: TextStyle(
+                    color: ThemeColor.primaryColor,
                   ),
                 ),
-                onTap: () {
-                  _record();
-                },
               ),
               onPressed: () {
                 //关闭对话框并返回true
                 if (updateInfo.forceUpgrade) {
                   exit(0);
                 }
+                _record();
                 Navigator.pop(context);
               },
             ),
@@ -197,7 +193,7 @@ class AppUpdateHelper {
   }
 
   static checkUpdate(BuildContext context, {bool isDriving = false}) async {
-    if (!isDriving || !await needCheckUpdate()) {
+    if (!isDriving && !await needCheckUpdate()) {
       return;
     }
 

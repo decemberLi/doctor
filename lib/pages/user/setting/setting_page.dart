@@ -138,7 +138,7 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
       onTap: () {
-        AppUpdateHelper.checkUpdate(context);
+        AppUpdateHelper.checkUpdate(context, isDriving: true);
       },
     );
   }
