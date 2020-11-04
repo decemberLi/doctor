@@ -4,8 +4,7 @@ import 'package:doctor/provider/view_state_refresh_list_model.dart';
 
 HttpManager foundation = HttpManager('foundationSystem');
 
-class MessageListModel
-    extends ViewStateRefreshListModel<MessageListEntity> {
+class MessageListModel extends ViewStateRefreshListModel<MessageListEntity> {
   String msgType;
 
   MessageListModel(this.msgType);
@@ -23,5 +22,11 @@ class MessageListModel
     return result['records']
         .map<MessageListEntity>((item) => MessageListEntity.fromJson(item))
         .toList();
+  }
+
+  Future mark(String messageId) async {
+    await foundation.post('/message/update-status',params: {
+      'messageId':messageId
+    }, showLoading: false);
   }
 }

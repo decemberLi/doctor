@@ -8,10 +8,10 @@ class MessageListEntity {
   String messageContent;
   num createTime;
   bool readed;
+  num messageId;
 
-
-  MessageListEntity(
-      this.messageTitle, this.messageContent, this.createTime, this.readed);
+  MessageListEntity(this.messageTitle, this.messageContent, this.createTime,
+      this.readed, this.messageId);
 
   factory MessageListEntity.create() =>
       _$MessageListEntityFromJson(Map<String, dynamic>());

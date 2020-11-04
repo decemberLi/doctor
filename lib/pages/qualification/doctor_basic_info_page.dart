@@ -315,8 +315,8 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
     }
     var authStatus = data.doctorDetailInfo.authStatus;
     if (authStatus == 'PASS' || authStatus == 'VERIFING') {
-      await Navigator.pushNamed(context, RouteManager.QUALIFICATION_AUTH_STATUS,
-          arguments: {'authStatus': authStatus});
+      // await Navigator.pushNamed(context, RouteManager.QUALIFICATION_AUTH_STATUS,
+      //     arguments: {'authStatus': authStatus});
       // Navigator.pop(context);
     }
   }
