@@ -16,8 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppUpdateHelper {
-  static Future _downloadApp(BuildContext context,
-      AppUpdateInfo appUpdateInfo) async {
+  static Future _downloadApp(
+      BuildContext context, AppUpdateInfo appUpdateInfo) async {
     // var url =
     //     'https://medclouds-dev.oss-cn-chengdu.aliyuncs.com/Public-file/DOCTOR_APK/1.12/%E6%98%93%E5%AD%A6%E6%9C%AF-1.12.apk'; //appUpdateInfo.downloadUrl;
     var url = appUpdateInfo.downloadUrl;
@@ -48,39 +48,38 @@ class AppUpdateHelper {
     }
   }
 
-  static _showReDownloadAlertDialog(context,
-      AppUpdateInfo appUpdateInfo) async {
+  static _showReDownloadAlertDialog(
+      context, AppUpdateInfo appUpdateInfo) async {
     return await showDialog(
       context: context,
-      builder: (context) =>
-          AlertDialog(
-            content: Text(appUpdateInfo.appContent),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('取消'),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: Text(
-                  '重新下载',
-                ),
-              ),
-              FlatButton(
-                onPressed: () async {
-                  Navigator.of(context).pop(false);
-                },
-                child: Text('安装'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        content: Text(appUpdateInfo.appContent),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('取消'),
           ),
+          SizedBox(
+            width: 20,
+          ),
+          FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: Text(
+              '重新下载',
+            ),
+          ),
+          FlatButton(
+            onPressed: () async {
+              Navigator.of(context).pop(false);
+            },
+            child: Text('安装'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -113,9 +112,9 @@ class AppUpdateHelper {
                   downloading = true;
                   Dio().download(url, path, cancelToken: cancelToken,
                       onReceiveProgress: (progress, total) {
-                        debugPrint('value--${progress / total}');
-                        notifier.value = progress / total;
-                      }).then((Response response) {
+                    debugPrint('value--${progress / total}');
+                    notifier.value = progress / total;
+                  }).then((Response response) {
                     Navigator.pop(context, true);
                   }).catchError((onError) {
                     EasyLoading.showToast('下载失败');
@@ -144,18 +143,23 @@ class AppUpdateHelper {
   static checkUpdate(BuildContext context, {bool isDriving = false}) async {
     AppUpdateInfo updateInfo = await AppRepository.checkUpdate();
     if (updateInfo == null) {
+      print('no new version, return;');
       return;
     }
 
     if (updateInfo.forceUpgrade) {
+      print('find force upgrade version, show dialog');
       _showDialog(context, updateInfo);
       return;
     }
 
     if (!isDriving && !await needCheckUpdate()) {
+      print(
+          'condition: ${!isDriving && !await needCheckUpdate()}, don\'t show dialog ');
       return;
     }
 
+    print('show dialog');
     _showDialog(context, updateInfo);
   }
 
@@ -163,8 +167,7 @@ class AppUpdateHelper {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) =>
-            AppUpdateDialog(updateInfo, onPressed: () async {
+        builder: (context) => AppUpdateDialog(updateInfo, onPressed: () async {
               if (Platform.isAndroid) {
                 print('download ... ');
                 if (await _showNetDialog(context, updateInfo)) {
@@ -177,8 +180,8 @@ class AppUpdateHelper {
             }));
   }
 
-  static Future<bool> _showNetDialog(BuildContext context,
-      AppUpdateInfo updateInfo) {
+  static Future<bool> _showNetDialog(
+      BuildContext context, AppUpdateInfo updateInfo) {
     /// 显示完善信息弹窗
     return showCupertinoDialog<bool>(
       context: context,
@@ -186,8 +189,8 @@ class AppUpdateHelper {
         return CupertinoAlertDialog(
           content: Container(
             padding: EdgeInsets.only(top: 12),
-            child:
-            Text("将使用移动网络下载最新安装包，大概消耗移动流量${updateInfo.packageSize}M,现在下载吗？"),
+            child: Text(
+                "将使用移动网络下载最新安装包，大概消耗移动流量${updateInfo.packageSize}M,现在下载吗？"),
           ),
           actions: <Widget>[
             FlatButton(
@@ -235,16 +238,14 @@ class AppUpdateHelper {
     var reference = await SharedPreferences.getInstance();
     var lastTime = reference.getInt('app_update_time');
     if (lastTime == null) {
+      print('last save -> app_update_time is null');
       return true;
     }
-    var nowTime = DateTime
-        .now()
-        .millisecondsSinceEpoch;
+    var nowTime = DateTime.now().millisecondsSinceEpoch;
     var sinceTime =
-        DateTime
-            .now()
-            .subtract(Duration(days: 2))
-            .millisecondsSinceEpoch;
+        DateTime.now().subtract(Duration(days: 2)).millisecondsSinceEpoch;
+    print(
+        'last save -> app_update_time is $lastTime, nowTime is $nowTime, time condition ${nowTime - lastTime >= sinceTime}');
     return nowTime - lastTime >= sinceTime;
   }
 }
@@ -323,7 +324,7 @@ class AppUpdateDialog extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 35, right: 35, bottom: 5),
+                  padding: EdgeInsets.only(left: 35, right: 35, bottom: 5,top: 5),
                   color: Colors.white,
                   width: 208,
                   child: AceButton(
@@ -331,7 +332,7 @@ class AppUpdateDialog extends StatelessWidget {
                     width: 137,
                     height: 28,
                     onPressed: _doUpdate ??
-                            () {
+                        () {
                           print('立即升级');
                         },
                   ),
@@ -358,6 +359,7 @@ class AppUpdateDialog extends StatelessWidget {
                       exit(0);
                     }
                     _record();
+                    Navigator.pop(context);
                   },
                 ),
               ],
@@ -372,9 +374,7 @@ class AppUpdateDialog extends StatelessWidget {
 
   _record() async {
     var reference = await SharedPreferences.getInstance();
-    reference.setInt('app_update_time', DateTime
-        .now()
-        .millisecondsSinceEpoch);
+    reference.setInt('app_update_time', DateTime.now().millisecondsSinceEpoch);
   }
 
   List<Widget> _buildUpdateContentWidget(String content) {
