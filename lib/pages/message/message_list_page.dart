@@ -150,7 +150,11 @@ class _MessageListPageState extends State<MessageListPage> {
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           if (model.isError || model.isEmpty) {
-            return ViewStateEmptyWidget(onPressed: model.initData);
+            return ViewStateEmptyWidget(
+              message: '暂无消息通知',
+              onPressed: model.initData,
+              isShowRefreshBtn: false,
+            );
           }
           return SmartRefresher(
             controller: model.refreshController,
