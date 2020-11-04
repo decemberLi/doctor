@@ -75,6 +75,7 @@ class _PatientListPageState extends State<PatientListPage>
           onModelReady: (model) => model.initData(),
           builder: (context, model, child) {
             if (model.isError || model.isEmpty) {
+              model.patientName = '';
               return ViewStateEmptyWidget(onPressed: model.initData);
             }
             return Column(
