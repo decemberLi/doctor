@@ -416,7 +416,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                             Navigator.of(context).pushNamed(
                                                 RouteManager.LECTURE_VIDEOS,
                                                 arguments: {
-                                                  'reLearn':data.reLearn,
+                                                  'reLearn': data.reLearn,
                                                   'resourceId': data
                                                       .resources[0].resourceId,
                                                   'learnPlanId':
@@ -426,21 +426,27 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                 });
                                           } else {
                                             // EasyLoading.showToast('暂未开放'),
-                                            bool bindConfirm =
-                                                await confirmDialog(
-                                                    data.learnProgress);
-                                            if (bindConfirm) {
-                                              bool success =
-                                                  await model.bindLearnPlan(
-                                                learnPlanId: data.learnPlanId,
-                                              );
-                                              if (success) {
-                                                EasyLoading.showToast('提交成功');
-                                                // 延时1s执行返回
-                                                Future.delayed(
-                                                    Duration(seconds: 1), () {
-                                                  Navigator.of(context).pop();
-                                                });
+                                            if (data.learnProgress == 0) {
+                                              String _text =
+                                                  '当前学习计划尚未学习，请在学习后提交';
+                                              EasyLoading.showToast(_text);
+                                            } else {
+                                              bool bindConfirm =
+                                                  await confirmDialog(
+                                                      data.learnProgress);
+                                              if (bindConfirm) {
+                                                bool success =
+                                                    await model.bindLearnPlan(
+                                                  learnPlanId: data.learnPlanId,
+                                                );
+                                                if (success) {
+                                                  EasyLoading.showToast('提交成功');
+                                                  // 延时1s执行返回
+                                                  Future.delayed(
+                                                      Duration(seconds: 1), () {
+                                                    Navigator.of(context).pop();
+                                                  });
+                                                }
                                               }
                                             }
                                           }
