@@ -198,17 +198,31 @@ class _UserPageState extends State<UserPage> with RouteAware {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      child: doctorData['fullFacePhoto'] == null
-                          ? Image.asset(
-                              "assets/images/avatar.png",
-                              width: 80,
-                              fit: BoxFit.fitWidth,
-                            )
-                          : Image.network(
-                              doctorData['fullFacePhoto']['url'],
-                              width: 80,
-                              fit: BoxFit.fitWidth,
-                            ),
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: doctorData['fullFacePhoto'] == null
+                                ? AssetImage(
+                                    "assets/images/avatar.png",
+                                  )
+                                : NetworkImage(
+                                    doctorData['fullFacePhoto']['url'],
+                                  )),
+                      ),
+                      // child: doctorData['fullFacePhoto'] == null
+                      //     ? Image.asset(
+                      //         "assets/images/avatar.png",
+                      //         width: 80,
+                      //         fit: BoxFit.fitWidth,
+                      //       )
+                      //     : Image.network(
+                      //         doctorData['fullFacePhoto']['url'],
+                      //         width: 80,
+                      //         fit: BoxFit.fitWidth,
+                      //       ),
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 10),

@@ -29,8 +29,8 @@ class DoctorPhysicianQualificationViewModel {
     }
   }
 
-  refresh() {
-    _queryPhysician();
+  refresh() async {
+    await _queryPhysician();
     notifyDataChange();
   }
 

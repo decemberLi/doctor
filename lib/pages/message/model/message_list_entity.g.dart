@@ -12,6 +12,7 @@ MessageListEntity _$MessageListEntityFromJson(Map<String, dynamic> json) {
     json['messageContent'] as String,
     json['createTime'] as num,
     json['readed'] as bool,
+    json['messageId'] as num,
   );
 }
 
@@ -21,4 +22,5 @@ Map<String, dynamic> _$MessageListEntityToJson(MessageListEntity instance) =>
       'messageContent': instance.messageContent,
       'createTime': instance.createTime,
       'readed': instance.readed,
+      'messageId': instance.messageId,
     };

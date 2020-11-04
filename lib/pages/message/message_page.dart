@@ -16,6 +16,8 @@ class MessagePage extends StatefulWidget {
 }
 
 class _MessagePageState extends State<MessagePage> {
+
+  MessageCenterViewModel _model = MessageCenterViewModel();
   @override
   void initState() {
     super.initState();
@@ -86,7 +88,7 @@ class _MessagePageState extends State<MessagePage> {
           elevation: 0,
         ),
         body: ProviderWidget<MessageCenterViewModel>(
-          model: MessageCenterViewModel(),
+          model: _model,
           onModelReady: (model) => model.initData(),
           builder: (context, model, child) {
             var systemCount = model?.data?.systemCount ?? 0;
@@ -133,8 +135,11 @@ class _MessagePageState extends State<MessagePage> {
     return (count ?? 0) == 0 ? Colors.transparent : Colors.red;
   }
 
-  goMessageList(String type) => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MessageListPage(type)),
-      );
+  goMessageList(String type) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MessageListPage(type)),
+    );
+    _model.initData();
+  }
 }

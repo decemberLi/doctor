@@ -1,5 +1,7 @@
+import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
 import 'package:doctor/pages/qualification/view_model/doctor_qualification_view_model.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/Radio_row.dart';
@@ -38,7 +40,7 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
     height: 1,
   );
 
-  var _titleText = '填写基本信息';
+  var _titleText = '基本信息确认';
   SearchWidget<HospitalEntity> _hospitalSearchWidget;
   SearchWidget<ConfigDataEntity> _departSearchWidget;
   SearchWidget<ConfigDataEntity> _jobGradeSearchWidget;
@@ -127,6 +129,7 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
         stream: _model.stream,
         builder: (BuildContext context,
             AsyncSnapshot<DoctorQualificationModel> snapshot) {
+          _checkAuthStatus(snapshot.data);
           return _buildUi(snapshot.data);
         },
       ),
@@ -287,29 +290,35 @@ class _DoctorBasicInfoPageState extends State<DoctorBasicInfoPage> {
   }
 
   _buildNoticeMessage(DoctorQualificationModel model) {
-    bool hasBasicInfo = _model.validateBasicInfo(needShowMsg: false);
-    if (hasBasicInfo) {
-      _titleText = '基本信息确认';
-      // 确认基本信息提示
-      TextStyle style =
-          const TextStyle(color: ThemeColor.colorFF222222, fontSize: 12);
-      return Container(
-        margin: EdgeInsets.only(left: 26, top: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('确认基础信息', style: style),
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              child: Text('确认基础信息后，方可进行医师资质认证', style: style),
-            ),
-            Text('请您放心填写，一下信息仅供认证使用，我们将严格保密', style: style)
-          ],
-        ),
-      );
+    // 确认基本信息提示
+    TextStyle style =
+        const TextStyle(color: ThemeColor.colorFF222222, fontSize: 12);
+    return Container(
+      margin: EdgeInsets.only(left: 26, top: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('确认基础信息', style: style),
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: Text('确认基础信息后，方可进行医师资质认证', style: style),
+          ),
+          Text('请您放心填写，一下信息仅供认证使用，我们将严格保密', style: style)
+        ],
+      ),
+    );
+  }
+
+  void _checkAuthStatus(DoctorQualificationModel data) async {
+    if (data == null || data.doctorDetailInfo == null) {
+      return;
     }
-    _titleText = '填写基本信息';
-    return Container();
+    var authStatus = data.doctorDetailInfo.authStatus;
+    if (authStatus == 'PASS' || authStatus == 'VERIFING') {
+      // await Navigator.pushNamed(context, RouteManager.QUALIFICATION_AUTH_STATUS,
+      //     arguments: {'authStatus': authStatus});
+      // Navigator.pop(context);
+    }
   }
 }
 

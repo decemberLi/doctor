@@ -77,7 +77,7 @@ class _PhysicianQualificationWidgetState
                   Container(
                     margin: EdgeInsets.only(top: 50, bottom: 20),
                     child: AceButton(
-                        text: '提交111', onPressed: () => _model.submitData()),
+                        text: '提交', onPressed: () => _model.submitData()),
                   )
                 ],
               );
@@ -106,6 +106,7 @@ class _PhysicianQualificationWidgetState
               child: GridView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: list?.length,
+                addRepaintBoundaries:false,
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,

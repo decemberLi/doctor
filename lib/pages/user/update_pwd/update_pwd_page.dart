@@ -47,7 +47,7 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('我的资料'),
+        title: Text('修改密码'),
       ),
       // 避免键盘弹起时高度错误
       resizeToAvoidBottomInset: false,
@@ -77,8 +77,11 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
                     Container(
                       margin: EdgeInsets.fromLTRB(40, 0, 40, 44),
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        maxLength: 6,
                         decoration: InputDecoration(
                           hintText: '请输入原密码',
+                          counterText: '',
                           suffixIcon: IconButton(
                             icon: Icon(pwdOldVisible
                                 ? Icons.visibility
@@ -96,7 +99,6 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
                             : null,
                         onSaved: (val) => oldPassword = val,
                         obscureText: pwdOldVisible,
-                        keyboardType: TextInputType.text,
                         autocorrect: false,
                         style: pwdInputStyle,
                       ),
@@ -104,8 +106,10 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
                     Container(
                       margin: EdgeInsets.fromLTRB(40, 0, 40, 44),
                       child: TextFormField(
+                        maxLength: 6,
                         decoration: InputDecoration(
                           hintText: '请输入新密码',
+                          counterText: '',
                           suffixIcon: IconButton(
                             icon: Icon(pwdNewVisible
                                 ? Icons.visibility
@@ -123,7 +127,7 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
                             : null,
                         onSaved: (val) => newPassword = val,
                         obscureText: pwdNewVisible,
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.number,
                         autocorrect: false,
                         style: pwdInputStyle,
                       ),
@@ -131,8 +135,10 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
                     Container(
                       margin: EdgeInsets.fromLTRB(40, 0, 40, 44),
                       child: TextFormField(
+                        maxLength: 6,
                         decoration: InputDecoration(
                           hintText: '再次输入密码',
+                          counterText: '',
                           suffixIcon: IconButton(
                             icon: Icon(pwdConfirmVisible
                                 ? Icons.visibility
@@ -150,7 +156,7 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
                             : null,
                         onSaved: (val) => confirmPassword = val,
                         obscureText: pwdConfirmVisible,
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.number,
                         autocorrect: false,
                         style: pwdInputStyle,
                       ),

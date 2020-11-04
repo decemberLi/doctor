@@ -66,7 +66,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       updateHeadPic({'fullFacePhoto': entity}).then((res) {
         if (res is! DioError) {
           args.addAll({
-            'fullFacePhoto': {'url': entity.url}
+            'fullFacePhoto': {'url': '${args['fullFacePhoto']['url']}?status=1'}
+          });
+          setState(() {
+            args = args;
           });
           Navigator.pop(context);
         }
@@ -112,19 +115,20 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       ),
       child: ListTile(
         title: lable == '头像'
-            ? value == null
-                ? Image.asset(
-                    "assets/images/avatar.png",
-                    width: 40,
-                    height: 40,
-                    alignment: Alignment.centerRight,
-                  )
-                : Image.network(
-                    value['url'],
-                    width: 40,
-                    height: 40,
-                    alignment: Alignment.centerRight,
-                  )
+            ? Container(
+                width: 40,
+                height: 40,
+                alignment: Alignment.centerRight,
+                child: CircleAvatar(
+                  backgroundImage: value == null
+                      ? AssetImage(
+                          "assets/images/avatar.png",
+                        )
+                      : NetworkImage(
+                          value['url'],
+                        ),
+                ),
+              )
             : Text(
                 value ?? '',
                 textAlign: TextAlign.end,

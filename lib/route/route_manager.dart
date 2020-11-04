@@ -13,6 +13,7 @@ import 'package:doctor/pages/prescription/prescription_preview_page.dart';
 import 'package:doctor/pages/prescription/prescription_success_page.dart';
 import 'package:doctor/pages/prescription/prescription_template_add_page.dart';
 import 'package:doctor/pages/qualification/doctor_basic_info_page.dart';
+import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
@@ -62,6 +63,7 @@ class RouteManager {
   static const String EDIT_DOCTOR_PAGE = '/edit_user_detail';
   static const String SETTING = '/setting';
   static const String MODIFY_PWD = '/modify_pwd';
+  static const String QUALIFICATION_AUTH_STATUS = '/qualification_auth_status';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
@@ -107,6 +109,10 @@ class RouteManager {
     USERINFO_DETAIL: (context) => DoctorUserInfo(),
     SETTING: (context) => SettingPage(),
     MODIFY_PWD: (context) => UpdatePwdPage(),
+    QUALIFICATION_AUTH_STATUS: (context) {
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return DoctorPhysicianStatusPage(obj['authStatus']);
+    },
     EDIT_DOCTOR_PAGE: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return UserEditPage(

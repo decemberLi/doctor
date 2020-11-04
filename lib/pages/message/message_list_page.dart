@@ -43,12 +43,12 @@ class MessageListPage extends StatefulWidget {
 }
 
 class _MessageListPageState extends State<MessageListPage> {
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  MessageListModel _model;
 
   @override
   void initState() {
     super.initState();
+    _model = MessageListModel(widget._type);
   }
 
   @override
@@ -75,8 +75,8 @@ class _MessageListPageState extends State<MessageListPage> {
                         height: 40,
                       ),
                       Positioned(
-                          right: 15,
-                          top: 8,
+                          right: 5,
+                          top: -1,
                           child: Container(
                             // padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -214,5 +214,10 @@ class _MessageListPageState extends State<MessageListPage> {
     } else if (type == MessageType.TYPE_INTERACTIVE) {
       Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
     }
+    _model.mark('${entity.messageId}');
+    entity.readed = true;
+    setState(() {
+
+    });
   }
 }
