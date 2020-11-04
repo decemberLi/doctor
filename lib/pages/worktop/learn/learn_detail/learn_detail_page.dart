@@ -266,7 +266,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             if (data.taskTemplate == 'DOCTOR_LECTURE' &&
-                                data.reLearnReason != null)
+                                data.reLearnReason != null &&
+                                arguments['listStatus'] != 'HISTORY')
                               Container(
                                 alignment: Alignment.centerLeft,
                                 margin: EdgeInsets.fromLTRB(16, 16, 16, 0),

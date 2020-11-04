@@ -34,6 +34,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
 
   String _doctorName;
   String _taskName;
+  String _showDoctorName;
+  String _showTaskName;
 
   FocusNode taskNameFocusNode = FocusNode();
   FocusNode doctorNameFocusNode = FocusNode();
@@ -163,11 +165,20 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       OssFileEntity entity;
       if (_selectVideoData != null)
         entity = await OssService.upload(_selectVideoData.path);
+
+      var _videoTitle = _taskName;
+      var _presenter = _doctorName;
+      if (_showTaskName != null && _taskName == null) {
+        _videoTitle = _showTaskName;
+      }
+      if (_showDoctorName != null && _doctorName == null) {
+        _presenter = _showDoctorName;
+      }
       await addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
-        'videoTitle': _taskName,
-        'presenter': _doctorName,
+        'videoTitle': _videoTitle,
+        'presenter': _presenter,
         'videoOssId': entity != null ? entity.ossId : data.videoOssId,
       }).then((res) {
         EasyLoading.showToast('提交成功');
@@ -214,8 +225,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
               // }
               var data = model.data;
 
-              var _showDoctorName = _doctorName;
-              var _showTaskName = _taskName;
+              _showDoctorName = _doctorName;
+              _showTaskName = _taskName;
               if (data != null && data?.videoTitle != null) {
                 if (_taskName == null && data?.videoTitle != null) {
                   _showTaskName = data.videoTitle;
