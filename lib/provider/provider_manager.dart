@@ -1,5 +1,6 @@
 import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -14,9 +15,12 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider<PrescriptionViewModel>(
     create: (context) => PrescriptionViewModel(),
   ),
-  // TODO: 暂时将药品的列表放在全局中，后面再移到页面中
+  // 暂时将药品的列表放在全局中，后面再移到页面中
   ChangeNotifierProvider<MedicationViewModel>(
     create: (context) => MedicationViewModel(),
+  ),
+  ChangeNotifierProvider<UserInfoViewModel>(
+    create: (context) => UserInfoViewModel(),
   ),
 ];
 
