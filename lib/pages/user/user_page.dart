@@ -26,6 +26,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
     'FAIL': Color(0XFFFFBA00),
     'PASS': Color(0XFF489DFE),
   };
+
   //获取医生基本信息和收藏患者信息
   //authStatus:认证状态(WAIT_VERIFY-待认证、VERIFING-认证中、FAIL-认证失败、PASS-认证通过）
   _doctorInfo() async {
@@ -350,8 +351,11 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   messageItem('资质认证', 'assets/images/zzrz.png', () {
-                    Navigator.pushNamed(
-                        context, RouteManager.QUALIFICATION_PAGE);
+                    Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
+                        arguments: {
+                          'doctorData': doctorData,
+                          'qualification': true,
+                        });
                   }),
                   messageItem('设置', 'assets/images/setting.png', () {
                     Navigator.pushNamed(context, RouteManager.SETTING);

@@ -15,6 +15,7 @@ class MessageListEntity {
   bool deleted;
   num messageId;
   dynamic params;
+  String createUserHeadPic;
 
   MessageListEntity();
 
