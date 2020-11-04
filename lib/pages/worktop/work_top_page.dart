@@ -9,6 +9,7 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
+import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -139,12 +140,13 @@ class _WorktopPageState extends State<WorktopPage>
     );
   }
 
-  doctorInfoWidget(DoctorDetailInfoEntity doctorInfoEntity) {
+  doctorAvatarWidget(DoctorDetailInfoEntity doctorInfoEntity) {
     var avatar;
     if (doctorInfoEntity?.fullFacePhoto?.url != null) {
-      avatar = Image.network(
-        doctorInfoEntity.fullFacePhoto.url,
+      avatar = ImageWidget(
+        url: doctorInfoEntity.fullFacePhoto.url,
         width: 80,
+        height: 80,
         fit: BoxFit.fill,
       );
     } else {
@@ -307,7 +309,7 @@ class _WorktopPageState extends State<WorktopPage>
               children: [
                 Consumer<UserInfoViewModel>(
                   builder: (_, model, __) {
-                    return doctorInfoWidget(model.data);
+                    return doctorAvatarWidget(model.data);
                   },
                 ),
                 Container(
