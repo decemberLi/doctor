@@ -71,53 +71,95 @@ class _PatientListPageState extends State<PatientListPage>
         alignment: Alignment.topCenter,
         padding: EdgeInsets.zero,
         child: ProviderWidget<PatientListViewModel>(
-          model: PatientListViewModel(),
+          model: PatientListViewModel(''),
           onModelReady: (model) => model.initData(),
           builder: (context, model, child) {
             if (model.isError || model.isEmpty) {
               return ViewStateEmptyWidget(onPressed: model.initData);
             }
-            return SmartRefresher(
-              controller: model.refreshController,
-              header: ClassicHeader(),
-              footer: ClassicFooter(),
-              onRefresh: model.refresh,
-              onLoading: model.loadMore,
-              enablePullUp: true,
-              child: ListView.builder(
-                itemCount: model.list.length,
-                padding: EdgeInsets.all(16),
-                itemBuilder: (context, index) {
-                  PatientModel item = model.list[index];
-                  return GestureDetector(
-                    child: PatientListItem(item),
-                    onTap: () async {
-                      if (prescriptionNo != null) {
-                        if (prescriptionNo == 'QUICK_CREATE') {
-                          Navigator.pop(context, item.patientUserId);
-                        } else {
-                          bool bindConfirm =
-                              await confirmDialog(item.patientName);
-                          if (bindConfirm) {
-                            bool success = await model.bindPrescription(
-                              patientUserId: item.patientUserId,
-                              prescriptionNo: prescriptionNo as String,
-                            );
-                            if (success) {
-                              EasyLoading.showToast('发送成功');
-                              Navigator.of(context).pop();
+            return Column(
+              children: [
+                Container(
+                  height: 56,
+                  color: Colors.white,
+                  padding:
+                      EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
+                  child: Theme(
+                    data: new ThemeData(primaryColor: Colors.white),
+                    child: TextField(
+                      onSubmitted: (text) {
+                        model.patientName = text;
+                        model.initData();
+                      },
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(5.0),
+                        fillColor: Color(0XFFF3F5F8),
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          //未选中时候的颜色
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                          ),
+                        ),
+                        hintText: '请输入患者名字',
+                        hintStyle: TextStyle(color: Color(0xff999999)),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Color(0xff999999),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                    child: SmartRefresher(
+                  controller: model.refreshController,
+                  header: ClassicHeader(),
+                  footer: ClassicFooter(),
+                  onRefresh: model.refresh,
+                  onLoading: model.loadMore,
+                  enablePullUp: true,
+                  child: ListView.builder(
+                    itemCount: model.list.length,
+                    padding: EdgeInsets.all(16),
+                    itemBuilder: (context, index) {
+                      PatientModel item = model.list[index];
+                      return GestureDetector(
+                        child: PatientListItem(item),
+                        onTap: () async {
+                          if (prescriptionNo != null) {
+                            if (prescriptionNo == 'QUICK_CREATE') {
+                              Navigator.pop(context, item.patientUserId);
+                            } else {
+                              bool bindConfirm =
+                                  await confirmDialog(item.patientName);
+                              if (bindConfirm) {
+                                bool success = await model.bindPrescription(
+                                  patientUserId: item.patientUserId,
+                                  prescriptionNo: prescriptionNo as String,
+                                );
+                                if (success) {
+                                  EasyLoading.showToast('发送成功');
+                                  Navigator.of(context).pop();
+                                }
+                              }
                             }
+                          } else {
+                            Navigator.of(context).pushNamed(
+                                RouteManager.PATIENT_DETAIL,
+                                arguments: item.patientUserId);
                           }
-                        }
-                      } else {
-                        Navigator.of(context).pushNamed(
-                            RouteManager.PATIENT_DETAIL,
-                            arguments: item.patientUserId);
-                      }
+                        },
+                      );
                     },
-                  );
-                },
-              ),
+                  ),
+                ))
+              ],
             );
           },
         ),
