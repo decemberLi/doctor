@@ -4,6 +4,7 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 /// 渲染列表
@@ -244,6 +245,17 @@ class PlanDetailList extends StatelessWidget {
       print(item);
       tiles.add(new GestureDetector(
           onTap: () async {
+            //是会议类型
+            bool isMeetingType =
+                data.taskTemplate == 'SALON' || data.taskTemplate == 'DEPART';
+            num nowDate = DateTime.now().millisecondsSinceEpoch;
+            // 如果是会议类型，未到会议开始时间不能跳转资源页面
+            if (isMeetingType &&
+                data.meetingStartTime != null &&
+                nowDate < data.meetingStartTime) {
+              EasyLoading.showToast('当前会议尚未开始, 请在会议期间打开');
+              return;
+            }
             await Navigator.of(context)
                 .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
               "learnPlanId": data.learnPlanId,
