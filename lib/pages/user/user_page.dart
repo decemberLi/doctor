@@ -209,7 +209,8 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                     "assets/images/avatar.png",
                                   )
                                 : NetworkImage(
-                                    doctorData['fullFacePhoto']['url'],
+                                    doctorData['fullFacePhoto']['url'] +
+                                        '?status=${doctorData['fullFacePhoto']['ossId']}',
                                   )),
                       ),
                       // child: doctorData['fullFacePhoto'] == null
