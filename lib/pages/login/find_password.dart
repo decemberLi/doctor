@@ -39,9 +39,10 @@ class _FindPasswordState extends State<FindPassword> {
           'system': 'DOCTOR',
         });
         if (response is! DioError) {
-          SessionManager.loginOutHandler();
+          // SessionManager.loginOutHandler();
           Timer(Duration(seconds: 1), () {
             EasyLoading.showToast('修改密码成功，请重新登录');
+            Navigator.pop(context);
           });
         }
       }
