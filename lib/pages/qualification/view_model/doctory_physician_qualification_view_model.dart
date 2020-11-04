@@ -49,9 +49,10 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   _recognizeIdCard(Map<String, dynamic> param) async {
-    return await uCenterCommon.post(
+    var result = await uCenterCommon.post(
         '/medclouds-ucenter/mobile/idcardOcr/picture-recognition',
         params: param);
+    return result;
   }
 
   _queryPhysician() async {

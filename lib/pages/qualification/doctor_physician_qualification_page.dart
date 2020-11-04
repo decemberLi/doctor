@@ -69,6 +69,7 @@ class _PhysicianQualificationWidgetState
                 AsyncSnapshot<DoctorQualificationModel> snapshot) {
               return Column(
                 children: [
+                  _buildNoticeWidget(snapshot.data),
                   _buildAvatarWidget(snapshot.data),
                   _buildIdCardWidget(snapshot.data),
                   _buildPracticeWidget(snapshot.data),
@@ -106,7 +107,8 @@ class _PhysicianQualificationWidgetState
               child: GridView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: list?.length,
-                addRepaintBoundaries:false,
+                addRepaintBoundaries: false,
+                addSemanticIndexes: false,
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
@@ -215,41 +217,43 @@ class _PhysicianQualificationWidgetState
                     children: [
                       Row(
                         children: [
-                          GestureDetector(
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  top: 12, bottom: 10, left: 18),
-                              width: 144,
-                              height: 85,
-                              decoration: DashedDecoration(
-                                dashedColor: ThemeColor.primaryColor,
-                                borderRadius: BorderRadius.circular(8),
+                          Expanded(
+                            child: GestureDetector(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    top: 12, bottom: 10, left: 18),
+                                height: 83,
+                                decoration: DashedDecoration(
+                                  dashedColor: ThemeColor.primaryColor,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: _doLoadImage(
+                                    model?.physicianInfoEntity?.idCardLicense1,
+                                    text: '人像照片面',
+                                    aspectRatio: 144 / 85),
                               ),
-                              child: _doLoadImage(
-                                  model?.physicianInfoEntity?.idCardLicense1,
-                                  text: '人像照片面',
-                                  aspectRatio: 144 / 85),
+                              onTap: () => _selectPicture(
+                                  TypeOperator.ID_CARD_FACE_SIDE),
                             ),
-                            onTap: () =>
-                                _selectPicture(TypeOperator.ID_CARD_FACE_SIDE),
                           ),
-                          GestureDetector(
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  top: 12, left: 19, bottom: 10),
-                              width: 144,
-                              height: 85,
-                              decoration: DashedDecoration(
-                                dashedColor: ThemeColor.primaryColor,
-                                borderRadius: BorderRadius.circular(8),
+                          Expanded(
+                            child: GestureDetector(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    top: 12, left: 19, bottom: 10),
+                                height: 83,
+                                decoration: DashedDecoration(
+                                  dashedColor: ThemeColor.primaryColor,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: _doLoadImage(
+                                    model?.physicianInfoEntity?.idCardLicense2,
+                                    text: '国徽面照片',
+                                    aspectRatio: 144 / 85),
                               ),
-                              child: _doLoadImage(
-                                  model?.physicianInfoEntity?.idCardLicense2,
-                                  text: '国徽面照片',
-                                  aspectRatio: 144 / 85),
+                              onTap: () =>
+                                  _selectPicture(TypeOperator.ID_CARD_BG_SIDE),
                             ),
-                            onTap: () =>
-                                _selectPicture(TypeOperator.ID_CARD_BG_SIDE),
                           ),
                         ],
                       ),
@@ -395,7 +399,7 @@ class _PhysicianQualificationWidgetState
         hintWidget = Container();
       } else if (photo.path != null) {
         icon = AspectRatio(
-            child: Image.file(File(photo.path), fit: BoxFit.scaleDown),
+            child: Image.file(File(photo.path), fit: BoxFit.cover),
             aspectRatio: aspectRatio);
         hintWidget = Container();
       }
@@ -465,6 +469,25 @@ class _PhysicianQualificationWidgetState
     }
     var source = index == 0 ? ImageSource.camera : ImageSource.gallery;
     return await _imagePicker.getImage(source: source);
+  }
+
+  _buildNoticeWidget(DoctorQualificationModel data) {
+    var style = TextStyle(fontSize: 14, color: ThemeColor.colorFF222222);
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(left: 0, top: 10, right: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('完成医师资质认证后，将为您开通复诊开方服务', style: style),
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: Text('平台认证有效后，即可开通电子处方功能', style: style),
+          ),
+          Text('请您放心填写，以下信息仅供认证使用，我们将严格保密', style: style)
+        ],
+      ),
+    );
   }
 }
 

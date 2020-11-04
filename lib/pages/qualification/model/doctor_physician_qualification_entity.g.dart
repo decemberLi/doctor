@@ -13,7 +13,7 @@ DoctorPhysicianInfoEntity _$DoctorPhysicianInfoEntityFromJson(
     json['identityNo'] as String,
     json['identityName'] as String,
     json['identitySex'] as int,
-    json['identityDate'] as num,
+    json['identityDate'] as String,
     json['identityAddress'] as String,
     json['identityValidity'] as String,
     json['fullFacePhoto'] == null

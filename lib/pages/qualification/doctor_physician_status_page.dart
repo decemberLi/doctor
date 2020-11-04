@@ -32,7 +32,11 @@ class DoctorPhysicianStatusPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(assets,width: 120,height: 120,),
+            Image.asset(
+              assets,
+              width: 120,
+              height: 120,
+            ),
             Container(
               margin: EdgeInsets.only(top: 24),
               child: Text(
@@ -44,12 +48,13 @@ class DoctorPhysicianStatusPage extends StatelessWidget {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 28),
+              margin: EdgeInsets.only(top: 28, left: 69, right: 69),
               child: Text(
                 content,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 12,
-                  color: ThemeColor.colorFF222222,
+                  color: ThemeColor.colorFF999999,
                 ),
               ),
             )

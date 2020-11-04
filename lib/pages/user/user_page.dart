@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:doctor/main.dart';
+import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -351,6 +352,15 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   messageItem('资质认证', 'assets/images/zzrz.png', () {
+                    if (doctorData['authStatus'] == 'VERIFING' ||
+                        doctorData['authStatus'] == 'PASS') {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DoctorPhysicianStatusPage(
+                                  doctorData['authStatus'])));
+                      return;
+                    }
                     Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
                         arguments: {
                           'doctorData': doctorData,

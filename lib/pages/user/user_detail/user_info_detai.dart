@@ -479,7 +479,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   }
 
   _buildRejectInfoIfNeeded() {
-    if (_qualification) {
+    if (_qualification && args['authStatus'] == 'FAIL') {
       // 确认基本信息提示
       return Container(
         width: double.infinity,

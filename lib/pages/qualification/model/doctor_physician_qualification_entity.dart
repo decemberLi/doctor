@@ -10,7 +10,7 @@ class DoctorPhysicianInfoEntity {
   String identityNo;
   String identityName;
   int identitySex;
-  num identityDate;
+  String identityDate;
   String identityAddress;
   String identityValidity;
 
