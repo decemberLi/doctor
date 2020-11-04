@@ -90,14 +90,17 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               onPressed: () async {
-                var  result = await Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
+                var result = await Navigator.pushNamed(
+                    context, RouteManager.USERINFO_DETAIL,
                     arguments: {
                       'doctorData': model.data.toJson(),
                       'openType': 'SURE_INFO',
                     });
-                if(result){
-                  Navigator.pop(context);
-                  model.queryDoctorInfo();
+                if (result != null) {
+                  await model.queryDoctorInfo();
+                  if (model.data.basicInfoAuthStatus == 'COMPLETED') {
+                    Navigator.of(context).pop();
+                  }
                 }
               },
             ),
@@ -145,14 +148,17 @@ class _HomePageState extends State<HomePage>
               onPressed: () async {
                 //关闭对话框并返回true
                 // Navigator.of(context).pop();
-                // await Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
-                //     arguments: {
-                //       'doctorData': doctorData,
-                //       'qualification': true,
-                //     });
-                await model.queryDoctorInfo();
-                if (model.data.authStatus == 'PASS') {
-                  Navigator.of(context).pop();
+                var result = await Navigator.pushNamed(
+                    context, RouteManager.USERINFO_DETAIL,
+                    arguments: {
+                      'doctorData': model.data.toJson(),
+                      'qualification': true,
+                    });
+                if (result != null) {
+                  await model.queryDoctorInfo();
+                  if (model.data.authStatus == 'PASS') {
+                    Navigator.of(context).pop();
+                  }
                 }
               },
             ),

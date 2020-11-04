@@ -394,8 +394,14 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                       'picker', args['sex']),
                   infoItem('医院', args['hospitalName'], doctorStatus, 'hospital',
                       null),
-                  infoItem('科室', args['departmentsName'], doctorStatus,
-                      'picker', args['departmentsCode']),
+                  infoItem(
+                      '科室',
+                      args['departmentsName'],
+                      doctorStatus,
+                      'picker',
+                      args['departmentsCode'] == ''
+                          ? null
+                          : args['departmentsCode']),
                   infoItem('职称', args['jobGradeName'], doctorStatus, 'picker',
                       args['jobGradeCode']),
                 ],
