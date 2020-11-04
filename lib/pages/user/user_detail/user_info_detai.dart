@@ -370,7 +370,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       backgroundColor: Color(0XFFF9FCFF),
       appBar: AppBar(
         title: Text(
-          '基本信息确认',
+          _qualification ? '个人信息' : '基本信息确认',
         ),
         elevation: 1,
       ),

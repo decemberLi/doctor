@@ -93,6 +93,7 @@ class _PhysicianQualificationWidgetState
     String title,
     List<FacePhoto> list,
     OnItemCallback callback,
+    TypeOperator type,
   }) {
     return Container(
         color: Colors.white,
@@ -128,7 +129,7 @@ class _PhysicianQualificationWidgetState
                     child: widget,
                     onTap: () {
                       if (index == list.length - 1) {
-                        // TODO: 显示大图
+                        _showOriginPic(type);
                       } else {
                         callback(photo, index);
                       }
@@ -170,10 +171,16 @@ class _PhysicianQualificationWidgetState
                     width: 85,
                     height: 85,
                     decoration: _dashDecoration,
-                    child: Image.asset(
-                      'assets/images/avatar_sample.png',
-                      fit: BoxFit.fill,
-                      filterQuality: FilterQuality.high,
+                    child: GestureDetector(
+                      child: Image.asset(
+                        'assets/images/avatar_sample.png',
+                        fit: BoxFit.fill,
+                        filterQuality: FilterQuality.high,
+                      ),
+                      onTap: () {
+                        _showSamplePicDialog(
+                            'assets/images/sample_avatar.png', '头像');
+                      },
                     ),
                   ),
                   Container(
@@ -298,6 +305,7 @@ class _PhysicianQualificationWidgetState
     return _buildGridView(
         title: '医师执业证（至少需上传编码页和执业地点页）',
         list: list,
+        type: TypeOperator.PRACTICE_CERTIFICATES,
         callback: (FacePhoto value, index) {
           _selectPicture(TypeOperator.PRACTICE_CERTIFICATES,
               facePhoto: value, index: index);
@@ -313,6 +321,7 @@ class _PhysicianQualificationWidgetState
     return _buildGridView(
         title: '医师资格证（至少需上传头像页和毕业院校页）',
         list: list,
+        type: TypeOperator.QUALIFICATIONS,
         callback: (FacePhoto value, index) {
           _selectPicture(TypeOperator.QUALIFICATIONS,
               facePhoto: value, index: index);
@@ -328,6 +337,7 @@ class _PhysicianQualificationWidgetState
     return _buildGridView(
         title: '专业技术资格证',
         list: list,
+        type: TypeOperator.JOB_CERTIFICATES,
         callback: (FacePhoto value, index) {
           _selectPicture(TypeOperator.JOB_CERTIFICATES,
               facePhoto: value, index: index);
@@ -418,9 +428,9 @@ class _PhysicianQualificationWidgetState
       if (photo.url != null) {
         icon = Image.network(photo.url, fit: BoxFit.cover);
       } else if (photo.path != null) {
-        icon = Image.file(File(photo.path), fit: BoxFit.scaleDown);
+        icon = Image.file(File(photo.path), fit: BoxFit.cover);
       } else {
-        icon = Image.asset(photo.assetsPath, fit: BoxFit.fill);
+        icon = Image.asset(photo.assetsPath, fit: BoxFit.cover);
       }
     }
     return Container(
@@ -488,6 +498,49 @@ class _PhysicianQualificationWidgetState
         ],
       ),
     );
+  }
+
+  _showSamplePicDialog(String assetsPath, String description) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+          child: Container(
+            padding: EdgeInsets.only(left: 70, right: 70),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(assetsPath),
+                Container(
+                  margin: EdgeInsets.only(top: 16),
+                  child: Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showOriginPic(TypeOperator type) {
+    if (type == TypeOperator.QUALIFICATIONS) {
+      _showSamplePicDialog(
+          'assets/images/sample_qualifications.png', '医师资格证示例');
+    } else if (type == TypeOperator.PRACTICE_CERTIFICATES) {
+      _showSamplePicDialog(
+          'assets/images/sample_practice_certificates.png', '医师执业证示例');
+    } else if (type == TypeOperator.JOB_CERTIFICATES) {
+      _showSamplePicDialog(
+          'assets/images/sample_job_certificates.png', '专业技术资格证示例');
+    }
   }
 }
 
