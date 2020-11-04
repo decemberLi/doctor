@@ -38,7 +38,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   DoctorQualificationViewModel _model = DoctorQualificationViewModel();
   SearchWidget<HospitalEntity> _hospitalSearchWidget;
   dynamic args;
-  bool qualification = false;
+  bool _qualification = false;
+
+  // view || sure
+  String _openType;
   List departments = [];
   List doctorTitle = [];
 
@@ -357,7 +360,8 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     final data = ModalRoute.of(context).settings.arguments as Map;
     if (args == null) {
       args = data['doctorData'];
-      qualification = data['qualification'] ?? false;
+      _openType = data['openType'] ?? 'VIEW';
+      _qualification = data['qualification'] ?? false;
     }
 
     bool doctorStatus = args['authStatus'] == 'WAIT_VERIFY';
@@ -380,33 +384,35 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
               margin: EdgeInsets.only(left: 16, right: 16, top: 12),
               child: Column(
                 children: [
-                  !qualification
+                  !_qualification
                       ? infoItem('头像', args['fullFacePhoto'], doctorStatus,
-                      'photo', null)
+                          'photo', null)
                       : Container(),
-                  infoItem('姓名', args['doctorName'], doctorStatus, 'edit', null),
+                  infoItem(
+                      '姓名', args['doctorName'], doctorStatus, 'edit', null),
                   infoItem('性别', args['sex'] == 0 ? '女' : '男', doctorStatus,
                       'picker', args['sex']),
-                  infoItem(
-                      '医院', args['hospitalName'], doctorStatus, 'hospital', null),
-                  infoItem('科室', args['departmentsName'], doctorStatus, 'picker',
-                      args['departmentsCode']),
+                  infoItem('医院', args['hospitalName'], doctorStatus, 'hospital',
+                      null),
+                  infoItem('科室', args['departmentsName'], doctorStatus,
+                      'picker', args['departmentsCode']),
                   infoItem('职称', args['jobGradeName'], doctorStatus, 'picker',
                       args['jobGradeCode']),
                 ],
               ),
             ),
-            !qualification
+            !_qualification
                 ? Card(
-              margin: EdgeInsets.only(left: 16, right: 16, top: 12),
-              child: Column(
-                children: [
-                  infoItem('个人简介', args['briefIntroduction'], true, 'edit',
-                      null),
-                  infoItem('擅长疾病', args['speciality'], true, 'edit', null),
-                ],
-              ),
-            )
+                    margin: EdgeInsets.only(left: 16, right: 16, top: 12),
+                    child: Column(
+                      children: [
+                        infoItem('个人简介', args['briefIntroduction'], true,
+                            'edit', null),
+                        infoItem(
+                            '擅长疾病', args['speciality'], true, 'edit', null),
+                      ],
+                    ),
+                  )
                 : Container(),
             _buildNextBtnIfNeeded(),
           ],
@@ -416,28 +422,34 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   }
 
   _buildNextBtnIfNeeded() {
-    if (qualification) {
-      return Container(
-        margin: EdgeInsets.only(top: 36,bottom: 36),
-        child: AceButton(
-          text: '下一步',
-          onPressed: () async {
-            var needPop = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PhysicianQualificationWidget()));
-            if (needPop) {
-              Navigator.pop(context);
-            }
-          },
-        ),
-      );
+    if (_openType == 'VIEW') {
+      return Container();
     }
-    return Container();
+
+    var isSureUserInfo = _openType == 'SURE_INFO';
+    var titleText = isSureUserInfo ? '确认' : '下一步';
+
+    return Container(
+      margin: EdgeInsets.only(top: 36, bottom: 36),
+      child: AceButton(
+        text: titleText,
+        onPressed: () async {
+          if (isSureUserInfo) {
+            Navigator.pop(context, true);
+            return;
+          }
+          var needPop = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PhysicianQualificationWidget()));
+          Navigator.pop(context, needPop);
+        },
+      ),
+    );
   }
 
   _buildNoticeInfoIfNeeded() {
-    if (qualification) {
+    if (_qualification) {
       // 确认基本信息提示
       TextStyle style =
           const TextStyle(color: ThemeColor.colorFF222222, fontSize: 12);
@@ -461,8 +473,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   }
 
   _buildRejectInfoIfNeeded() {
-
-    if (qualification) {
+    if (_qualification) {
       // 确认基本信息提示
       return Container(
         width: double.infinity,

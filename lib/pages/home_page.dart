@@ -1,14 +1,14 @@
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
+import 'package:doctor/pages/user/setting/update/app_update.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/user/user_page.dart';
 import 'package:doctor/pages/worktop/work_top_page.dart';
-import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor/pages/user/setting/update/app_update.dart';
 import 'package:provider/provider.dart';
 
 /// 首页
@@ -55,12 +55,12 @@ class _HomePageState extends State<HomePage>
     await model.queryDoctorInfo();
     if (model.data != null &&
         model.data.basicInfoAuthStatus == 'NOT_COMPLETE') {
-      _showModifyUserInfoDialog();
+      _showModifyUserInfoDialog(model);
     }
   }
 
   /// 显示完善信息弹窗
-  Future<bool> _showModifyUserInfoDialog() {
+  Future<bool> _showModifyUserInfoDialog(UserInfoViewModel model) {
     return showCupertinoDialog<bool>(
       context: context,
       builder: (context) {
@@ -89,11 +89,16 @@ class _HomePageState extends State<HomePage>
                   color: ThemeColor.primaryColor,
                 ),
               ),
-              onPressed: () {
-                //关闭对话框并返回true
-                // Navigator.of(context).pop();
-                Navigator.of(context)
-                    .pushNamed(RouteManager.QUALIFICATION_PAGE);
+              onPressed: () async {
+                var  result = await Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
+                    arguments: {
+                      'doctorData': model.data.toJson(),
+                      'openType': 'SURE_INFO',
+                    });
+                if(result){
+                  Navigator.pop(context);
+                  model.queryDoctorInfo();
+                }
               },
             ),
           ],
@@ -140,8 +145,11 @@ class _HomePageState extends State<HomePage>
               onPressed: () async {
                 //关闭对话框并返回true
                 // Navigator.of(context).pop();
-                await Navigator.of(context)
-                    .pushNamed(RouteManager.QUALIFICATION_PAGE);
+                // await Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
+                //     arguments: {
+                //       'doctorData': doctorData,
+                //       'qualification': true,
+                //     });
                 await model.queryDoctorInfo();
                 if (model.data.authStatus == 'PASS') {
                   Navigator.of(context).pop();

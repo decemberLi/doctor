@@ -1,6 +1,5 @@
 import 'package:doctor/pages/message/model/message_list_entity.dart';
 import 'package:doctor/pages/message/view_model/message_list_view_model.dart';
-import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -251,13 +250,21 @@ class _MessageListPageState extends State<MessageListPage> {
     if (type == MessageType.TYPE_SYSTEM) {
       Navigator.pushNamed(context, RouteManager.QUALIFICATION_PAGE);
     } else if (type == MessageType.TYPE_LEAN_PLAN) {
+      var learnPlanId;
+      if (entity.params != null || entity.params['learnPlanId'] != null) {
+        learnPlanId = entity.params['learnPlanId'];
+      }
       Navigator.pushNamed(context, RouteManager.LEARN_DETAIL, arguments: {
-        'learnPlanId': entity.params['learnPlanId'],
+        'learnPlanId': learnPlanId,
       });
     } else if (type == MessageType.TYPE_PRESCRIPTION) {
+      var prescriptionNo;
+      if (entity.params != null || entity.params['prescriptionNo'] != null) {
+        prescriptionNo = entity.params['prescriptionNo'];
+      }
       Navigator.pushNamed(context, RouteManager.PRESCRIPTION_DETAIL,
           arguments: {
-            'prescriptionNo': entity.params['prescriptionNo'],
+            'prescriptionNo': prescriptionNo,
           });
     } else if (type == MessageType.TYPE_INTERACTIVE) {
       Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {

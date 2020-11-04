@@ -10,6 +10,7 @@ class UserInfoViewModel extends ViewStateModel {
   /// 查询医生基础信息
   Future queryDoctorInfo() async {
     data = await UCenter.queryDoctorDetailInfo();
+    notifyListeners();
   }
 
   Future modifyDoctorInfo(Map<String, dynamic> param) async {

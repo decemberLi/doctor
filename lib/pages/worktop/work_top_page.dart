@@ -173,38 +173,33 @@ class _WorktopPageState extends State<WorktopPage>
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      children: [
-                        Text(
-                          doctorInfoEntity?.doctorName ?? '',
-                          style: TextStyle(
-                              fontSize: 22,
-                              color: ThemeColor.colorFF222222,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        if (doctorInfoEntity != null)
-                          _buildAuthStatusWidget(doctorInfoEntity),
-                      ],
-                    ),
                     Text(
-                      doctorInfoEntity?.jobGradeName ?? '',
+                      doctorInfoEntity?.doctorName ?? '',
                       style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 22,
                           color: ThemeColor.colorFF222222,
                           fontWeight: FontWeight.bold),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 5),
-                      child: Text(
-                        "欢迎来到易学术",
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: ThemeColor.colorFF222222,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                    if (doctorInfoEntity != null)
+                      _buildAuthStatusWidget(doctorInfoEntity),
                   ],
+                ),
+                Text(
+                  doctorInfoEntity?.jobGradeName ?? '',
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: ThemeColor.colorFF222222,
+                      fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: Text(
+                    "欢迎来到易学术",
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: ThemeColor.colorFF222222,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),
