@@ -37,8 +37,8 @@ class AppRepository {
       'type': 'doctor'
     };
     var result = await developer.post('/dict/list-data-dict', params: param);
-    if (result != null) {
-      return result['value'];
+    if (result != null && result['records'] != null && result['records'].length == 1) {
+      return result['records'][0]['value'];
     }
     return null;
   }
