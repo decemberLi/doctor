@@ -5,13 +5,18 @@ part 'message_list_entity.g.dart';
 @JsonSerializable()
 class MessageListEntity {
   String messageTitle;
+  // 消息摘要
+  String messageAbstract;
+  // AUTH_STATUS 资质认证；PRESCRIPTION_REJECT 处方驳回；DOCTOR_RE_LEARN 再次拜访；COMMENT 被评论
+  String bizType;
   String messageContent;
   num createTime;
   bool readed;
+  bool deleted;
   num messageId;
+  dynamic params;
 
-  MessageListEntity(this.messageTitle, this.messageContent, this.createTime,
-      this.readed, this.messageId);
+  MessageListEntity();
 
   factory MessageListEntity.create() =>
       _$MessageListEntityFromJson(Map<String, dynamic>());

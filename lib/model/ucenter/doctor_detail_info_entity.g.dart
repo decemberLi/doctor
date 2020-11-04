@@ -28,7 +28,9 @@ DoctorDetailInfoEntity _$DoctorDetailInfoEntityFromJson(
     doctorId: json['doctorId'] as int,
     headPicUrl: json['headPicUrl'] as String,
     basicInfoAuthStatus: json['basicInfoAuthStatus'] as String,
-  );
+  )..fullFacePhoto = json['fullFacePhoto'] == null
+      ? null
+      : FacePhoto.fromJson(json['fullFacePhoto'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$DoctorDetailInfoEntityToJson(
@@ -52,5 +54,6 @@ Map<String, dynamic> _$DoctorDetailInfoEntityToJson(
       'rejectReson': instance.rejectReson,
       'doctorUserId': instance.doctorUserId,
       'doctorId': instance.doctorId,
+      'fullFacePhoto': instance.fullFacePhoto,
       'headPicUrl': instance.headPicUrl,
     };

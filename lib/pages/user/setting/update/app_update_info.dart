@@ -8,10 +8,10 @@ class AppUpdateInfo {
   String appContent;
   bool forceUpgrade;
   String downloadUrl;
+  String packageSize;
 
 
-  AppUpdateInfo(
-      this.appVersion, this.appContent, this.forceUpgrade, this.downloadUrl);
+  AppUpdateInfo();
 
   factory AppUpdateInfo.fromJson(Map<String, dynamic> json) =>
       _$AppUpdateInfoFromJson(json);

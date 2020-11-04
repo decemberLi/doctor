@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:doctor/model/face_photo.dart';
 
 part 'doctor_detail_info_entity.g.dart';
 
@@ -59,6 +60,9 @@ class DoctorDetailInfoEntity {
   int doctorId;
 
   /// 医生头像
+  FacePhoto fullFacePhoto;
+
+
   String headPicUrl;
 
   DoctorDetailInfoEntity({

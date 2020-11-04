@@ -7,12 +7,12 @@ part of 'app_update_info.dart';
 // **************************************************************************
 
 AppUpdateInfo _$AppUpdateInfoFromJson(Map<String, dynamic> json) {
-  return AppUpdateInfo(
-    json['appVersion'] as String,
-    json['appContent'] as String,
-    json['forceUpgrade'] as bool,
-    json['downloadUrl'] as String,
-  );
+  return AppUpdateInfo()
+    ..appVersion = json['appVersion'] as String
+    ..appContent = json['appContent'] as String
+    ..forceUpgrade = json['forceUpgrade'] as bool
+    ..downloadUrl = json['downloadUrl'] as String
+    ..packageSize = json['packageSize'] as String;
 }
 
 Map<String, dynamic> _$AppUpdateInfoToJson(AppUpdateInfo instance) =>
@@ -21,4 +21,5 @@ Map<String, dynamic> _$AppUpdateInfoToJson(AppUpdateInfo instance) =>
       'appContent': instance.appContent,
       'forceUpgrade': instance.forceUpgrade,
       'downloadUrl': instance.downloadUrl,
+      'packageSize': instance.packageSize,
     };

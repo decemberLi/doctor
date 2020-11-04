@@ -104,6 +104,8 @@ class _MessageListPageState extends State<MessageListPage> {
                                 entity?.messageTitle ?? '',
                                 textDirection: TextDirection.ltr,
                                 textAlign: TextAlign.left,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                     color: Color(0xFF0B0B0B), fontSize: 14),
                               ),
@@ -212,12 +214,13 @@ class _MessageListPageState extends State<MessageListPage> {
     } else if (type == MessageType.TYPE_PRESCRIPTION) {
       Navigator.pushNamed(context, RouteManager.PRESCRIPTION_DETAIL);
     } else if (type == MessageType.TYPE_INTERACTIVE) {
-      Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
+      Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
+        "resourceId": entity.params['resourceId'],
+        "learnPlanId": entity.params['learnPlanId'],
+      });
     }
     _model.mark('${entity.messageId}');
     entity.readed = true;
-    setState(() {
-
-    });
+    setState(() {});
   }
 }

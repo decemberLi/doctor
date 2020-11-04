@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:doctor/pages/user/setting/update/app_repository.dart';
 import 'package:doctor/pages/user/setting/update/app_update_info.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,61 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppUpdateHelper {
-  /// 显示完善信息弹窗
-  static Future<bool> _showUpdateDialog(
-      BuildContext context, AppUpdateInfo updateInfo) {
-    return showCupertinoDialog<bool>(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          content: Container(
-            padding: EdgeInsets.only(top: 12),
-            child: Text(updateInfo?.appContent ?? ''),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Expanded(
-                child: Text(
-                  "稍后再说",
-                  style: TextStyle(
-                    color: ThemeColor.primaryColor,
-                  ),
-                ),
-              ),
-              onPressed: () {
-                //关闭对话框并返回true
-                if (updateInfo.forceUpgrade) {
-                  exit(0);
-                }
-                _record();
-                Navigator.pop(context);
-              },
-            ),
-            FlatButton(
-              child: Text(
-                "马上升级",
-                style: TextStyle(
-                  color: ThemeColor.primaryColor,
-                ),
-              ),
-              onPressed: () {
-                if (Platform.isAndroid) {
-                  print('download ... ');
-                  _downloadApp(context, updateInfo);
-                  return;
-                } else {
-                  _goAppStore();
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  static Future _downloadApp(
-      BuildContext context, AppUpdateInfo appUpdateInfo) async {
+  static Future _downloadApp(BuildContext context,
+      AppUpdateInfo appUpdateInfo) async {
     // var url =
     //     'https://medclouds-dev.oss-cn-chengdu.aliyuncs.com/Public-file/DOCTOR_APK/1.12/%E6%98%93%E5%AD%A6%E6%9C%AF-1.12.apk'; //appUpdateInfo.downloadUrl;
     var url = appUpdateInfo.downloadUrl;
@@ -100,38 +48,39 @@ class AppUpdateHelper {
     }
   }
 
-  static _showReDownloadAlertDialog(
-      context, AppUpdateInfo appUpdateInfo) async {
+  static _showReDownloadAlertDialog(context,
+      AppUpdateInfo appUpdateInfo) async {
     return await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        content: Text(appUpdateInfo.appContent),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('取消'),
+      builder: (context) =>
+          AlertDialog(
+            content: Text(appUpdateInfo.appContent),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('取消'),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Text(
+                  '重新下载',
+                ),
+              ),
+              FlatButton(
+                onPressed: () async {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text('安装'),
+              ),
+            ],
           ),
-          SizedBox(
-            width: 20,
-          ),
-          FlatButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            child: Text(
-              '重新下载',
-            ),
-          ),
-          FlatButton(
-            onPressed: () async {
-              Navigator.of(context).pop(false);
-            },
-            child: Text('安装'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -155,7 +104,7 @@ class AppUpdateHelper {
             return true;
           },
           child: CupertinoAlertDialog(
-            title: Text('下载中'),
+            title: Text('请稍后，升级包下载中'),
             content: Builder(
               builder: (context) {
                 debugPrint('Downloader Builder');
@@ -164,9 +113,9 @@ class AppUpdateHelper {
                   downloading = true;
                   Dio().download(url, path, cancelToken: cancelToken,
                       onReceiveProgress: (progress, total) {
-                    debugPrint('value--${progress / total}');
-                    notifier.value = progress / total;
-                  }).then((Response response) {
+                        debugPrint('value--${progress / total}');
+                        notifier.value = progress / total;
+                      }).then((Response response) {
                     Navigator.pop(context, true);
                   }).catchError((onError) {
                     EasyLoading.showToast('下载失败');
@@ -193,15 +142,82 @@ class AppUpdateHelper {
   }
 
   static checkUpdate(BuildContext context, {bool isDriving = false}) async {
-    if (!isDriving && !await needCheckUpdate()) {
-      return;
-    }
-
     AppUpdateInfo updateInfo = await AppRepository.checkUpdate();
     if (updateInfo == null) {
       return;
     }
-    _showUpdateDialog(context, updateInfo);
+
+    if (updateInfo.forceUpgrade) {
+      _showDialog(context, updateInfo);
+      return;
+    }
+
+    if (!isDriving && !await needCheckUpdate()) {
+      return;
+    }
+
+    _showDialog(context, updateInfo);
+  }
+
+  static void _showDialog(BuildContext context, AppUpdateInfo updateInfo) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) =>
+            AppUpdateDialog(updateInfo, onPressed: () async {
+              if (Platform.isAndroid) {
+                print('download ... ');
+                if (await _showNetDialog(context, updateInfo)) {
+                  _downloadApp(context, updateInfo);
+                }
+                return;
+              } else {
+                _goAppStore();
+              }
+            }));
+  }
+
+  static Future<bool> _showNetDialog(BuildContext context,
+      AppUpdateInfo updateInfo) {
+    /// 显示完善信息弹窗
+    return showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          content: Container(
+            padding: EdgeInsets.only(top: 12),
+            child:
+            Text("将使用移动网络下载最新安装包，大概消耗移动流量${updateInfo.packageSize}M,现在下载吗？"),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                "稍后再说",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text(
+                "立即下载",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                //关闭对话框并返回true
+                // Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   static void _goAppStore() async {
@@ -215,20 +231,161 @@ class AppUpdateHelper {
     }
   }
 
-  static void _record() async {
-    var reference = await SharedPreferences.getInstance();
-    reference.setInt('app_update_time', DateTime.now().millisecondsSinceEpoch);
-  }
-
   static needCheckUpdate() async {
     var reference = await SharedPreferences.getInstance();
     var lastTime = reference.getInt('app_update_time');
     if (lastTime == null) {
       return true;
     }
-    var nowTime = DateTime.now().millisecondsSinceEpoch;
+    var nowTime = DateTime
+        .now()
+        .millisecondsSinceEpoch;
     var sinceTime =
-        DateTime.now().subtract(Duration(days: 2)).millisecondsSinceEpoch;
+        DateTime
+            .now()
+            .subtract(Duration(days: 2))
+            .millisecondsSinceEpoch;
     return nowTime - lastTime >= sinceTime;
+  }
+}
+
+class AppUpdateDialog extends StatelessWidget {
+  final AppUpdateInfo _updateInfo;
+  final VoidCallback _doUpdate;
+
+  AppUpdateDialog(this._updateInfo, {VoidCallback onPressed})
+      : _doUpdate = onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        child: Center(
+          child: Container(
+            color: Colors.transparent,
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 208,
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        'assets/images/app_update_top.png',
+                      ),
+                      Positioned(
+                        right: 16,
+                        top: 62,
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '发现新版本',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white),
+                              ),
+                              Text(
+                                '版本：${_updateInfo?.appVersion ?? ''}',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // 版本内容
+                Container(
+                  width: 208,
+                  padding: EdgeInsets.only(left: 15, bottom: 10),
+                  color: Colors.white,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '更新内容:',
+                        style: TextStyle(
+                            color: ThemeColor.colorFF222222, fontSize: 12),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 10, right: 16),
+                        color: Colors.white,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: _buildUpdateContentWidget(
+                              _updateInfo?.appContent ?? ''),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 35, right: 35, bottom: 5),
+                  color: Colors.white,
+                  width: 208,
+                  child: AceButton(
+                    text: '立即更新',
+                    width: 137,
+                    height: 28,
+                    onPressed: _doUpdate ??
+                            () {
+                          print('立即升级');
+                        },
+                  ),
+                ),
+                Container(
+                  child: Image.asset(
+                    'assets/images/app_update_bottom.png',
+                    width: 208,
+                  ),
+                ),
+                GestureDetector(
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.only(top: 36),
+                    child: Image.asset(
+                      'assets/images/close.png',
+                      width: 24,
+                      height: 24,
+                    ),
+                  ),
+                  onTap: () {
+                    //关闭对话框并返回true
+                    if (_updateInfo.forceUpgrade) {
+                      exit(0);
+                    }
+                    _record();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+        onWillPop: () {
+          print('返回键');
+          return Future.value(false);
+        });
+  }
+
+  _record() async {
+    var reference = await SharedPreferences.getInstance();
+    reference.setInt('app_update_time', DateTime
+        .now()
+        .millisecondsSinceEpoch);
+  }
+
+  List<Widget> _buildUpdateContentWidget(String content) {
+    List<Widget> list = [];
+    var allMatches = content.split(';');
+    for (var each in allMatches) {
+      var content = Text(each ?? '',
+          style: TextStyle(color: ThemeColor.colorFF222222, fontSize: 12));
+      list.add(content);
+    }
+
+    return list;
   }
 }
