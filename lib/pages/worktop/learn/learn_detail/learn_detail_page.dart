@@ -416,6 +416,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                             Navigator.of(context).pushNamed(
                                                 RouteManager.LECTURE_VIDEOS,
                                                 arguments: {
+                                                  'reLearn':data.reLearn,
                                                   'resourceId': data
                                                       .resources[0].resourceId,
                                                   'learnPlanId':

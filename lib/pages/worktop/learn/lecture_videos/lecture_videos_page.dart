@@ -203,9 +203,11 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
     dynamic obj = ModalRoute.of(context).settings.arguments;
     String learnPlanId;
     String resourceId;
+    bool reLearn;
     if (obj != null) {
       learnPlanId = obj["learnPlanId"].toString();
       resourceId = obj['resourceId'].toString();
+      reLearn = obj['reLearn'];
     }
 
     return Scaffold(
@@ -214,7 +216,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
           title: Text('讲课视频上传'),
         ),
         body: ProviderWidget<LearnRecordingModel>(
-            model: LearnRecordingModel(learnPlanId, resourceId),
+            model: LearnRecordingModel(learnPlanId, resourceId,reLearn),
             onModelReady: (model) => model.initData(),
             builder: (context, model, child) {
               if (model.isBusy) {

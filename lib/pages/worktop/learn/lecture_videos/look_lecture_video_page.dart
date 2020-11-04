@@ -104,7 +104,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
           title: Text('资料详情'),
         ),
         body: ProviderWidget<LearnRecordingModel>(
-            model: LearnRecordingModel(learnPlanId, resourceId),
+            model: LearnRecordingModel(learnPlanId, resourceId, true),
             onModelReady: (model) => model.initData(),
             builder: (context, model, child) {
               if (model.isBusy) {

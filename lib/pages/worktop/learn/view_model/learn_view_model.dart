@@ -78,21 +78,25 @@ class LearnDetailViewModel extends ViewStateModel {
 class LearnRecordingModel extends ViewStateModel {
   final String learnPlanId;
   final String resourceId;
+  final bool reLearn;
 
   LearnRecordingItem data;
 
-  LearnRecordingModel(this.learnPlanId, this.resourceId);
+  LearnRecordingModel(this.learnPlanId, this.resourceId, this.reLearn);
 
   initData() async {
-    setBusy();
-    try {
-      data = (await loadData());
-      setIdle();
-    } catch (e, s) {
-      setError(e, s);
+    if (this.reLearn) {
+      setBusy();
+      try {
+        data = (await loadData());
+        setIdle();
+      } catch (e, s) {
+        setError(e, s);
+      }
     }
-  }
 
+  }
+  
   Future<LearnRecordingItem> loadData() async {
     try {
       var data = await http.post('/doctor-lecture/detail', params: {
