@@ -70,9 +70,10 @@ class LearnListItemWiget extends StatelessWidget {
         this.item.taskTemplate == 'DEPART') {
       DateTime now = DateTime.now();
       if (now.millisecondsSinceEpoch < this.item.meetingStartTime) {
-        Duration duration = now.difference(
-            DateTime.fromMillisecondsSinceEpoch(this.item.meetingStartTime));
-        return '距离会议开始时间：${duration.inDays}天${duration.inHours - 24 * duration.inDays}小时' +
+        Duration duration =
+            DateTime.fromMillisecondsSinceEpoch(this.item.meetingStartTime)
+                .difference(now);
+        return '距离会议开始时间：${duration.inDays}天 ${duration.inHours - 24 * duration.inDays}小时 ' +
             '${duration.inMinutes - 60 * duration.inHours}分钟';
       }
     }
@@ -126,7 +127,7 @@ class LearnListItemWiget extends StatelessWidget {
   }
 
   // 会议进行中
-  Widget _meetingStatus(int end) {
+  Widget _meetingStatus(int end, num start) {
     if (listStatus == 'HISTORY') {
       return Container();
     }
@@ -136,6 +137,11 @@ class LearnListItemWiget extends StatelessWidget {
     if (time > end) {
       text = '会议已结束';
       rendColor = Color(0xFFDEDEE1);
+    }
+    if (time < start) {
+      // text = '会议未开始';
+      // rendColor = Color(0xFFDEDEE1);
+      return Container();
     }
     return LearnTextIcon(
       text: text,
@@ -219,7 +225,8 @@ class LearnListItemWiget extends StatelessWidget {
               resourceTypeListWiget,
               if (this.item.taskTemplate == 'SALON' ||
                   this.item.taskTemplate == 'DEPART')
-                _meetingStatus(this.item.meetingEndTime),
+                _meetingStatus(
+                    this.item.meetingEndTime, this.item.meetingStartTime),
             ]),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
