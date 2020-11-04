@@ -50,23 +50,25 @@ class _WorktopPageState extends State<WorktopPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return CommonStack(
-      body: ChangeNotifierProvider<WorkTopViewModel>.value(
-        value: _model,
-        child: Consumer<WorkTopViewModel>(
-          builder: (context, model, child) {
-            WorktopPageEntity entity =
-                model?.list != null && model?.list.length >= 1
-                    ? model.list[0]
-                    : null;
-            return SmartRefresher(
-              physics: AlwaysScrollableScrollPhysics(),
-              header: ClassicHeader(),
-              onRefresh: model.refresh,
-              controller: model.refreshController,
-              child: bodyWidget(entity),
-            );
-          },
+    return SafeArea(
+      child: CommonStack(
+        body: ChangeNotifierProvider<WorkTopViewModel>.value(
+          value: _model,
+          child: Consumer<WorkTopViewModel>(
+            builder: (context, model, child) {
+              WorktopPageEntity entity =
+                  model?.list != null && model?.list.length >= 1
+                      ? model.list[0]
+                      : null;
+              return SmartRefresher(
+                physics: AlwaysScrollableScrollPhysics(),
+                header: ClassicHeader(),
+                onRefresh: model.refresh,
+                controller: model.refreshController,
+                child: bodyWidget(entity),
+              );
+            },
+          ),
         ),
       ),
     );
