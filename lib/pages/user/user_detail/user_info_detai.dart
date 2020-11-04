@@ -422,7 +422,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   }
 
   _buildNextBtnIfNeeded() {
-    if (_openType == 'VIEW') {
+    if (_openType == 'VIEW' && !_qualification) {
       return Container();
     }
 
