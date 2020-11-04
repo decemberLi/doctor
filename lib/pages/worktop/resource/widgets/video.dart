@@ -73,7 +73,7 @@ class _VideoDetailState extends State<VideoDetail> {
         Container(
           padding: EdgeInsets.only(bottom: 10),
           child: Text(
-            '当前会议正在进行中\r\n您是第${widget.data.meetingSignInCount}位进入会议的医生',
+            '当前会议正在进行中\r\n您是第${widget.data.meetingSignInCount + 1}位进入会议的医生',
             textAlign: TextAlign.center,
           ),
         ),
