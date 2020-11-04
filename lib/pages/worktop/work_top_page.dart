@@ -194,6 +194,20 @@ class _WorktopPageState extends State<WorktopPage>
   }
 
   doctorInfoWidget(DoctorDetailInfoEntity doctorInfoEntity) {
+    var avatar;
+    if (doctorInfoEntity?.fullFacePhoto?.url != null) {
+      avatar = Image.network(
+        doctorInfoEntity.fullFacePhoto.url,
+        width: 80,
+        fit: BoxFit.fill,
+      );
+    } else {
+      avatar = Image.asset(
+        "assets/images/avatar.png",
+        width: 80,
+        fit: BoxFit.fill,
+      );
+    }
     // 医生个人信息部分
     return GestureDetector(
       child: Row(
@@ -201,11 +215,7 @@ class _WorktopPageState extends State<WorktopPage>
         children: [
           Container(
             // decoration: DashedDecoration(dashedColor: ThemeColor.colorFF222222),
-            child: Image.asset(
-              "assets/images/avatar.png",
-              width: 80,
-              fit: BoxFit.fitWidth,
-            ),
+            child: avatar,
           ),
           Container(
             margin: EdgeInsets.only(left: 10),
