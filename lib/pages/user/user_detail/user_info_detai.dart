@@ -152,12 +152,13 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                 textAlign: TextAlign.end,
                 softWrap: true,
                 overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 14),
               ),
         leading: Text(
           lable,
           style: TextStyle(
             color: ThemeColor.colorFF000000,
-            fontSize: 14,
+            fontSize: 16,
           ),
         ),
         enabled: type,
@@ -427,7 +428,8 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       _qualification = data['qualification'] ?? false;
     }
 
-    bool doctorStatus = args['authStatus'] == 'WAIT_VERIFY' || args['authStatus'] == 'FAIL';
+    bool doctorStatus =
+        args['authStatus'] == 'WAIT_VERIFY' || args['authStatus'] == 'FAIL';
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0XFFF9FCFF),
