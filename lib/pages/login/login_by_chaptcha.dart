@@ -118,10 +118,12 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                   Column(
                     children: <Widget>[
                       Container(
-                        margin: EdgeInsets.only(top: 40, bottom: 30),
+                        margin: EdgeInsets.only(
+                          top: 40,
+                        ),
                         alignment: Alignment.topLeft,
                         child: Text(
-                          '验证码登录',
+                          '手机快捷登录',
                           style: TextStyle(
                               color: ThemeColor.colorFF000000,
                               fontSize: 24,
@@ -129,10 +131,21 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                         ),
                       ),
                       Container(
+                        margin: EdgeInsets.only(top: 4, bottom: 16),
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          '未注册手机号验证后将自动创建账号',
+                          style: TextStyle(
+                            color: Color(0xff888888),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      Container(
                         margin: EdgeInsets.only(bottom: 30),
                         child: TextFormField(
                           autofocus: false,
-                          autovalidateMode: AutovalidateMode.always,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           maxLength: 11,
                           initialValue:
                               SessionManager().sp.getString(LAST_PHONE) ?? '',
