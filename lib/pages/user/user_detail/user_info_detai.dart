@@ -132,7 +132,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                           "assets/images/avatar.png",
                         )
                       : NetworkImage(
-                          value['url'],
+                          value['url'] + '?status=${value['ossId']}',
                         ),
                 ),
               )
