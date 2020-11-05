@@ -11,13 +11,15 @@ class DoctorPhysicianStatusPage extends StatelessWidget {
   Widget build(BuildContext context) {
     String authStatusNotice = '';
     String content = '';
-    String assets = 'assets/images/feedback.png';
+    String assets = '';
 
     if (authStatus == 'VERIFYING') {
       authStatusNotice = '资质认证审核中';
       content = '您提交的信息将会在1-3个工作日内审核完成届时审核结果会以短信通知到您';
+      assets = 'assets/images/qualification_checking.png';
     } else if (authStatus == 'PASS') {
       authStatusNotice = '已完成资质认证';
+      assets = 'assets/images/qualification_pass.png';
       content = '已为您开通复诊开方服务';
     }
 
