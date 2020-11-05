@@ -4,6 +4,7 @@ import 'package:chewie/chewie.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/utils/no_wifi_notice_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,52 +40,16 @@ class _AceVideoState extends State<AceVideo> {
           var onlyWifi = preference.getBool(ONLY_WIFI) ?? true;
           if (onlyWifi) {
             _controller.pause();
-            ConnectivityResult connectivityResult =
-                await (Connectivity().checkConnectivity());
-            if (connectivityResult == ConnectivityResult.mobile) {
-              bool confirm = await confirmDialog();
-              if (confirm) {
-                _controller.play();
-              }
+            bool confirm = await NoWifiNoticeHelper.checkConnect(
+                context: context, message: '当前使用非WIFI网络，播放将消耗流量，确认要播放该视频吗?');
+            if (confirm) {
+              _controller.play();
             }
           }
         }
       });
     }
     connectivityInitState();
-  }
-
-  Future<bool> confirmDialog() {
-    return showCupertinoDialog<bool>(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text("提示"),
-          content: Container(
-            padding: EdgeInsets.only(top: 12),
-            child: Text("当前使用非WIFI网络，播放将消耗流量，确认要播放该视频吗?"),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("取消"),
-              onPressed: () => Navigator.of(context).pop(false), // 关闭对话框
-            ),
-            FlatButton(
-              child: Text(
-                "确定",
-                style: TextStyle(
-                  color: ThemeColor.primaryColor,
-                ),
-              ),
-              onPressed: () {
-                //关闭对话框并返回true
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
 //网络初始状态
