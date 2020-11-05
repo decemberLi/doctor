@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/utils/adapt.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -19,7 +20,7 @@ class GuidePage extends StatefulWidget {
 
 class _GuidePageState extends State<GuidePage> {
   int curIndex = 0;
-
+  double _height = Adapt.screenH();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +34,8 @@ class _GuidePageState extends State<GuidePage> {
                   fit: BoxFit.cover),
               itemCount: GuidePage.images.length,
               loop: false,
-              pagination: new SwiperPagination(),
+              pagination: new SwiperPagination(
+                  margin: EdgeInsets.only(bottom: _height * 0.02)),
               onIndexChanged: (index) {
                 setState(() {
                   curIndex = index;
@@ -42,7 +44,7 @@ class _GuidePageState extends State<GuidePage> {
           Offstage(
             offstage: curIndex != GuidePage.images.length - 1,
             child: Container(
-              margin: EdgeInsets.only(bottom: 80),
+              margin: EdgeInsets.only(bottom: _height * 0.1),
               child: RaisedButton(
                 padding: EdgeInsets.fromLTRB(60, 10, 60, 10),
                 shape: RoundedRectangleBorder(
