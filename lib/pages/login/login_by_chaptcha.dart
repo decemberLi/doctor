@@ -28,12 +28,12 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
 
   Future _submit() async {
     final form = _formKey.currentState;
+    if (!_agree) {
+      EasyLoading.showToast('请阅读并同意《易学术服务协议》及《易学术隐私协议》');
+      return;
+    }
     if (form.validate()) {
       form.save();
-      if (!_agree) {
-        EasyLoading.showToast('请阅读并同意《易学术服务协议》及《易学术隐私协议》');
-        return;
-      }
       var response = await loginByCaptCha(
           {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
       if (response is! DioError) {
@@ -193,7 +193,10 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                         margin: EdgeInsets.only(bottom: 10),
                         child: AceButton(
                           text: '登录',
-                          onPressed: _agree ? _submit : null,
+                          color: _agree
+                              ? null
+                              : ThemeColor.primaryColor.withOpacity(0.5),
+                          onPressed: _submit,
                         ),
                       ),
                       Container(

@@ -25,12 +25,13 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
 
   Future _submit() async {
     final form = _formKey.currentState;
+    if (!_agree) {
+      EasyLoading.showToast('请阅读并同意《易学术服务协议》及《易学术隐私协议》');
+      return;
+    }
     if (form.validate()) {
       form.save();
-      if (!_agree) {
-        EasyLoading.showToast('请阅读并同意《易学术服务协议》及《易学术隐私协议》');
-        return;
-      }
+
       var response = await loginByPassword(
           {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
       SessionManager.loginHandler(response);
@@ -115,7 +116,10 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                           margin: EdgeInsets.only(bottom: 10),
                           child: AceButton(
                             text: '登录',
-                            onPressed: _agree ? _submit : null,
+                            color: _agree
+                                ? null
+                                : ThemeColor.primaryColor.withOpacity(0.5),
+                            onPressed: _submit,
                           ),
                         ),
                         Container(
