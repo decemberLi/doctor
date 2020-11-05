@@ -321,8 +321,8 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 borderRadius: BorderRadius.all(Radius.circular(8)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(0, 4),
+                    color: Color(0x2f000000),
+                    offset: Offset(0, 2),
                     blurRadius: 10,
                   ),
                 ],
