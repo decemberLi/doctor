@@ -98,7 +98,6 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text(APP_NAME),
       ),
       resizeToAvoidBottomInset: false,
       body: SafeArea(

@@ -43,7 +43,6 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text(APP_NAME),
       ),
       // 避免键盘弹起时高度错误
       resizeToAvoidBottomInset: false,
