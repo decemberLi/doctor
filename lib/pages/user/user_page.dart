@@ -80,7 +80,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
       ),
       child: ListTile(
         title: Text(
-          lable??'',
+          lable ?? '',
           style: TextStyle(
             color: ThemeColor.colorFF000000,
             fontSize: 14,
@@ -99,7 +99,6 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 top: 2,
                 right: 20,
                 child: Container(
-                  width: 60,
                   height: 20,
                   margin: EdgeInsets.only(left: 5),
                   alignment: Alignment.center,
@@ -108,6 +107,9 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     borderRadius: BorderRadius.all(
                       Radius.circular(28),
                     ),
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: 70,
                   ),
                   child: Text(
                     doctorStatus[doctorData['authStatus']],
