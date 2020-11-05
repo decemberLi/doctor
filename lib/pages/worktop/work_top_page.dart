@@ -16,6 +16,8 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../../main.dart';
+
 class WorktopPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -24,7 +26,7 @@ class WorktopPage extends StatefulWidget {
 }
 
 class _WorktopPageState extends State<WorktopPage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, RouteAware {
   final WorkTopViewModel _model = WorkTopViewModel();
 
   @override
@@ -44,7 +46,22 @@ class _WorktopPageState extends State<WorktopPage>
   void dispose() {
     print('work_top_dispose');
     _model.dispose();
+    routeObserver.unsubscribe(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    routeObserver.subscribe(this, ModalRoute.of(context)); //订阅
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didPopNext() async {
+    UserInfoViewModel model =
+        Provider.of<UserInfoViewModel>(context, listen: false);
+    await model.queryDoctorInfo();
+    super.didPopNext();
   }
 
   @override
