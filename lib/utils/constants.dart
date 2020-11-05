@@ -7,6 +7,8 @@ const LAST_PHONE = '$NAME-last-phone';
 
 const LOGIN_INFO = '$NAME-login-info';
 
+const ONLY_WIFI = 'only_wifi';
+
 /// 任务类型
 const Map<String, String> TASK_TEMPLATE = {
   'SALON': '会议',
