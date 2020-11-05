@@ -1,7 +1,7 @@
 // import 'package:doctor/route/route_manager.dart';
-import 'package:common_utils/common_utils.dart';
+// import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
-import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
+// import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
@@ -422,7 +422,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                   'learnPlanId':
                                                       data.learnPlanId,
                                                   'doctorName': data.doctorName,
-                                                  'taskName': data.taskName
+                                                  'taskName': data.taskName,
+                                                  'from': arguments['from'],
                                                 });
                                           } else {
                                             // EasyLoading.showToast('暂未开放'),
@@ -475,7 +476,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                       color: ThemeColor.primaryColor,
                                     ))),
                             Container(
-                                margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
                                 child: PlanDetailList(data)),
                           ],
                         ),

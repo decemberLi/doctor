@@ -87,6 +87,7 @@ class _WorktopPageState extends State<WorktopPage>
                 arguments: {
                   'learnPlanId': item.learnPlanId,
                   'listStatus': 'LEARNING',
+                  'from': 'work_top',
                 },
               );
               // 从详情页回来后刷新数据

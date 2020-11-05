@@ -61,7 +61,6 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       if (file != null && mounted) {
         _controller = VideoPlayerController.file(File(file.path));
         await _controller.setVolume(1.0);
-
         setState(() {
           _selectVideoData = file;
         });
@@ -155,7 +154,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
   }
 
   // 上传提交
-  void _onUpVideoClick(data, learnPlanId, resourceId) async {
+  void _onUpVideoClick(data, learnPlanId, resourceId, from) async {
     var _videoTitle = _taskName;
     var _presenter = _doctorName;
     if (_showTaskName != null && _taskName == null) {
@@ -182,7 +181,6 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       if (_selectVideoData != null)
         entity = await OssService.upload(_selectVideoData.path);
 
-      
       await addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
@@ -193,13 +191,17 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         EasyLoading.showToast('提交成功');
         // 延时1s执行返回
         Future.delayed(Duration(seconds: 1), () {
-          //跳转并关闭当前页面--回到列表
-          Navigator.pushReplacement(context,
-              new MaterialPageRoute(builder: (BuildContext context) {
-            return LearnPlanPage();
-          }));
+          if (from != null && from == 'work_top') {
+            // 工作台进入详情页--只有返回
+            //  第一个参数表示将要加入栈中的页面，第二个参数表示栈中要保留的页面底线
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => LearnPlanPage()),
+                ModalRoute.withName('/'));
+          } else {
+            // 点击回到learn_page，连带着之前也一起退出
+            Navigator.of(context).popUntil(ModalRoute.withName('/learn_page'));
+          }
           // Navigator.of(context).pushNamed(RouteManager.LEARN_PAGE);
-
         });
       }).catchError((error) {
         EasyLoading.showToast(error.errorMsg);
@@ -225,7 +227,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
           title: Text('讲课视频上传'),
         ),
         body: ProviderWidget<LearnRecordingModel>(
-            model: LearnRecordingModel(learnPlanId, resourceId,reLearn),
+            model: LearnRecordingModel(learnPlanId, resourceId, reLearn),
             onModelReady: (model) => model.initData(),
             builder: (context, model, child) {
               if (model.isBusy) {
@@ -278,7 +280,9 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                               child: ListTile(
                                 title: TextField(
                                   keyboardType: TextInputType.multiline, //多行
-                                  inputFormatters: [LengthLimitingTextInputFormatter(50)],
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(50)
+                                  ],
                                   textAlign: TextAlign.right,
                                   controller: TextEditingController(
                                       text: _showTaskName),
@@ -314,7 +318,9 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                               child: ListTile(
                                 title: TextField(
                                   keyboardType: TextInputType.multiline, //多行
-                                  inputFormatters: [LengthLimitingTextInputFormatter(10)],
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(10)
+                                  ],
 
                                   textAlign: TextAlign.right,
                                   controller: TextEditingController(
@@ -362,8 +368,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                                       // 收起键盘
                                       FocusScope.of(context)
                                           .requestFocus(FocusNode()),
-                                      _onUpVideoClick(
-                                          data, learnPlanId, resourceId)
+                                      _onUpVideoClick(data, learnPlanId,
+                                          resourceId, obj['from'])
                                     }),
                           ],
                         ),
