@@ -581,7 +581,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       return false;
     }
     var entity = DoctorDetailInfoEntity.fromJson(args);
-    if (entity.doctorName == null) {
+    if (entity.doctorName == null || entity.doctorName.isEmpty) {
       EasyLoading.showToast('请填写姓名');
       return false;
     }
@@ -589,21 +589,32 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       EasyLoading.showToast('请选择性别');
       return false;
     }
-    if (entity.hospitalName == null || entity.hospitalCode == null) {
+    if (entity.hospitalName == null ||
+        entity.hospitalName == '' ||
+        entity.hospitalCode == null ||
+        entity.hospitalCode == '') {
       EasyLoading.showToast('请选择医院');
       return false;
     }
-    if (entity.departmentsName == null || entity.departmentsCode == null) {
+    if (entity.departmentsName == null ||
+        entity.departmentsName == '' ||
+        entity.departmentsCode == null ||
+        entity.departmentsCode == '') {
       EasyLoading.showToast('请选择科室');
       return false;
     }
-    if (entity.jobGradeName == null || entity.jobGradeCode == null) {
+    if (entity.jobGradeName == null ||
+        entity.jobGradeName == '' ||
+        entity.jobGradeCode == null ||
+        entity.jobGradeCode == '') {
       EasyLoading.showToast('请选择职称');
       return false;
     }
     if (_qualification &&
         (entity.practiceDepartmentName == null ||
-            entity.practiceDepartmentCode == null)) {
+            entity.practiceDepartmentName == '' ||
+            entity.practiceDepartmentCode == null ||
+            entity.practiceDepartmentCode == '')) {
       EasyLoading.showToast('请选择易学术执业科室');
       return false;
     }
