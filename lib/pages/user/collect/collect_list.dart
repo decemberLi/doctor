@@ -50,7 +50,10 @@ class _CollectDetailListState extends State<CollectDetailList> with RouteAware {
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           if (model.isError || model.isEmpty) {
-            return ViewStateEmptyWidget(onPressed: model.initData);
+            return ViewStateEmptyWidget(
+              onPressed: model.initData,
+              message: '暂无收藏',
+            );
           }
           return SmartRefresher(
             controller: model.refreshController,
