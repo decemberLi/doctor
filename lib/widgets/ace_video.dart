@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chewie/chewie.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/no_wifi_notice_helper.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,12 +37,13 @@ class _AceVideoState extends State<AceVideo> {
         final bool isPlaying = _controller.value.isPlaying;
         if (isPlaying && _isfirstPlay) {
           _isfirstPlay = false;
-          var preference = await SharedPreferences.getInstance();
-          var onlyWifi = preference.getBool(ONLY_WIFI) ?? true;
+          var onlyWifi = AppUtils.sp.getBool(ONLY_WIFI) ?? true;
           if (onlyWifi) {
             _controller.pause();
             bool confirm = await NoWifiNoticeHelper.checkConnect(
-                context: context, message: '当前使用非WIFI网络，播放将消耗流量，确认要播放该视频吗?');
+              context: context,
+              message: '当前使用非WIFI网络，播放将消耗流量，确认要播放该视频吗?',
+            );
             if (confirm) {
               _controller.play();
             }
@@ -58,6 +60,9 @@ class _AceVideoState extends State<AceVideo> {
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       if (result == ConnectivityResult.mobile) {
+        if (!mounted) {
+          return;
+        }
         print('====${result.toString()}');
         // final bool isPlaying = _controller.value.isPlaying;
         // if (isPlaying) {

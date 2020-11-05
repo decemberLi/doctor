@@ -97,7 +97,7 @@ class AceButton extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(height / 2)),
           boxShadow: [
             BoxShadow(
-              color: Color(0x663AA7FF),
+              color: Color(0x66005AA0),
               offset: Offset(0, 4),
               blurRadius: 10,
             ),
