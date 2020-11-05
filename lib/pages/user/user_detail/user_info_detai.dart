@@ -53,7 +53,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       return;
     }
     var source = index == 0 ? ImageSource.camera : ImageSource.gallery;
-    ImagePicker.pickImage(source: source).then((value) => cropImage(value));
+    final _imagePicker = ImagePicker();
+    final pickedFile = await _imagePicker.getImage(source: source);
+    final File file = File(pickedFile.path);
+    cropImage(file);
   }
 
   cropImage(File value) {
@@ -69,15 +72,15 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   }
 
   _uploadImage(image) async {
-    try {
-      if (image == null || image.path == null) {
-        return;
-      }
-      OssFileEntity entity = await OssService.upload(image.path);
+    if (image == null || image.path == null) {
+      return;
+    }
+    OssFileEntity entity = await OssService.upload(image.path);
+    if (entity is! DioError) {
       updateHeadPic({'fullFacePhoto': entity}).then((res) {
         if (res is! DioError) {
           args.addAll({
-            'fullFacePhoto': {'url': '${args['fullFacePhoto']['url']}?status=1'}
+            'fullFacePhoto': {'url': '$res?ossId=${entity.ossId}'}
           });
           setState(() {
             args = args;
@@ -85,9 +88,12 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
           Navigator.pop(context);
         }
       });
-    } catch (e) {
-      debugPrint(e);
+    } else {
+      EasyLoading.showToast('上传失败，请重新上传');
     }
+    // } catch (e) {
+    //   debugPrint(e);
+    // }
   }
 
   //修改信息

@@ -96,6 +96,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   // 文章webview点击时触发
   void _clickWebView() {
     if (widget.learnPlanId != null) {
+      print('文章点击');
       commentFocusNode.unfocus();
       setState(() {
         logo = true;
@@ -152,8 +153,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   void didChangeMetrics() {
     super.didChangeMetrics();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print(
-          '输入框=ResourceDetailPage=>>${MediaQuery.of(context).viewInsets.bottom}');
       //当前是安卓系统并且在焦点聚焦的情况下
       if (Platform.isAndroid && commentFocusNode.hasFocus) {
         if (isKeyboardActived) {
