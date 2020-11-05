@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
   MyApp(this.showGuide);
   @override
   Widget build(BuildContext context) {
-    String session = SessionManager().getSession();
     return RefreshConfiguration(
       hideFooterWhenNotFull: true, //列表数据不满一页,不触发加载更多
       child: MaterialApp(
