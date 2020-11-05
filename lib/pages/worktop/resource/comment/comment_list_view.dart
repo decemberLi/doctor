@@ -34,25 +34,26 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
           Container(
             child: Text(name),
           ),
-          Container(
-            margin: EdgeInsets.only(left: 5),
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            height: 20,
-            constraints: BoxConstraints(
-              minWidth: 30,
-            ),
-            decoration: BoxDecoration(
-              color: ThemeColor.primaryColor,
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-            ),
-            child: Center(
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(left: 5),
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              height: 20,
+              constraints: BoxConstraints(
+                minWidth: 30,
+              ),
+              decoration: BoxDecoration(
+                color: ThemeColor.primaryColor,
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+              ),
               child: Text(
                 roleType == 'DOCTOR' ? '医生' : '医药信息沟通专员',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(
+                    color: Colors.white, fontSize: 14, height: 1.4), //居中
               ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -96,13 +97,13 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                     ],
                   ),
                   Container(
-                    margin: EdgeInsets.all(5),
+                    margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
                     child: Text(
                       data.deleted ? '该评论已删除' : data.commentContent,
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.all(5),
+                    margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
                     alignment: Alignment.centerRight,
                     child: Text(RelativeDateFormat.format(data.createTime)),
                   ),
