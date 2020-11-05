@@ -156,8 +156,24 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
 
   // 上传提交
   void _onUpVideoClick(data, learnPlanId, resourceId) async {
+    var _videoTitle = _taskName;
+    var _presenter = _doctorName;
+    if (_showTaskName != null && _taskName == null) {
+      _videoTitle = _showTaskName;
+    }
+    if (_showDoctorName != null && _doctorName == null) {
+      _presenter = _showDoctorName;
+    }
     if (_selectVideoData == null && data == null) {
       EasyLoading.showToast('请选择视频');
+      return;
+    }
+    if (_videoTitle == null || !_videoTitle.isNotEmpty) {
+      EasyLoading.showToast('请填写视频标题');
+      return;
+    }
+    if (_presenter == null || !_presenter.isNotEmpty) {
+      EasyLoading.showToast('请填写视频主讲人');
       return;
     }
     bool bindConfirm = await confirmDialog();
@@ -166,14 +182,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       if (_selectVideoData != null)
         entity = await OssService.upload(_selectVideoData.path);
 
-      var _videoTitle = _taskName;
-      var _presenter = _doctorName;
-      if (_showTaskName != null && _taskName == null) {
-        _videoTitle = _showTaskName;
-      }
-      if (_showDoctorName != null && _doctorName == null) {
-        _presenter = _showDoctorName;
-      }
+      
       await addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
@@ -189,8 +198,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
               new MaterialPageRoute(builder: (BuildContext context) {
             return LearnPlanPage();
           }));
-
           // Navigator.of(context).pushNamed(RouteManager.LEARN_PAGE);
+
         });
       }).catchError((error) {
         EasyLoading.showToast(error.errorMsg);
@@ -269,6 +278,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                               child: ListTile(
                                 title: TextField(
                                   keyboardType: TextInputType.multiline, //多行
+                                  inputFormatters: [LengthLimitingTextInputFormatter(50)],
                                   textAlign: TextAlign.right,
                                   controller: TextEditingController(
                                       text: _showTaskName),
@@ -304,6 +314,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                               child: ListTile(
                                 title: TextField(
                                   keyboardType: TextInputType.multiline, //多行
+                                  inputFormatters: [LengthLimitingTextInputFormatter(10)],
+
                                   textAlign: TextAlign.right,
                                   controller: TextEditingController(
                                       text: _showDoctorName),
