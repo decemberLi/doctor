@@ -15,7 +15,9 @@ class UserEditPage extends StatefulWidget {
   final value;
   final editWay;
   final function;
+
   UserEditPage(this.lable, this.value, this.editWay, this.function);
+
   @override
   _UserEditPageState createState() => _UserEditPageState();
 }
@@ -23,6 +25,7 @@ class UserEditPage extends StatefulWidget {
 class _UserEditPageState extends State<UserEditPage> {
   //设置编辑时的值
   TextEditingController dataText = new TextEditingController();
+
   //编辑
   Widget editWidget() {
     return Container(
@@ -61,7 +64,7 @@ class _UserEditPageState extends State<UserEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('设置${widget.lable}'),
+        title: Text(widget.lable ?? ''),
         elevation: 1,
       ),
       body: Container(

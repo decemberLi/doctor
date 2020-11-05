@@ -89,7 +89,7 @@ class _PhysicianQualificationWidgetState
                                 Provider.of<UserInfoViewModel>(context,
                                     listen: false);
                             await model.queryDoctorInfo();
-                            Navigator.pop(context);
+                            Navigator.pop(context, true);
                           }
                         }),
                   )

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
+import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/qualification/doctor_physician_qualification_page.dart';
 import 'package:doctor/pages/qualification/model/config_data_entity.dart';
 import 'package:doctor/pages/qualification/view_model/doctor_qualification_view_model.dart';
@@ -504,15 +505,21 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       child: AceButton(
         text: titleText,
         onPressed: () async {
+          if (!_checkData()) {
+            return;
+          }
           if (isSureUserInfo) {
             Navigator.pop(context, true);
             return;
           }
+
           var needPop = await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => PhysicianQualificationWidget()));
-          Navigator.pop(context, needPop);
+          if (needPop) {
+            Navigator.pop(context);
+          }
         },
       ),
     );
@@ -567,5 +574,40 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       );
     }
     return Container();
+  }
+
+  bool _checkData() {
+    if (args == null) {
+      return false;
+    }
+    var entity = DoctorDetailInfoEntity.fromJson(args);
+    if (entity.doctorName == null) {
+      EasyLoading.showToast('请填写姓名');
+      return false;
+    }
+    if (entity.sex == null) {
+      EasyLoading.showToast('请选择性别');
+      return false;
+    }
+    if (entity.hospitalName == null || entity.hospitalCode == null) {
+      EasyLoading.showToast('请选择医院');
+      return false;
+    }
+    if (entity.departmentsName == null || entity.departmentsCode == null) {
+      EasyLoading.showToast('请选择科室');
+      return false;
+    }
+    if (entity.jobGradeName == null || entity.jobGradeCode == null) {
+      EasyLoading.showToast('请选择职称');
+      return false;
+    }
+    if (_qualification &&
+        (entity.practiceDepartmentName == null ||
+            entity.practiceDepartmentCode == null)) {
+      EasyLoading.showToast('请选择易学术执业科室');
+      return false;
+    }
+
+    return true;
   }
 }
