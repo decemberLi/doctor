@@ -55,6 +55,9 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   }
 
   cropImage(File value) {
+    if (value == null || value.path == null) {
+      return;
+    }
     Navigator.push(
       context,
       MaterialPageRoute(
