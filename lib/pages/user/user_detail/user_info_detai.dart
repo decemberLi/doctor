@@ -433,7 +433,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       backgroundColor: Color(0XFFF9FCFF),
       appBar: AppBar(
         title: Text(
-          _qualification ? '个人信息' : '基本信息确认',
+          _qualification ? '基本信息确认' : '个人信息',
         ),
         elevation: 1,
       ),
@@ -504,7 +504,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     }
 
     var isSureUserInfo = _openType == 'SURE_INFO';
-    var titleText = isSureUserInfo ? '确认' : '下一步';
+    var titleText = isSureUserInfo ? '确认' : '确认基础信息';
 
     return Container(
       margin: EdgeInsets.only(top: 36, bottom: 36),
