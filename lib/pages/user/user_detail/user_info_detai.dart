@@ -549,7 +549,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
               margin: EdgeInsets.only(top: 10),
               child: Text('确认基础信息后，方可进行医师资质认证', style: style),
             ),
-            Text('请您放心填写，一下信息仅供认证使用，我们将严格保密', style: style)
+            Text('请您放心填写，以下信息仅供认证使用，我们将严格保密', style: style)
           ],
         ),
       );

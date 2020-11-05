@@ -201,7 +201,12 @@ class _HomePageState extends State<HomePage>
         items: [
           new BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/images/learn.png',
+              'assets/images/work_top_uncheck.png',
+              width: 24,
+              height: 24,
+            ),
+            activeIcon: Image.asset(
+              'assets/images/work_top_checked.png',
               width: 24,
               height: 24,
             ),
@@ -209,7 +214,12 @@ class _HomePageState extends State<HomePage>
           ),
           new BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/images/user.png',
+              'assets/images/prescribe_uncheck.png',
+              width: 24,
+              height: 24,
+            ),
+            activeIcon: Image.asset(
+              'assets/images/prescribe_checked.png',
               width: 24,
               height: 24,
             ),
@@ -217,7 +227,12 @@ class _HomePageState extends State<HomePage>
           ),
           new BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/images/user.png',
+              'assets/images/message_uncheck.png',
+              width: 24,
+              height: 24,
+            ),
+            activeIcon: Image.asset(
+              'assets/images/message_checked.png',
               width: 24,
               height: 24,
             ),
@@ -225,7 +240,12 @@ class _HomePageState extends State<HomePage>
           ),
           new BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/images/user.png',
+              'assets/images/mine_uncheck.png',
+              width: 24,
+              height: 24,
+            ),
+            activeIcon: Image.asset(
+              'assets/images/mine_checked.png',
               width: 24,
               height: 24,
             ),

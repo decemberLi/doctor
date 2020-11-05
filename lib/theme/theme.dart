@@ -21,6 +21,7 @@ class ThemeColor {
   static const Color colorFFF3F5F8 = const Color(0xFFF3F5F8);
   static const Color colorFF999999 = const Color(0xFF999999);
   static const Color colorFFBCBCBC = const Color(0xFFBCBCBC);
+  static const Color colorFFE7E7E7 = const Color(0xFFE7E7E7);
   static const Color colorLine = const Color.fromRGBO(0, 90, 160, 0.1);
 
   // 红色

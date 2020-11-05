@@ -246,7 +246,7 @@ class _PhysicianQualificationWidgetState
                             decoration: _dashDecoration,
                             child: _doLoadImage(
                                 model?.physicianInfoEntity?.idCardLicense1,
-                                text: '人像照片面',
+                                text: '人像面照片',
                                 aspectRatio: 144 / 85),
                           ),
                           onTap: () =>

@@ -9,6 +9,7 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
+import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,14 @@ class _WorktopPageState extends State<WorktopPage>
                       : null;
               return SmartRefresher(
                 physics: AlwaysScrollableScrollPhysics(),
-                header: ClassicHeader(),
+                header: ClassicHeader(
+                  textStyle: TextStyle(color: Colors.white),
+                  failedIcon: const Icon(Icons.error, color: Colors.white),
+                  completeIcon: const Icon(Icons.done, color: Colors.white),
+                  idleIcon:
+                      const Icon(Icons.arrow_downward, color: Colors.white),
+                  releaseIcon: const Icon(Icons.refresh, color: Colors.white),
+                ),
                 onRefresh: model.refresh,
                 controller: model.refreshController,
                 child: bodyWidget(entity),
@@ -184,7 +192,10 @@ class _WorktopPageState extends State<WorktopPage>
           Container(
             width: 80,
             height: 80,
-            decoration: BoxDecoration(
+            padding: EdgeInsets.all(100),
+            decoration: DashedDecoration(
+              dashedColor: ThemeColor.primaryColor,
+              gap: 3,
               shape: BoxShape.circle,
               image: DecorationImage(
                 fit: BoxFit.fill,
@@ -204,7 +215,7 @@ class _WorktopPageState extends State<WorktopPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       doctorInfoEntity?.doctorName ?? '',
@@ -217,15 +228,18 @@ class _WorktopPageState extends State<WorktopPage>
                       _buildAuthStatusWidget(doctorInfoEntity),
                   ],
                 ),
-                Text(
-                  doctorInfoEntity?.jobGradeName ?? '',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: ThemeColor.colorFF222222,
-                      fontWeight: FontWeight.bold),
+                Padding(
+                  padding: EdgeInsets.only(top: 4),
+                  child: Text(
+                    doctorInfoEntity?.jobGradeName ?? '',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: ThemeColor.colorFF222222,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 5),
+                  margin: EdgeInsets.only(top: 4),
                   child: Text(
                     "欢迎来到易学术",
                     style: TextStyle(
@@ -326,38 +340,46 @@ class _WorktopPageState extends State<WorktopPage>
       padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.fromLTRB(24, 16, 16, 0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Consumer<UserInfoViewModel>(
-                  builder: (_, model, __) {
-                    return doctorAvatarWidget(model.data);
-                  },
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 13),
-                  child: Text(
-                    "您收到了",
-                    style: TextStyle(
-                        color: Color(0xFF222222),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+          Padding(
+            padding: EdgeInsets.only(top: 16, bottom: 16),
+            child: Container(
+              padding: EdgeInsets.only(top: 18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 24),
+                    child: Consumer<UserInfoViewModel>(
+                      builder: (_, model, __) {
+                        return doctorAvatarWidget(model.data);
+                      },
+                    ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 18),
-                  child: Row(
-                      children:
-                          convertStatics(entity?.learnPlanStatisticalEntity)),
-                ),
-                _showOperatorBtn(entity),
-              ],
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.only(left: 24, top: 13),
+                    child: Text(
+                      "您收到了",
+                      style: TextStyle(
+                          color: Color(0xFF222222),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 46,right: 30),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                        children:
+                        convertStatics(entity?.learnPlanStatisticalEntity)),
+                  ),
+                  _showOperatorBtn(entity),
+                ],
+              ),
             ),
           ),
         ],
@@ -371,7 +393,6 @@ class _WorktopPageState extends State<WorktopPage>
     if (list == null || list.length == 0) {
       return true;
     }
-    bool isEmpty = true;
     for (var each in list) {
       if (each.unSubmitNum != 0) {
         return false;
@@ -381,21 +402,15 @@ class _WorktopPageState extends State<WorktopPage>
   }
 
   Container _showOperatorBtn(WorktopPageEntity entity) {
-    if (_isLearnPlanEmpty(entity)) {
-      return Container(
-        margin: EdgeInsets.only(top: 20, bottom: 12),
-        child: AceButton(
-          color: ThemeColor.colorFFBCBCBC,
-          text: "暂无待处理学习计划",
-          onPressed: () {},
-        ),
-      );
-    }
+    bool isEmpty = _isLearnPlanEmpty(entity);
     return Container(
-      margin: EdgeInsets.only(top: 20, bottom: 12),
+      margin: EdgeInsets.only(bottom: 12,top: 20),
       child: AceButton(
         text: "处理一下",
-        onPressed: () => {_goLearnPlanPage(0)},
+        type: _isLearnPlanEmpty(entity)
+            ? AceButtonType.grey
+            : AceButtonType.primary,
+        onPressed: isEmpty ? () => {} : () => {_goLearnPlanPage(0)},
       ),
     );
   }

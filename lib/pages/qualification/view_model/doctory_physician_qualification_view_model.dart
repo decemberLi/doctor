@@ -99,6 +99,7 @@ class DoctorPhysicianQualificationViewModel {
     idCardFace.url = entity.url;
     idCardFace.ossId = entity.ossId;
     idCardFace.name = entity.ossFileName;
+    notifyDataChange();
 
     print('-------- $result');
     var resultJson = json.decode(result);
@@ -132,6 +133,7 @@ class DoctorPhysicianQualificationViewModel {
     idCardBackground.url = entity.url;
     idCardBackground.ossId = entity.ossId;
     idCardBackground.name = entity.ossFileName;
+    notifyDataChange();
 
     // https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603620957283&di=61acea5fc966284c9bc389e8a752aba7&imgtype=0&src=http%3A%2F%2Fphotocdn.sohu.com%2F20060810%2FImg244728941.jpg
 
@@ -202,10 +204,21 @@ class DoctorPhysicianQualificationViewModel {
       return false;
     }
     if (_model.physicianInfoEntity.qualifications == null ||
+        _model.physicianInfoEntity.qualifications.length == 0) {
+      EasyLoading.showToast('请上传医师资格证');
+      return false;
+    }
+    if (_model.physicianInfoEntity.qualifications == null ||
         _model.physicianInfoEntity.qualifications.length < 2) {
       EasyLoading.showToast('医师资格证至少上传两张图');
       return false;
     }
+    if (_model.physicianInfoEntity.practiceCertificates == null ||
+        _model.physicianInfoEntity.practiceCertificates.length == 0) {
+      EasyLoading.showToast('请上传医师执业证');
+      return false;
+    }
+
     if (_model.physicianInfoEntity.practiceCertificates == null ||
         _model.physicianInfoEntity.practiceCertificates.length < 2) {
       EasyLoading.showToast('医师执业证至少上传两张图');
@@ -213,7 +226,7 @@ class DoctorPhysicianQualificationViewModel {
     }
     if (_model.physicianInfoEntity.jobCertificates == null ||
         _model.physicianInfoEntity.jobCertificates.length == 0) {
-      EasyLoading.showToast('医师职称证至少上传一张图');
+      EasyLoading.showToast('请上传医师职称证');
       return false;
     }
 

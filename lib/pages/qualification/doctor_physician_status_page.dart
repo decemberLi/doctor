@@ -24,6 +24,7 @@ class DoctorPhysicianStatusPage extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
         title: Text('医师资质认证'),
         elevation: 1,
