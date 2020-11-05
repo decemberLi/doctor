@@ -40,7 +40,8 @@ class _PhysicianQualificationWidgetState
   final _imagePicker = ImagePicker();
   final _dashDecoration = DashedDecoration(
     dashedColor: ThemeColor.primaryColor,
-    borderRadius: BorderRadius.circular(2),
+    gap: 3,
+    borderRadius: BorderRadius.circular(8),
   );
 
   @override
@@ -80,13 +81,17 @@ class _PhysicianQualificationWidgetState
                   Container(
                     margin: EdgeInsets.only(top: 50, bottom: 20),
                     child: AceButton(
-                        text: '提交', onPressed: () async{
-                          await _model.submitData();
-                          UserInfoViewModel model =
-                          Provider.of<UserInfoViewModel>(context, listen: false);
-                          await model.queryDoctorInfo();
-                          Navigator.pop(context);
-                    }),
+                        text: '提交',
+                        onPressed: () async {
+                          var result = await _model.submitData();
+                          if (result) {
+                            UserInfoViewModel model =
+                                Provider.of<UserInfoViewModel>(context,
+                                    listen: false);
+                            await model.queryDoctorInfo();
+                            Navigator.pop(context);
+                          }
+                        }),
                   )
                 ],
               );
@@ -105,46 +110,48 @@ class _PhysicianQualificationWidgetState
   }) {
     return Container(
         color: Colors.white,
-        padding: EdgeInsets.only(right: 16, top: 14, bottom: 24, left: 18),
+        padding: EdgeInsets.only(right: 16, top: 14, bottom: 24),
         margin: EdgeInsets.only(top: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title ?? '头像', style: _titleStyle),
-            Container(
-              padding: EdgeInsets.only(top: 13),
-              child: GridView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: list?.length,
-                addRepaintBoundaries: false,
-                addSemanticIndexes: false,
-                shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10),
-                itemBuilder: (BuildContext context, int index) {
-                  var photo = list[index];
-                  var widget;
-                  if (photo.addImgPlaceHolder ?? false) {
-                    widget = _addImageWidget();
-                  } else if (photo.sampleImgPlaceHolder ?? false) {
-                    widget = _imageWidget(photo);
-                  } else {
-                    widget = _imageWidget(photo);
-                  }
-                  return GestureDetector(
-                    child: widget,
-                    onTap: () {
-                      if (index == list.length - 1) {
-                        _showOriginPic(type);
-                      } else {
-                        callback(photo, index);
-                      }
-                    },
-                  );
-                },
+            Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Text(title ?? '头像', style: _titleStyle),
+            ),
+            GridView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: list?.length,
+              addRepaintBoundaries: false,
+              addSemanticIndexes: false,
+              padding: EdgeInsets.only(left: 16, top: 13),
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
               ),
+              itemBuilder: (BuildContext context, int index) {
+                var photo = list[index];
+                var widget;
+                if (photo.addImgPlaceHolder ?? false) {
+                  widget = _addImageWidget();
+                } else if (photo.sampleImgPlaceHolder ?? false) {
+                  widget = _imageWidget(photo);
+                } else {
+                  widget = _imageWidget(photo);
+                }
+                return GestureDetector(
+                  child: widget,
+                  onTap: () {
+                    if (index == list.length - 1) {
+                      _showOriginPic(type);
+                    } else {
+                      callback(photo, index);
+                    }
+                  },
+                );
+              },
             )
           ],
         ));
@@ -153,59 +160,58 @@ class _PhysicianQualificationWidgetState
   _buildAvatarWidget(DoctorQualificationModel model) {
     return Container(
       color: Colors.white,
-      padding: _containerPadding,
+      padding: EdgeInsets.only(right: 16, top: 14, bottom: 24),
       margin: EdgeInsets.only(top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _titleWidget('头像'),
-          Wrap(
-            direction: Axis.horizontal,
+          Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Text('头像', style: _titleStyle),
+          ),
+          GridView(
+            physics: NeverScrollableScrollPhysics(),
+            addRepaintBoundaries: false,
+            addSemanticIndexes: false,
+            padding: EdgeInsets.only(left: 16, top: 13),
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
+            ),
             children: [
-              Row(
-                children: [
-                  GestureDetector(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 12, left: 18),
-                        width: 85,
-                        height: 85,
-                        decoration: _dashDecoration,
-                        child: _doLoadImage(
-                            model?.physicianInfoEntity?.fullFacePhoto),
-                      ),
-                      onTap: () => _selectPicture(TypeOperator.AVATAR)),
-                  Container(
-                    margin: EdgeInsets.only(top: 12, left: 24),
-                    width: 85,
-                    height: 85,
-                    decoration: _dashDecoration,
-                    child: GestureDetector(
-                      child: Image.asset(
-                        'assets/images/avatar_sample.png',
-                        fit: BoxFit.fill,
-                        filterQuality: FilterQuality.high,
-                      ),
-                      onTap: () {
-                        _showSamplePicDialog(
-                            'assets/images/sample_avatar.png', '头像');
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _hintTextStyle('个人正面免冠头像'),
-                        _hintTextStyle('背景尽量使用白色'),
-                        _hintTextStyle('着装需穿着工作服'),
-                      ],
-                    ),
-                  )
-                ],
+              GestureDetector(
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: _dashDecoration,
+                  child:
+                      _doLoadImage(model?.physicianInfoEntity?.fullFacePhoto),
+                ),
+                onTap: () => _selectPicture(TypeOperator.AVATAR),
+              ),
+              GestureDetector(
+                child: Image.asset(
+                  'assets/images/avatar_sample.png',
+                  fit: BoxFit.fill,
+                  filterQuality: FilterQuality.high,
+                ),
+                onTap: () {
+                  _showSamplePicDialog('assets/images/sample_avatar.png', '头像');
+                },
+              ),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _hintTextStyle('个人正面免冠头像'),
+                    _hintTextStyle('背景尽量使用白色'),
+                    _hintTextStyle('着装需穿着工作服'),
+                  ],
+                ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -224,53 +230,42 @@ class _PhysicianQualificationWidgetState
           Wrap(
             direction: Axis.horizontal,
             children: [
-              Wrap(
-                direction: Axis.horizontal,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                    top: 12, bottom: 10, left: 18),
-                                height: 83,
-                                decoration: DashedDecoration(
-                                  dashedColor: ThemeColor.primaryColor,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: _doLoadImage(
-                                    model?.physicianInfoEntity?.idCardLicense1,
-                                    text: '人像照片面',
-                                    aspectRatio: 144 / 85),
-                              ),
-                              onTap: () => _selectPicture(
-                                  TypeOperator.ID_CARD_FACE_SIDE),
-                            ),
+                      Expanded(
+                        child: GestureDetector(
+                          child: Container(
+                            margin:
+                                EdgeInsets.only(top: 12, bottom: 10, left: 18),
+                            height: 85,
+                            decoration: _dashDecoration,
+                            child: _doLoadImage(
+                                model?.physicianInfoEntity?.idCardLicense1,
+                                text: '人像照片面',
+                                aspectRatio: 144 / 85),
                           ),
-                          Expanded(
-                            child: GestureDetector(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                    top: 12, left: 19, bottom: 10),
-                                height: 83,
-                                decoration: DashedDecoration(
-                                  dashedColor: ThemeColor.primaryColor,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: _doLoadImage(
-                                    model?.physicianInfoEntity?.idCardLicense2,
-                                    text: '国徽面照片',
-                                    aspectRatio: 144 / 85),
-                              ),
-                              onTap: () =>
-                                  _selectPicture(TypeOperator.ID_CARD_BG_SIDE),
-                            ),
+                          onTap: () =>
+                              _selectPicture(TypeOperator.ID_CARD_FACE_SIDE),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          child: Container(
+                            margin:
+                                EdgeInsets.only(top: 12, left: 19, bottom: 10),
+                            height: 85,
+                            decoration: _dashDecoration,
+                            child: _doLoadImage(
+                                model?.physicianInfoEntity?.idCardLicense2,
+                                text: '国徽面照片',
+                                aspectRatio: 144 / 85),
                           ),
-                        ],
+                          onTap: () =>
+                              _selectPicture(TypeOperator.ID_CARD_BG_SIDE),
+                        ),
                       ),
                     ],
                   ),

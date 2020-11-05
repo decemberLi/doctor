@@ -188,8 +188,36 @@ class DoctorPhysicianQualificationViewModel {
     toBeChange.name = entity.ossFileName;
   }
 
-  void submitData() async {
+  submitData() async {
+    if (_model.physicianInfoEntity == null ||
+        _model.physicianInfoEntity.fullFacePhoto == null) {
+      EasyLoading.showToast('请上传头像');
+      return false;
+    }
+    if (_model.physicianInfoEntity.idCardLicense1 == null ||
+        _model.physicianInfoEntity.idCardLicense2 == null) {
+      EasyLoading.showToast('请上传身份证');
+      return false;
+    }
+    if (_model.physicianInfoEntity.qualifications == null ||
+        _model.physicianInfoEntity.qualifications.length < 2) {
+      EasyLoading.showToast('医师资格证至少上传两张图');
+      return false;
+    }
+    if (_model.physicianInfoEntity.practiceCertificates == null ||
+        _model.physicianInfoEntity.practiceCertificates.length < 2) {
+      EasyLoading.showToast('医师执业证至少上传两张图');
+      return false;
+    }
+    if (_model.physicianInfoEntity.jobCertificates == null ||
+        _model.physicianInfoEntity.jobCertificates.length < 2) {
+      EasyLoading.showToast('医师职称证至少上传两张图');
+      return false;
+    }
+
     await uCenter.post('/personal/commit-doctor-verify-info',
         params: _model.physicianInfoEntity.toJson());
+
+    return true;
   }
 }
