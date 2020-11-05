@@ -58,7 +58,7 @@ class _PhysicianQualificationWidgetState
     return Scaffold(
       backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
-        title: Text('基本信息确认'),
+        title: Text('医生资质认证'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -400,7 +400,11 @@ class _PhysicianQualificationWidgetState
       margin: EdgeInsets.only(top: 6),
       child: Text(text ?? '上传照片', style: _imgHintText),
     );
-    icon = Image.asset('assets/images/camera.png');
+    icon = Image.asset(
+      'assets/images/camera.png',
+      width: 32,
+      height: 28,
+    );
     if (photo != null) {
       if (photo.url != null) {
         icon = AspectRatio(
