@@ -427,7 +427,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       _qualification = data['qualification'] ?? false;
     }
 
-    bool doctorStatus = args['authStatus'] == 'WAIT_VERIFY';
+    bool doctorStatus = args['authStatus'] == 'WAIT_VERIFY' || args['authStatus'] == 'FAIL';
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0XFFF9FCFF),
@@ -570,7 +570,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                 Text('驳回理由',
                     style: TextStyle(
                         color: ThemeColor.primaryColor, fontSize: 12)),
-                Text('请您放心填写，一下信息仅供认证使用，我们将严格保密',
+                Text(args['rejectReson'] ?? '',
                     style:
                         TextStyle(color: ThemeColor.primaryColor, fontSize: 12))
               ],
