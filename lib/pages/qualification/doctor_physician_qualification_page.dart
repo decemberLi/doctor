@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:doctor/model/face_photo.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
@@ -8,6 +9,7 @@ import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import 'model/doctor_qualification_model.dart';
 import 'view_model/doctory_physician_qualification_view_model.dart';
@@ -80,6 +82,9 @@ class _PhysicianQualificationWidgetState
                     child: AceButton(
                         text: '提交', onPressed: () async{
                           await _model.submitData();
+                          UserInfoViewModel model =
+                          Provider.of<UserInfoViewModel>(context, listen: false);
+                          await model.queryDoctorInfo();
                           Navigator.pop(context);
                     }),
                   )
