@@ -2,6 +2,7 @@ import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/user/setting/update/app_update.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -168,10 +169,10 @@ class _SettingPageState extends State<SettingPage> {
             )),
             Switch(
                 value: _flag,
-                onChanged: (bool) async {
-                  _flag = bool;
+                onChanged: (bool value) async {
+                  _flag = value;
                   var preference = await SharedPreferences.getInstance();
-                  preference.setBool('only_wifi', bool);
+                  preference.setBool(ONLY_WIFI, value);
                   setState(() {});
                 })
           ],
@@ -199,8 +200,8 @@ class _SettingPageState extends State<SettingPage> {
 
   _getCacheData() async {
     var preference = await SharedPreferences.getInstance();
-    var toggle = preference.getBool('only_wifi');
-    if(toggle != null){
+    var toggle = preference.getBool(ONLY_WIFI);
+    if (toggle != null) {
       _flag = toggle;
     }
     _version = await PlatformUtils.getAppVersion();

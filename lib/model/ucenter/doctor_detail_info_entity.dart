@@ -44,7 +44,7 @@ class DoctorDetailInfoEntity {
   /// 易学术执业科室编码
   String practiceDepartmentCode;
 
-  /// 认证状态(WAIT_VERIFY-待认证、VERIFING-认证中、FAIL-认证失败、PASS-认证通过）
+  /// 认证状态(WAIT_VERIFY-待认证、VERIFYING-认证中、FAIL-认证失败、PASS-认证通过）
   String authStatus;
 
   /// 基础信息完善状态(NOT_COMPLETE-未完善,COMPLETED-已完善)

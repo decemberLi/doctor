@@ -233,7 +233,7 @@ class PerscriptionDetail extends StatelessWidget {
                               style: MyStyles.inputTextStyle,
                             ),
                           ),
-                        if (data?.pharmacist != null)
+                        if (data?.pharmacist != null || data?.auditor != null)
                           FormItem(
                             padding: EdgeInsets.symmetric(vertical: 10),
                             child: Row(
@@ -246,12 +246,17 @@ class PerscriptionDetail extends StatelessWidget {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                FadeInImage.memoryNetwork(
-                                  placeholder: kTransparentImage,
-                                  image: data?.pharmacist,
-                                  width: 54,
-                                  fit: BoxFit.fitWidth,
-                                ),
+                                data?.pharmacist != null
+                                    ? FadeInImage.memoryNetwork(
+                                        placeholder: kTransparentImage,
+                                        image: data?.pharmacist,
+                                        width: 54,
+                                        fit: BoxFit.fitWidth,
+                                      )
+                                    : Text(
+                                        data?.auditor ?? '',
+                                        style: MyStyles.inputTextStyle,
+                                      ),
                               ],
                             ),
                           ),

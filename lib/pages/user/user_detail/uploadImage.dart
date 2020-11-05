@@ -44,19 +44,25 @@ class _CropImageRouteState extends State<CropImageRoute> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  RaisedButton(
+                  TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text('取消'),
-                    color: Colors.white,
+                    child: Text(
+                      '取消',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    // color: Colors.white,
                   ),
-                  RaisedButton(
+                  TextButton(
                     onPressed: () {
                       _crop(widget.image);
                     },
-                    child: Text('确认'),
-                    color: Colors.white,
+                    child: Text(
+                      '确认',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    // color: Colors.white,
                   ),
                 ],
               ),

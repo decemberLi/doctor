@@ -44,6 +44,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   String _openType;
   List departments = [];
   List doctorTitle = [];
+  List doctorPractice = [];
 
   _pickImage() async {
     int index = await DialogHelper.showBottom(context);
@@ -208,6 +209,9 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     getSelectInfo({'type': 'DOCTOR_TITLE'}).then((res) {
       doctorTitle = res;
     });
+    getSelectInfo({'type': 'DOCTOR_PRACTICE_TITLE'}).then((res) {
+      doctorPractice = res;
+    });
   }
 
   _goHospitalSearchPage() {
@@ -304,6 +308,48 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         }).toList()
       ];
     }
+    if (lable == '易学术执业科室') {
+      //找到父亲
+      String parent;
+      int sonIndex;
+      doctorPractice.forEach((element) {
+        List child = element['children'];
+        List filterData =
+            child.where((element) => element['code'] == defaultCode).toList();
+        if (filterData.length > 0) {
+          parent = element['code'];
+          sonIndex =
+              child.indexWhere((element) => element['code'] == defaultCode);
+          return;
+        }
+      });
+      int parentIndex =
+          doctorPractice.indexWhere((element) => element['code'] == parent);
+      defaultSelect = defaultCode == null ? [0, 0] : [parentIndex, sonIndex];
+      listData = [
+        ...doctorPractice.map((e) {
+          final children = e['children'];
+          List<PickerItem<String>> childList = [
+            ...children
+                .map((e) => new PickerItem(
+                      text: Text(
+                        e['name'],
+                        textAlign: TextAlign.center,
+                      ),
+                      value: '${e['code']}',
+                    ))
+                .toList()
+          ];
+          return new PickerItem(
+              text: Text(
+                e['name'],
+                textAlign: TextAlign.center,
+              ),
+              value: '${e['code']}',
+              children: childList);
+        }).toList()
+      ];
+    }
     Picker picker = Picker(
         title: Text(
           '选择$lable',
@@ -335,10 +381,17 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                   .where((element) => element['code'] == pickerData[1])
                   .toList()[0]['name'];
             }
-            updateDoctorInfo({
-              'departmentsName': departmentsName,
-              'departmentsCode': pickerData[1]
-            }, false);
+            if (lable == '科室') {
+              updateDoctorInfo({
+                'departmentsName': departmentsName,
+                'departmentsCode': pickerData[1]
+              }, false);
+            } else if (lable == '易学术执业科室') {
+              updateDoctorInfo({
+                'practiceDepartmentName': departmentsName,
+                'practiceDepartmentCode': pickerData[1]
+              }, false);
+            }
           } else {
             dynamic param = {
               uploadData[lable]: int.parse(pickerData[0]),
@@ -407,6 +460,14 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                           : args['departmentsCode']),
                   infoItem('职称', args['jobGradeName'], doctorStatus, 'picker',
                       args['jobGradeCode']),
+                  _qualification
+                      ? infoItem(
+                          '易学术执业科室',
+                          args['practiceDepartmentName'],
+                          doctorStatus,
+                          'picker',
+                          args['practiceDepartmentCode'])
+                      : Container(),
                 ],
               ),
             ),

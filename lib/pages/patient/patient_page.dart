@@ -76,7 +76,10 @@ class _PatientListPageState extends State<PatientListPage>
           builder: (context, model, child) {
             if (model.isError || model.isEmpty) {
               model.patientName = '';
-              return ViewStateEmptyWidget(onPressed: model.initData);
+              return ViewStateEmptyWidget(
+                message: '暂无随诊患者，快去开方吧',
+                onPressed: model.initData,
+              );
             }
             return Column(
               children: [
@@ -146,7 +149,7 @@ class _PatientListPageState extends State<PatientListPage>
                                 );
                                 if (success) {
                                   EasyLoading.showToast('发送成功');
-                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop(true);
                                 }
                               }
                             }

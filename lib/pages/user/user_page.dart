@@ -17,19 +17,19 @@ class _UserPageState extends State<UserPage> with RouteAware {
   var numData;
   dynamic doctorStatus = {
     'WAIT_VERIFY': '未认证',
-    'VERIFING': '审核中',
+    'VERIFYING': '审核中',
     'FAIL': '需重新认证',
     'PASS': '已认证',
   };
   dynamic doctorColor = {
     'WAIT_VERIFY': Color(0XFFB9B9B9),
-    'VERIFING': Color(0XFFFFBA00),
+    'VERIFYING': Color(0XFFFFBA00),
     'FAIL': Color(0XFFFFBA00),
     'PASS': Color(0XFF489DFE),
   };
 
   //获取医生基本信息和收藏患者信息
-  //authStatus:认证状态(WAIT_VERIFY-待认证、VERIFING-认证中、FAIL-认证失败、PASS-认证通过）
+  //authStatus:认证状态(WAIT_VERIFY-待认证、VERIFYING-认证中、FAIL-认证失败、PASS-认证通过）
   _doctorInfo() async {
     try {
       var basicData = await getBasicData();
@@ -80,7 +80,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
       ),
       child: ListTile(
         title: Text(
-          lable,
+          lable??'',
           style: TextStyle(
             color: ThemeColor.colorFF000000,
             fontSize: 14,
@@ -352,7 +352,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   messageItem('资质认证', 'assets/images/zzrz.png', () {
-                    if (doctorData['authStatus'] == 'VERIFING' ||
+                    if (doctorData['authStatus'] == 'VERIFYING' ||
                         doctorData['authStatus'] == 'PASS') {
                       Navigator.push(
                           context,

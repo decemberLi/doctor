@@ -13,7 +13,7 @@ class DoctorPhysicianStatusPage extends StatelessWidget {
     String content = '';
     String assets = 'assets/images/feedback.png';
 
-    if (authStatus == 'VERIFING') {
+    if (authStatus == 'VERIFYING') {
       authStatusNotice = '资质认证审核中';
       content = '您提交的信息将会在1-3个工作日内审核完成届时审核结果会以短信通知到您';
     } else if (authStatus == 'PASS') {

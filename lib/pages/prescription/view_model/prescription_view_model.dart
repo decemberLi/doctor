@@ -133,7 +133,13 @@ class PrescriptionViewModel extends ViewStateModel {
     if (isNew) {
       this.data.prescriptionNo = null;
       // 纸质处方重新设置
-      this.data.attachments = [];
+      this.data.attachments = [
+        // OssFileEntity(
+        //   ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
+        //   name: '测试',
+        //   type: 'PRESCRIPTION_PAPER',
+        // )
+      ];
     }
     notifyListeners();
     if (callBack != null) {
@@ -149,8 +155,7 @@ class PrescriptionViewModel extends ViewStateModel {
     var params = this.data.toJson();
     var res = await addPrescription(params);
     String prescriptionNo = res['prescriptionNo'];
-    // this.data = new PrescriptionModel();
-    notifyListeners();
+    this.resetData();
     if (callBack != null) {
       callBack(prescriptionNo);
     }

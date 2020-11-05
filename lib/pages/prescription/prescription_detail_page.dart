@@ -1,5 +1,6 @@
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
+import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_detail.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_qr_code.dart';
@@ -64,11 +65,17 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
                 text: '发给随诊患者',
                 width: 120,
                 height: 36,
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    RouteManager.PRESCRIPTION_DETAIL,
-                    arguments: prescriptionNo,
-                  );
+                onPressed: () async {
+                  var check = await checkPrescriptionBeforeBind(prescriptionNo);
+                  if (check) {
+                    var res = await Navigator.of(context).pushNamed(
+                      RouteManager.PATIENT,
+                      arguments: prescriptionNo,
+                    );
+                    if (res != null) {
+                      Navigator.of(context).pop();
+                    }
+                  }
                 },
                 fontSize: 14,
               ),
