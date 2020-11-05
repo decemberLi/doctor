@@ -310,9 +310,19 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
               },
               decoration: InputDecoration(
                 counterText: "",
+                fillColor: Color(0XFFEDEDED),
+                filled: true,
                 contentPadding: EdgeInsets.all(10.0),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  //未选中时候的颜色
+                  borderRadius: BorderRadius.circular(25.0),
+                  borderSide: BorderSide(
+                    color: Colors.white,
+                  ),
                 ),
                 hintText: '请输入您的问题或评价',
                 suffix: GestureDetector(
@@ -330,7 +340,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
           ),
           logo
               ? Container(
-                  margin: EdgeInsets.only(left: 10),
+                  margin: EdgeInsets.only(left: 25),
                   child: Stack(
                     overflow: Overflow.visible,
                     children: [
@@ -379,7 +389,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
           logo
               ? Container(
                   color: Colors.white,
-                  margin: EdgeInsets.only(left: 10),
+                  margin: EdgeInsets.only(left: 20),
                   child: InkWell(
                     onTap: () {
                       //收藏
