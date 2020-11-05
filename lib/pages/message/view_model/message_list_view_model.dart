@@ -11,7 +11,7 @@ class MessageListModel extends ViewStateRefreshListModel<MessageListEntity> {
 
   @override
   Future<List<MessageListEntity>> loadData({int pageNum}) async {
-    var result = await foundation.post('/message/list',
+    var result = await foundation.post('/message/list-by-type',
         params: {
           'ps': 10,
           'pn': pageNum,

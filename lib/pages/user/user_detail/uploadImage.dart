@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_crop/image_crop.dart';
-import 'package:doctor/theme/theme.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CropImageRoute extends StatefulWidget {

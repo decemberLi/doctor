@@ -489,16 +489,17 @@ class _PhysicianQualificationWidgetState
   }
 
   _buildNoticeWidget(DoctorQualificationModel data) {
-    var style = TextStyle(fontSize: 14, color: ThemeColor.colorFF222222);
+    var style = TextStyle(fontSize: 12, color: ThemeColor.colorFF222222);
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(left: 0, top: 10, right: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('完成医师资质认证后，将为您开通复诊开方服务', style: style),
-          Container(
-            margin: EdgeInsets.only(top: 10),
+          Text('完成医师资质认证后，将为您开通复诊开方服务',
+              style: TextStyle(fontSize: 14, color: ThemeColor.colorFF222222)),
+          Padding(
+            padding: EdgeInsets.only(top: 8),
             child: Text('平台认证有效后，即可开通电子处方功能', style: style),
           ),
           Text('请您放心填写，以下信息仅供认证使用，我们将严格保密', style: style)
