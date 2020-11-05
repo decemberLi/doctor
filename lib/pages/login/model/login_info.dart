@@ -33,7 +33,7 @@ class LoginInfoModel {
   /// 是否改过密码(true-是、false-否）
   bool modifiedPassword;
 
-  /// 认证状态(WAIT_VERIFY-待认证、VERIFING-认证中、FAIL-认证失败、PASS-认证通过）
+  /// 认证状态(WAIT_VERIFY-待认证、VERIFYING-认证中、FAIL-认证失败、PASS-认证通过）
   String authStatus;
 
   /// 登录用户详细信息

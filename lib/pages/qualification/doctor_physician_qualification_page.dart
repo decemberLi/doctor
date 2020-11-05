@@ -78,7 +78,10 @@ class _PhysicianQualificationWidgetState
                   Container(
                     margin: EdgeInsets.only(top: 50, bottom: 20),
                     child: AceButton(
-                        text: '提交', onPressed: () => _model.submitData()),
+                        text: '提交', onPressed: () async{
+                          await _model.submitData();
+                          Navigator.pop(context);
+                    }),
                   )
                 ],
               );
