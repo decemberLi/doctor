@@ -66,6 +66,7 @@ class MyApp extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
             ),
           ),
+          primaryColorBrightness: Brightness.light,
           primaryIconTheme: IconThemeData(color: ThemeColor.primaryColor),
           visualDensity: VisualDensity.adaptivePlatformDensity,
           disabledColor: ThemeColor.secondaryGeryColor,
