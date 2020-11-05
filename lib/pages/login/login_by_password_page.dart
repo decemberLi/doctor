@@ -66,7 +66,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                           margin: EdgeInsets.only(top: 40, bottom: 30),
                           alignment: Alignment.topLeft,
                           child: Text(
-                            '密码登录',
+                            '账号密码登录',
                             style: TextStyle(
                                 color: ThemeColor.colorFF000000,
                                 fontSize: 24,

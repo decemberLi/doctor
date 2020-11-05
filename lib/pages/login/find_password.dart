@@ -95,7 +95,7 @@ class _FindPasswordState extends State<FindPassword> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text(APP_NAME),
+        title: Text('找回密码'),
       ),
       // resizeToAvoidBottomInset: false,
       body: GestureDetector(
@@ -115,7 +115,7 @@ class _FindPasswordState extends State<FindPassword> {
                   margin: EdgeInsets.only(top: 40, bottom: 30),
                   alignment: Alignment.topLeft,
                   child: Text(
-                    '找回密码',
+                    '验证手机号',
                     style: TextStyle(
                         color: ThemeColor.colorFF000000,
                         fontSize: 24,
