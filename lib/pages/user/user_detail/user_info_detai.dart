@@ -567,7 +567,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('驳回理由',
+                Text('驳回理由：',
                     style: TextStyle(
                         color: ThemeColor.primaryColor, fontSize: 12)),
                 Text(args['rejectReson'] ?? '',

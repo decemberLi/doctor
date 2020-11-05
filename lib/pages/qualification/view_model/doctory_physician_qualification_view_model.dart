@@ -81,10 +81,6 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   setIdCardFaceSide(String path) async {
-    if (_model.physicianInfoEntity.idCardLicense1 == null) {
-      _model.physicianInfoEntity.idCardLicense1 = FacePhoto.create();
-    }
-    var idCardFace = _model.physicianInfoEntity.idCardLicense1;
     UploadFileEntity entity = await uploadImageToOss(path);
 
     // ocr
@@ -94,6 +90,10 @@ class DoctorPhysicianQualificationViewModel {
     param['imgType'] = 'face';
     var result = await _recognizeIdCard(param);
     // 识别成功后再展示内容
+    if (_model.physicianInfoEntity.idCardLicense1 == null) {
+      _model.physicianInfoEntity.idCardLicense1 = FacePhoto.create();
+    }
+    var idCardFace = _model.physicianInfoEntity.idCardLicense1;
     idCardFace.path = path;
     idCardFace.url = null;
     idCardFace.url = entity.url;
@@ -116,16 +116,17 @@ class DoctorPhysicianQualificationViewModel {
 
   setIdCardBackgroundSide(String path) async {
     //C19B79335322E659697E90E4E7B96688
-    if (_model.physicianInfoEntity.idCardLicense2 == null) {
-      _model.physicianInfoEntity.idCardLicense2 = FacePhoto.create();
-    }
-    var idCardBackground = _model.physicianInfoEntity.idCardLicense2;
+
     UploadFileEntity entity = await uploadImageToOss(path);
     Map<String, dynamic> param = {};
     param['imgUrl'] = entity.url;
     param['imgType'] = 'back';
     var result = await _recognizeIdCard(param);
     // 识别成功后再展示内容
+    if (_model.physicianInfoEntity.idCardLicense2 == null) {
+      _model.physicianInfoEntity.idCardLicense2 = FacePhoto.create();
+    }
+    var idCardBackground = _model.physicianInfoEntity.idCardLicense2;
     idCardBackground.path = path;
     idCardBackground.url = null;
     idCardBackground.url = entity.url;
@@ -211,8 +212,8 @@ class DoctorPhysicianQualificationViewModel {
       return false;
     }
     if (_model.physicianInfoEntity.jobCertificates == null ||
-        _model.physicianInfoEntity.jobCertificates.length < 2) {
-      EasyLoading.showToast('医师职称证至少上传两张图');
+        _model.physicianInfoEntity.jobCertificates.length == 0) {
+      EasyLoading.showToast('医师职称证至少上传一张图');
       return false;
     }
 
