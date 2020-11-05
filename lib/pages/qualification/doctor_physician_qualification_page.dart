@@ -8,6 +8,7 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -61,7 +62,7 @@ class _PhysicianQualificationWidgetState
     return Scaffold(
       backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
-        title: Text('医生资质认证'),
+        title: Text('医师资质认证'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -85,6 +86,7 @@ class _PhysicianQualificationWidgetState
                         onPressed: () async {
                           var result = await _model.submitData();
                           if (result) {
+                            EasyLoading.showToast('提交成功');
                             UserInfoViewModel model =
                                 Provider.of<UserInfoViewModel>(context,
                                     listen: false);
