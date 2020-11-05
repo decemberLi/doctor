@@ -300,7 +300,7 @@ class PlanDetailList extends StatelessWidget {
                       Expanded(
                         child: Container(
                             padding:
-                                EdgeInsets.only(left: 30, top: 20, bottom: 10),
+                                EdgeInsets.only(left: 30, top: 30, bottom: 10),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
