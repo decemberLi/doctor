@@ -85,19 +85,21 @@ class DoctorPhysicianQualificationViewModel {
       _model.physicianInfoEntity.idCardLicense1 = FacePhoto.create();
     }
     var idCardFace = _model.physicianInfoEntity.idCardLicense1;
-    idCardFace.path = path;
-    idCardFace.url = null;
-    notifyDataChange();
     UploadFileEntity entity = await uploadImageToOss(path);
-    idCardFace.url = entity.url;
-    idCardFace.ossId = entity.ossId;
-    idCardFace.name = entity.ossFileName;
+
+    // ocr
     Map<String, dynamic> param = {};
     // http://www.diqibu.com/ocrimg/demo/idcard/2.jpg
     param['imgUrl'] = entity.url;
     param['imgType'] = 'face';
-
     var result = await _recognizeIdCard(param);
+    // 识别成功后再展示内容
+    idCardFace.path = path;
+    idCardFace.url = null;
+    idCardFace.url = entity.url;
+    idCardFace.ossId = entity.ossId;
+    idCardFace.name = entity.ossFileName;
+
     print('-------- $result');
     var resultJson = json.decode(result);
     if (resultJson is Map<String, dynamic>) {
@@ -109,7 +111,6 @@ class DoctorPhysicianQualificationViewModel {
       physicianInfo.identityAddress = '${resultJson['address']}';
       return;
     }
-
     EasyLoading.showToast('身份证识别失败，请重新上传身份证');
   }
 
@@ -119,20 +120,20 @@ class DoctorPhysicianQualificationViewModel {
       _model.physicianInfoEntity.idCardLicense2 = FacePhoto.create();
     }
     var idCardBackground = _model.physicianInfoEntity.idCardLicense2;
+    UploadFileEntity entity = await uploadImageToOss(path);
+    Map<String, dynamic> param = {};
+    param['imgUrl'] = entity.url;
+    param['imgType'] = 'back';
+    var result = await _recognizeIdCard(param);
+    // 识别成功后再展示内容
     idCardBackground.path = path;
     idCardBackground.url = null;
-    notifyDataChange();
-    UploadFileEntity entity = await uploadImageToOss(path);
     idCardBackground.url = entity.url;
     idCardBackground.ossId = entity.ossId;
     idCardBackground.name = entity.ossFileName;
 
     // https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603620957283&di=61acea5fc966284c9bc389e8a752aba7&imgtype=0&src=http%3A%2F%2Fphotocdn.sohu.com%2F20060810%2FImg244728941.jpg
-    Map<String, dynamic> param = {};
-    param['imgUrl'] = entity.url;
-    param['imgType'] = 'back';
 
-    var result = await _recognizeIdCard(param);
     var resultJson = json.decode(result);
     if (resultJson is Map<String, dynamic>) {
       var physicianInfo = _model.physicianInfoEntity;
