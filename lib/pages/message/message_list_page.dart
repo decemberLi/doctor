@@ -179,8 +179,7 @@ class _MessageListPageState extends State<MessageListPage> {
   }
 
   _icon(MessageListEntity entity) {
-    if (entity.bizType == 'DOCTOR_RE_LEARN' ||
-        entity.bizType == 'PRESCRIPTION_REJECT' ||
+    if (entity.bizType == 'PRESCRIPTION_REJECT' ||
         entity.bizType == 'AUTH_STATUS_FAIL') {
       return Image.asset(
         'assets/images/reject.png',
@@ -202,11 +201,6 @@ class _MessageListPageState extends State<MessageListPage> {
         height: 40,
       );
     }
-    var image = Image.network(
-      entity.createUserHeadPic,
-      width: 40,
-      height: 40,
-    );
 
     return ImageWidget(
       url: entity.createUserHeadPic,
@@ -250,21 +244,19 @@ class _MessageListPageState extends State<MessageListPage> {
     if (type == MessageType.TYPE_SYSTEM) {
       Navigator.pushNamed(context, RouteManager.QUALIFICATION_PAGE);
     } else if (type == MessageType.TYPE_LEAN_PLAN) {
-      var learnPlanId;
-      if (entity.params != null || entity.params['learnPlanId'] != null) {
-        learnPlanId = entity.params['learnPlanId'];
+      if (entity.params == null || entity.params['learnPlanId'] == null) {
+        return;
       }
       Navigator.pushNamed(context, RouteManager.LEARN_DETAIL, arguments: {
-        'learnPlanId': learnPlanId,
+        'learnPlanId': entity.params['learnPlanId'],
       });
     } else if (type == MessageType.TYPE_PRESCRIPTION) {
-      var prescriptionNo;
-      if (entity.params != null || entity.params['prescriptionNo'] != null) {
-        prescriptionNo = entity.params['prescriptionNo'];
+      if (entity.params == null || entity.params['prescriptionNo'] == null) {
+        return;
       }
       Navigator.pushNamed(context, RouteManager.PRESCRIPTION_DETAIL,
           arguments: {
-            'prescriptionNo': prescriptionNo,
+            'prescriptionNo': entity.params['prescriptionNo'],
           });
     } else if (type == MessageType.TYPE_INTERACTIVE) {
       Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
