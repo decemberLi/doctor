@@ -359,7 +359,8 @@ class _QuestionPageState extends State<QuestionPage> {
     }
 
     return new TextField(
-      maxLines: 4,
+      // maxLines: 4,
+      maxLines: null,  //自适应
       cursorColor: const Color(0xFFFE7C30),
       cursorWidth: 2.0,
       keyboardType: TextInputType.multiline, //多行
