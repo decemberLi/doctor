@@ -113,7 +113,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  fontSize: 16,
+                  fontSize: 14,
                 )),
             SizedBox(
               height: 20,
@@ -152,7 +152,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               child: Text('当前完成度：${data.learnProgress}%',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 16,
+                    fontSize: 14,
                     color: ThemeColor.primaryColor,
                   ))),
           if (data.taskTemplate == 'DOCTOR_LECTURE')
@@ -345,7 +345,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.w600,
-                                                      fontSize: 20,
+                                                      fontSize: 18,
                                                       color: ThemeColor
                                                           .primaryColor,
                                                     )),
@@ -472,7 +472,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                 child: Text('资料列表',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       color: ThemeColor.primaryColor,
                                     ))),
                             Container(

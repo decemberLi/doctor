@@ -208,7 +208,7 @@ class PlanDetailList extends StatelessWidget {
         Text(
           titleShow,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
           // textAlign: TextAlign.left,
@@ -221,7 +221,7 @@ class PlanDetailList extends StatelessWidget {
         ),
         Text(
           summaryShow,
-          style: TextStyle(color: Color(0xFF666666), fontSize: 14),
+          style: TextStyle(color: Color(0xFF666666), fontSize: 10),
           softWrap: true,
         ),
         SizedBox(
@@ -300,7 +300,7 @@ class PlanDetailList extends StatelessWidget {
                       Expanded(
                         child: Container(
                             padding:
-                                EdgeInsets.only(left: 30, top: 30, bottom: 10),
+                                EdgeInsets.only(left: 30, top: 30, bottom: 10,right:10),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
