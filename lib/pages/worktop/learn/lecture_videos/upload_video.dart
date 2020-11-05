@@ -14,7 +14,6 @@ class UploadVideoDetail extends StatefulWidget {
 
 class _UploadVideoDetailState extends State<UploadVideoDetail> {
   VideoPlayerController _controller;
-  bool _isPlaying = false;
   _initData() async {
     if (widget.tocontroller != null) {
       _controller = widget.tocontroller;
@@ -26,23 +25,6 @@ class _UploadVideoDetailState extends State<UploadVideoDetail> {
         files[0]['tmpUrl'],
       );
     }
-
-    print(widget.tocontroller);
-    _controller.addListener(() {
-      final bool isPlaying = _controller.value.isPlaying;
-      if (isPlaying && isPlaying != _isPlaying) {
-        setState(() {
-          _isPlaying = isPlaying;
-        });
-      }
-      if (!isPlaying && isPlaying != _isPlaying) {
-        print('关');
-        setState(() {
-          _isPlaying = isPlaying;
-        });
-      }
-    });
-    print('tmpUrl==> $_controller');
     setState(() {});
   }
 

@@ -9,6 +9,9 @@ import 'package:doctor/pages/worktop/service.dart';
 import 'package:doctor/provider/provider_widget.dart';
 // import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/app_utils.dart';
+import 'package:doctor/utils/constants.dart';
+import 'package:doctor/utils/no_wifi_notice_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -175,7 +178,19 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       EasyLoading.showToast('请填写视频主讲人');
       return;
     }
-    bool bindConfirm = await confirmDialog();
+    bool bindConfirm = false;
+    var onlyWifi = AppUtils.sp.getBool(ONLY_WIFI) ?? true;
+    if (onlyWifi) {
+      bindConfirm = await NoWifiNoticeHelper.checkConnect(
+        context: context,
+        message: '当前使用非WIFI网络，上传将消耗流量，确认要上传该视频吗?',
+      );
+      if (!bindConfirm) {
+        return;
+      }
+    } else {
+      bindConfirm = await confirmDialog();
+    }
     if (bindConfirm) {
       OssFileEntity entity;
       if (_selectVideoData != null)
