@@ -32,7 +32,7 @@ import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
 import 'package:flutter/material.dart';
 
 class RouteManager {
-  static const String HOME = '/';
+  static const String HOME = '/home';
   static const String LOGIN = '/login';
   static const String GUIDE = '/guide';
   static const String LOGIN_PWD = '/login_by_password';
