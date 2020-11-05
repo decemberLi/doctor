@@ -31,7 +31,7 @@ class _AceVideoState extends State<AceVideo> {
   bool _isfirstPlay = true;
 
   _initialize() async {
-    if (_controller == null && widget.controller != null) {
+    if (widget.controller != null) {
       _controller = widget.controller;
       _controller.addListener(() async {
         final bool isPlaying = _controller.value.isPlaying;
