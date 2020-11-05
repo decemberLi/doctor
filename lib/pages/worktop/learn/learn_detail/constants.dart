@@ -2,7 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:doctor/utils/constants.dart';
 
 defaultFormatDate(int value) =>
-    DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日 HH:mm');
+    DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日');
 formatDateDay(int value) => DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日');
 
 taskTemplateFormat(String value) => TASK_TEMPLATE[value];
@@ -81,6 +81,7 @@ const DOCTOR_LECTURE = [
   taskTemplate,
   companyName,
   representName,
+  createTime,
   planImplementEndTime,
 ];
 
