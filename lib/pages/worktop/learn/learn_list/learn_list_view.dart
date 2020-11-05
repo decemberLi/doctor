@@ -138,21 +138,30 @@ class _LearnListPageState extends State<LearnListPage>
         title: Container(
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 8),
-          child: TabBar(
-            physics: NeverScrollableScrollPhysics(),
-            controller: this._tabController,
-            isScrollable: true,
-            labelPadding: EdgeInsets.symmetric(horizontal: 8),
-            indicator: UnderlineTabIndicator(
-                borderSide: BorderSide(style: BorderStyle.none)),
-            tabs: TASK_TYPE_MAP
-                .map(
-                  (e) => Tab(
-                    child: _renderTop(e['text'], TASK_TYPE_MAP.indexOf(e)),
-                  ),
-                )
-                .toList(),
-          ),
+          child: Theme(
+            data: ThemeData(
+              ///默认显示的背景颜色
+              backgroundColor: ThemeColor.colorFFF3F5F8,
+              ///点击的背景高亮颜色
+              highlightColor: ThemeColor.colorFFF3F5F8,
+              ///点击水波纹颜色
+              splashColor: Color.fromRGBO(0, 0, 0, 0),
+            ),
+            child: new TabBar(
+              physics: NeverScrollableScrollPhysics(),
+              controller: this._tabController,
+              isScrollable: true,
+              labelPadding: EdgeInsets.symmetric(horizontal: 8),
+              indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(style: BorderStyle.none)),
+              tabs: TASK_TYPE_MAP
+                  .map(
+                    (e) => Tab(
+                      child: _renderTop(e['text'], TASK_TYPE_MAP.indexOf(e)),
+                    ),
+                  )
+                  .toList(),
+            )),
         ),
       ),
       body: Container(
