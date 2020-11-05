@@ -66,10 +66,6 @@ class DoctorPhysicianQualificationViewModel {
         _model.physicianInfoEntity ?? DoctorPhysicianInfoEntity.create();
   }
 
-  _uploadImageToOss(String path) async {
-    return await uploadImageToOss(path);
-  }
-
   setAvatar(String path) async {
     if (_model.physicianInfoEntity.fullFacePhoto == null) {
       _model.physicianInfoEntity.fullFacePhoto = FacePhoto.create();
@@ -78,7 +74,7 @@ class DoctorPhysicianQualificationViewModel {
     facePhoto.path = path;
     facePhoto.url = null;
     notifyDataChange();
-    UploadFileEntity entity = await _uploadImageToOss(path);
+    UploadFileEntity entity = await uploadImageToOss(path);
     facePhoto.url = entity.url;
     facePhoto.ossId = entity.ossId;
     facePhoto.name = entity.ossFileName;
@@ -92,7 +88,7 @@ class DoctorPhysicianQualificationViewModel {
     idCardFace.path = path;
     idCardFace.url = null;
     notifyDataChange();
-    UploadFileEntity entity = await _uploadImageToOss(path);
+    UploadFileEntity entity = await uploadImageToOss(path);
     idCardFace.url = entity.url;
     idCardFace.ossId = entity.ossId;
     idCardFace.name = entity.ossFileName;
@@ -126,7 +122,7 @@ class DoctorPhysicianQualificationViewModel {
     idCardBackground.path = path;
     idCardBackground.url = null;
     notifyDataChange();
-    UploadFileEntity entity = await _uploadImageToOss(path);
+    UploadFileEntity entity = await uploadImageToOss(path);
     idCardBackground.url = entity.url;
     idCardBackground.ossId = entity.ossId;
     idCardBackground.name = entity.ossFileName;
@@ -186,7 +182,7 @@ class DoctorPhysicianQualificationViewModel {
     toBeChange.path = path;
     toBeChange.url = null;
     notifyDataChange();
-    UploadFileEntity entity = await _uploadImageToOss(path);
+    UploadFileEntity entity = await uploadImageToOss(path);
     toBeChange.ossId = entity.ossId;
     toBeChange.url = entity.url;
     toBeChange.name = entity.ossFileName;

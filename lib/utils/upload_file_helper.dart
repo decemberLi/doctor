@@ -22,7 +22,7 @@ uploadImageToOss(String path) async {
   String suffix = path.substring(path.lastIndexOf('.') + 1, path.length);
 
   var ossFileName = '${policy.fileNamePrefix}$originName';
-  CommonService().uploadToOss(policy.host, path, originName, ossFileName,
+  await CommonService().uploadToOss(policy.host, path, originName, ossFileName,
       policy.accessKeyId, policy.signature, policy.policy);
   Map<String, dynamic> param = {
     'ossFileName': ossFileName,
