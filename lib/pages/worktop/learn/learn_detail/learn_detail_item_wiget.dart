@@ -209,6 +209,7 @@ class PlanDetailList extends StatelessWidget {
           titleShow,
           style: TextStyle(
             fontSize: 14,
+            color: Color(0xFF222222),
             fontWeight: FontWeight.w600,
           ),
           // textAlign: TextAlign.left,
@@ -221,7 +222,7 @@ class PlanDetailList extends StatelessWidget {
         ),
         Text(
           summaryShow,
-          style: TextStyle(color: Color(0xFF666666), fontSize: 10),
+          style: TextStyle(color: Color(0xFF444444), fontSize: 10),
           softWrap: true,
         ),
         SizedBox(
@@ -280,7 +281,7 @@ class PlanDetailList extends StatelessWidget {
                 alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
                 children: <Widget>[
                   Positioned(
-                    left: -48,
+                    left: -52,
                     top: -28,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 6),
@@ -288,19 +289,19 @@ class PlanDetailList extends StatelessWidget {
                           //对齐方式
                           alignment: Alignment.topRight,
                           //设置扭转值
-                          transform: Matrix4.rotationZ(-0.8),
+                          transform: Matrix4.rotationZ(-0.9),
                           //设置被旋转的容器
                           child: typeDecoratedBox(item.resourceType)),
                     ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Expanded(
                         child: Container(
-                            padding:
-                                EdgeInsets.only(left: 30, top: 30, bottom: 10,right:10),
+                            margin: EdgeInsets.only(
+                                left: 34, top: 20, bottom: 10, right: 10),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -312,33 +313,37 @@ class PlanDetailList extends StatelessWidget {
                                         learnFeedback(item),
                                     ],
                                   ),
-                                  learnTitle(item.resourceType, item),
+                                  Row(children: [
+                                    Expanded(
+                                        child: learnTitle(
+                                            item.resourceType, item)),
+                                    if (item.thumbnailUrl != null)
+                                      Container(
+                                          margin: EdgeInsets.only(left: 12),
+                                          child: Stack(
+                                              alignment: Alignment
+                                                  .center, //指定未定位或部分定位widget的对齐方式
+                                              children: <Widget>[
+                                                Image.network(item.thumbnailUrl,
+                                                    width: 90,
+                                                    height: 50,
+                                                    fit: BoxFit.cover),
+                                                if (item.resourceType ==
+                                                    'VIDEO')
+                                                  Positioned(
+                                                    right: 4,
+                                                    bottom: -10,
+                                                    child: Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                vertical: 6),
+                                                        child: _durationBox(item
+                                                            .info.duration)),
+                                                  ),
+                                              ])),
+                                  ])
                                 ])),
                       ),
-                      Row(children: [
-                        if (item.thumbnailUrl != null)
-                          Container(
-                              padding: EdgeInsets.only(left: 10, right: 14),
-                              child: Stack(
-                                  alignment:
-                                      Alignment.center, //指定未定位或部分定位widget的对齐方式
-                                  children: <Widget>[
-                                    Image.network(item.thumbnailUrl,
-                                        width: 108,
-                                        height: 70,
-                                        fit: BoxFit.cover),
-                                    if (item.resourceType == 'VIDEO')
-                                      Positioned(
-                                        right: 4,
-                                        bottom: -10,
-                                        child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 6),
-                                            child: _durationBox(
-                                                item.info.duration)),
-                                      ),
-                                  ])),
-                      ]),
                     ],
                   ),
                 ],

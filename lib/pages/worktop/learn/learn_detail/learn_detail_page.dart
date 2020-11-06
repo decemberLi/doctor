@@ -98,7 +98,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }) {
     return new Container(
       alignment: Alignment.centerLeft,
-      margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
+      margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
       decoration: BoxDecoration(
         border: Border(
@@ -112,6 +112,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             Text(label,
                 textAlign: TextAlign.right,
                 style: TextStyle(
+                  color: Color(0xff444444),
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
                 )),
@@ -122,6 +123,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               child: Text(
                 format != null ? format(value) : value.toString(),
                 style: TextStyle(
+                  color: Color(0xff222222),
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
                 ),
@@ -317,152 +319,158 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                 ),
                               ),
                             Container(
-                              child: Container(
-                                margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                                // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8)),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                                      padding: EdgeInsets.fromLTRB(0, 14, 0, 0),
-                                      child: GestureDetector(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text('学习计划信息',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 18,
-                                                      color: ThemeColor
-                                                          .primaryColor,
-                                                    )),
-                                                // 新
-                                                if (data.taskTemplate ==
-                                                        'SALON' ||
-                                                    data.taskTemplate ==
-                                                        'DEPART')
-                                                  _meetingStatus(
-                                                      data.meetingStartTime,
-                                                      data.meetingEndTime)
-                                              ],
-                                            ),
-                                            Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    model.collapsed
-                                                        ? Icons
-                                                            .keyboard_arrow_down
-                                                        : Icons
-                                                            .keyboard_arrow_up,
+                              margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                              // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                              ),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                                    padding: EdgeInsets.fromLTRB(0, 14, 0, 0),
+                                    child: GestureDetector(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text('学习计划信息',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 18,
                                                     color:
                                                         ThemeColor.primaryColor,
-                                                  ),
-                                                ]),
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          model.toggleCollapsed();
-                                        },
+                                                  )),
+                                              // 新
+                                              if (data.taskTemplate ==
+                                                      'SALON' ||
+                                                  data.taskTemplate == 'DEPART')
+                                                _meetingStatus(
+                                                    data.meetingStartTime,
+                                                    data.meetingEndTime)
+                                            ],
+                                          ),
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  model.collapsed
+                                                      ? Icons
+                                                          .keyboard_arrow_down
+                                                      : Icons.keyboard_arrow_up,
+                                                  color:
+                                                      ThemeColor.primaryColor,
+                                                ),
+                                              ]),
+                                        ],
                                       ),
+                                      onTap: () {
+                                        model.toggleCollapsed();
+                                      },
                                     ),
-                                    ...learnListFields.map((e) {
-                                      if (model.collapsed &&
-                                          e['notCollapse'] == null) {
-                                        return Container();
-                                      }
-                                      return _buildListItem(
-                                          label: e['label'],
-                                          value: dataMap[e['field']],
-                                          format: e['format']);
-                                    }).toList(),
+                                  ),
+                                  ...learnListFields.map((e) {
+                                    if (model.collapsed &&
+                                        e['notCollapse'] == null) {
+                                      return Container();
+                                    }
+                                    return _buildListItem(
+                                        label: e['label'],
+                                        value: dataMap[e['field']],
+                                        format: e['format']);
+                                  }).toList(),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                    child: Column(children: [
+                                      _buildLookCourse(data),
+                                    ]),
+                                  ),
+                                  if (arguments['listStatus'] != 'HISTORY')
                                     Container(
-                                      alignment: Alignment.centerLeft,
-                                      margin:
-                                          EdgeInsets.fromLTRB(16, 10, 16, 10),
-                                      padding:
-                                          EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                      child: Column(children: [
-                                        _buildLookCourse(data),
-                                      ]),
-                                    ),
-                                    if (arguments['listStatus'] != 'HISTORY')
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                    if (arguments['listStatus'] != 'HISTORY')
-                                      AceButton(
-                                        text: _aceText(
-                                            data.taskTemplate, data.reLearn),
-                                        onPressed: () async {
-                                          if (data.taskTemplate ==
-                                              'DOCTOR_LECTURE') {
-                                            Navigator.of(context).pushNamed(
-                                                RouteManager.LECTURE_VIDEOS,
-                                                arguments: {
-                                                  'reLearn': data.reLearn,
-                                                  'resourceId': data
-                                                      .resources[0].resourceId,
-                                                  'learnPlanId':
-                                                      data.learnPlanId,
-                                                  'doctorName': data.doctorName,
-                                                  'taskName': data.taskName,
-                                                  'from': arguments['from'],
-                                                });
-                                          } else {
-                                            // EasyLoading.showToast('暂未开放'),
-                                            if (data.learnProgress == 0) {
-                                              String _text =
-                                                  '当前学习计划尚未学习，请在学习后提交';
-                                              EasyLoading.showToast(_text);
-                                            } else {
-                                              bool bindConfirm =
-                                                  await confirmDialog(
-                                                      data.learnProgress);
-                                              if (bindConfirm) {
-                                                bool success =
-                                                    await model.bindLearnPlan(
-                                                  learnPlanId: data.learnPlanId,
-                                                );
-                                                if (success) {
-                                                  EasyLoading.showToast('提交成功');
-                                                  // 延时1s执行返回
-                                                  Future.delayed(
-                                                      Duration(seconds: 1), () {
-                                                    Navigator.of(context).pop();
-                                                  });
+                                      margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          AceButton(
+                                            width: 375,
+                                            // height: 54,
+                                            text: _aceText(data.taskTemplate,
+                                                data.reLearn),
+                                            onPressed: () async {
+                                              if (data.taskTemplate ==
+                                                  'DOCTOR_LECTURE') {
+                                                Navigator.of(context).pushNamed(
+                                                    RouteManager.LECTURE_VIDEOS,
+                                                    arguments: {
+                                                      'reLearn': data.reLearn,
+                                                      'resourceId': data
+                                                          .resources[0]
+                                                          .resourceId,
+                                                      'learnPlanId':
+                                                          data.learnPlanId,
+                                                      'doctorName':
+                                                          data.doctorName,
+                                                      'taskName': data.taskName,
+                                                      'from': arguments['from'],
+                                                    });
+                                              } else {
+                                                // EasyLoading.showToast('暂未开放'),
+                                                if (data.learnProgress == 0) {
+                                                  String _text =
+                                                      '当前学习计划尚未学习，请在学习后提交';
+                                                  EasyLoading.showToast(_text);
+                                                } else {
+                                                  bool bindConfirm =
+                                                      await confirmDialog(
+                                                          data.learnProgress);
+                                                  if (bindConfirm) {
+                                                    bool success = await model
+                                                        .bindLearnPlan(
+                                                      learnPlanId:
+                                                          data.learnPlanId,
+                                                    );
+                                                    if (success) {
+                                                      EasyLoading.showToast(
+                                                          '提交成功');
+                                                      // 延时1s执行返回
+                                                      Future.delayed(
+                                                          Duration(seconds: 1),
+                                                          () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      });
+                                                    }
+                                                  }
                                                 }
                                               }
-                                            }
-                                          }
-                                        },
+                                            },
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                        ],
                                       ),
-                                    SizedBox(
-                                      height: 20,
                                     ),
-                                  ],
-                                ),
+                                ],
                               ),
                             ),
                             Container(
                                 alignment: Alignment.centerLeft,
-                                margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                                margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
                                 padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
