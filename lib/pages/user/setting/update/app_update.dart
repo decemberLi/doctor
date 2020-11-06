@@ -260,110 +260,102 @@ class AppUpdateDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        child: Center(
-          child: Container(
-            color: Colors.transparent,
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 208,
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        'assets/images/app_update_top.png',
-                      ),
-                      Positioned(
-                        right: 16,
-                        top: 62,
-                        child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '发现新版本',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.white),
-                              ),
-                              Text(
-                                '版本：${_updateInfo?.appVersion ?? ''}',
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.white),
-                              ),
-                            ],
+        child: Container(
+          padding: EdgeInsets.only(left: 50, right: 50),
+          color: Colors.transparent,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+                children: [
+                  Image.asset('assets/images/app_update_top.png'),
+                  Positioned(
+                    right: 16,
+                    top: 62,
+                    child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '发现新版本',
+                            style:
+                            TextStyle(fontSize: 16, color: Colors.white),
                           ),
-                        ),
+                          Text(
+                            '版本：${_updateInfo?.appVersion ?? ''}',
+                            style:
+                            TextStyle(fontSize: 12, color: Colors.white),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                // 版本内容
-                Container(
-                  width: 208,
-                  padding: EdgeInsets.only(left: 15, bottom: 10),
-                  color: Colors.white,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '更新内容:',
-                        style: TextStyle(
-                            color: ThemeColor.colorFF222222, fontSize: 12),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 10, right: 16),
-                        color: Colors.white,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: _buildUpdateContentWidget(
-                              _updateInfo?.appContent ?? ''),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 35, right: 35, bottom: 5,top: 5),
-                  color: Colors.white,
-                  width: 208,
-                  child: AceButton(
-                    text: '立即更新',
-                    width: 137,
-                    height: 28,
-                    onPressed: _doUpdate ??
-                        () {
-                          print('立即升级');
-                        },
-                  ),
-                ),
-                Container(
-                  child: Image.asset(
-                    'assets/images/app_update_bottom.png',
-                    width: 208,
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.only(top: 36),
-                    child: Image.asset(
-                      'assets/images/close.png',
-                      width: 24,
-                      height: 24,
                     ),
                   ),
-                  onTap: () {
-                    //关闭对话框并返回true
-                    if (_updateInfo.forceUpgrade) {
-                      exit(0);
-                    }
-                    _record();
-                    Navigator.pop(context);
-                  },
+                ],
+              ),
+              // 版本内容
+              Container(
+                padding: EdgeInsets.only(left: 35, right: 35, bottom: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                  color: Colors.white,
                 ),
-              ],
-            ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text('更新内容:',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: ThemeColor.colorFF222222, fontSize: 12)),
+                    Container(
+                      margin: EdgeInsets.only(left: 10, right: 16),
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: _buildUpdateContentWidget(
+                            _updateInfo?.appContent ?? ''),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 24, bottom: 24),
+                      child: AceButton(
+                        text: '立即更新',
+                        height: 28,
+                        onPressed: _doUpdate ??
+                                () {
+                              print('立即升级');
+                            },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              GestureDetector(
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  margin: EdgeInsets.only(top: 36),
+                  child: Image.asset(
+                    'assets/images/close.png',
+                    width: 24,
+                    height: 24,
+                  ),
+                ),
+                onTap: () {
+                  //关闭对话框并返回true
+                  if (_updateInfo.forceUpgrade) {
+                    exit(0);
+                  }
+                  _record();
+                  Navigator.pop(context);
+                },
+              ),
+            ],
           ),
         ),
         onWillPop: () {
