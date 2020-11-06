@@ -203,6 +203,16 @@ class DoctorPhysicianQualificationViewModel {
       EasyLoading.showToast('请上传身份证');
       return false;
     }
+    if (_model.physicianInfoEntity.practiceCertificates == null ||
+        _model.physicianInfoEntity.practiceCertificates.length == 0) {
+      EasyLoading.showToast('请上传医师执业证');
+      return false;
+    }
+    if (_model.physicianInfoEntity.practiceCertificates == null ||
+        _model.physicianInfoEntity.practiceCertificates.length < 2) {
+      EasyLoading.showToast('医师执业证至少上传两张图');
+      return false;
+    }
     if (_model.physicianInfoEntity.qualifications == null ||
         _model.physicianInfoEntity.qualifications.length == 0) {
       EasyLoading.showToast('请上传医师资格证');
@@ -213,20 +223,10 @@ class DoctorPhysicianQualificationViewModel {
       EasyLoading.showToast('医师资格证至少上传两张图');
       return false;
     }
-    if (_model.physicianInfoEntity.practiceCertificates == null ||
-        _model.physicianInfoEntity.practiceCertificates.length == 0) {
-      EasyLoading.showToast('请上传医师执业证');
-      return false;
-    }
 
-    if (_model.physicianInfoEntity.practiceCertificates == null ||
-        _model.physicianInfoEntity.practiceCertificates.length < 2) {
-      EasyLoading.showToast('医师执业证至少上传两张图');
-      return false;
-    }
     if (_model.physicianInfoEntity.jobCertificates == null ||
         _model.physicianInfoEntity.jobCertificates.length == 0) {
-      EasyLoading.showToast('请上传医师职称证');
+      EasyLoading.showToast('请上传专业技术资格证');
       return false;
     }
 
