@@ -148,7 +148,7 @@ class _WorktopPageState extends State<WorktopPage>
                     : Container(
                         width: double.infinity,
                         color: Color(0xFFF3F5F8),
-                        padding: EdgeInsets.only(left: 16, top: 11,bottom: 10),
+                        padding: EdgeInsets.only(left: 16, top: 11, bottom: 10),
                         child: const Text(
                           "最近收到",
                           style: TextStyle(
@@ -321,24 +321,39 @@ class _WorktopPageState extends State<WorktopPage>
         child: Row(
           children: [
             Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                color: Colors.white,
-                child: staticsData('拜访', visitCount),
+              child: GestureDetector(
+                child: Container(
+                  alignment: Alignment.center,
+                  color: Colors.white,
+                  child: staticsData('拜访', visitCount),
+                ),
+                onTap: () {
+                  _goLearnPlanPage(2);
+                },
               ),
             ),
             Expanded(
-              child: Container(
-                decoration: leftLineDecoration,
-                alignment: Alignment.center,
-                child: staticsData('会议', meetingCount),
+              child: GestureDetector(
+                child: Container(
+                  decoration: leftLineDecoration,
+                  alignment: Alignment.center,
+                  child: staticsData('会议', meetingCount),
+                ),
+                onTap: () {
+                  _goLearnPlanPage(1);
+                },
               ),
             ),
             Expanded(
-              child: Container(
-                decoration: leftLineDecoration,
-                alignment: Alignment.center,
-                child: staticsData('调研', surveyCount),
+              child: GestureDetector(
+                child: Container(
+                  decoration: leftLineDecoration,
+                  alignment: Alignment.center,
+                  child: staticsData('调研', surveyCount),
+                ),
+                onTap: () {
+                  _goLearnPlanPage(3);
+                },
               ),
             ),
           ],
