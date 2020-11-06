@@ -325,7 +325,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                     color: Colors.white,
                   ),
                 ),
-                hintText: '请输入您的问题或评价',
+                hintText: '请输入您的问题或评论',
                 suffix: GestureDetector(
                   onTap: () {
                     sendCommentInfo();
@@ -351,7 +351,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                           // CommonModal 点击评论数弹出评论区
                           CommonModal.showBottomSheet(context,
                               title: '评论区',
-                              height: 660,
+                              height: Adapt.screenH() * 0.8,
                               child: CommentListPage(
                                   widget.resourceId, widget.learnPlanId));
                         },

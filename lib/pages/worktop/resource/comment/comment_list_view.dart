@@ -100,12 +100,21 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                     margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
                     child: Text(
                       data.deleted ? '该评论已删除' : data.commentContent,
+                      style: TextStyle(
+                        color: Color(0xff0b0b0b),
+                      ),
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
                     alignment: Alignment.centerRight,
-                    child: Text(RelativeDateFormat.format(data.createTime)),
+                    child: Text(
+                      RelativeDateFormat.format(data.createTime),
+                      style: TextStyle(
+                        color: Color(0XFF2222222),
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -170,16 +179,24 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                         repplyItem(widget.item.commentUserName,
                             widget.item.commentUserType),
                         Container(
-                          margin: EdgeInsets.all(5),
+                          margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
                           child: Text(
                             widget.item.commentContent,
+                            style: TextStyle(
+                              color: Color(0xff0b0b0b),
+                            ),
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.all(5),
+                          margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
                           alignment: Alignment.centerRight,
-                          child: Text(RelativeDateFormat.format(
-                              widget.item.createTime)),
+                          child: Text(
+                            RelativeDateFormat.format(widget.item.createTime),
+                            style: TextStyle(
+                              color: Color(0xff222222),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
                         )
                       ],
                     ),
@@ -239,7 +256,7 @@ class _CommentListPageState extends State<CommentListPage>
   @override
   bool get wantKeepAlive => true;
 
-  String placeholder = '请输入您的问题或评价';
+  String placeholder = '请输入您的问题或评论';
   FocusNode commentFocusNode = FocusNode();
   TextEditingController commentTextEdit = TextEditingController();
   String commentContent = ''; //评论内容
@@ -297,7 +314,7 @@ class _CommentListPageState extends State<CommentListPage>
       commentTextEdit.clear();
       commentFocusNode.unfocus();
       setState(() {
-        placeholder = '请输入您的问题或评价';
+        placeholder = '请输入您的问题或评论';
         commentContent = '';
       });
       model.refresh();
@@ -320,7 +337,7 @@ class _CommentListPageState extends State<CommentListPage>
             setState(() {
               parentId = 0;
               commentId = 0;
-              placeholder = '请输入您的问题或评价';
+              placeholder = '请输入您的问题或评论';
               commentContent = '';
             });
           },
