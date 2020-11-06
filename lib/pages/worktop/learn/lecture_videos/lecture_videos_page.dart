@@ -7,6 +7,7 @@ import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/service.dart';
 import 'package:doctor/provider/provider_widget.dart';
+import 'package:doctor/route/route_manager.dart';
 // import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/app_utils.dart';
@@ -211,10 +212,13 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
             //  第一个参数表示将要加入栈中的页面，第二个参数表示栈中要保留的页面底线
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => LearnPlanPage()),
-                ModalRoute.withName('/'));
+                ModalRoute.withName(RouteManager.HOME));
+            // Navigator.of(context)
+            //     .popUntil(ModalRoute.withName(RouteManager.HOME));
           } else {
             // 点击回到learn_page，连带着之前也一起退出
-            Navigator.of(context).popUntil(ModalRoute.withName('/learn_page'));
+            Navigator.of(context)
+                .popUntil(ModalRoute.withName(RouteManager.LEARN_PAGE));
           }
           // Navigator.of(context).pushNamed(RouteManager.LEARN_PAGE);
         });
