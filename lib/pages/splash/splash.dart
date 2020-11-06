@@ -8,10 +8,10 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 
 class GuidePage extends StatefulWidget {
   static const List<String> images = <String>[
-    'android1.png',
-    'android2.png',
-    'android3.png',
-    'android4.png',
+    'android1.jpg',
+    'android2.jpg',
+    'android3.jpg',
+    'android4.jpg',
   ];
 
   @override

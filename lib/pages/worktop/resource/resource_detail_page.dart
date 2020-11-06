@@ -325,7 +325,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                     color: Colors.white,
                   ),
                 ),
-                hintText: '请输入您的问题或评价',
+                hintText: '请输入您的问题或评论',
                 suffix: GestureDetector(
                   onTap: () {
                     sendCommentInfo();

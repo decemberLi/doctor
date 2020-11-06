@@ -239,7 +239,7 @@ class _CommentListPageState extends State<CommentListPage>
   @override
   bool get wantKeepAlive => true;
 
-  String placeholder = '请输入您的问题或评价';
+  String placeholder = '请输入您的问题或评论';
   FocusNode commentFocusNode = FocusNode();
   TextEditingController commentTextEdit = TextEditingController();
   String commentContent = ''; //评论内容
@@ -297,7 +297,7 @@ class _CommentListPageState extends State<CommentListPage>
       commentTextEdit.clear();
       commentFocusNode.unfocus();
       setState(() {
-        placeholder = '请输入您的问题或评价';
+        placeholder = '请输入您的问题或评论';
         commentContent = '';
       });
       model.refresh();
@@ -320,7 +320,7 @@ class _CommentListPageState extends State<CommentListPage>
             setState(() {
               parentId = 0;
               commentId = 0;
-              placeholder = '请输入您的问题或评价';
+              placeholder = '请输入您的问题或评论';
               commentContent = '';
             });
           },
