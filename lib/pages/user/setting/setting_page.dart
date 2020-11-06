@@ -22,14 +22,37 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
+        elevation: 0,
         title: Text('设置'),
       ),
       body: Column(
         children: [
           _buildModifyPwdWidget(),
-          _buildSwitchWidget(),
-          _buildDivider(),
-          _buildAppUpdateWidget(context),
+          Container(
+            margin: EdgeInsets.only(left: 16, right: 16, top: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(6),
+              ),
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: _buildSwitchWidget(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 18),
+                  child: _buildDivider(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 18),
+                  child: _buildAppUpdateWidget(context),
+                ),
+              ],
+            ),
+          ),
           _buildLogoutWidget(),
         ],
       ),
@@ -115,14 +138,6 @@ class _SettingPageState extends State<SettingPage> {
     return GestureDetector(
       child: Container(
         height: 50,
-        padding: EdgeInsets.only(right: 18),
-        margin: EdgeInsets.only(left: 16, right: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(
-            Radius.circular(6),
-          ),
-        ),
         child: Row(
           children: [
             Expanded(
@@ -148,33 +163,28 @@ class _SettingPageState extends State<SettingPage> {
     return GestureDetector(
       child: Container(
         height: 50,
-        padding: EdgeInsets.only(right: 18),
-        margin: EdgeInsets.only(left: 16, right: 16, top: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(
-            Radius.circular(6),
-          ),
-        ),
         child: Row(
           children: [
             Expanded(
-                child: Container(
-              margin: EdgeInsets.only(left: 24),
-              child: Text(
-                '仅在Wi-Fi下上传/加载视频',
-                style: TextStyle(color: ThemeColor.colorFF222222, fontSize: 14),
-                textAlign: TextAlign.left,
+              child: Container(
+                margin: EdgeInsets.only(left: 24),
+                child: Text(
+                  '仅在Wi-Fi下上传/加载视频',
+                  style:
+                      TextStyle(color: ThemeColor.colorFF222222, fontSize: 14),
+                  textAlign: TextAlign.left,
+                ),
               ),
-            )),
+            ),
             Switch(
-                value: _flag,
-                onChanged: (bool value) async {
-                  _flag = value;
-                  var preference = await SharedPreferences.getInstance();
-                  preference.setBool(ONLY_WIFI, value);
-                  setState(() {});
-                })
+              value: _flag,
+              onChanged: (bool value) async {
+                _flag = value;
+                var preference = await SharedPreferences.getInstance();
+                preference.setBool(ONLY_WIFI, value);
+                setState(() {});
+              },
+            )
           ],
         ),
       ),
@@ -184,7 +194,7 @@ class _SettingPageState extends State<SettingPage> {
   _buildDivider() {
     return GestureDetector(
       child: Container(
-        margin: EdgeInsets.only(left: 16, right: 16),
+        margin: EdgeInsets.only(left: 16),
         child: Divider(
           height: 1,
         ),

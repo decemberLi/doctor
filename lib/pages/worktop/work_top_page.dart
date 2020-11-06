@@ -152,7 +152,7 @@ class _WorktopPageState extends State<WorktopPage>
                         child: const Text(
                           "最近收到",
                           style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 14,
                               color: Color(0xFF222222),
                               fontWeight: FontWeight.bold),
                         ),
