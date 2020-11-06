@@ -165,20 +165,18 @@ class _QuestionPageState extends State<QuestionPage> {
         // 文本
         _questionsInit.forEach((element) {
           if (element['index'] == item.index) {
-            if (element['textField'] != null) {
-              print(item.toString());
+            if (element['textField'].isEmpty || element['textField'] == null) {
+              EasyLoading.showToast('请确保所有问卷内容已正确填写');
+              showError = true;
+              return false;
+            } else {
               Map<String, dynamic> reoptions = {
                 "checked": element['textField'],
                 "index": null,
                 "answerOption": null,
               };
-
               QuestionOption option = QuestionOption.fromJson(reoptions);
               item.options.add(option);
-            } else {
-              EasyLoading.showToast('请确保所有问卷内容已正确填写');
-              showError = true;
-              return false;
             }
           }
         });
@@ -360,7 +358,7 @@ class _QuestionPageState extends State<QuestionPage> {
 
     return new TextField(
       // maxLines: 4,
-      maxLines: null,  //自适应
+      maxLines: null, //自适应
       cursorColor: const Color(0xFFFE7C30),
       cursorWidth: 2.0,
       keyboardType: TextInputType.multiline, //多行
