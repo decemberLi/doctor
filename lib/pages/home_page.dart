@@ -1,5 +1,6 @@
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/message/message_page.dart';
+import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
 import 'package:doctor/pages/user/setting/update/app_update.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
@@ -44,8 +45,16 @@ class _HomePageState extends State<HomePage>
       _currentIndex = index;
       if (index == 1) {
         _showGoToQualificationDialog(preTabIndex);
+      } else if (index == 2) {
+        _refreshMessageCenterData();
       }
     });
+  }
+
+  _refreshMessageCenterData(){
+    MessageCenterViewModel messageCenterModel =
+    Provider.of<MessageCenterViewModel>(context, listen: false);
+    messageCenterModel.initData();
   }
 
   /// 初始化医生用户数据
@@ -57,6 +66,7 @@ class _HomePageState extends State<HomePage>
         model.data.basicInfoAuthStatus == 'NOT_COMPLETE') {
       _showModifyUserInfoDialog(model);
     }
+    _refreshMessageCenterData();
   }
 
   /// 显示完善信息弹窗
@@ -226,16 +236,8 @@ class _HomePageState extends State<HomePage>
             label: '开处方',
           ),
           new BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/images/message_uncheck.png',
-              width: 24,
-              height: 24,
-            ),
-            activeIcon: Image.asset(
-              'assets/images/message_checked.png',
-              width: 24,
-              height: 24,
-            ),
+            icon: _messageIcon(false),
+            activeIcon: _messageIcon(true),
             label: '消息',
           ),
           new BottomNavigationBarItem(
@@ -262,5 +264,43 @@ class _HomePageState extends State<HomePage>
         ],
       ),
     );
+  }
+
+  _messageIcon(bool isActive) {
+    return Consumer<MessageCenterViewModel>(builder: (context, model, child) {
+      var assetsUrl;
+      if (isActive) {
+        assetsUrl = 'assets/images/message_checked.png';
+      } else {
+        assetsUrl = 'assets/images/message_uncheck.png';
+      }
+      var icon = Image.asset(assetsUrl, width: 24, height: 24);
+      var redDotColor = Colors.transparent;
+      if (model != null &&
+          model.data != null &&
+          model.data.total != null &&
+          model.data.total > 0) {
+        redDotColor = ThemeColor.colorFFF57575;
+      }
+
+      return Stack(
+        children: [
+          icon,
+          Positioned(
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: redDotColor,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(12),
+                ),
+              ),
+              width: 7,
+              height: 7,
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
