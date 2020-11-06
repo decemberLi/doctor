@@ -380,8 +380,13 @@ class _QuestionPageState extends State<QuestionPage> {
         // 滚动页面
         _scrollToIndex(question.index);
       },
-      controller: new TextEditingController(
-          text: _questionsInit[question.index]['textField']), // 控制正在编辑的文本
+      controller: TextEditingController.fromValue(TextEditingValue(
+          text: _questionsInit[question.index]['textField'],
+          //  保持光标在最后
+          selection: TextSelection.fromPosition(TextPosition(
+              affinity: TextAffinity.downstream,
+              offset: _questionsInit[question.index]['textField']
+                  .length)))), // 控制正在编辑的文本
     );
   }
 

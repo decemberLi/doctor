@@ -120,7 +120,10 @@ class LearnListItemWiget extends StatelessWidget {
         ),
         Text(
           text,
-          style: TextStyle(color: ThemeColor.primaryColor, fontSize: 14),
+          style: TextStyle(
+              color: ThemeColor.primaryColor,
+              fontSize: 14,
+              fontWeight: FontWeight.bold),
         ),
       ],
     );
