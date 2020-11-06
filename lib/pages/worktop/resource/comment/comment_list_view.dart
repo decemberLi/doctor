@@ -100,12 +100,21 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                     margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
                     child: Text(
                       data.deleted ? '该评论已删除' : data.commentContent,
+                      style: TextStyle(
+                        color: Color(0xff0b0b0b),
+                      ),
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
                     alignment: Alignment.centerRight,
-                    child: Text(RelativeDateFormat.format(data.createTime)),
+                    child: Text(
+                      RelativeDateFormat.format(data.createTime),
+                      style: TextStyle(
+                        color: Color(0XFF2222222),
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -170,16 +179,24 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                         repplyItem(widget.item.commentUserName,
                             widget.item.commentUserType),
                         Container(
-                          margin: EdgeInsets.all(5),
+                          margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
                           child: Text(
                             widget.item.commentContent,
+                            style: TextStyle(
+                              color: Color(0xff0b0b0b),
+                            ),
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.all(5),
+                          margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
                           alignment: Alignment.centerRight,
-                          child: Text(RelativeDateFormat.format(
-                              widget.item.createTime)),
+                          child: Text(
+                            RelativeDateFormat.format(widget.item.createTime),
+                            style: TextStyle(
+                              color: Color(0xff222222),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
                         )
                       ],
                     ),
