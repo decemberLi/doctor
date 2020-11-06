@@ -163,6 +163,18 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 horizontal: 16.0,
               ),
               children: [
+                if (model.data?.status == 'REJECT')
+                  Container(
+                    padding: EdgeInsets.only(right: 30, bottom: 20),
+                    child: Text(
+                      '未通过原因：${model.data?.reason ?? ''}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
                 PrescripionCard(
                   title: '患者信息',
                   trailing: TextButton(
@@ -222,7 +234,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                           // model.changeDataNotify();
                         },
                         obscureText: false,
-                        keyboardType: TextInputType.number,
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: false),
                         style: MyStyles.inputTextStyle,
                         textAlign: TextAlign.right,
                       )..controller.text =

@@ -43,13 +43,16 @@ class _LearnListPageState extends State<LearnListPage>
       initialIndex: widget.index,
       length: TASK_TYPE_MAP.length,
     )..addListener(() {
-        setState(() {
-          _currentTabIndex = _tabController.index;
-          if (widget.onTaskTypeChange != null) {
-            widget.onTaskTypeChange(
-                TASK_TYPE_MAP[_currentTabIndex]['taskTemplate']);
-          }
-        });
+        // 避免触发两次
+        if (_tabController.index.toDouble() == _tabController.animation.value) {
+          setState(() {
+            _currentTabIndex = _tabController.index;
+            if (widget.onTaskTypeChange != null) {
+              widget.onTaskTypeChange(
+                  TASK_TYPE_MAP[_currentTabIndex]['taskTemplate']);
+            }
+          });
+        }
       });
   }
 
@@ -139,29 +142,31 @@ class _LearnListPageState extends State<LearnListPage>
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 8),
           child: Theme(
-            data: ThemeData(
-              ///默认显示的背景颜色
-              backgroundColor: ThemeColor.colorFFF3F5F8,
-              ///点击的背景高亮颜色
-              highlightColor: ThemeColor.colorFFF3F5F8,
-              ///点击水波纹颜色
-              splashColor: Color.fromRGBO(0, 0, 0, 0),
-            ),
-            child: new TabBar(
-              physics: NeverScrollableScrollPhysics(),
-              controller: this._tabController,
-              isScrollable: true,
-              labelPadding: EdgeInsets.symmetric(horizontal: 8),
-              indicator: UnderlineTabIndicator(
-                  borderSide: BorderSide(style: BorderStyle.none)),
-              tabs: TASK_TYPE_MAP
-                  .map(
-                    (e) => Tab(
-                      child: _renderTop(e['text'], TASK_TYPE_MAP.indexOf(e)),
-                    ),
-                  )
-                  .toList(),
-            )),
+              data: ThemeData(
+                ///默认显示的背景颜色
+                backgroundColor: ThemeColor.colorFFF3F5F8,
+
+                ///点击的背景高亮颜色
+                highlightColor: ThemeColor.colorFFF3F5F8,
+
+                ///点击水波纹颜色
+                splashColor: Color.fromRGBO(0, 0, 0, 0),
+              ),
+              child: new TabBar(
+                physics: NeverScrollableScrollPhysics(),
+                controller: this._tabController,
+                isScrollable: true,
+                labelPadding: EdgeInsets.symmetric(horizontal: 8),
+                indicator: UnderlineTabIndicator(
+                    borderSide: BorderSide(style: BorderStyle.none)),
+                tabs: TASK_TYPE_MAP
+                    .map(
+                      (e) => Tab(
+                        child: _renderTop(e['text'], TASK_TYPE_MAP.indexOf(e)),
+                      ),
+                    )
+                    .toList(),
+              )),
         ),
       ),
       body: Container(

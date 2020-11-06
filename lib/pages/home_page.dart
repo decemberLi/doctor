@@ -40,12 +40,23 @@ class _HomePageState extends State<HomePage>
   void onTabTapped(int index) {
     int preTabIndex = _currentIndex;
     // TODO: 接RDM控制处方是否可见
+    if (index == 0) {
+      this.updateDoctorInfo();
+    }
     setState(() {
       _currentIndex = index;
       if (index == 1) {
         _showGoToQualificationDialog(preTabIndex);
       }
     });
+  }
+
+  updateDoctorInfo() {
+    UserInfoViewModel model =
+        Provider.of<UserInfoViewModel>(context, listen: false);
+    if (model.data.authStatus != 'PASS') {
+      model.queryDoctorInfo();
+    }
   }
 
   /// 初始化医生用户数据
@@ -111,12 +122,18 @@ class _HomePageState extends State<HomePage>
   }
 
   /// 显示去认证弹窗
-  _showGoToQualificationDialog(int preTabIndex) {
+  _showGoToQualificationDialog(int preTabIndex) async {
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     if (model.data.authStatus == 'PASS') {
       return;
     }
+    // 如果没有通过认证再次查询，再次判断
+    await model.queryDoctorInfo();
+    if (model.data.authStatus == 'PASS') {
+      return;
+    }
+
     return showCupertinoDialog<bool>(
       context: context,
       builder: (context) {
@@ -147,18 +164,23 @@ class _HomePageState extends State<HomePage>
               ),
               onPressed: () async {
                 //关闭对话框并返回true
-                // Navigator.of(context).pop();
-                var result = await Navigator.pushNamed(
-                    context, RouteManager.USERINFO_DETAIL,
-                    arguments: {
-                      'doctorData': model.data.toJson(),
-                      'qualification': true,
-                    });
-                if (result != null) {
-                  await model.queryDoctorInfo();
-                  if (model.data.authStatus == 'PASS') {
-                    Navigator.of(context).pop();
-                  }
+                String path = RouteManager.USERINFO_DETAIL;
+                Map arguments = {
+                  'doctorData': model.data.toJson(),
+                  'qualification': true,
+                };
+                if (model.data.authStatus == 'VERIFYING') {
+                  path = RouteManager.QUALIFICATION_AUTH_STATUS;
+                  arguments = {'authStatus': model.data.authStatus};
+                }
+                await Navigator.pushNamed(
+                  context,
+                  path,
+                  arguments: arguments,
+                );
+                await model.queryDoctorInfo();
+                if (model.data.authStatus == 'PASS') {
+                  Navigator.of(context).pop();
                 }
               },
             ),

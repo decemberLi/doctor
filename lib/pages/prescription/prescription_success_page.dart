@@ -186,16 +186,23 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
         ),
       ),
       onWillPop: () async {
+        PrescriptionViewModel model =
+            Provider.of<PrescriptionViewModel>(context, listen: false);
         if (backfocus == 1) {
           //第二次点击返回直接退出页面
-          Navigator.pop(context);
+          // Navigator.pop(context);
+          model.resetData();
+          Navigator.popUntil(context, ModalRoute.withName(RouteManager.HOME));
         } else {
           backfocus = backfocus + 1;
           LoginInfoModel loginInfo = SessionManager.getLoginInfo();
           if (loginInfo.modifiedPassword != true) {
             bool go = await _showGoToModifyPasswordDialog();
             if (!go) {
-              Navigator.pop(context);
+              // Navigator.pop(context);
+              model.resetData();
+              Navigator.popUntil(
+                  context, ModalRoute.withName(RouteManager.HOME));
             }
           }
         }

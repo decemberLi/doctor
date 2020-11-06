@@ -31,7 +31,7 @@ class PrescriptionModel {
   int prescriptionPatientAge;
 
   /// 处方患者性别（0-女，1-男）
-  @JsonKey(defaultValue: 1)
+  // @JsonKey(defaultValue: 1)
   int prescriptionPatientSex;
 
   String get prescriptionPatientSexLabel =>
@@ -101,7 +101,7 @@ class PrescriptionModel {
     this.prescriptionNo,
     this.reason,
     this.prescriptionPatientAge,
-    this.prescriptionPatientSex = 1,
+    this.prescriptionPatientSex,
     this.clinicalDiagnosis,
     this.pharmacist,
     this.furtherConsultation = true,

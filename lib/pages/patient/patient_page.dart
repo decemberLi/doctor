@@ -74,13 +74,58 @@ class _PatientListPageState extends State<PatientListPage>
           model: PatientListViewModel(''),
           onModelReady: (model) => model.initData(),
           builder: (context, model, child) {
+            Widget body;
             if (model.isError || model.isEmpty) {
               model.patientName = '';
-              return ViewStateEmptyWidget(
-                message: '暂无随诊患者，快去开方吧',
+              body = ViewStateEmptyWidget(
+                message: '暂无随诊患者，快去开处方吧',
                 onPressed: model.initData,
               );
+            } else {
+              body = SmartRefresher(
+                controller: model.refreshController,
+                header: ClassicHeader(),
+                footer: ClassicFooter(),
+                onRefresh: model.refresh,
+                onLoading: model.loadMore,
+                enablePullUp: true,
+                child: ListView.builder(
+                  itemCount: model.list.length,
+                  padding: EdgeInsets.all(16),
+                  itemBuilder: (context, index) {
+                    PatientModel item = model.list[index];
+                    return GestureDetector(
+                      child: PatientListItem(item),
+                      onTap: () async {
+                        if (prescriptionNo != null) {
+                          if (prescriptionNo == 'QUICK_CREATE') {
+                            Navigator.pop(context, item.patientUserId);
+                          } else {
+                            bool bindConfirm =
+                                await confirmDialog(item.patientName);
+                            if (bindConfirm) {
+                              bool success = await model.bindPrescription(
+                                patientUserId: item.patientUserId,
+                                prescriptionNo: prescriptionNo as String,
+                              );
+                              if (success) {
+                                EasyLoading.showToast('发送成功');
+                                Navigator.of(context).pop(true);
+                              }
+                            }
+                          }
+                        } else {
+                          Navigator.of(context).pushNamed(
+                              RouteManager.PATIENT_DETAIL,
+                              arguments: item.patientUserId);
+                        }
+                      },
+                    );
+                  },
+                ),
+              );
             }
+
             return Column(
               children: [
                 Container(
@@ -121,48 +166,8 @@ class _PatientListPageState extends State<PatientListPage>
                   ),
                 ),
                 Expanded(
-                    child: SmartRefresher(
-                  controller: model.refreshController,
-                  header: ClassicHeader(),
-                  footer: ClassicFooter(),
-                  onRefresh: model.refresh,
-                  onLoading: model.loadMore,
-                  enablePullUp: true,
-                  child: ListView.builder(
-                    itemCount: model.list.length,
-                    padding: EdgeInsets.all(16),
-                    itemBuilder: (context, index) {
-                      PatientModel item = model.list[index];
-                      return GestureDetector(
-                        child: PatientListItem(item),
-                        onTap: () async {
-                          if (prescriptionNo != null) {
-                            if (prescriptionNo == 'QUICK_CREATE') {
-                              Navigator.pop(context, item.patientUserId);
-                            } else {
-                              bool bindConfirm =
-                                  await confirmDialog(item.patientName);
-                              if (bindConfirm) {
-                                bool success = await model.bindPrescription(
-                                  patientUserId: item.patientUserId,
-                                  prescriptionNo: prescriptionNo as String,
-                                );
-                                if (success) {
-                                  EasyLoading.showToast('发送成功');
-                                  Navigator.of(context).pop(true);
-                                }
-                              }
-                            }
-                          } else {
-                            Navigator.of(context).pushNamed(
-                                RouteManager.PATIENT_DETAIL,
-                                arguments: item.patientUserId);
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ))
+                  child: body,
+                ),
               ],
             );
           },

@@ -95,6 +95,10 @@ class PrescriptionViewModel extends ViewStateModel {
       EasyLoading.showToast('年龄需要在0-120岁');
       return false;
     }
+    if (this.data.prescriptionPatientSex == null) {
+      EasyLoading.showToast('请选择性别');
+      return false;
+    }
     if (this.data.clinicalDiagnosis == null ||
         this.data.clinicalDiagnosis.isEmpty) {
       EasyLoading.showToast('请添加临床诊断');
@@ -155,7 +159,6 @@ class PrescriptionViewModel extends ViewStateModel {
     var params = this.data.toJson();
     var res = await addPrescription(params);
     String prescriptionNo = res['prescriptionNo'];
-    this.resetData();
     if (callBack != null) {
       callBack(prescriptionNo);
     }

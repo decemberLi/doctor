@@ -23,16 +23,16 @@ class ViewStateWidget extends StatelessWidget {
   final VoidCallback onPressed;
   final isShowRefreshBtn;
 
-  ViewStateWidget(
-      {Key key,
-      this.image,
-      this.title,
-      this.message,
-      this.buttonText,
-      this.onPressed,
-      this.buttonTextData,
-      this.isShowRefreshBtn = true})
-      : super(key: key);
+  ViewStateWidget({
+    Key key,
+    this.image,
+    this.title,
+    this.message,
+    this.buttonText,
+    this.onPressed,
+    this.buttonTextData,
+    this.isShowRefreshBtn = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +93,7 @@ class ViewStateErrorWidget extends StatelessWidget {
   final Widget buttonText;
   final String buttonTextData;
   final VoidCallback onPressed;
+  final bool isShowRefreshBtn;
 
   const ViewStateErrorWidget({
     Key key,
@@ -103,6 +104,7 @@ class ViewStateErrorWidget extends StatelessWidget {
     this.buttonText,
     this.buttonTextData,
     this.onPressed,
+    this.isShowRefreshBtn = false,
   }) : super(key: key);
 
   @override
@@ -118,6 +120,7 @@ class ViewStateErrorWidget extends StatelessWidget {
       message: message ?? errorMessage,
       buttonTextData: buttonTextData ?? defaultTextData,
       buttonText: buttonText,
+      isShowRefreshBtn: isShowRefreshBtn,
     );
   }
 }
@@ -130,14 +133,14 @@ class ViewStateEmptyWidget extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isShowRefreshBtn;
 
-  const ViewStateEmptyWidget(
-      {Key key,
-      this.image,
-      this.message,
-      this.buttonText,
-      this.onPressed,
-      this.isShowRefreshBtn = true})
-      : super(key: key);
+  const ViewStateEmptyWidget({
+    Key key,
+    this.image,
+    this.message,
+    this.buttonText,
+    this.onPressed,
+    this.isShowRefreshBtn = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

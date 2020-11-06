@@ -89,7 +89,7 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
   /// 修改按钮
   Widget _buildEditBtn() {
     return Positioned(
-      bottom: 100,
+      bottom: 50,
       width: MediaQuery.of(context).size.width,
       child: Container(
         alignment: Alignment.topCenter,
