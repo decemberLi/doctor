@@ -183,7 +183,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                           child: Text(
                             widget.item.commentContent,
                             style: TextStyle(
-                              color: Color(0xff0b0b0b),
+                              color: Color(0XFF0B0B0B),
                             ),
                           ),
                         ),
@@ -193,7 +193,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                           child: Text(
                             RelativeDateFormat.format(widget.item.createTime),
                             style: TextStyle(
-                              color: Color(0xff222222),
+                              color: Color(0XFF222222),
                               fontWeight: FontWeight.w400,
                             ),
                           ),
