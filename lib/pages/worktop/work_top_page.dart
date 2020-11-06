@@ -380,7 +380,7 @@ class _WorktopPageState extends State<WorktopPage>
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                  _buildStaticsWidget(null),
+                  _buildStaticsWidget(entity?.learnPlanStatisticalEntity),
                   _showOperatorBtn(entity),
                 ],
               ),
