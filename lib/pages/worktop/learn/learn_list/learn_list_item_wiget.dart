@@ -25,7 +25,7 @@ class ResourceTypeListWiget extends StatelessWidget {
         color: decorationColor,
         borderRadius: BorderRadius.all(Radius.circular(4)),
       ),
-      padding: EdgeInsets.fromLTRB(5,1,5,1),
+      padding: EdgeInsets.fromLTRB(5, 1, 5, 1),
       margin: EdgeInsets.only(right: 8),
       child: Row(
         children: [
@@ -105,11 +105,11 @@ class LearnListItemWiget extends StatelessWidget {
       children: [
         Container(
           width: 66,
-          height: 66,
+          height: 70,
           margin: EdgeInsets.only(bottom: 2),
           child: CircularPercentIndicator(
             radius: 60.0,
-            lineWidth: 6.0,
+            lineWidth: 8.0,
             animation: false,
             percent: percent,
             center: centerText,
@@ -180,7 +180,6 @@ class LearnListItemWiget extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
-        
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -206,75 +205,73 @@ class LearnListItemWiget extends StatelessWidget {
       );
     }
     return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-            taskTemplateWidget,
-            if (item.reLearn)
-              LearnTextIcon(
-                text: item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
-                color: Color(0xffF6A419),
-              ),
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          taskTemplateWidget,
+          if (item.reLearn)
+            LearnTextIcon(
+              text: item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
+              color: Color(0xffF6A419),
+            ),
 
-            // 新
-            if (item.status == 'WAIT_LEARN') LearnTextIcon(),
-          ]),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                resourceTypeListWiget,
-                if (this.item.taskTemplate == 'SALON' ||
-                    this.item.taskTemplate == 'DEPART')
-                  _meetingStatus(
-                      this.item.meetingEndTime, this.item.meetingStartTime),
-              ]),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          // 新
+          if (item.status == 'WAIT_LEARN') LearnTextIcon(),
+        ]),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(vertical: 6),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(color: ThemeColor.colorFFF3F5F8),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                    children: [
-                      SizedBox(
-                        height: 4,
-                      ),
-                      taskNameWidget,
-                      SizedBox(
-                        height: 12,
-                      ),
-                      representNameWidget,
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        timeRender(),
-                        style: TextStyle(color: Color(0xFF666666), fontSize: 10),
-                      ),
-                    ],
+              resourceTypeListWiget,
+              if (this.item.taskTemplate == 'SALON' ||
+                  this.item.taskTemplate == 'DEPART')
+                _meetingStatus(
+                    this.item.meetingEndTime, this.item.meetingStartTime),
+            ]),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(vertical: 6),
+                decoration: BoxDecoration(
+                  border: Border(
+                    right: BorderSide(color: ThemeColor.colorFFF3F5F8),
                   ),
                 ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      height: 4,
+                    ),
+                    taskNameWidget,
+                    SizedBox(
+                      height: 12,
+                    ),
+                    representNameWidget,
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Text(
+                      timeRender(),
+                      style: TextStyle(color: Color(0xFF666666), fontSize: 10),
+                    ),
+                  ],
+                ),
               ),
-              Container(
-                width: 108,
-                child: circleRender(),
-              ),
-            ],
-          )
-        ],
-        
-      );
+            ),
+            Container(
+              width: 108,
+              child: circleRender(),
+            ),
+          ],
+        )
+      ],
+    );
   }
 
   @override
