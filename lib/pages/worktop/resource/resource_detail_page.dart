@@ -12,6 +12,7 @@ import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/theme/myIcons.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/adapt.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -461,157 +462,162 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
           child: Stack(
             overflow: Overflow.visible,
             children: [
-              Container(
-                height: 500,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                  // mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: Text(
-                        successFeedback
-                            ? '您的反馈已收到,非常感谢！'
-                            : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗?',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    // 反馈成功
-                    if (successFeedback)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: Adapt.screenH() * 0.45,
+                child: Container(
+                  child: Column(
+                    // mainAxisSize: MainAxisSize.min,
+                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
                       Container(
-                        margin: EdgeInsets.only(top: 59),
-                        child: Image.asset(
-                          'assets/images/feedback.png',
-                          width: 88,
-                          height: 88,
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          successFeedback
+                              ? '您的反馈已收到,非常感谢！'
+                              : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗?',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
-                    if (_feedbackData.length > 0)
-                      ..._feedbackData.map((item) {
-                        return GestureDetector(
-                          onTap: () {
-                            sendFeedback(item['content']);
-                          },
+                      // 反馈成功
+                      if (successFeedback)
+                        Container(
+                          margin: EdgeInsets.only(top: 59),
+                          child: Image.asset(
+                            'assets/images/feedback.png',
+                            width: 88,
+                            height: 88,
+                          ),
+                        ),
+                      if (_feedbackData.length > 0)
+                        ..._feedbackData.map((item) {
+                          return GestureDetector(
+                            onTap: () {
+                              sendFeedback(item['content']);
+                            },
+                            child: Stack(
+                              overflow: Overflow.visible,
+                              children: [
+                                Container(
+                                  height: 30,
+                                  padding: EdgeInsets.only(left: 30, right: 10),
+                                  margin: EdgeInsets.only(top: 26),
+                                  constraints: BoxConstraints(
+                                    minWidth: 100,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    // borderRadius:
+                                    // BorderRadius.all(Radius.circular(15)),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(18),
+                                      bottomRight: Radius.circular(15),
+                                      topRight: Radius.circular(15),
+                                      bottomLeft: Radius.circular(5),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(right: 5),
+                                        child: Text(
+                                          item['content'],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                  left: item['index'] == 0 ? -10 : -8,
+                                  top: item['index'] == 0 ? 20 : 22,
+                                  child: Icon(
+                                    item['icon'],
+                                    size: 35,
+                                    color: Color(0xFF51BEFF),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      if (_feedbackData.length > 0)
+                        Container(
                           child: Stack(
                             overflow: Overflow.visible,
                             children: [
                               Container(
-                                height: 30,
-                                padding: EdgeInsets.only(left: 25, right: 10),
                                 margin: EdgeInsets.only(top: 26),
-                                constraints: BoxConstraints(
-                                  minWidth: 100,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  // borderRadius:
-                                  // BorderRadius.all(Radius.circular(15)),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(18),
-                                    bottomRight: Radius.circular(15),
-                                    topRight: Radius.circular(15),
-                                    bottomLeft: Radius.circular(5),
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(right: 5),
-                                      child: Text(
-                                        item['content'],
-                                      ),
+                                width: 140,
+                                height: 33,
+                                child: RaisedButton(
+                                  padding: EdgeInsets.only(left: 30),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15),
+                                      topRight: Radius.circular(15),
+                                      bottomLeft: Radius.circular(22),
                                     ),
-                                  ],
+                                  ),
+                                  color: Colors.white,
+                                  textColor: ThemeColor.primaryColor,
+                                  onPressed: () {
+                                    // Respond to button press
+                                    setState(() {
+                                      _addFeedback = !_addFeedback;
+                                    });
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "撰写评价",
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      Icon(
+                                        _addFeedback
+                                            ? Icons.keyboard_arrow_up
+                                            : Icons.keyboard_arrow_down,
+                                        // size: 40,
+                                        color: Color(0xFF000000),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               Positioned(
-                                left: item['index'] == 0 ? -10 : -8,
-                                top: item['index'] == 0 ? 20 : 22,
+                                left: -6,
+                                top: 24,
                                 child: Icon(
-                                  item['icon'],
+                                  MyIcons.icon_pinglun,
                                   size: 35,
                                   color: Color(0xFF51BEFF),
                                 ),
-                              )
+                              ),
                             ],
                           ),
-                        );
-                      }).toList(),
-                    if (_feedbackData.length > 0)
-                      Container(
-                        child: Stack(
-                          overflow: Overflow.visible,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(top: 26),
-                              width: 140,
-                              height: 33,
-                              child: RaisedButton(
-                                padding: EdgeInsets.only(left: 30),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15),
-                                    bottomRight: Radius.circular(15),
-                                    topRight: Radius.circular(15),
-                                    bottomLeft: Radius.circular(22),
-                                  ),
-                                ),
-                                color: Colors.white,
-                                textColor: ThemeColor.primaryColor,
-                                onPressed: () {
-                                  // Respond to button press
-                                  setState(() {
-                                    _addFeedback = !_addFeedback;
-                                  });
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "撰写评价",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                    Icon(
-                                      _addFeedback
-                                          ? Icons.keyboard_arrow_up
-                                          : Icons.keyboard_arrow_down,
-                                      // size: 40,
-                                      color: Color(0xFF000000),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: -6,
-                              top: 24,
-                              child: Icon(
-                                MyIcons.icon_pinglun,
-                                size: 35,
-                                color: Color(0xFF51BEFF),
-                              ),
-                            ),
-                          ],
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               //添加评论
               if (_addFeedback)
                 Positioned(
-                  left: 0,
-                  right: 0,
+                  left: 20,
+                  right: 20,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
-                      ? MediaQuery.of(context).viewInsets.bottom - 100
-                      : 115,
+                      ? MediaQuery.of(context).viewInsets.bottom
+                      : Adapt.screenH() * 0.30,
                   child: Column(
                     children: [
                       TextField(
@@ -642,9 +648,9 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                 ),
               if (_addFeedback)
                 Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 60,
+                  left: 20,
+                  right: 20,
+                  bottom: Adapt.screenH() * 0.25,
                   child: FloatingActionButton.extended(
                     backgroundColor: ThemeColor.primaryColor,
                     onPressed: () {
