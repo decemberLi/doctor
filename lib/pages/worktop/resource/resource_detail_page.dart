@@ -476,8 +476,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                         margin: EdgeInsets.only(bottom: 10),
                         child: Text(
                           successFeedback
-                              ? '您的反馈已收到,非常感谢！'
-                              : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗?',
+                              ? '您的反馈已收到'
+                              : '您认为本${resourceType == 'VIDEO' ? '段视频' : '篇文章'}有用吗',
                           style: TextStyle(
                               fontSize: 20,
                               color: Colors.white,
