@@ -149,7 +149,7 @@ class _WorktopPageState extends State<WorktopPage>
                     : Container(
                         width: double.infinity,
                         color: Color(0xFFF3F5F8),
-                        padding: EdgeInsets.only(left: 16, top: 12),
+                        padding: EdgeInsets.only(left: 16, top: 11,bottom: 10),
                         child: const Text(
                           "最近收到",
                           style: TextStyle(
@@ -264,8 +264,9 @@ class _WorktopPageState extends State<WorktopPage>
     // 易学术统计
     staticsData(String text, int value) {
       return Container(
-        padding: EdgeInsets.only(top: 16),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -273,6 +274,7 @@ class _WorktopPageState extends State<WorktopPage>
               style: TextStyle(fontSize: 12, color: ThemeColor.primaryColor),
             ),
             Row(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.baseline,
               children: [
                 Text(
@@ -295,8 +297,7 @@ class _WorktopPageState extends State<WorktopPage>
       );
     }
 
-    List<Widget> convertStatics(List<LearnPlanStatisticalEntity> lists) {
-      List<Widget> widgets = [];
+    _buildStaticsWidget(List<LearnPlanStatisticalEntity> lists) {
       var visitCount = 0;
       var surveyCount = 0;
       var meetingCount = 0;
@@ -312,28 +313,40 @@ class _WorktopPageState extends State<WorktopPage>
           }
         }
       }
-      widgets.add(Expanded(
-          child: GestureDetector(
-        child: staticsData('拜访', visitCount),
-        onTap: () {
-          _goLearnPlanPage(2);
-        },
+      var leftLineDecoration = BoxDecoration(
+          border: new Border(
+              left: BorderSide(
+        color: ThemeColor.colorFFE7E7E7,
+        width: 0.5,
       )));
-      widgets.add(Expanded(
-          child: GestureDetector(
-        child: staticsData('会议', meetingCount),
-        onTap: () {
-          _goLearnPlanPage(1);
-        },
-      )));
-      widgets.add(Expanded(
-          child: GestureDetector(
-        child: staticsData('调研', surveyCount),
-        onTap: () {
-          _goLearnPlanPage(3);
-        },
-      )));
-      return widgets;
+      return Container(
+        margin: EdgeInsets.only(top: 10, right: 16),
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                color: Colors.white,
+                child: staticsData('拜访', visitCount),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                decoration: leftLineDecoration,
+                alignment: Alignment.center,
+                child: staticsData('会议', meetingCount),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                decoration: leftLineDecoration,
+                alignment: Alignment.center,
+                child: staticsData('调研', surveyCount),
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return Container(
@@ -341,7 +354,7 @@ class _WorktopPageState extends State<WorktopPage>
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 16, bottom: 16),
+            padding: EdgeInsets.only(top: 16),
             child: Container(
               padding: EdgeInsets.only(top: 18),
               decoration: BoxDecoration(
@@ -370,13 +383,7 @@ class _WorktopPageState extends State<WorktopPage>
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(left: 46,right: 30),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                        children:
-                        convertStatics(entity?.learnPlanStatisticalEntity)),
-                  ),
+                  _buildStaticsWidget(null),
                   _showOperatorBtn(entity),
                 ],
               ),
@@ -404,8 +411,9 @@ class _WorktopPageState extends State<WorktopPage>
   Container _showOperatorBtn(WorktopPageEntity entity) {
     bool isEmpty = _isLearnPlanEmpty(entity);
     return Container(
-      margin: EdgeInsets.only(bottom: 12,top: 20),
+      margin: EdgeInsets.only(bottom: 12, top: 20, left: 24, right: 24),
       child: AceButton(
+        height: 42,
         text: "处理一下",
         type: _isLearnPlanEmpty(entity)
             ? AceButtonType.grey
