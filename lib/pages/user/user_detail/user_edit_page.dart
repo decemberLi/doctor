@@ -62,31 +62,37 @@ class _UserEditPageState extends State<UserEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.lable ?? ''),
-        elevation: 1,
-      ),
-      body: Container(
-        margin: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            if (widget.editWay == 'edit') editWidget(),
-            AceButton(
-              onPressed: () {
-                updateUserInfo({uploadData[widget.lable]: dataText.text})
-                    .then((res) {
-                  if (res['status'] == 'ERROR') {
-                    EasyLoading.showToast(res['errorMsg']);
-                  } else {
-                    widget.function(
-                        {uploadData[widget.lable]: dataText.text}, true);
-                  }
-                });
-              },
-              text: '保存',
-            )
-          ],
+    return GestureDetector(
+      onTap: () {
+        // 触摸收起键盘
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.lable ?? ''),
+          elevation: 1,
+        ),
+        body: Container(
+          margin: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              if (widget.editWay == 'edit') editWidget(),
+              AceButton(
+                onPressed: () {
+                  updateUserInfo({uploadData[widget.lable]: dataText.text})
+                      .then((res) {
+                    if (res['status'] == 'ERROR') {
+                      EasyLoading.showToast(res['errorMsg']);
+                    } else {
+                      widget.function(
+                          {uploadData[widget.lable]: dataText.text}, true);
+                    }
+                  });
+                },
+                text: '保存',
+              )
+            ],
+          ),
         ),
       ),
     );
