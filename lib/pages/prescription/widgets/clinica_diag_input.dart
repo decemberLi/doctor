@@ -17,39 +17,56 @@ class ClinicaDiagInput extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
-            decoration: InputDecoration(
-              border: InputBorder.none,
+          Container(
+            child: TextFormField(
+              initialValue: '',
+              onFieldSubmitted: (String value) {
+                if (value == '' || value == null) {
+                  EasyLoading.showToast('临床诊断不能为空');
+                  return;
+                }
+                if (value.length > 15) {
+                  EasyLoading.showToast('临床诊断字数不能超过15字');
+                  return;
+                }
+                this.onSave(value);
+              },
+              decoration: InputDecoration(
+                hintText: '填写疾病诊断',
+                border: InputBorder.none,
+                counterText: '',
+              ),
+              // maxLength: 15,
+              obscureText: false,
+              keyboardType: TextInputType.text,
+              style: MyStyles.inputTextStyle,
+              onChanged: (String value) {
+                input = value;
+              },
             ),
-            onChanged: (String value) {
-              input = value;
-            },
-            obscureText: false,
-            keyboardType: TextInputType.text,
-            style: MyStyles.inputTextStyle,
           ),
           Divider(
             height: 1,
           ),
           SizedBox(height: 10),
-          AceButton(
-            type: AceButtonType.secondary,
-            onPressed: () {
-              if (input == '' || input == null) {
-                EasyLoading.showToast('临床诊断不能为空');
-                return;
-              }
-              if (input.length > 15) {
-                EasyLoading.showToast('临床诊断字数不能超过15字');
-                return;
-              }
-              this.onSave(input);
-            },
-            width: 62,
-            height: 30,
-            text: '添加',
-            fontSize: 10,
-          ),
+          // AceButton(
+          //   type: AceButtonType.secondary,
+          //   onPressed: () {
+          //     if (input == '' || input == null) {
+          //       EasyLoading.showToast('临床诊断不能为空');
+          //       return;
+          //     }
+          //     if (input.length > 15) {
+          //       EasyLoading.showToast('临床诊断字数不能超过15字');
+          //       return;
+          //     }
+          //     this.onSave(input);
+          //   },
+          //   width: 62,
+          //   height: 30,
+          //   text: '添加',
+          //   fontSize: 10,
+          // ),
         ],
       ),
     );

@@ -136,13 +136,14 @@ class PrescriptionViewModel extends ViewStateModel {
     this.data = newData;
     if (isNew) {
       this.data.prescriptionNo = null;
+      this.data.createTime = null;
       // 纸质处方重新设置
       this.data.attachments = [
-        // OssFileEntity(
-        //   ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
-        //   name: '测试',
-        //   type: 'PRESCRIPTION_PAPER',
-        // )
+        OssFileEntity(
+          ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
+          name: '测试',
+          type: 'PRESCRIPTION_PAPER',
+        )
       ];
     }
     notifyListeners();

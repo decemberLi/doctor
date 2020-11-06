@@ -38,6 +38,7 @@ class AceButton extends StatelessWidget {
       child: child ??
           Text(
             text,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: textColor ?? Colors.white,
               fontSize: fontSize,
@@ -60,7 +61,7 @@ class AceButton extends StatelessWidget {
 
     FlatButton secondaryBtn = FlatButton(
       onPressed: onPressed,
-      color: ThemeColor.primaryColor.withOpacity(0.4),
+      color: color ?? ThemeColor.primaryColor.withOpacity(0.4),
       shape: shape,
       child: child ??
           Text(

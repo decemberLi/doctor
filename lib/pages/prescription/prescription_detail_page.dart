@@ -176,7 +176,12 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
           body = Column(
             children: [
               headerWidget,
-              Expanded(child: PerscriptionDetail(model.data)),
+              Expanded(
+                child: PerscriptionDetail(
+                  model.data,
+                  bottom: _buildEditBtn(),
+                ),
+              ),
             ],
           );
           actions.add(TextButton(
@@ -201,7 +206,6 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
             elevation: 0.0,
           ),
           body: body,
-          positionedChild: _buildEditBtn(),
         );
       },
     );

@@ -19,14 +19,6 @@ class PrescripionCard extends StatelessWidget {
       this.title,
       style: MyStyles.primaryTextStyle.copyWith(fontWeight: FontWeight.w500),
     );
-    // Widget titleWidget = ListTile(
-    //   contentPadding: EdgeInsets.symmetric(horizontal: 0),
-    //   title: Text(
-    //     this.title,
-    //     style: MyStyles.primaryTextStyle.copyWith(fontWeight: FontWeight.w500),
-    //   ),
-    //   trailing: this.trailing,
-    // );
     Widget titleWidget = Container(
       constraints: BoxConstraints(minHeight: 46),
       child: Row(

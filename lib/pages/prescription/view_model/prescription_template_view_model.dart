@@ -1,4 +1,3 @@
-import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';

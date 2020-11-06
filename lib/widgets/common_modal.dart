@@ -1,4 +1,5 @@
 import 'package:doctor/theme/common_style.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 /// 通用的弹窗样式
@@ -25,16 +26,13 @@ class CommonModal {
           ),
           height: height,
           padding: EdgeInsets.only(left: 26, right: 26, top: 0),
-          child: Column(
+          child: Stack(
             children: [
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(
-                  title,
-                  style: MyStyles.inputTextStyle_16,
-                  textAlign: TextAlign.center,
-                ),
-                trailing: IconButton(
+              Positioned(
+                right: 0,
+                top: 16,
+                child: IconButton(
+                  color: ThemeColor.secondaryGeryColor,
                   icon: Icon(Icons.close),
                   iconSize: 20.0,
                   constraints: BoxConstraints(
@@ -47,10 +45,22 @@ class CommonModal {
                   },
                 ),
               ),
-              Divider(
-                height: 1,
+              Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      title,
+                      style: MyStyles.inputTextStyle_16,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Divider(
+                    height: 1,
+                  ),
+                  Expanded(child: child),
+                ],
               ),
-              Expanded(child: child),
             ],
           ),
         );

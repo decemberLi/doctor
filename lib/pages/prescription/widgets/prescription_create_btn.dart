@@ -1,5 +1,6 @@
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,9 @@ class PrescriptionCreateBtn extends StatelessWidget {
     return Consumer<PrescriptionViewModel>(
       builder: (_, model, __) {
         return AceButton(
+          type: AceButtonType.secondary,
+          color: ThemeColor.primaryColor,
+          textColor: Colors.white,
           width: 138,
           text: '生成处方',
           onPressed: () {

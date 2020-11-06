@@ -52,10 +52,13 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
               ),
               onPressed: () {
                 Navigator.of(context).pop(true);
-                Navigator.pushNamed(
-                  context,
-                  RouteManager.MODIFY_PWD,
-                );
+                PrescriptionViewModel model =
+                    Provider.of<PrescriptionViewModel>(context, listen: false);
+                model.resetData();
+                Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    RouteManager.SET_NEW_PWD,
+                    ModalRoute.withName(RouteManager.HOME));
               },
             ),
           ],
@@ -68,17 +71,16 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
   Widget build(BuildContext context) {
     String prescriptionNo = ModalRoute.of(context).settings.arguments as String;
     return WillPopScope(
-      child: SafeArea(
-        bottom: false,
-        child: Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            title: Text('处方创建成功'),
-          ),
-          body: Container(
-            color: ThemeColor.colorFFF3F5F8,
-            alignment: Alignment.topCenter,
-            padding: EdgeInsets.all(16),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          title: Text('处方创建成功'),
+        ),
+        body: Container(
+          color: ThemeColor.colorFFF3F5F8,
+          alignment: Alignment.topCenter,
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: SingleChildScrollView(
             child: Column(
               children: [
                 Card(
@@ -110,7 +112,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                               style: MyStyles.boldTextStyle_12,
                             ),
                             SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             PrescriptionQRCode(prescriptionNo),
                             SizedBox(
@@ -165,7 +167,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 40,
+                  height: 30,
                 ),
                 AceButton(
                   text: '发给随诊患者',
@@ -179,6 +181,9 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                       );
                     }
                   },
+                ),
+                SizedBox(
+                  height: 30,
                 ),
               ],
             ),
@@ -204,6 +209,8 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
               Navigator.popUntil(
                   context, ModalRoute.withName(RouteManager.HOME));
             }
+          } else {
+            Navigator.pop(context);
           }
         }
 

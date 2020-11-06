@@ -19,6 +19,7 @@ import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
 import 'package:doctor/pages/user/collect/collect_list.dart';
 import 'package:doctor/pages/user/setting/setting_page.dart';
+import 'package:doctor/pages/user/update_pwd/set_new_pwd.dart';
 import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
 import 'package:doctor/pages/user/user_detail/user_edit_page.dart';
 import 'package:doctor/pages/user/user_detail/user_info_detai.dart';
@@ -46,6 +47,7 @@ class RouteManager {
   static const String LOOK_COURSE_PAGE = '/look_course_page';
   static const String RESOURCE_DETAIL = '/resource_detail';
   static const String UPDATE_PWD = '/update_pwd';
+  static const String SET_NEW_PWD = '/set_new_pwd';
   static const String ABOUT_US = '/about_us';
   static const String LEARN_PAGE = '/learn_page';
   static const String MEDICATION_LIST = '/medication_list';
@@ -90,6 +92,7 @@ class RouteManager {
       );
     },
     UPDATE_PWD: (context) => UpdatePwdPage(),
+    SET_NEW_PWD: (context) => SetNewPwdPage(),
     ABOUT_US: (context) => AboutUs(),
     LEARN_PAGE: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;

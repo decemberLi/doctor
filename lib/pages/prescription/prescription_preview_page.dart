@@ -22,17 +22,16 @@ class PrescriptionPreviewPage extends StatelessWidget {
         elevation: 0.0,
       ),
       body: Consumer<PrescriptionViewModel>(
-        builder: (_, model, __) {
-          return PerscriptionDetail(model.data);
+        builder: (_, model, child) {
+          return PerscriptionDetail(
+            model.data,
+            bottom: child,
+          );
         },
-      ),
-      positionedChild: Positioned(
-        bottom: 100,
-        width: MediaQuery.of(context).size.width,
         child: Container(
           alignment: Alignment.topCenter,
           padding: EdgeInsets.symmetric(
-            horizontal: 50,
+            horizontal: 20,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,6 +50,11 @@ class PrescriptionPreviewPage extends StatelessWidget {
           ),
         ),
       ),
+      // positionedChild: Positioned(
+      //   bottom: 100,
+      //   width: MediaQuery.of(context).size.width,
+      //   child: ,
+      // ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_status.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
@@ -7,11 +8,16 @@ import 'package:doctor/widgets/form_item.dart';
 import 'package:doctor/widgets/one_line_text.dart';
 import 'package:doctor/widgets/photo_view_gallery_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class PerscriptionDetail extends StatelessWidget {
   final PrescriptionModel data;
-  PerscriptionDetail(this.data);
+  final Widget bottom;
+  PerscriptionDetail(
+    this.data, {
+    this.bottom,
+  });
 
   List<Widget> renderRp() {
     if (data == null || data.drugRps.isEmpty) {
@@ -24,15 +30,15 @@ class PerscriptionDetail extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Text(
                       '${data.drugRps.indexOf(e) + 1}、${e.drugName}',
                       style: MyStyles.inputTextStyle_12,
                     ),
                     Text(
-                      'X${e.quantity}',
+                      'X${e.quantity.toStringAsFixed(0)}',
                       style: MyStyles.inputTextStyle_12,
                     ),
                   ],
@@ -92,41 +98,53 @@ class PerscriptionDetail extends StatelessWidget {
     // if (data == null) {
     //   return Container();
     // }
+    String defaultDepart =
+        Provider.of<UserInfoViewModel>(context, listen: false)
+            .data
+            .departmentsName;
     return Container(
       padding: EdgeInsets.all(16),
+      alignment: Alignment.topCenter,
       child: Card(
         child: Column(
           children: [
             Container(
-              alignment: Alignment.topLeft,
+              alignment: Alignment.topCenter,
               padding: EdgeInsets.all(12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  PrescriptionStatus(data),
-                  Column(
-                    children: [
-                      Text(
-                        '易学术互联网医院',
-                        style: MyStyles.primaryTextStyle,
-                      ),
-                      Text(
-                        '电子处方笺',
-                        style: MyStyles.primaryTextStyle_bold,
-                      ),
-                    ],
-                  ),
+                  Positioned(left: 16, child: PrescriptionStatus(data)),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      border: Border.all(color: ThemeColor.primaryColor),
+                    alignment: Alignment.center,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          '易学术互联网医院',
+                          style: MyStyles.primaryTextStyle,
+                        ),
+                        Text(
+                          '电子处方笺',
+                          style: MyStyles.primaryTextStyle_bold,
+                        ),
+                      ],
                     ),
-                    child: Text(
-                      '普通',
-                      style: MyStyles.primaryTextStyle_12,
+                  ),
+                  Positioned(
+                    right: 16,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                        border: Border.all(color: ThemeColor.primaryColor),
+                      ),
+                      child: Text(
+                        '普通',
+                        style: MyStyles.primaryTextStyle_12,
+                      ),
                     ),
                   ),
                 ],
@@ -178,7 +196,7 @@ class PerscriptionDetail extends StatelessWidget {
                         FormItem(
                           padding: EdgeInsets.symmetric(vertical: 10),
                           child: Text(
-                            '科室：${data?.depart ?? ''}',
+                            '科室：${data?.depart ?? defaultDepart}',
                             style: MyStyles.inputTextStyle,
                           ),
                         ),
@@ -285,6 +303,13 @@ class PerscriptionDetail extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  if (bottom != null) bottom,
+                  SizedBox(
+                    height: 60,
                   ),
                 ],
               ),

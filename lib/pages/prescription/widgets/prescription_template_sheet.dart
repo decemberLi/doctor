@@ -4,6 +4,7 @@ import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/one_line_text.dart';
 import 'package:flutter/material.dart';
@@ -18,45 +19,63 @@ class PrescriptionTemplateItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String drugInfo = data.drugRps
+        .map((e) => '${e.drugName}*${e.quantity}')
+        .toList()
+        .join(',');
     return Container(
       alignment: Alignment.topLeft,
       padding: EdgeInsets.symmetric(vertical: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          OneLineText(
-            data.prescriptionTemplateName,
-            style: MyStyles.inputTextStyle,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          OneLineText(
-            '疾病诊断：${data.clinicalDiagnosis}',
-            style: MyStyles.labelTextStyle_12,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: OneLineText(
-                  '药品信息：${data.drugRps.map((e) => e.drugName).toList().join(',')}',
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                OneLineText(
+                  data.prescriptionTemplateName,
+                  style: MyStyles.inputTextStyle,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  '疾病诊断：${data.clinicalDiagnosis}',
                   style: MyStyles.labelTextStyle_12,
                 ),
-              ),
-              AceButton(
-                width: 80,
-                height: 30,
-                fontSize: 14,
-                text: '确认选择',
-                onPressed: () {
-                  this.onSelected(data);
-                },
-              ),
-            ],
+                SizedBox(
+                  height: 10,
+                ),
+                Wrap(
+                  children: [
+                    Text(
+                      '药品信息：',
+                      style: MyStyles.labelTextStyle_12,
+                    ),
+                    Text(
+                      '$drugInfo',
+                      style: MyStyles.labelTextStyle_12,
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          AceButton(
+            width: 80,
+            height: 30,
+            fontSize: 14,
+            type: AceButtonType.secondary,
+            color: ThemeColor.primaryColor,
+            textColor: Colors.white,
+            text: '确认选择',
+            onPressed: () {
+              this.onSelected(data);
+            },
           ),
         ],
       ),
@@ -87,26 +106,31 @@ class _PrescriptionTemplateListState extends State<PrescriptionTemplateList> {
         builder: (context, model, child) {
           Widget list = Container();
           if (model.isError || model.isEmpty) {
-            list = ViewStateEmptyWidget(onPressed: model.initData);
+            list = ViewStateEmptyWidget(
+              onPressed: model.initData,
+              message: '暂无处方模板，快去添加吧',
+            );
+          } else {
+            list = SmartRefresher(
+              controller: model.refreshController,
+              header: ClassicHeader(),
+              footer: ClassicFooter(),
+              onRefresh: model.refresh,
+              onLoading: model.loadMore,
+              enablePullUp: true,
+              child: ListView.separated(
+                itemBuilder: (context, index) {
+                  PrescriptionTemplateModel item = model.list[index];
+                  return PrescriptionTemplateItem(item, widget.onSelected);
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return Divider();
+                },
+                itemCount: model.list.length,
+              ),
+            );
           }
-          list = SmartRefresher(
-            controller: model.refreshController,
-            header: ClassicHeader(),
-            footer: ClassicFooter(),
-            onRefresh: model.refresh,
-            onLoading: model.loadMore,
-            enablePullUp: true,
-            child: ListView.separated(
-              itemBuilder: (context, index) {
-                PrescriptionTemplateModel item = model.list[index];
-                return PrescriptionTemplateItem(item, widget.onSelected);
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider();
-              },
-              itemCount: model.list.length,
-            ),
-          );
+
           return Column(
             children: [
               Expanded(

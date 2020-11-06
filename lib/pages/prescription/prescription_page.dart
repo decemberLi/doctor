@@ -177,12 +177,12 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   ),
                 PrescripionCard(
                   title: '患者信息',
-                  trailing: TextButton(
+                  trailing: GestureDetector(
                     child: Text(
                       '快速开方',
                       style: MyStyles.primaryTextStyle_12,
                     ),
-                    onPressed: () async {
+                    onTap: () async {
                       var patientUserId = await Navigator.of(context).pushNamed(
                         RouteManager.PATIENT,
                         arguments: 'QUICK_CREATE',
@@ -195,6 +195,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   children: [
                     FormItem(
                       label: '姓名',
+                      // height: 44.0,
                       child: TextFormField(
                         controller: TextEditingController(),
                         decoration: InputDecoration(
@@ -253,12 +254,12 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 ),
                 PrescripionCard(
                   title: '临床诊断',
-                  trailing: TextButton(
+                  trailing: GestureDetector(
                     child: Text(
                       '处方模板',
                       style: MyStyles.primaryTextStyle_12,
                     ),
-                    onPressed: () {
+                    onTap: () {
                       _showPrescriptionTemplateSheet(model.addByTemplate);
                     },
                   ),
@@ -298,7 +299,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   ],
                 ),
                 PrescripionCard(
-                  title: 'RP(${model.data.drugRps.length})',
+                  title: 'Rp(${model.data.drugRps.length})',
                   padding: EdgeInsets.fromLTRB(30, 0, 30, 30),
                   children: [
                     RpList(
@@ -393,6 +394,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   padding: EdgeInsets.symmetric(
                     horizontal: 25,
                   ),
+                  alignment: Alignment.center,
                   child: renderBottomBtns(),
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:spinner_input/spinner_input.dart';
 
 class AceSpinnerInput extends StatelessWidget {
@@ -22,34 +23,38 @@ class AceSpinnerInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SpinnerInput(
-      minValue: this.minValue,
-      maxValue: this.maxValue,
-      step: this.step,
-      plusButton: SpinnerButtonStyle(
-        elevation: 0,
-        width: 20,
-        height: 20,
-        color: Colors.transparent,
-        child: Icon(
-          Icons.add_circle,
-          size: 20,
-          color: ThemeColor.primaryColor,
+        minValue: this.minValue,
+        maxValue: this.maxValue,
+        step: this.step,
+        plusButton: SpinnerButtonStyle(
+          elevation: 0,
+          width: 20,
+          height: 20,
+          color: Colors.transparent,
+          child: Icon(
+            Icons.add_circle,
+            size: 20,
+            color: ThemeColor.primaryColor,
+          ),
         ),
-      ),
-      minusButton: SpinnerButtonStyle(
-        elevation: 0,
-        width: 20,
-        height: 20,
-        color: Colors.transparent,
-        child: Icon(
-          Icons.remove_circle_outline,
-          size: 20,
-          color: ThemeColor.primaryColor,
+        minusButton: SpinnerButtonStyle(
+          elevation: 0,
+          width: 20,
+          height: 20,
+          color: Colors.transparent,
+          child: Icon(
+            Icons.remove_circle_outline,
+            size: 20,
+            color: ThemeColor.primaryColor,
+          ),
         ),
-      ),
-      middleNumberWidth: this.middleNumberWidth,
-      spinnerValue: this.spinnerValue,
-      onChange: this.onChange,
-    );
+        middleNumberWidth: this.middleNumberWidth,
+        spinnerValue: this.spinnerValue,
+        onChange: (double value) {
+          // if (value < minValue) {
+          //   EasyLoading.showToast('数量不能小于1');
+          // }
+          this.onChange(value);
+        });
   }
 }

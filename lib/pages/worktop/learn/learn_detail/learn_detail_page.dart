@@ -6,6 +6,7 @@ import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/ace_button.dart';
@@ -188,27 +189,10 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     if (time < start) {
       return Container();
     }
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+    return LearnTextIcon(
+      text: text,
+      color: rendColor,
       margin: EdgeInsets.only(top: 16, bottom: 16, left: 10),
-      decoration: BoxDecoration(
-        color: rendColor,
-        boxShadow: [
-          BoxShadow(color: rendColor, offset: Offset(2.0, 2.0), blurRadius: 4.0)
-        ],
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28),
-            bottomRight: Radius.circular(28)),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-            color: ThemeColor.colorFFFFFF,
-            fontSize: 12,
-            fontWeight: FontWeight.bold),
-      ),
     );
   }
 
