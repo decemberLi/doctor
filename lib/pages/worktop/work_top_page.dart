@@ -426,7 +426,7 @@ class _WorktopPageState extends State<WorktopPage>
       margin: EdgeInsets.only(bottom: 12, top: 20, left: 24, right: 24),
       child: AceButton(
         height: 42,
-        text: "处理一下",
+        text: isEmpty ? '暂无待处理学习计划' : '处理一下',
         type: _isLearnPlanEmpty(entity)
             ? AceButtonType.grey
             : AceButtonType.primary,

@@ -145,6 +145,7 @@ class _MessageListPageState extends State<MessageListPage> {
     return Scaffold(
       backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
+        elevation: 0,
         title: Text('${widget._map[widget._type]}'),
       ),
       body: ProviderWidget<MessageListModel>(

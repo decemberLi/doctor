@@ -9,10 +9,11 @@ class MessageCenterEntity {
   int prescriptionCount;
   int leanPlanCount;
   int interactiveCount;
+  int total;
 
 
   MessageCenterEntity(this.systemCount, this.prescriptionCount,
-      this.leanPlanCount, this.interactiveCount);
+      this.leanPlanCount, this.interactiveCount,this.total);
 
   factory MessageCenterEntity.create() =>
       _$MessageCenterEntityFromJson(Map<String, dynamic>());
