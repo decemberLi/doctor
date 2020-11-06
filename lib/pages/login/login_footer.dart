@@ -62,9 +62,11 @@ class _LoginFooterState extends State<LoginFooter> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 40),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           IconButton(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
             constraints: BoxConstraints(
               minWidth: 16,
               minHeight: 16,
@@ -79,8 +81,8 @@ class _LoginFooterState extends State<LoginFooter> {
             onPressed: saveAgree,
           ),
           Container(
+            padding: EdgeInsets.only(top: 2),
             width: 260,
-            alignment: Alignment.topLeft,
             child: Text.rich(
               TextSpan(children: [
                 TextSpan(
@@ -114,7 +116,7 @@ class _LoginFooterState extends State<LoginFooter> {
                     },
                 ),
               ]),
-              // textAlign: TextAlign.center,
+              textAlign: TextAlign.center,
             ),
           ),
         ],

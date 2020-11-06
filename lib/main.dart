@@ -36,6 +36,7 @@ final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 class MyApp extends StatelessWidget {
   final showGuide;
   MyApp(this.showGuide);
+  String session = SessionManager().getSession();
   @override
   Widget build(BuildContext context) {
     return RefreshConfiguration(
@@ -83,8 +84,11 @@ class MyApp extends StatelessWidget {
         ],
         navigatorKey: NavigationService().navigatorKey,
         routes: RouteManager.routes,
-        initialRoute:
-            showGuide['showGuide'] ? RouteManager.GUIDE : RouteManager.HOME,
+        initialRoute: showGuide['showGuide']
+            ? RouteManager.GUIDE
+            : session == null
+                ? RouteManager.LOGIN_CAPTCHA
+                : RouteManager.HOME,
         builder: (BuildContext context, Widget child) {
           /// 确保 loading 组件能覆盖在其他组件之上.
           return FlutterEasyLoading(
