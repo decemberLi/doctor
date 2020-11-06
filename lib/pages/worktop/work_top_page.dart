@@ -9,7 +9,6 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
-import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -193,9 +192,7 @@ class _WorktopPageState extends State<WorktopPage>
             width: 80,
             height: 80,
             padding: EdgeInsets.all(100),
-            decoration: DashedDecoration(
-              dashedColor: ThemeColor.primaryColor,
-              gap: 3,
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
                 fit: BoxFit.fill,

@@ -46,7 +46,7 @@ class DoctorQualificationViewModel {
 
   queryHospital(String hospitalName) async {
     var result = await foundation.post('/hospital/key-query-page',
-        params: {'hospitalName': hospitalName, 'pn': 100, 'ps': 1});
+        params: {'hospitalName': hospitalName, 'pn': 1, 'ps': 100});
     return result['records']
         .map<HospitalEntity>((each) => HospitalEntity.fromJson(each))
         .toList();
