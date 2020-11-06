@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:doctor/http/common_service.dart';
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/model/face_photo.dart';
+import 'package:doctor/model/recognize_entity.dart';
 import 'package:doctor/model/oss_policy.dart';
+import 'package:doctor/model/uploaded_file_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_physician_qualification_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
-import 'package:doctor/model/uploaded_file_entity.dart';
 import 'package:doctor/utils/upload_file_helper.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -49,10 +49,9 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   _recognizeIdCard(Map<String, dynamic> param) async {
-    var result = await uCenterCommon.post(
-        '/medclouds-ucenter/mobile/idcardOcr/picture-recognition',
-        params: param);
-    return result;
+    var result =
+        await foundation.post('/ocr/recognize-identity-card', params: param);
+    return RecognizeEntity.fromJson(result);
   }
 
   _queryPhysician() async {
@@ -88,7 +87,7 @@ class DoctorPhysicianQualificationViewModel {
     // http://www.diqibu.com/ocrimg/demo/idcard/2.jpg
     param['imgUrl'] = entity.url;
     param['imgType'] = 'face';
-    var result = await _recognizeIdCard(param);
+    RecognizeEntity recognizeResult = await _recognizeIdCard(param);
     // 识别成功后再展示内容
     if (_model.physicianInfoEntity.idCardLicense1 == null) {
       _model.physicianInfoEntity.idCardLicense1 = FacePhoto.create();
@@ -101,15 +100,14 @@ class DoctorPhysicianQualificationViewModel {
     idCardFace.name = entity.ossFileName;
     notifyDataChange();
 
-    print('-------- $result');
-    var resultJson = json.decode(result);
-    if (resultJson is Map<String, dynamic>) {
+    if (recognizeResult != null && recognizeResult.frontResult != null) {
       var physicianInfo = _model.physicianInfoEntity;
-      physicianInfo.identityNo = '${resultJson['num']}';
-      physicianInfo.identityName = '${resultJson['name']}';
-      physicianInfo.identitySex = resultJson['sex'] == '男' ? 1 : 0;
-      physicianInfo.identityDate = resultJson['birth'];
-      physicianInfo.identityAddress = '${resultJson['address']}';
+      physicianInfo.identityNo = recognizeResult.frontResult.iDNumber;
+      physicianInfo.identityName = recognizeResult.frontResult.name;
+      physicianInfo.identitySex =
+          recognizeResult.frontResult.gender == '男' ? 1 : 0;
+      physicianInfo.identityDate = recognizeResult.frontResult.birthDate;
+      physicianInfo.identityAddress = recognizeResult.frontResult.address;
       return;
     }
     EasyLoading.showToast('身份证识别失败，请重新上传身份证');
@@ -122,7 +120,7 @@ class DoctorPhysicianQualificationViewModel {
     Map<String, dynamic> param = {};
     param['imgUrl'] = entity.url;
     param['imgType'] = 'back';
-    var result = await _recognizeIdCard(param);
+    RecognizeEntity recognizeResult = await _recognizeIdCard(param);
     // 识别成功后再展示内容
     if (_model.physicianInfoEntity.idCardLicense2 == null) {
       _model.physicianInfoEntity.idCardLicense2 = FacePhoto.create();
@@ -137,10 +135,9 @@ class DoctorPhysicianQualificationViewModel {
 
     // https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603620957283&di=61acea5fc966284c9bc389e8a752aba7&imgtype=0&src=http%3A%2F%2Fphotocdn.sohu.com%2F20060810%2FImg244728941.jpg
 
-    var resultJson = json.decode(result);
-    if (resultJson is Map<String, dynamic>) {
+    if (recognizeResult != null && recognizeResult.backResult != null) {
       var physicianInfo = _model.physicianInfoEntity;
-      physicianInfo.identityValidity = resultJson['end_date'];
+      physicianInfo.identityValidity = recognizeResult.backResult.endDate;
       return;
     }
 

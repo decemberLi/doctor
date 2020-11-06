@@ -1,5 +1,6 @@
 import 'package:doctor/pages/message/model/message_list_entity.dart';
 import 'package:doctor/pages/message/view_model/message_list_view_model.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -7,6 +8,8 @@ import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 ///
@@ -229,7 +232,7 @@ class _MessageListPageState extends State<MessageListPage> {
     } else {
       // 其他
       //2020/10/12
-      return '${_format(msgDateTime.year)}/${_format(msgDateTime.day)}/${_format(msgDateTime.month)}';
+      return '${_format(msgDateTime.year)}/${_format(msgDateTime.month)}/${_format(msgDateTime.day)}';
     }
   }
 
@@ -240,9 +243,25 @@ class _MessageListPageState extends State<MessageListPage> {
     return '$number';
   }
 
-  _openDetail(String type, MessageListEntity entity) {
+  _openDetail(String type, MessageListEntity entity) async {
     if (type == MessageType.TYPE_SYSTEM) {
-      Navigator.pushNamed(context, RouteManager.QUALIFICATION_PAGE);
+      // 获取用户当前审核状态
+      UserInfoViewModel userModel =
+          Provider.of<UserInfoViewModel>(context, listen: false);
+      await userModel.queryDoctorInfo();
+      if (userModel.data == null) {
+        EasyLoading.showToast('获取用户审核状态失败');
+        return;
+      }
+      var entity = userModel.data;
+      if (entity.authStatus == 'WAIT_VERIFY' || entity.authStatus == 'FAIL') {
+        Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
+            arguments: {'doctorData': entity.toJson()});
+      } else {
+        await Navigator.pushNamed(
+            context, RouteManager.QUALIFICATION_AUTH_STATUS,
+            arguments: {'authStatus': entity.authStatus});
+      }
     } else if (type == MessageType.TYPE_LEAN_PLAN) {
       if (entity.params == null || entity.params['learnPlanId'] == null) {
         return;
@@ -255,9 +274,7 @@ class _MessageListPageState extends State<MessageListPage> {
         return;
       }
       Navigator.pushNamed(context, RouteManager.PRESCRIPTION_DETAIL,
-          arguments: {
-            'prescriptionNo': entity.params['prescriptionNo'],
-          });
+          arguments: entity.params['prescriptionNo']);
     } else if (type == MessageType.TYPE_INTERACTIVE) {
       Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
         "resourceId": entity.params['resourceId'],
