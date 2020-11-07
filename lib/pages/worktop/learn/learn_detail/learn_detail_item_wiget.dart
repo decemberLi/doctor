@@ -1,5 +1,6 @@
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
+import 'package:doctor/pages/worktop/resource/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/utils/constants.dart';
@@ -254,10 +255,10 @@ class PlanDetailList extends StatelessWidget {
             if (isMeetingType &&
                 data.meetingStartTime != null &&
                 nowDate < data.meetingStartTime) {
-              EasyLoading.showToast('当前会议尚未开始, 请在会议期间打开');
+              EasyLoading.showToast('当前会议尚未开始,请在会议期间打开');
               return;
             }
-            await Navigator.of(context)
+            final result = await Navigator.of(context)
                 .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
               "learnPlanId": data.learnPlanId,
               "resourceId": item.resourceId,
@@ -266,8 +267,14 @@ class PlanDetailList extends StatelessWidget {
               "meetingEndTime": data.meetingEndTime,
               "taskDetailId": data.taskDetailId,
             });
+
+            ///提交学习时间
+            if (result != null) {
+              await updateLearnTime(result);
+            }
             LearnDetailViewModel _model =
                 Provider.of<LearnDetailViewModel>(context, listen: false);
+
             _model.initData();
           },
           child: Container(

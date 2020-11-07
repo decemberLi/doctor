@@ -8,12 +8,14 @@ class CommonModal {
     BuildContext context, {
     String title,
     double height = 560,
+    bool enableDrag = true,
     @required Widget child,
   }) {
     return showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
+      enableDrag: enableDrag,
       builder: (BuildContext context) {
         return Container(
           alignment: Alignment.topLeft,

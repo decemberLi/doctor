@@ -5,6 +5,7 @@ import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/pages/login/service.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/utils/adapt.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
@@ -130,7 +131,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 4, bottom: 16),
+                        margin: EdgeInsets.only(top: 8, bottom: 16),
                         alignment: Alignment.topLeft,
                         child: Text(
                           '未注册手机号验证后将自动创建账号',
@@ -225,6 +226,8 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                   ),
                   Positioned(
                     bottom: 20,
+                    left: Adapt.screenW() * 0.05,
+                    right: Adapt.screenW() * 0.05,
                     child: LoginFooter(onChange: (bool value) {
                       setState(() {
                         _agree = value;
