@@ -29,6 +29,7 @@ class RpListItem extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 16.0),
       // height: 95.0,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Column(
@@ -53,6 +54,7 @@ class RpListItem extends StatelessWidget {
           Container(
             width: 100.0,
             padding: EdgeInsets.only(left: 15.0),
+            alignment: Alignment.topCenter,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

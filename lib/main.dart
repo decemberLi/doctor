@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
             centerTitle: true,
             brightness: Brightness.light,
             color: Colors.white,
+            iconTheme: IconThemeData(color: Colors.black),
             textTheme: TextTheme(
               headline6: TextStyle(
                   color: Colors.black,

@@ -7,7 +7,7 @@ class PrescriptionStatus extends StatelessWidget {
 
   final Map<String, Color> _statusColor = {
     'WAIT_VERIFY': Color(0xFFFFB140),
-    'PASS': ThemeColor.primaryColor,
+    'PASS': Color(0xFF3AA7FF),
     'REJECT': Color(0xFFFF2727),
     'EXPIRE': ThemeColor.primaryGeryColor,
   };
@@ -16,9 +16,7 @@ class PrescriptionStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (data == null || data.status == null) {
-      return Container(
-        width: 54,
-      );
+      return Container();
     }
     Color color = _statusColor[data.status ?? 'WAIT_VERIFY'];
     BorderSide borderSide = BorderSide(color: color, width: 2);

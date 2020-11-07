@@ -55,7 +55,6 @@ class RpList extends StatelessWidget {
                 arguments: list,
               );
               // print(list);
-              ///TODO: 偶尔有报错
               if (addList != null) {
                 this.onAdd(addList);
               }
