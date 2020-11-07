@@ -163,7 +163,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                   style: TextStyle(
                     fontSize: 24,
                     color: Color(0xFF444444),
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
