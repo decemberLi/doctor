@@ -29,6 +29,7 @@ class ResourceDetailPage extends StatefulWidget {
   final meetingStartTime;
   final meetingEndTime;
   final taskDetailId;
+  final from;
   ResourceDetailPage(
       this.learnPlanId,
       this.resourceId,
@@ -36,7 +37,8 @@ class ResourceDetailPage extends StatefulWidget {
       this.taskTemplate,
       this.meetingStartTime,
       this.meetingEndTime,
-      this.taskDetailId);
+      this.taskDetailId,
+      this.from);
   @override
   _ResourceDetailPageState createState() => _ResourceDetailPageState();
 }
@@ -94,6 +96,38 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     return Container();
   }
 
+  @override
+  void initState() {
+    //收藏页面进入详情不需要取评论数量
+    if (widget.learnPlanId != null) {
+      _getComments(widget.resourceId);
+    }
+    _getCollect(widget.resourceId);
+    // 输入框焦点监听事件
+    if (commentFocusNode != null) {
+      commentFocusNode.addListener(() {
+        if (commentFocusNode.hasFocus) {
+          setState(() {
+            logo = false;
+          });
+        } else {
+          setState(() {
+            logo = true;
+          });
+          isKeyboardActived = false;
+        }
+        isKeyboardActived = false;
+      });
+    }
+    WidgetsBinding.instance.addObserver(this); //添加观察者
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if(widget.from == 'MESSAGE_CENTER') {
+        _showCommentWidget();
+      }
+    });
+    super.initState();
+  }
+
   // 文章webview点击时触发
   void _clickWebView() {
     if (widget.learnPlanId != null) {
@@ -121,33 +155,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
         _startIcon = res['exists'];
       });
     });
-  }
-
-  @override
-  void initState() {
-    //收藏页面进入详情不需要取评论数量
-    if (widget.learnPlanId != null) {
-      _getComments(widget.resourceId);
-    }
-    _getCollect(widget.resourceId);
-    // 输入框焦点监听事件
-    if (commentFocusNode != null) {
-      commentFocusNode.addListener(() {
-        if (commentFocusNode.hasFocus) {
-          setState(() {
-            logo = false;
-          });
-        } else {
-          setState(() {
-            logo = true;
-          });
-          isKeyboardActived = false;
-        }
-        isKeyboardActived = false;
-      });
-    }
-    WidgetsBinding.instance.addObserver(this); //添加观察者
-    super.initState();
   }
 
   @override
@@ -349,12 +356,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                         onTap: () {
                           commentTextEdit.clear();
                           // CommonModal 点击评论数弹出评论区
-                          CommonModal.showBottomSheet(context,
-                              title: '评论区',
-                              height: Adapt.screenH() * 0.8,
-                              enableDrag: false,
-                              child: CommentListPage(
-                                  widget.resourceId, widget.learnPlanId));
+                          _showCommentWidget();
                         },
                         child: Icon(
                           MyIcons.icon_talk,
@@ -415,6 +417,15 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
         ],
       ),
     );
+  }
+
+  Future _showCommentWidget() {
+    return CommonModal.showBottomSheet(context,
+                            title: '评论区',
+                            height: Adapt.screenH() * 0.8,
+                            enableDrag: false,
+                            child: CommentListPage(
+                                widget.resourceId, widget.learnPlanId));
   }
 
   //发送反馈
