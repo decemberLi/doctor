@@ -21,8 +21,8 @@ class LearnTextIcon extends StatelessWidget {
         color: this.color,
         boxShadow: [
           BoxShadow(
-              color: this.color.withOpacity(0.5),
-              offset: Offset(0.0, 2.0),
+              color: this.color.withOpacity(0.4),
+              offset: Offset(0.0, 3.0),
               blurRadius: 4.0)
         ],
         borderRadius: BorderRadius.only(
