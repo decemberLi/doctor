@@ -4,6 +4,7 @@ import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/adapt.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/material.dart';
 
@@ -290,11 +291,16 @@ class _UserPageState extends State<UserPage> with RouteAware {
                             ),
                           ),
                           Container(
+                            width: Adapt.screenW() * 0.7,
                             padding: EdgeInsets.only(top: 8, bottom: 8),
                             child: Text(
                               doctorData['hospitalName'],
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 14),
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                           Container(

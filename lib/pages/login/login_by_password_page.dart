@@ -5,6 +5,7 @@ import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/pages/login/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/adapt.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
@@ -147,6 +148,8 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                     ),
                     Positioned(
                       bottom: 20,
+                      left: Adapt.screenW() * 0.05,
+                      right: Adapt.screenW() * 0.05,
                       child: LoginFooter(onChange: (bool value) {
                         setState(() {
                           _agree = value;
