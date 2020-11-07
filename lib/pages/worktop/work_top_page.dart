@@ -67,9 +67,9 @@ class _WorktopPageState extends State<WorktopPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SafeArea(
-      child: CommonStack(
-        body: ChangeNotifierProvider<WorkTopViewModel>.value(
+    return CommonStack(
+      body: SafeArea(
+        child: ChangeNotifierProvider<WorkTopViewModel>.value(
           value: _model,
           child: Consumer<WorkTopViewModel>(
             builder: (context, model, child) {
