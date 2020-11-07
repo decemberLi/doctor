@@ -291,11 +291,11 @@ class AppUpdateDialog extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    left: 3,
-                    bottom: 0,
+                    left: 0,
+                    bottom: 10,
                     child: Container(
                       color: Colors.white,
-                      padding: EdgeInsets.only(left: 42, bottom: 10),
+                      padding: EdgeInsets.only(left: 35),
                       child: Text(
                         '更新内容:',
                         textAlign: TextAlign.left,
@@ -306,7 +306,6 @@ class AppUpdateDialog extends StatelessWidget {
                   ),
                 ],
               ),
-
               // 版本内容
               Container(
                 padding: EdgeInsets.only(
@@ -322,12 +321,10 @@ class AppUpdateDialog extends StatelessWidget {
                   color: Colors.white,
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(left: 10, right: 16),
                       color: Colors.white,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
