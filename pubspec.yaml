@@ -70,7 +70,7 @@ dependencies:
   # 文件预览插件
   flutter_file_preview:
     git:
-      url: git://github.com/aliyoge/flutter_file_preview.git
+      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_file_preview.git
   # 图片选择
   image_picker: ^0.6.7+12
   # 图片占位符
