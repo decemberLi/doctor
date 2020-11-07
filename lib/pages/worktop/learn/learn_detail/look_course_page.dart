@@ -18,7 +18,7 @@ class _LookCoursePageState extends State<LookCoursePage> {
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: Text('易学术'),
+          title: Text(''),
         ),
         body: Container(
           child: SafeArea(
