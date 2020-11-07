@@ -419,6 +419,13 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     picker.showModal(this.context);
   }
 
+  _title() {
+    if (_openType == 'SURE_INFO') {
+      return '填写基础信息';
+    }
+    return _qualification ? '基础信息确认' : '个人信息';
+  }
+
   @override
   Widget build(BuildContext context) {
     final data = ModalRoute.of(context).settings.arguments as Map;
@@ -434,9 +441,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       key: _scaffoldKey,
       backgroundColor: Color(0XFFF9FCFF),
       appBar: AppBar(
-        title: Text(
-          _qualification ? '基本信息确认' : '个人信息',
-        ),
+        title: Text(_title()),
         elevation: 1,
       ),
       resizeToAvoidBottomInset: false,
@@ -449,7 +454,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
               margin: EdgeInsets.only(left: 16, right: 16, top: 12),
               child: Column(
                 children: [
-                  !_qualification
+                  _openType == 'VIEW' && !_qualification
                       ? infoItem('头像', args['fullFacePhoto'], doctorStatus,
                           'photo', null)
                       : Container(),
@@ -480,7 +485,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                 ],
               ),
             ),
-            !_qualification
+            _openType == 'VIEW' && !_qualification
                 ? Card(
                     margin: EdgeInsets.only(left: 16, right: 16, top: 12),
                     child: Column(
@@ -525,7 +530,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
               context,
               MaterialPageRoute(
                   builder: (context) => PhysicianQualificationWidget()));
-          if (needPop) {
+          if (needPop != null && needPop) {
             Navigator.pop(context);
           }
         },

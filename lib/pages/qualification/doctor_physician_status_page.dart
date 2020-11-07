@@ -10,17 +10,29 @@ class DoctorPhysicianStatusPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String authStatusNotice = '';
-    String content = '';
+    Widget contentWidget = Container();
     String assets = '';
+    var style = TextStyle(
+      fontSize: 12,
+      color: ThemeColor.colorFF999999,
+    );
 
     if (authStatus == 'VERIFYING') {
       authStatusNotice = '资质认证审核中';
-      content = '您提交的信息将会在1-3个工作日内审核完成届时审核结果会以短信通知到您';
+      contentWidget = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('您提交的信息将会在1-3个工作日内审核完成',
+              textAlign: TextAlign.center, style: style),
+          Text('届时审核结果会以短信通知到您', textAlign: TextAlign.center, style: style),
+        ],
+      );
       assets = 'assets/images/qualification_checking.png';
     } else if (authStatus == 'PASS') {
       authStatusNotice = '已完成资质认证';
       assets = 'assets/images/qualification_pass.png';
-      content = '已为您开通复诊开方服务';
+      contentWidget =
+          Text('已为您开通复诊开方服务', textAlign: TextAlign.center, style: style);
     }
 
     return Scaffold(
@@ -52,14 +64,7 @@ class DoctorPhysicianStatusPage extends StatelessWidget {
             ),
             Container(
               margin: EdgeInsets.only(top: 28, left: 69, right: 69),
-              child: Text(
-                content,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: ThemeColor.colorFF999999,
-                ),
-              ),
+              child: contentWidget,
             )
           ],
         ),

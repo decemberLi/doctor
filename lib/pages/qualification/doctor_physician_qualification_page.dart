@@ -63,6 +63,7 @@ class _PhysicianQualificationWidgetState
       backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
         title: Text('医师资质认证'),
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -433,19 +434,22 @@ class _PhysicianQualificationWidgetState
 
   _imageWidget(FacePhoto photo) {
     var icon;
+    Decoration decoration = _dashDecoration;
     if (photo != null) {
       if (photo.url != null) {
-        icon = Image.network(photo.url, fit: BoxFit.cover);
+        icon = Image.network(photo.url, fit: BoxFit.fill);
       } else if (photo.path != null) {
-        icon = Image.file(File(photo.path), fit: BoxFit.cover);
+        icon = Image.file(File(photo.path), fit: BoxFit.fill);
       } else {
-        icon = Image.asset(photo.assetsPath, fit: BoxFit.cover);
+        decoration = BoxDecoration();
+        icon = Image.asset(photo.assetsPath, fit: BoxFit.fill);
       }
     }
+
     return Container(
       width: 85,
       height: 85,
-      decoration: _dashDecoration,
+      decoration: decoration,
       child: AspectRatio(child: icon, aspectRatio: 1 / 1),
     );
   }

@@ -89,18 +89,21 @@ class DoctorPhysicianQualificationViewModel {
     param['imgType'] = 'face';
     RecognizeEntity recognizeResult = await _recognizeIdCard(param);
     // 识别成功后再展示内容
-    if (_model.physicianInfoEntity.idCardLicense1 == null) {
-      _model.physicianInfoEntity.idCardLicense1 = FacePhoto.create();
-    }
-    var idCardFace = _model.physicianInfoEntity.idCardLicense1;
-    idCardFace.path = path;
-    idCardFace.url = null;
-    idCardFace.url = entity.url;
-    idCardFace.ossId = entity.ossId;
-    idCardFace.name = entity.ossFileName;
-    notifyDataChange();
 
-    if (recognizeResult != null && recognizeResult.frontResult != null) {
+    if ((recognizeResult != null && recognizeResult.frontResult != null) &&
+        recognizeResult.frontResult.iDNumber != null &&
+        recognizeResult.frontResult.iDNumber.length != 0) {
+      if (_model.physicianInfoEntity.idCardLicense1 == null) {
+        _model.physicianInfoEntity.idCardLicense1 = FacePhoto.create();
+      }
+      var idCardFace = _model.physicianInfoEntity.idCardLicense1;
+      idCardFace.path = path;
+      idCardFace.url = null;
+      idCardFace.url = entity.url;
+      idCardFace.ossId = entity.ossId;
+      idCardFace.name = entity.ossFileName;
+      notifyDataChange();
+
       var physicianInfo = _model.physicianInfoEntity;
       physicianInfo.identityNo = recognizeResult.frontResult.iDNumber;
       physicianInfo.identityName = recognizeResult.frontResult.name;
@@ -121,21 +124,25 @@ class DoctorPhysicianQualificationViewModel {
     param['imgUrl'] = entity.url;
     param['imgType'] = 'back';
     RecognizeEntity recognizeResult = await _recognizeIdCard(param);
-    // 识别成功后再展示内容
-    if (_model.physicianInfoEntity.idCardLicense2 == null) {
-      _model.physicianInfoEntity.idCardLicense2 = FacePhoto.create();
-    }
-    var idCardBackground = _model.physicianInfoEntity.idCardLicense2;
-    idCardBackground.path = path;
-    idCardBackground.url = null;
-    idCardBackground.url = entity.url;
-    idCardBackground.ossId = entity.ossId;
-    idCardBackground.name = entity.ossFileName;
-    notifyDataChange();
-
     // https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1603620957283&di=61acea5fc966284c9bc389e8a752aba7&imgtype=0&src=http%3A%2F%2Fphotocdn.sohu.com%2F20060810%2FImg244728941.jpg
 
-    if (recognizeResult != null && recognizeResult.backResult != null) {
+    if (recognizeResult != null &&
+        recognizeResult.backResult != null &&
+        recognizeResult.backResult.endDate != null &&
+        recognizeResult.backResult.endDate.length != 0) {
+
+      // 识别成功后再展示内容
+      if (_model.physicianInfoEntity.idCardLicense2 == null) {
+        _model.physicianInfoEntity.idCardLicense2 = FacePhoto.create();
+      }
+      var idCardBackground = _model.physicianInfoEntity.idCardLicense2;
+      idCardBackground.path = path;
+      idCardBackground.url = null;
+      idCardBackground.url = entity.url;
+      idCardBackground.ossId = entity.ossId;
+      idCardBackground.name = entity.ossFileName;
+      notifyDataChange();
+
       var physicianInfo = _model.physicianInfoEntity;
       physicianInfo.identityValidity = recognizeResult.backResult.endDate;
       return;

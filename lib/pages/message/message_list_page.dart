@@ -121,7 +121,10 @@ class _MessageListPageState extends State<MessageListPage> {
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 5),
-                            child: Text(
+                            child: widget._type == MessageType.TYPE_SYSTEM ?Text(
+                              entity?.messageContent ?? '',
+                              softWrap: true,
+                            ):Text(
                               entity?.messageContent ?? '',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -256,8 +259,10 @@ class _MessageListPageState extends State<MessageListPage> {
       }
       var entity = userModel.data;
       if (entity.authStatus == 'WAIT_VERIFY' || entity.authStatus == 'FAIL') {
-        Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
-            arguments: {'doctorData': entity.toJson()});
+        Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL, arguments: {
+          'doctorData': entity.toJson(),
+          'qualification': true,
+        });
       } else {
         await Navigator.pushNamed(
             context, RouteManager.QUALIFICATION_AUTH_STATUS,
