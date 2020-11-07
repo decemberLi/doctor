@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 typedef OnSelectedCallback<T> = void Function<T extends Search>(
     T value, int position);
@@ -40,11 +41,11 @@ class _SearchBarState extends State<SearchBar> {
   void initState() {
     _textEditingController.addListener(() {
       if (widget.searchConditionCallback != null) {
-        _doSearch();
+        // _doSearch();
       }
     });
     super.initState();
-    _doSearch();
+    // _doSearch();
   }
 
   void _doSearch() {
@@ -63,21 +64,31 @@ class _SearchBarState extends State<SearchBar> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Icon(
+          Padding(padding: EdgeInsets.only(left: 10),child: const Icon(
             Icons.search,
             color: ThemeColor.colorFF999999,
-            size: 24,
-          ),
+            size: 20,
+          ),),
           Expanded(
-            child: TextField(
+            child: Padding(padding: EdgeInsets.only(right: 10,),child: TextField(
               controller: _textEditingController,
               textAlign: TextAlign.center,
+              keyboardType: TextInputType.text,
+              maxLines: 1,
+              textInputAction: TextInputAction.search,
+              onEditingComplete: () {
+                _doSearch();
+                FocusScope.of(context).unfocus();
+              },
               decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: widget.hintText,
                   hintStyle: const TextStyle(
-                      color: ThemeColor.colorFF999999, fontSize: 14)),
-            ),
+                      color: ThemeColor.colorFF999999, fontSize: 14),
+                labelStyle: const TextStyle( fontSize: 14)
+              ),
+
+            ),),
           ),
         ],
       ),
@@ -162,7 +173,7 @@ class _SearchWidget<T extends Search> extends State<SearchWidget> {
                 decoration: BoxDecoration(
                     border: Border(
                         bottom:
-                            BorderSide(width: 1, color: ThemeColor.colorLine))),
+                            BorderSide(width: 0.5, color: ThemeColor.colorLine))),
                 padding: EdgeInsets.only(top: 16, bottom: 16),
                 child: Text(
                   data[index]?.faceText(),
