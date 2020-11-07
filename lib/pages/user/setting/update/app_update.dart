@@ -262,41 +262,58 @@ class AppUpdateDialog extends StatelessWidget {
     return WillPopScope(
         child: Container(
           padding: EdgeInsets.only(left: 50, right: 50),
-          color: Colors.transparent,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Stack(
+                overflow: Overflow.visible,
                 children: [
                   Image.asset('assets/images/app_update_top.png'),
                   Positioned(
-                    right: 16,
-                    top: 62,
+                    right: 21,
+                    top: 84,
                     child: Container(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             '发现新版本',
-                            style:
-                            TextStyle(fontSize: 16, color: Colors.white),
+                            style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                           Text(
                             '版本：${_updateInfo?.appVersion ?? ''}',
-                            style:
-                            TextStyle(fontSize: 12, color: Colors.white),
+                            style: TextStyle(fontSize: 12, color: Colors.white),
                           ),
                         ],
                       ),
                     ),
                   ),
+                  Positioned(
+                    left: 3,
+                    bottom: 0,
+                    child: Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.only(left: 42, bottom: 10),
+                      child: Text(
+                        '更新内容:',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            color: ThemeColor.colorFF222222, fontSize: 12),
+                      ),
+                    ),
+                  ),
                 ],
               ),
+
               // 版本内容
               Container(
-                padding: EdgeInsets.only(left: 35, right: 35, bottom: 5),
+                padding: EdgeInsets.only(
+                  left: 35,
+                  right: 35,
+                  bottom: 5,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10),
@@ -309,10 +326,6 @@ class AppUpdateDialog extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text('更新内容:',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: ThemeColor.colorFF222222, fontSize: 12)),
                     Container(
                       margin: EdgeInsets.only(left: 10, right: 16),
                       color: Colors.white,
@@ -325,10 +338,11 @@ class AppUpdateDialog extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(top: 24, bottom: 24),
                       child: AceButton(
+                        width: 137,
                         text: '立即更新',
                         height: 28,
                         onPressed: _doUpdate ??
-                                () {
+                            () {
                               print('立即升级');
                             },
                       ),
