@@ -382,7 +382,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                       _buildLookCourse(data),
                                     ]),
                                   ),
-                                  if (arguments['listStatus'] != 'HISTORY')
+                                  if (data.status != 'SUBMIT_LEARN' &&
+                                      data.status != 'ACCEPTED')
                                     Container(
                                       margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                                       child: Column(
