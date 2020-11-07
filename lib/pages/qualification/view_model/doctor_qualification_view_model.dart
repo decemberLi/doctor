@@ -99,7 +99,7 @@ class DoctorQualificationViewModel {
     }
 
     await _modifyDoctorInfo(_dataModel.doctorDetailInfo.toJson());
-    EasyLoading.showToast('信息修改成功');
+    EasyLoading.showToast('提交成功');
   }
 
   bool validateBasicInfo({bool needShowMsg = true}) {
