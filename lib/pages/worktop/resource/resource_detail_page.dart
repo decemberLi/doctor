@@ -352,6 +352,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                           CommonModal.showBottomSheet(context,
                               title: '评论区',
                               height: Adapt.screenH() * 0.8,
+                              enableDrag: false,
                               child: CommentListPage(
                                   widget.resourceId, widget.learnPlanId));
                         },
