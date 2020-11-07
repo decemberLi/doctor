@@ -126,9 +126,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   ///defaultCode 用户下拉框回填数据的默认值
   Widget infoItem(String lable, value, bool type, edit, defaultCode) {
     return Container(
-      margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
       decoration: BoxDecoration(
-        border: Border(bottom: Divider.createBorderSide(context)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
       ),
       child: ListTile(
         title: lable == '头像'
@@ -451,6 +452,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             _buildRejectInfoIfNeeded(),
             _buildNoticeInfoIfNeeded(),
             Card(
+              elevation: 1,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
               margin: EdgeInsets.only(left: 16, right: 16, top: 12),
               child: Column(
                 children: [
@@ -458,12 +463,38 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                       ? infoItem('头像', args['fullFacePhoto'], doctorStatus,
                           'photo', null)
                       : Container(),
+                  !_qualification
+                      ? Container(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          child: Divider(
+                            height: 1,
+                          ),
+                        )
+                      : Container(),
                   infoItem(
                       '姓名', args['doctorName'], doctorStatus, 'edit', null),
+                  Container(
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    child: Divider(
+                      height: 1,
+                    ),
+                  ),
                   infoItem('性别', args['sex'] == 0 ? '女' : '男', doctorStatus,
                       'picker', args['sex']),
+                  Container(
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    child: Divider(
+                      height: 1,
+                    ),
+                  ),
                   infoItem('医院', args['hospitalName'], doctorStatus, 'hospital',
                       null),
+                  Container(
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    child: Divider(
+                      height: 1,
+                    ),
+                  ),
                   infoItem(
                       '科室',
                       args['departmentsName'],
@@ -472,8 +503,22 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                       args['departmentsCode'] == ''
                           ? null
                           : args['departmentsCode']),
+                  Container(
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    child: Divider(
+                      height: 1,
+                    ),
+                  ),
                   infoItem('职称', args['jobGradeName'], doctorStatus, 'picker',
                       args['jobGradeCode']),
+                  _qualification
+                      ? Container(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          child: Divider(
+                            height: 1,
+                          ),
+                        )
+                      : Container(),
                   _qualification
                       ? infoItem(
                           '易学术执业科室',
@@ -487,11 +532,21 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
             ),
             _openType == 'VIEW' && !_qualification
                 ? Card(
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                     margin: EdgeInsets.only(left: 16, right: 16, top: 12),
                     child: Column(
                       children: [
                         infoItem('个人简介', args['briefIntroduction'], true,
                             'edit', null),
+                        Container(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          child: Divider(
+                            height: 1,
+                          ),
+                        ),
                         infoItem(
                             '擅长疾病', args['speciality'], true, 'edit', null),
                       ],
