@@ -64,7 +64,7 @@ class _PatientListPageState extends State<PatientListPage>
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text(prescriptionNo == 'QUICK_CREATE' ? '选择随诊患者' : '我的随诊患者'),
+        title: Text(prescriptionNo != null ? '选择随诊患者' : '我的随诊患者'),
       ),
       body: Container(
         color: ThemeColor.colorFFF3F5F8,
