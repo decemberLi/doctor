@@ -81,7 +81,9 @@ dependencies:
   # 滚动到指数＃
   scroll_to_index: ^1.0.6
 
-  spinner_input: ^0.1.2
+  # 该组件已在项目中重写
+  # spinner_input: ^0.1.2
+
   # 监听网络变化 https://pub.flutter-io.cn/packages/connectivity
   connectivity: ^2.0.1
 

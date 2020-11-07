@@ -24,5 +24,6 @@ class _CirclePainter extends BoxPainter {
     final Offset circleOffset =
         offset + Offset(cfg.size.width / 2, cfg.size.height - radius - 5);
     canvas.drawCircle(circleOffset, radius, _paint);
+    // canvas.drawLine(p1, p2, paint)
   }
 }

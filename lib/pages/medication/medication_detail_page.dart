@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
 import 'package:doctor/pages/medication/widgets/medication_add_btn.dart';
 import 'package:doctor/provider/provider_widget.dart';
@@ -214,7 +215,8 @@ class MedicationIntroduce extends StatelessWidget {
                   children: [
                     FormItem(
                       label: '参考均价：',
-                      value: '￥${model.data?.drugPrice ?? ''}',
+                      value:
+                          '${MoneyUtil.changeF2YWithUnit(model.data?.drugPrice ?? 0, unit: MoneyUnit.YUAN)}',
                       padding: EdgeInsets.symmetric(vertical: 20),
                       borderDirection: FormItemBorderDirection.bottom,
                     ),
@@ -233,30 +235,30 @@ class MedicationIntroduce extends StatelessWidget {
                   ],
                 ),
               ),
-              MedicationDetailCard(
-                child: Column(
-                  children: [
-                    FormItem(
-                      label: '用法用量：',
-                      value: '${model.data?.useInfo ?? ''}',
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      borderDirection: FormItemBorderDirection.bottom,
-                    ),
-                    FormItem(
-                      label: '适应症：',
-                      value: '',
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      borderDirection: FormItemBorderDirection.bottom,
-                    ),
-                    FormItem(
-                      label: '不良反应：',
-                      value: '',
-                      padding: EdgeInsets.only(top: 20),
-                      borderDirection: FormItemBorderDirection.none,
-                    ),
-                  ],
-                ),
-              ),
+              // MedicationDetailCard(
+              //   child: Column(
+              //     children: [
+              //       FormItem(
+              //         label: '用法用量：',
+              //         value: '',
+              //         padding: EdgeInsets.symmetric(vertical: 20),
+              //         borderDirection: FormItemBorderDirection.bottom,
+              //       ),
+              //       FormItem(
+              //         label: '适应症：',
+              //         value: '',
+              //         padding: EdgeInsets.symmetric(vertical: 20),
+              //         borderDirection: FormItemBorderDirection.bottom,
+              //       ),
+              //       FormItem(
+              //         label: '不良反应：',
+              //         value: '',
+              //         padding: EdgeInsets.only(top: 20),
+              //         borderDirection: FormItemBorderDirection.none,
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         );
@@ -283,26 +285,26 @@ class MedicationIntruction extends StatelessWidget {
                 borderDirection: FormItemBorderDirection.bottom,
               ),
               FormItem(
-                label: '商品名：',
-                value: '',
+                label: '商品名称：',
+                value: '${model.data?.generalName ?? ''}',
                 padding: EdgeInsets.symmetric(vertical: 20),
                 borderDirection: FormItemBorderDirection.bottom,
               ),
-              FormItem(
-                label: '英文名：',
-                value: '',
-                padding: EdgeInsets.symmetric(vertical: 20),
-                borderDirection: FormItemBorderDirection.bottom,
-              ),
+              // FormItem(
+              //   label: '英文名：',
+              //   value: '',
+              //   padding: EdgeInsets.symmetric(vertical: 20),
+              //   borderDirection: FormItemBorderDirection.bottom,
+              // ),
               FormItem(
                 label: '规格：',
-                value: '',
+                value: '${model.data?.drugSize ?? ''}',
                 padding: EdgeInsets.symmetric(vertical: 20),
                 borderDirection: FormItemBorderDirection.bottom,
               ),
               FormItem(
                 label: '剂型：',
-                value: model.data?.drugType ?? '',
+                value: '${model.data?.drugType ?? ''}',
                 padding: EdgeInsets.only(top: 20),
                 borderDirection: FormItemBorderDirection.none,
               ),

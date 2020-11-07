@@ -30,12 +30,14 @@ class PerscriptionDetail extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '${data.drugRps.indexOf(e) + 1}、${e.drugName}',
-                      style: MyStyles.inputTextStyle_12,
+                    Expanded(
+                      child: Text(
+                        '${data.drugRps.indexOf(e) + 1}、${e.drugName}',
+                        style: MyStyles.inputTextStyle_12,
+                      ),
                     ),
                     Text(
                       'X${e.quantity.toStringAsFixed(0)}',

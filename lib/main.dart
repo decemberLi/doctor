@@ -60,6 +60,8 @@ class MyApp extends StatelessWidget {
           ),
           scaffoldBackgroundColor: ThemeColor.colorFFFFFF,
           buttonTheme: ButtonThemeData(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
             buttonColor: ThemeColor.primaryColor,
             padding: EdgeInsets.symmetric(horizontal: 0),
           ),

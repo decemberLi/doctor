@@ -224,7 +224,9 @@ class _HomePageState extends State<HomePage>
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         unselectedItemColor: Colors.black,
-        // selectedFontSize: 12.0,
+        selectedFontSize: 12.0,
+        selectedIconTheme: IconThemeData(size: 24),
+        unselectedIconTheme: IconThemeData(size: 24),
         onTap: onTabTapped,
         // new
         currentIndex: _currentIndex,
@@ -275,14 +277,6 @@ class _HomePageState extends State<HomePage>
             ),
             label: '我的',
           ),
-          // new BottomNavigationBarItem(
-          //   icon: Image.asset(
-          //     'assets/images/user.png',
-          //     width: 24,
-          //     height: 24,
-          //   ),
-          //   label: '测试页',
-          // ),
         ],
       ),
     );
