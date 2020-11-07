@@ -178,15 +178,15 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       _timer.cancel();
       _timer = null;
     }
-    if (_learnTime > 0 && widget.learnPlanId != null) {
-      //上传时间
-      //time传当前学习了多少s 后台做累加用
-      updateLearnTime({
-        'resourceId': widget.resourceId,
-        'learnPlanId': widget.learnPlanId,
-        'time': _learnTime
-      });
-    }
+    // if (_learnTime > 0 && widget.learnPlanId != null) {
+    //   //上传时间
+    //   //time传当前学习了多少s 后台做累加用
+    //   updateLearnTime({
+    //     'resourceId': widget.resourceId,
+    //     'learnPlanId': widget.learnPlanId,
+    //     'time': _learnTime
+    //   });
+    // }
   }
 
   //计时器
@@ -429,6 +429,16 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     // Timer(Duration(seconds: 2), () {
     //   Navigator.pop(context);
     // });
+    dynamic params;
+    if (_learnTime > 0 && widget.learnPlanId != null) {
+      //上传时间
+      //time传当前学习了多少s 后台做累加用
+      params = {
+        'resourceId': widget.resourceId,
+        'learnPlanId': widget.learnPlanId,
+        'time': _learnTime
+      };
+    }
     //需提交代码
     if (content != null) {
       feedbackService({
@@ -443,7 +453,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
         });
         //2秒后返回
         Timer(Duration(seconds: 2), () {
-          Navigator.pop(context);
+          Navigator.pop(context, params);
         });
       });
     } else {
@@ -454,10 +464,20 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   //反馈弹窗
   Widget feedbackWidget(ResourceModel data) {
     String resourceType = data.resourceType;
+    dynamic params;
+    if (_learnTime > 0 && widget.learnPlanId != null) {
+      //上传时间
+      //time传当前学习了多少s 后台做累加用
+      params = {
+        'resourceId': widget.resourceId,
+        'learnPlanId': widget.learnPlanId,
+        'time': _learnTime
+      };
+    }
     return Positioned.fill(
       child: GestureDetector(
         onTap: () {
-          Navigator.pop(context); //点击屏幕不反馈直接返回
+          Navigator.pop(context, params); //点击屏幕不反馈直接返回
         },
         child: Container(
           child: Stack(
@@ -798,9 +818,19 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
           ),
         ),
         onWillPop: () {
+          dynamic params;
+          if (_learnTime > 0 && widget.learnPlanId != null) {
+            //上传时间
+            //time传当前学习了多少s 后台做累加用
+            params = {
+              'resourceId': widget.resourceId,
+              'learnPlanId': widget.learnPlanId,
+              'time': _learnTime
+            };
+          }
           if (backfocus == 1) {
             //第二次点击返回直接退出页面
-            Navigator.pop(context);
+            Navigator.pop(context, params);
           } else {
             backfocus = backfocus + 1;
           }
@@ -811,7 +841,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
             setFeedback();
           }
           if (!needFeedback) {
-            Navigator.pop(context);
+            Navigator.pop(context, params);
           }
           return;
         });
