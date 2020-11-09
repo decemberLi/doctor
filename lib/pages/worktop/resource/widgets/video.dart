@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/widgets/ace_video.dart';
+// import 'package:doctor/widgets/ace_video.dart';
+import 'package:doctor/widgets/video/chewie_video_widget2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:video_player/video_player.dart';
@@ -193,7 +194,8 @@ class _VideoDetailState extends State<VideoDetail> {
       alignment: Alignment.topCenter,
       child: Column(
         children: [
-          AceVideo(controller: _controller),
+          // AceVideo(controller: _controller),
+          // ChewieVideoWidget2(_controller),
           Expanded(
             child: _renderVideoInfo(),
           ),

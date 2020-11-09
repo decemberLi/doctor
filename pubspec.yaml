@@ -65,7 +65,8 @@ dependencies:
 
   # 视频播放
   video_player: ^0.10.12+5
-  chewie: ^0.9.10
+  # chewie: ^0.9.10
+  screen: 0.0.5
 
   # 图片选择
   image_picker: ^0.6.7+12

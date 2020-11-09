@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:chewie/chewie.dart';
+// import 'package:chewie/chewie.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/app_utils.dart';
@@ -121,13 +121,15 @@ class _AceVideoState extends State<AceVideo> {
     if (_controller == null) {
       return _buildIndicator();
     }
-    return Chewie(
-      controller: ChewieController(
-        videoPlayerController: _controller,
-        aspectRatio: 3 / 2,
-        autoPlay: false,
-        autoInitialize: true,
-      ),
-    );
+    return _buildIndicator();
+    // return Chewie(
+    //   controller: ChewieController(
+    //     aspectRatio: _controller.value.aspectRatio,
+    //     videoPlayerController: _controller,
+    //     // aspectRatio: 3 / 2,
+    //     autoPlay: false,
+    //     autoInitialize: true,
+    //   ),
+    // );
   }
 }
