@@ -3,6 +3,7 @@
 
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
+import 'package:doctor/widgets/video/chewie_video_widget.dart';
 // import 'package:doctor/widgets/ace_video.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -51,7 +52,7 @@ class _UploadVideoDetailState extends State<UploadVideoDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return Text('');
+    return ChewieVideoWidget(controller: _controller);
     // return AceVideo(controller: _controller);
   }
 }

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:doctor/widgets/video/chewie2/src/chewie_player.dart';
-import 'package:doctor/widgets/video/chewie2/src/chewie_progress_colors.dart';
-import 'package:doctor/widgets/video/chewie2/src/material_progress_bar.dart';
-import 'package:doctor/widgets/video/chewie2/src/utils.dart';
+import 'package:doctor/widgets/video/chewie/src/chewie_player.dart';
+import 'package:doctor/widgets/video/chewie/src/chewie_progress_colors.dart';
+import 'package:doctor/widgets/video/chewie/src/material_progress_bar.dart';
+import 'package:doctor/widgets/video/chewie/src/utils.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomControls extends StatefulWidget {
@@ -111,7 +111,7 @@ class _CustomControlsState extends State<CustomControls> {
     BuildContext context,
   ) {
     final iconColor = Theme.of(context).textTheme.button.color;
-
+    //-allowFullScreen-是否允许全屏
     return AnimatedOpacity(
       opacity: _hideStuff ? 0.0 : 1.0,
       duration: Duration(milliseconds: 300),
@@ -324,6 +324,7 @@ class _CustomControlsState extends State<CustomControls> {
     }
   }
 
+  // 全屏点击
   void _onExpandCollapse() {
     setState(() {
       _hideStuff = true;
@@ -396,6 +397,7 @@ class _CustomControlsState extends State<CustomControls> {
 
             _startHideTimer();
           },
+          // /materialProgressColors/进度条颜色
           colors: chewieController.materialProgressColors ??
               ChewieProgressColors(
                   playedColor: Theme.of(context).accentColor,

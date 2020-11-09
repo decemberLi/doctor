@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor/widgets/video/chewie2/src/chewie_player.dart';
+import 'package:doctor/widgets/video/chewie/src/chewie_player.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomPlayerWithControls extends StatelessWidget {
@@ -10,8 +10,8 @@ class CustomPlayerWithControls extends StatelessWidget {
   ///入参增加容器宽和高
   CustomPlayerWithControls({
     Key key,
-    this.width = 340,
-    this.height = 300,
+    this.width = 375,
+    this.height = 220,
   }) : super(key: key);
 
   @override
@@ -23,9 +23,15 @@ class CustomPlayerWithControls extends StatelessWidget {
 
   Container _buildPlayerWithControls(
       ChewieController chewieController, BuildContext context) {
+    double _width = width;
+    double _height = height;
+    if (chewieController.isFullScreen) {
+      _width = MediaQuery.of(context).size.width - 10;
+      _height = MediaQuery.of(context).size.height - 10;
+    }
     return Container(
-      width: width,
-      height: height,
+      width: _width,
+      height: _height,
       child: Stack(
         children: <Widget>[
           chewieController.placeholder ?? Container(),
@@ -114,20 +120,36 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
     }
     double width;
     double height;
+    var _viewRatio = widget._viewRatio;
+    // 监听全面屏
+    ChewieController _chewieController = chewieController;
+    // if (_isFullScreen) {}
 
     ///两个宽高比进行比较，保证VideoPlayer不超出容器，且不会产生变形
-    if (_aspectRatio > widget._viewRatio) {
-      width = widget.maxWidth;
+    print('监听全面屏-${_chewieController.isFullScreen}');
+    print('111视频播放宽高-_aspectRatio$_aspectRatio<------_viewRatio->$_viewRatio');
+    print(
+        '222视频播放宽高-${MediaQuery.of(context).size.width}--<------widget->${widget.maxWidth}');
+    double _maxWidth = widget.maxWidth;
+    double _maxHeight = widget.maxHeight;
+    if (_chewieController.isFullScreen) {
+      _maxWidth = MediaQuery.of(context).size.width;
+      _maxHeight = MediaQuery.of(context).size.height;
+    }
+    if (_aspectRatio > _viewRatio) {
+      width = _maxWidth;
       height = width / _aspectRatio;
     } else {
-      height = widget.maxHeight;
+      height = _maxHeight;
       width = height * _aspectRatio;
     }
 
+    print('视频播放宽高-$width<------->$height');
     return Center(
       child: Container(
         width: width,
         height: height,
+        color: Colors.orange,
         child: VideoPlayer(chewieController.videoPlayerController),
       ),
     );
