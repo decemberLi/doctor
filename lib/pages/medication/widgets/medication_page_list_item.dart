@@ -95,6 +95,7 @@ class _MedicationListItemState extends State<MedicationListItem> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12),
       alignment: Alignment.topLeft,
+      color: Colors.white,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
