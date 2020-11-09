@@ -30,8 +30,11 @@ dependencies:
   # https://pub.dev/packages/flutter_easyloading
   flutter_easyloading: ^2.0.0
   shared_preferences: ^0.5.12
-  # 下拉刷新
-  pull_to_refresh: ^1.6.1
+  # 下拉刷新 https://github.com/peng8350/flutter_pulltorefresh
+  # pull_to_refresh: ^1.6.1
+  pull_to_refresh:
+    git:
+      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_pulltorefresh.git
   # State
   provider: ^4.3.2+2
   # 常用工具 https://github.com/Sky24n/common_utils
