@@ -66,7 +66,6 @@ class PatientListItem extends StatelessWidget {
                 children: data.diseaseNameList
                     .map(
                       (e) => Container(
-                        height: 26,
                         padding: EdgeInsets.only(
                             left: 12, right: 12, top: 2, bottom: 2),
                         decoration: BoxDecoration(

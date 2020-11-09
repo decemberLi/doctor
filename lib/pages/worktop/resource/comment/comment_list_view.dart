@@ -38,8 +38,8 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
           Center(
             child: Container(
               margin: EdgeInsets.only(left: 5),
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              height: 20,
+              padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+              // height: 20,
               constraints: BoxConstraints(
                 minWidth: 30,
               ),
@@ -50,8 +50,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
               child: Text(
                 roleType == 'DOCTOR' ? '医生' : '医药信息沟通专员',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white, fontSize: 14, height: 1.4), //居中
+                style: TextStyle(color: Colors.white, fontSize: 14), //居中
               ),
             ),
           )
