@@ -172,14 +172,14 @@ class _WorktopPageState extends State<WorktopPage>
     if (doctorInfoEntity?.fullFacePhoto?.url != null) {
       avatar = ImageWidget(
         url: doctorInfoEntity.fullFacePhoto.url,
-        width: 80,
-        height: 80,
+        width: 70,
+        height: 70,
         fit: BoxFit.fill,
       );
     } else {
       avatar = Image.asset(
         "assets/images/doctorAva.png",
-        width: 80,
+        width: 70,
         fit: BoxFit.fill,
       );
     }
@@ -189,10 +189,17 @@ class _WorktopPageState extends State<WorktopPage>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 80,
-            height: 80,
+            width: 70,
+            height: 70,
             padding: EdgeInsets.all(100),
             decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x2f000000),
+                  offset: Offset(0, 2),
+                  blurRadius: 10,
+                ),
+              ],
               shape: BoxShape.circle,
               image: DecorationImage(
                 fit: BoxFit.fill,
