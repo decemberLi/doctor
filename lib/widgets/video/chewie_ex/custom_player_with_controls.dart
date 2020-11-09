@@ -37,7 +37,7 @@ class CustomPlayerWithControls extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           chewieController.placeholder ?? Container(),
-          VideoPlayerContainer(width, height),
+          VideoPlayerContainer(_width, _height),
           chewieController.overlay ?? Container(),
           _buildControls(context, chewieController),
         ],
