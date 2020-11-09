@@ -11,7 +11,7 @@ class CustomPlayerWithControls extends StatelessWidget {
   CustomPlayerWithControls({
     Key key,
     this.width = 375,
-    this.height = 220,
+    this.height = 210,
   }) : super(key: key);
 
   @override
@@ -108,6 +108,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
     if (value != null) {
       double newAspectRatio = value.size != null ? value.aspectRatio : null;
       if (newAspectRatio != null && newAspectRatio != _aspectRatio) {
+        print('newAspectRatio===>>>>>$newAspectRatio');
         setState(() {
           _aspectRatio = newAspectRatio;
         });
@@ -137,9 +138,11 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
       height = _maxWidth / _aspectRatio;
     } else {
       height = _maxHeight;
-      width = _maxHeight * _aspectRatio;
+      width = _maxWidth * _aspectRatio;
     }
 
+    print('$_aspectRatio------_viewRatio---视频宽高---》》》$_viewRatio');
+    print('$height---------视频宽高---》》》$width');
     return Center(
       child: Container(
         width: width,

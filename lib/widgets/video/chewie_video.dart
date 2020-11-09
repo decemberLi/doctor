@@ -44,7 +44,7 @@ class _ChewieVideoWidgetState extends State<ChewieVideo> {
         showControls: true,
         customControls: CustomControls(),
         placeholder: new Container(
-          color: Colors.black,
+          color: Color.fromRGBO(0, 0, 0, 0.75),
         ),
       );
       _controller.addListener(() async {

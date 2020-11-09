@@ -111,7 +111,6 @@ class _CustomControlsState extends State<CustomControls> {
     BuildContext context,
   ) {
     final iconColor = Theme.of(context).textTheme.button.color;
-    //-allowFullScreen-是否允许全屏
     return AnimatedOpacity(
       opacity: _hideStuff ? 0.0 : 1.0,
       duration: Duration(milliseconds: 300),
