@@ -268,12 +268,11 @@ class AppUpdateDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Container(
-          padding:
-              EdgeInsets.only(left: 50, right: 50, top: Adapt.screenH() * 0.1),
+          padding: EdgeInsets.only(left: 50, right: 50),
           child: Column(
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            // mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Stack(
                 overflow: Overflow.visible,
@@ -299,9 +298,12 @@ class AppUpdateDialog extends StatelessWidget {
                     ),
                   ),
                   Positioned(
+                    height: 30,
                     left: 0,
-                    bottom: 10,
+                    bottom: -5,
+                    width: Adapt.screenW() - 100,
                     child: Container(
+                      alignment: Alignment.centerLeft,
                       color: Colors.white,
                       padding: EdgeInsets.only(left: 35),
                       child: Text(
@@ -316,11 +318,8 @@ class AppUpdateDialog extends StatelessWidget {
               ),
               // 版本内容
               Container(
-                padding: EdgeInsets.only(
-                  left: 35,
-                  right: 35,
-                  bottom: 5,
-                ),
+                padding:
+                    EdgeInsets.only(left: 35, right: 35, bottom: 5, top: 5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10),
