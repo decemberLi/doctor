@@ -15,12 +15,15 @@ class LearnListViewModel extends ViewStateRefreshListModel {
 
   @override
   Future<List<LearnListItem>> loadData({int pageNum}) async {
-    var list = await http.post('/learn-plan/list', params: {
-      'searchStatus': this.learnStatus,
-      'taskTemplate': this.taskTemplate,
-      'ps': 10,
-      'pn': pageNum
-    });
+    var list = await http.post(
+      '/learn-plan/list',
+      params: {
+        'searchStatus': this.learnStatus,
+        'taskTemplate': this.taskTemplate,
+        'ps': 10,
+        'pn': pageNum
+      },
+    );
     return list['records']
         .map<LearnListItem>((item) => LearnListItem.fromJson(item))
         .toList();
@@ -94,9 +97,8 @@ class LearnRecordingModel extends ViewStateModel {
         setError(e, s);
       }
     }
-
   }
-  
+
   Future<LearnRecordingItem> loadData() async {
     try {
       var data = await http.post('/doctor-lecture/detail', params: {

@@ -7,6 +7,7 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /// 学习计划列表
@@ -14,7 +15,7 @@ class LearnListPage extends StatefulWidget {
   final String learnStatus;
 
   final ValueChanged<List> onTaskTypeChange;
-  int index;
+  final int index;
 
   LearnListPage(this.learnStatus, {int index = 0, this.onTaskTypeChange})
       : this.index = index;
@@ -33,10 +34,21 @@ class _LearnListPageState extends State<LearnListPage>
 
   int _currentTabIndex = 0;
 
+  // 列表model
+  List<LearnListViewModel> _listModels;
+
   @override
   void initState() {
     super.initState();
+    _listModels = TASK_TYPE_MAP
+        .map(
+          (e) => LearnListViewModel(widget.learnStatus, e['taskTemplate']),
+        )
+        .toList();
     _currentTabIndex = widget.index;
+
+    _listModels[_currentTabIndex].initData();
+
     // 添加监听器
     _tabController = TabController(
       vsync: this,
@@ -47,6 +59,7 @@ class _LearnListPageState extends State<LearnListPage>
         if (_tabController.index.toDouble() == _tabController.animation.value) {
           setState(() {
             _currentTabIndex = _tabController.index;
+            _listModels[_currentTabIndex].initData();
             if (widget.onTaskTypeChange != null) {
               widget.onTaskTypeChange(
                   TASK_TYPE_MAP[_currentTabIndex]['taskTemplate']);
@@ -59,6 +72,9 @@ class _LearnListPageState extends State<LearnListPage>
   @override
   void dispose() {
     _tabController.dispose();
+    _listModels.forEach((model) {
+      model.dispose();
+    });
     super.dispose();
   }
 
@@ -86,47 +102,51 @@ class _LearnListPageState extends State<LearnListPage>
     );
   }
 
-  Widget _renderList(taskTemplate) {
-    return ProviderWidget<LearnListViewModel>(
-      model: LearnListViewModel(widget.learnStatus, taskTemplate),
-      onModelReady: (model) => model.initData(),
-      builder: (context, model, child) {
-        if (model.isError || model.isEmpty) {
-          return ViewStateEmptyWidget(onPressed: model.initData);
-        }
-        return SmartRefresher(
-          controller: model.refreshController,
-          header: ClassicHeader(),
-          footer: ClassicFooter(),
-          onRefresh: model.refresh,
-          onLoading: model.loadMore,
-          enablePullUp: true,
-          child: ListView.builder(
-            itemCount: model.list.length,
-            itemBuilder: (context, index) {
-              LearnListItem item = model.list[index];
-              return GestureDetector(
-                onTap: () async {
-                  await Navigator.of(context).pushNamed(
-                    RouteManager.LEARN_DETAIL,
-                    arguments: {
-                      'learnPlanId': item.learnPlanId,
-                      'listStatus': widget.learnStatus,
-                    },
-                  );
-                  // 从详情页回来后刷新数据
-                  if (widget.learnStatus == 'LEARNING') {
-                    model.refreshController.requestRefresh(needMove: false);
-                  }
+  Widget _renderList(
+      BuildContext context, LearnListViewModel model, Widget child) {
+    if (model.isError || model.isEmpty) {
+      return ViewStateEmptyWidget(onPressed: model.initData);
+    }
+    return SmartRefresher(
+      controller: model.refreshController,
+      header: ClassicHeader(),
+      footer: ClassicFooter(),
+      onRefresh: model.refresh,
+      onLoading: model.loadMore,
+      enablePullUp: true,
+      child: ListView.builder(
+        itemCount: model.list.length,
+        itemBuilder: (context, index) {
+          LearnListItem item = model.list[index];
+          return GestureDetector(
+            onTap: () async {
+              await Navigator.of(context).pushNamed(
+                RouteManager.LEARN_DETAIL,
+                arguments: {
+                  'learnPlanId': item.learnPlanId,
+                  'listStatus': widget.learnStatus,
                 },
-                child: LearnListItemWiget(item, widget.learnStatus),
               );
+              // 从详情页回来后刷新数据
+              if (widget.learnStatus == 'LEARNING') {
+                model.refreshController.requestRefresh(needMove: false);
+              }
             },
-          ),
-        );
-      },
+            child: LearnListItemWiget(item, widget.learnStatus),
+          );
+        },
+      ),
     );
   }
+
+  // Widget _renderList(taskTemplate) {
+  //   return ProviderWidget<LearnListViewModel>(
+  //     model: LearnListViewModel(widget.learnStatus, taskTemplate),
+  //     onModelReady: (model) => model.initData(),
+  //     // autoDispose: false,
+  //     builder: ,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -170,18 +190,25 @@ class _LearnListPageState extends State<LearnListPage>
         ),
       ),
       body: Container(
-        child: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: this._tabController,
-          children: TASK_TYPE_MAP
-              .map(
-                (e) => Container(
-                  child: _renderList(e['taskTemplate']),
-                ),
-              )
-              .toList(),
-        ),
-      ),
+          child: TabBarView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: this._tabController,
+        children: _listModels != null
+            ? _listModels
+                .map(
+                  (model) => Container(
+                    // child: _renderList(e['taskTemplate']),
+                    child: ChangeNotifierProvider<LearnListViewModel>.value(
+                      value: model,
+                      child: Consumer<LearnListViewModel>(
+                        builder: this._renderList,
+                      ),
+                    ),
+                  ),
+                )
+                .toList()
+            : [],
+      )),
     );
   }
 }
