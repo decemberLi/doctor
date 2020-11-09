@@ -9,7 +9,7 @@ class PrescripionCard extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   PrescripionCard({
     this.title,
-    this.children,
+    this.children = const <Widget>[],
     this.trailing,
     this.padding = const EdgeInsets.fromLTRB(30, 0, 30, 10),
   });
@@ -26,8 +26,6 @@ class PrescripionCard extends StatelessWidget {
         children: [titleText, this.trailing ?? Container()],
       ),
     );
-    List<Widget> _children = this.children ?? <Widget>[];
-    _children.insert(0, titleWidget);
     return Card(
       margin: EdgeInsets.only(bottom: 12.0),
       child: Container(
@@ -35,7 +33,10 @@ class PrescripionCard extends StatelessWidget {
         padding: this.padding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: _children,
+          children: [
+            titleWidget,
+            ...this.children,
+          ],
         ),
       ),
     );

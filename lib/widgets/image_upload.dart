@@ -39,7 +39,9 @@ class _ImageUploadState extends State<ImageUpload> {
   final _imagePicker = ImagePicker();
 
   initialize() {
-    _images = widget.images;
+    if (_images != widget.images) {
+      _images = widget.images;
+    }
   }
 
   @override

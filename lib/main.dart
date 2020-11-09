@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate
         ],
         supportedLocales: [
-          const Locale('en'),
+          // const Locale('en'),
           const Locale('zh'),
         ],
         navigatorKey: NavigationService().navigatorKey,
