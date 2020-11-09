@@ -145,7 +145,6 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                         margin: EdgeInsets.only(bottom: 30),
                         child: TextFormField(
                           autofocus: false,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           maxLength: 11,
                           initialValue:
                               SessionManager().sp.getString(LAST_PHONE) ?? '',
