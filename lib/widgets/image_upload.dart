@@ -6,6 +6,7 @@ import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/widgets/photo_view_gallery_screen.dart';
+import 'package:doctor/widgets/photo_view_simple_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
