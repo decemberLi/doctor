@@ -1,4 +1,4 @@
-package com.example.doctor
+package com.emedclouds.doctor
 
 import io.flutter.embedding.android.FlutterActivity
 

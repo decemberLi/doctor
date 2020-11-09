@@ -1,9 +1,8 @@
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/widgets/pdf_viewer_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_file_preview/flutter_file_preview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String AGREE_KEY = 'AGREE_KEY';
@@ -95,10 +94,10 @@ class _LoginFooterState extends State<LoginFooter> {
                   style: MyStyles.primaryTextStyle_12,
                   recognizer: _tap1
                     ..onTap = () {
-                      CustomerPDFViewer.openDefaultPreViewPage(
-                          context,
-                          '易学术服务协议',
-                          'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.pdf');
+                      FlutterFilePreview.openFile(
+                        'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.pdf',
+                        title: '易学术服务协议',
+                      );
                     },
                 ),
                 TextSpan(
@@ -110,10 +109,10 @@ class _LoginFooterState extends State<LoginFooter> {
                   style: MyStyles.primaryTextStyle_12,
                   recognizer: _tap2
                     ..onTap = () {
-                      CustomerPDFViewer.openDefaultPreViewPage(
-                          context,
-                          '易学术服务协议',
-                          'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.pdf');
+                      FlutterFilePreview.openFile(
+                        'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.pdf',
+                        title: '易学术隐私协议',
+                      );
                     },
                 ),
               ]),

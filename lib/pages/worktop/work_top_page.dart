@@ -136,6 +136,7 @@ class _WorktopPageState extends State<WorktopPage>
     }
 
     return CustomScrollView(
+      physics: NeverScrollableScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(
           child: Container(
