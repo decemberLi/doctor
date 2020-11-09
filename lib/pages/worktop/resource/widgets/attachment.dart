@@ -40,6 +40,7 @@ class _AttacementState extends State<Attacement> {
         widget._clickWebView();
       },
       child: Container(
+        color: Colors.transparent,
         width: double.infinity,
         height: double.infinity,
         alignment: Alignment.center,
