@@ -39,6 +39,9 @@ class _HomePageState extends State<HomePage>
   }
 
   void onTabTapped(int index) {
+    if (index == _currentIndex) {
+      return;
+    }
     int preTabIndex = _currentIndex;
     // TODO: 接RDM控制处方是否可见
     if (index == 0) {
@@ -224,7 +227,10 @@ class _HomePageState extends State<HomePage>
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         unselectedItemColor: Colors.black,
-        // selectedFontSize: 12.0,
+        selectedFontSize: 12.0,
+        // iconSize: 24.0,
+        // selectedIconTheme: IconThemeData(size: 24.0),
+        // unselectedIconTheme: IconThemeData(size: 24.0),
         onTap: onTabTapped,
         // new
         currentIndex: _currentIndex,
@@ -234,26 +240,26 @@ class _HomePageState extends State<HomePage>
           new BottomNavigationBarItem(
             icon: Image.asset(
               'assets/images/work_top_uncheck.png',
-              width: 24,
-              height: 24,
+              // width: 24,
+              // height: 24,
             ),
             activeIcon: Image.asset(
               'assets/images/work_top_checked.png',
-              width: 24,
-              height: 24,
+              // width: 24,
+              // height: 24,
             ),
             label: '工作台',
           ),
           new BottomNavigationBarItem(
             icon: Image.asset(
               'assets/images/prescribe_uncheck.png',
-              width: 24,
-              height: 24,
+              // width: 24,
+              // height: 24,
             ),
             activeIcon: Image.asset(
               'assets/images/prescribe_checked.png',
-              width: 24,
-              height: 24,
+              // width: 24,
+              // height: 24,
             ),
             label: '开处方',
           ),
@@ -265,13 +271,13 @@ class _HomePageState extends State<HomePage>
           new BottomNavigationBarItem(
             icon: Image.asset(
               'assets/images/mine_uncheck.png',
-              width: 24,
-              height: 24,
+              // width: 24,
+              // height: 24,
             ),
             activeIcon: Image.asset(
               'assets/images/mine_checked.png',
-              width: 24,
-              height: 24,
+              // width: 24,
+              // height: 24,
             ),
             label: '我的',
           ),
@@ -296,7 +302,11 @@ class _HomePageState extends State<HomePage>
       } else {
         assetsUrl = 'assets/images/message_uncheck.png';
       }
-      var icon = Image.asset(assetsUrl, width: 24, height: 24);
+      var icon = Image.asset(
+        assetsUrl,
+        // width: 24,
+        // height: 24
+      );
       var redDotColor = Colors.transparent;
       if (model != null &&
           model.data != null &&
