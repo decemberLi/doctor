@@ -121,15 +121,17 @@ class _MessageListPageState extends State<MessageListPage> {
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 5),
-                            child: widget._type == MessageType.TYPE_SYSTEM ?Text(
-                              entity?.messageContent ?? '',
-                              softWrap: true,
-                            ):Text(
-                              entity?.messageContent ?? '',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                            ),
+                            child: widget._type == MessageType.TYPE_SYSTEM
+                                ? Text(
+                                    entity?.messageContent ?? '',
+                                    softWrap: true,
+                                  )
+                                : Text(
+                                    entity?.messageContent ?? '',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                  ),
                           )
                         ],
                       ),
@@ -285,6 +287,7 @@ class _MessageListPageState extends State<MessageListPage> {
       Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
         "resourceId": entity.params['resourceId'],
         "learnPlanId": entity.params['learnPlanId'],
+        'from': 'MESSAGE_CENTER'
       });
     }
     _model.mark('${entity.messageId}');

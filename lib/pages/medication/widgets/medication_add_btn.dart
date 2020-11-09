@@ -31,9 +31,15 @@ class MedicationAddBtn extends StatelessWidget {
         );
       }
       return AceSpinnerInput(
+        minValue: 0,
         spinnerValue: _quantity,
         onChange: (newValue) {
-          data.quantity = newValue;
+          if (data.quantity == 0) {
+            data.quantity = null;
+          } else {
+            data.quantity = newValue;
+          }
+          model.cartList.remove(data);
           model.changeDataNotify();
         },
       );

@@ -66,6 +66,8 @@ class LearnDetailItem {
   int meetingStartTime;
   int meetingEndTime;
   int learnProgress;
+  int planImplementStartTime;
+  int planImplementEndTime;
   String status;
   bool reLearn;
   String reLearnReason;
@@ -84,6 +86,8 @@ class LearnDetailItem {
       this.meetingStartTime,
       this.meetingEndTime,
       this.learnProgress,
+      this.planImplementStartTime,
+      this.planImplementEndTime,
       this.status,
       this.reLearn,
       this.reLearnReason);

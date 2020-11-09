@@ -30,12 +30,14 @@ class PerscriptionDetail extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '${data.drugRps.indexOf(e) + 1}、${e.drugName}',
-                      style: MyStyles.inputTextStyle_12,
+                    Expanded(
+                      child: Text(
+                        '${data.drugRps.indexOf(e) + 1}、${e.drugName}',
+                        style: MyStyles.inputTextStyle_12,
+                      ),
                     ),
                     Text(
                       'X${e.quantity.toStringAsFixed(0)}',
@@ -100,8 +102,9 @@ class PerscriptionDetail extends StatelessWidget {
     // }
     String defaultDepart =
         Provider.of<UserInfoViewModel>(context, listen: false)
-            .data
-            .departmentsName;
+                .data
+                ?.departmentsName ??
+            '';
     return Container(
       padding: EdgeInsets.all(16),
       alignment: Alignment.topCenter,
@@ -114,7 +117,7 @@ class PerscriptionDetail extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Positioned(left: 16, child: PrescriptionStatus(data)),
+                  Positioned(left: 0, child: PrescriptionStatus(data)),
                   Container(
                     alignment: Alignment.center,
                     child: Column(
@@ -139,11 +142,12 @@ class PerscriptionDetail extends StatelessWidget {
                         borderRadius: BorderRadius.all(
                           Radius.circular(10),
                         ),
-                        border: Border.all(color: ThemeColor.primaryColor),
+                        border: Border.all(color: Color(0xFF3AA7FF)),
                       ),
                       child: Text(
                         '普通',
-                        style: MyStyles.primaryTextStyle_12,
+                        style: MyStyles.primaryTextStyle_12
+                            .copyWith(color: Color(0xFF3AA7FF)),
                       ),
                     ),
                   ),

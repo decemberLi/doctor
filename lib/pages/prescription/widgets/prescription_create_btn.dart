@@ -17,11 +17,12 @@ class PrescriptionCreateBtn extends StatelessWidget {
           width: 138,
           text: '生成处方',
           onPressed: () {
-            model.savePrescription((String prescriptionNo) {
-              Navigator.of(context).pushNamed(
+            model.savePrescription((String prescriptionNo) async {
+              await Navigator.of(context).pushNamed(
                 RouteManager.PRESCRIPTION_SUCCESS,
                 arguments: prescriptionNo,
               );
+              model.resetData();
             });
           },
         );

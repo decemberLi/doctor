@@ -88,46 +88,37 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
 
   /// 修改按钮
   Widget _buildEditBtn() {
-    return Positioned(
-      bottom: 50,
-      width: MediaQuery.of(context).size.width,
-      child: Container(
-        alignment: Alignment.topCenter,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Consumer2<PrescriptionDetailModel, PrescriptionViewModel>(
-              builder: (_, model, prescriptionViewModel, __) {
-                if (model.data?.status == 'REJECT') {
-                  return AceButton(
-                    textColor: Colors.white,
-                    text: '去修改处方',
-                    onPressed: () async {
-                      prescriptionViewModel.setData(model.data, callBack: () {
-                        // Navigator.of(context)
-                        //     .popUntil(ModalRoute.withName(RouteManager.HOME));
-                      });
-                      bool updated = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PrescriptionPage(
-                            title: '处方修改',
-                            showActicons: false,
-                          ),
-                        ),
-                      );
-                      prescriptionViewModel.resetData();
-                      if (updated) {
-                        model.initData();
-                      }
-                    },
-                  );
+    return Container(
+      alignment: Alignment.topCenter,
+      child: Consumer2<PrescriptionDetailModel, PrescriptionViewModel>(
+        builder: (_, model, prescriptionViewModel, __) {
+          if (model.data?.status == 'REJECT') {
+            return AceButton(
+              textColor: Colors.white,
+              text: '去修改处方',
+              onPressed: () async {
+                prescriptionViewModel.setData(model.data, callBack: () {
+                  // Navigator.of(context)
+                  //     .popUntil(ModalRoute.withName(RouteManager.HOME));
+                });
+                bool updated = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PrescriptionPage(
+                      title: '修改处方',
+                      showActicons: false,
+                    ),
+                  ),
+                );
+                prescriptionViewModel.resetData();
+                if (updated == true) {
+                  model.initData();
                 }
-                return Container();
               },
-            ),
-          ],
-        ),
+            );
+          }
+          return Container();
+        },
       ),
     );
   }
@@ -184,13 +175,17 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
               ),
             ],
           );
-          actions.add(TextButton(
-            onPressed: () {
-              _showQrCodeDialog(model.data.prescriptionNo);
-            },
-            child: Text(
-              '查看二维码',
-              style: TextStyle(color: Colors.white),
+          actions.add(Container(
+            padding: EdgeInsets.only(right: 30),
+            child: TextButton(
+              onPressed: () {
+                _showQrCodeDialog(model.data.prescriptionNo);
+              },
+              style: TextButton.styleFrom(padding: EdgeInsets.zero),
+              child: Text(
+                '查看二维码',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ));
         }
@@ -202,6 +197,7 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
               style: TextStyle(color: Colors.white),
             ),
             actions: actions,
+            iconTheme: IconThemeData(color: Colors.white),
             backgroundColor: Colors.transparent,
             elevation: 0.0,
           ),

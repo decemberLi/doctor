@@ -1,7 +1,7 @@
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/spinner_input.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:spinner_input/spinner_input.dart';
+// import 'package:spinner_input/spinner_input.dart';
 
 class AceSpinnerInput extends StatelessWidget {
   final double minValue;
@@ -51,9 +51,6 @@ class AceSpinnerInput extends StatelessWidget {
         middleNumberWidth: this.middleNumberWidth,
         spinnerValue: this.spinnerValue,
         onChange: (double value) {
-          // if (value < minValue) {
-          //   EasyLoading.showToast('数量不能小于1');
-          // }
           this.onChange(value);
         });
   }

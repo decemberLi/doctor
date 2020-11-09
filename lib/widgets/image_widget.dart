@@ -6,7 +6,7 @@ class ImageWidget extends StatefulWidget {
       this.width,
       this.height,
       this.fit,
-      this.defImagePath = "assets/images/avatar.png"});
+      this.defImagePath = "assets/images/doctorAva.png"});
 
   final String url;
   final double width;

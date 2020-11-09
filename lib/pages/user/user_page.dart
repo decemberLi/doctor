@@ -206,17 +206,25 @@ class _UserPageState extends State<UserPage> with RouteAware {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x2f000000),
+                            offset: Offset(0, 2),
+                            blurRadius: 10,
+                          ),
+                        ],
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: doctorData['fullFacePhoto'] == null
-                                ? AssetImage(
-                                    "assets/images/avatar.png",
-                                  )
-                                : NetworkImage(
-                                    doctorData['fullFacePhoto']['url'] +
-                                        '?status=${doctorData['fullFacePhoto']['ossId']}',
-                                  )),
+                          fit: BoxFit.fill,
+                          image: doctorData['fullFacePhoto'] == null
+                              ? AssetImage(
+                                  "assets/images/doctorAva.png",
+                                )
+                              : NetworkImage(
+                                  doctorData['fullFacePhoto']['url'] +
+                                      '?status=${doctorData['fullFacePhoto']['ossId']}',
+                                ),
+                        ),
                       ),
                       // child: doctorData['fullFacePhoto'] == null
                       //     ? Image.asset(

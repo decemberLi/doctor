@@ -27,8 +27,9 @@ class RpListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormItem(
       padding: EdgeInsets.symmetric(vertical: 16.0),
-      // height: 95.0,
+      height: 125.0,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Column(
@@ -52,34 +53,44 @@ class RpListItem extends StatelessWidget {
           ),
           Container(
             width: 100.0,
-            padding: EdgeInsets.only(left: 15.0),
+            // height: double.infinity,
+            // color: Colors.yellow,
+            padding: EdgeInsets.only(
+              left: 15.0,
+              top: 2,
+            ),
+            alignment: Alignment.topCenter,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        MedicationAddSheet.show(context, data, () {
-                          onEdit(data);
-                        });
-                      },
-                      child: Text(
-                        '编辑',
-                        style: MyStyles.primaryTextStyle_12,
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          MedicationAddSheet.show(context, data, () {
+                            onEdit(data);
+                          });
+                        },
+                        child: Text(
+                          '编辑',
+                          style: MyStyles.primaryTextStyle_12,
+                        ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        onDelete(data);
-                      },
-                      child: Text(
-                        '删除',
-                        style: MyStyles.primaryTextStyle_12,
+                      GestureDetector(
+                        onTap: () {
+                          onDelete(data);
+                        },
+                        child: Text(
+                          '删除',
+                          style: MyStyles.primaryTextStyle_12,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 AceSpinnerInput(
                   spinnerValue: data.quantity + .0 ?? 1,

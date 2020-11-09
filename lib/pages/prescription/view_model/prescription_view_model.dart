@@ -6,6 +6,7 @@ import 'package:doctor/pages/prescription/model/prescription_template_model.dart
 import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
+import 'package:doctor/utils/app_regex_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -95,6 +96,11 @@ class PrescriptionViewModel extends ViewStateModel {
       EasyLoading.showToast('年龄需要在0-120岁');
       return false;
     }
+    if (!AppRegexUtil.isPositiveInteger(
+        this.data.prescriptionPatientAge.toString())) {
+      EasyLoading.showToast('年龄不能有小数');
+      return false;
+    }
     if (this.data.prescriptionPatientSex == null) {
       EasyLoading.showToast('请选择性别');
       return false;
@@ -137,13 +143,23 @@ class PrescriptionViewModel extends ViewStateModel {
     if (isNew) {
       this.data.prescriptionNo = null;
       this.data.createTime = null;
+      this.data.status = null;
+      this.data.auditTime = null;
+      this.data.auditor = null;
+      this.data.auditorId = null;
+      this.data.doctorName = null;
+      this.data.expireTime = null;
+      this.data.id = null;
+      this.data.orderStatus = null;
+      this.data.reason = null;
+      this.data.pharmacist = null;
       // 纸质处方重新设置
       this.data.attachments = [
-        OssFileEntity(
-          ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
-          name: '测试',
-          type: 'PRESCRIPTION_PAPER',
-        )
+        // OssFileEntity(
+        //   ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
+        //   name: '测试',
+        //   type: 'PRESCRIPTION_PAPER',
+        // )
       ];
     }
     notifyListeners();

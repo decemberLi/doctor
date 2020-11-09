@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
             centerTitle: true,
             brightness: Brightness.light,
             color: Colors.white,
+            iconTheme: IconThemeData(color: Colors.black),
             textTheme: TextTheme(
               headline6: TextStyle(
                   color: Colors.black,
@@ -59,6 +60,8 @@ class MyApp extends StatelessWidget {
           ),
           scaffoldBackgroundColor: ThemeColor.colorFFFFFF,
           buttonTheme: ButtonThemeData(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
             buttonColor: ThemeColor.primaryColor,
             padding: EdgeInsets.symmetric(horizontal: 0),
           ),

@@ -89,6 +89,7 @@ class RouteManager {
         obj['meetingStartTime'],
         obj['meetingEndTime'],
         obj['taskDetailId'],
+        obj['from'],
       );
     },
     UPDATE_PWD: (context) => UpdatePwdPage(),

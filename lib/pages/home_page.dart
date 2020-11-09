@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage>
   updateDoctorInfo() {
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
-    if (model.data.authStatus != 'PASS') {
+    if (model.data?.authStatus != 'PASS') {
       model.queryDoctorInfo();
     }
   }
@@ -138,12 +138,12 @@ class _HomePageState extends State<HomePage>
   _showGoToQualificationDialog(int preTabIndex) async {
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
-    if (model.data.authStatus == 'PASS') {
+    if (model.data?.authStatus == 'PASS') {
       return;
     }
     // 如果没有通过认证再次查询，再次判断
     await model.queryDoctorInfo();
-    if (model.data.authStatus == 'PASS') {
+    if (model.data?.authStatus == 'PASS') {
       return;
     }
 
@@ -182,9 +182,9 @@ class _HomePageState extends State<HomePage>
                   'doctorData': model.data.toJson(),
                   'qualification': true,
                 };
-                if (model.data.authStatus == 'VERIFYING') {
+                if (model.data?.authStatus == 'VERIFYING') {
                   path = RouteManager.QUALIFICATION_AUTH_STATUS;
-                  arguments = {'authStatus': model.data.authStatus};
+                  arguments = {'authStatus': model.data?.authStatus};
                 }
                 await Navigator.pushNamed(
                   context,
@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage>
                   arguments: arguments,
                 );
                 await model.queryDoctorInfo();
-                if (model.data.authStatus == 'PASS') {
+                if (model.data?.authStatus == 'PASS') {
                   Navigator.of(context).pop();
                 }
               },
@@ -229,8 +229,8 @@ class _HomePageState extends State<HomePage>
         unselectedItemColor: Colors.black,
         selectedFontSize: 12.0,
         // iconSize: 24.0,
-        // selectedIconTheme: IconThemeData(size: 24.0),
-        // unselectedIconTheme: IconThemeData(size: 24.0),
+        selectedIconTheme: IconThemeData(size: 24),
+        unselectedIconTheme: IconThemeData(size: 24),
         onTap: onTabTapped,
         // new
         currentIndex: _currentIndex,
@@ -281,14 +281,6 @@ class _HomePageState extends State<HomePage>
             ),
             label: '我的',
           ),
-          // new BottomNavigationBarItem(
-          //   icon: Image.asset(
-          //     'assets/images/user.png',
-          //     width: 24,
-          //     height: 24,
-          //   ),
-          //   label: '测试页',
-          // ),
         ],
       ),
     );

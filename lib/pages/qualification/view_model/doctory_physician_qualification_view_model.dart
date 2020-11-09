@@ -10,7 +10,9 @@ import 'package:doctor/model/uploaded_file_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_physician_qualification_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
 import 'package:doctor/utils/upload_file_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:toast/toast.dart';
 
 HttpManager uCenter = HttpManager('ucenter');
 HttpManager uCenterCommon = HttpManager('uCenterCommon');
@@ -128,6 +130,8 @@ class DoctorPhysicianQualificationViewModel {
 
     if (recognizeResult != null &&
         recognizeResult.backResult != null &&
+        recognizeResult.backResult.startDate != null &&
+        recognizeResult.backResult.startDate.length != 0 &&
         recognizeResult.backResult.endDate != null &&
         recognizeResult.backResult.endDate.length != 0) {
 
@@ -144,7 +148,8 @@ class DoctorPhysicianQualificationViewModel {
       notifyDataChange();
 
       var physicianInfo = _model.physicianInfoEntity;
-      physicianInfo.identityValidity = recognizeResult.backResult.endDate;
+      physicianInfo.identityValidity =
+          '${recognizeResult.backResult.startDate}-${recognizeResult.backResult.endDate}';
       return;
     }
 
@@ -196,7 +201,7 @@ class DoctorPhysicianQualificationViewModel {
     toBeChange.name = entity.ossFileName;
   }
 
-  submitData() async {
+  submitData(BuildContext context) async {
     if (_model.physicianInfoEntity == null ||
         _model.physicianInfoEntity.fullFacePhoto == null) {
       EasyLoading.showToast('请上传头像');
@@ -236,6 +241,11 @@ class DoctorPhysicianQualificationViewModel {
 
     await uCenter.post('/personal/commit-doctor-verify-info',
         params: _model.physicianInfoEntity.toJson());
+
+    Toast.show('提交成功', context,
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.CENTER,
+        backgroundRadius: 6);
 
     return true;
   }

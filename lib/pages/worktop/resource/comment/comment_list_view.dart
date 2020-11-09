@@ -61,6 +61,9 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
 
 // 子回复
   Widget commentRepplyItem(CommentSecond data) {
+    print(
+      data.commentUserType,
+    );
     return GestureDetector(
       onTap: () {
         // Navigator.pushNamed(context, RouteManager.FIND_PWD);
@@ -76,10 +79,15 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              "assets/images/avatar.png",
-              width: 40,
-            ),
+            data.commentUserType == 'DOCTOR'
+                ? Image.asset(
+                    "assets/images/doctor.png",
+                    width: 40,
+                  )
+                : Image.asset(
+                    "assets/images/present.png",
+                    width: 40,
+                  ),
             // Image.network(
             //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
             // ),
@@ -164,10 +172,15 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(
-                    "assets/images/avatar.png",
-                    width: 40,
-                  ),
+                  widget.item.commentUserType == 'DOCTOR'
+                      ? Image.asset(
+                          "assets/images/doctor.png",
+                          width: 40,
+                        )
+                      : Image.asset(
+                          "assets/images/present.png",
+                          width: 40,
+                        ),
                   // Image.network(
                   //   'https://raw.githubusercontent.com/flutter/website/master/_includes/code/layout/lakes/images/lake.jpg',
                   // ),

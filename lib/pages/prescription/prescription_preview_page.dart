@@ -18,6 +18,7 @@ class PrescriptionPreviewPage extends StatelessWidget {
           "处方预览",
           style: TextStyle(color: Colors.white),
         ),
+        iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
       ),

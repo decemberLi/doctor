@@ -67,9 +67,9 @@ class _WorktopPageState extends State<WorktopPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SafeArea(
-      child: CommonStack(
-        body: ChangeNotifierProvider<WorkTopViewModel>.value(
+    return CommonStack(
+      body: SafeArea(
+        child: ChangeNotifierProvider<WorkTopViewModel>.value(
           value: _model,
           child: Consumer<WorkTopViewModel>(
             builder: (context, model, child) {
@@ -178,7 +178,7 @@ class _WorktopPageState extends State<WorktopPage>
       );
     } else {
       avatar = Image.asset(
-        "assets/images/avatar.png",
+        "assets/images/doctorAva.png",
         width: 80,
         fit: BoxFit.fill,
       );
@@ -198,7 +198,7 @@ class _WorktopPageState extends State<WorktopPage>
                 fit: BoxFit.fill,
                 image: doctorInfoEntity?.fullFacePhoto == null
                     ? AssetImage(
-                        "assets/images/avatar.png",
+                        "assets/images/doctorAva.png",
                       )
                     : NetworkImage(
                         '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}',
@@ -317,14 +317,13 @@ class _WorktopPageState extends State<WorktopPage>
         width: 0.5,
       )));
       return Container(
-        margin: EdgeInsets.only(top: 10, right: 16),
+        margin: EdgeInsets.only(top: 10, left: 10),
         child: Row(
           children: [
             Expanded(
               child: GestureDetector(
                 child: Container(
                   alignment: Alignment.center,
-                  color: Colors.white,
                   child: staticsData('拜访', visitCount),
                 ),
                 onTap: () {

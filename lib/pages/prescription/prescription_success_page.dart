@@ -160,7 +160,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                         style: MyStyles.labelTextStyle_12,
                       ),
                       Text(
-                        '方法2:点击页面底部随症患者按钮发给已绑定患者',
+                        '方法2:点击页面底部随诊患者按钮发给已绑定患者',
                         style: MyStyles.labelTextStyle_12,
                       ),
                     ],

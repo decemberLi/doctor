@@ -85,9 +85,8 @@ class _PhysicianQualificationWidgetState
                     child: AceButton(
                         text: '提交',
                         onPressed: () async {
-                          var result = await _model.submitData();
+                          var result = await _model.submitData(context);
                           if (result) {
-                            EasyLoading.showToast('提交成功');
                             UserInfoViewModel model =
                                 Provider.of<UserInfoViewModel>(context,
                                     listen: false);
@@ -491,6 +490,7 @@ class _PhysicianQualificationWidgetState
       return;
     }
     var source = index == 0 ? ImageSource.camera : ImageSource.gallery;
+    await Future.delayed(Duration(milliseconds: 500));
     return await _imagePicker.getImage(source: source);
   }
 

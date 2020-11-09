@@ -54,9 +54,12 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     }
     var source = index == 0 ? ImageSource.camera : ImageSource.gallery;
     final _imagePicker = ImagePicker();
+    await Future.delayed(Duration(milliseconds: 500)); // Add this line
     final pickedFile = await _imagePicker.getImage(source: source);
-    final File file = File(pickedFile.path);
-    cropImage(file);
+    if (pickedFile != null) {
+      final File file = File(pickedFile.path);
+      cropImage(file);
+    }
   }
 
   cropImage(File value) {
@@ -138,10 +141,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                 height: 40,
                 alignment: Alignment.centerRight,
                 child: CircleAvatar(
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.black45,
                   backgroundImage: value == null
                       ? AssetImage(
-                          "assets/images/avatar.png",
+                          "assets/images/doctorAva.png",
                         )
                       : NetworkImage(
                           value['url'] + '?status=${value['ossId']}',

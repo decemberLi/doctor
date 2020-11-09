@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
@@ -101,17 +103,38 @@ class _PrescriptionPageState extends State<PrescriptionPage>
   renderBottomBtns() {
     return Consumer<PrescriptionViewModel>(builder: (_, model, __) {
       if (model.data.prescriptionNo != null) {
-        return AceButton(
-          text: '重新提交',
-          onPressed: () {
-            model.updatePrescription(() {
-              Navigator.of(context).pop(true);
-            });
-          },
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            AceButton(
+              width: 138,
+              type: AceButtonType.grey,
+              textColor: Colors.white,
+              text: '取消',
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            SizedBox(
+              width: 10.0,
+              height: 10.0,
+            ),
+            AceButton(
+              width: 138,
+              color: ThemeColor.primaryColor,
+              textColor: Colors.white,
+              text: '重新提交',
+              onPressed: () {
+                model.updatePrescription(() {
+                  Navigator.of(context).pop(true);
+                });
+              },
+            )
+          ],
         );
       }
       return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           AceButton(
             width: 138,
@@ -124,6 +147,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                     .pushNamed(RouteManager.PRESCRIPTION_PREVIEW);
               }
             },
+          ),
+          SizedBox(
+            width: 10.0,
+            height: 10.0,
           ),
           PrescriptionCreateBtn(),
         ],
@@ -140,6 +167,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
           widget.title ?? '',
           style: TextStyle(color: Colors.white),
         ),
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           if (widget.showActicons)
             TextButton(
@@ -166,6 +194,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                 if (model.data?.status == 'REJECT')
                   Container(
                     padding: EdgeInsets.only(right: 30, bottom: 20),
+                    alignment: Alignment.center,
                     child: Text(
                       '未通过原因：${model.data?.reason ?? ''}',
                       style: TextStyle(
@@ -391,9 +420,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                     top: 35,
                     bottom: 60,
                   ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 25,
-                  ),
+                  // padding: EdgeInsets.symmetric(
+                  //   horizontal: 25,
+                  // ),
                   alignment: Alignment.center,
                   child: renderBottomBtns(),
                 ),

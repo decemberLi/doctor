@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
 import 'package:doctor/pages/medication/widgets/medication_add_btn.dart';
 import 'package:doctor/provider/provider_widget.dart';
@@ -5,6 +6,7 @@ import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/form_item.dart';
+import 'package:doctor/widgets/indocator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
@@ -21,30 +23,55 @@ class MedicationDetailPage extends StatelessWidget {
           title: Text('药品详情'),
           elevation: 0,
           bottom: PreferredSize(
+            child: Container(
+              color: ThemeColor.colorFFF3F5F8,
+              height: 48,
               child: Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 20),
                 color: ThemeColor.colorFFF3F5F8,
-                height: 40,
                 child: TabBar(
+                  isScrollable: true,
                   labelColor: ThemeColor.primaryColor,
                   labelStyle: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                   unselectedLabelColor: ThemeColor.colorFF222222,
-                  indicatorWeight: 2,
+                  // indicator: CircleTabIndicator(
+                  //     color: ThemeColor.primaryColor, radius: 12),
+                  // indicator: ShapeDecoration(
+                  //   // color: ThemeColor.primaryColor,
+                  //   shape: UnderlineInputBorder(
+                  //     borderSide:
+                  //         BorderSide(width: 2, color: ThemeColor.primaryColor),
+                  //     borderRadius: BorderRadius.only(
+                  //         topLeft: Radius.circular(12.0),
+                  //         topRight: Radius.circular(12.0)),
+                  //   ),
+                  // ),
+                  indicatorPadding: EdgeInsets.symmetric(vertical: 0),
                   indicatorSize: TabBarIndicatorSize.label,
                   indicatorColor: ThemeColor.primaryColor,
                   tabs: [
-                    Tab(
-                      text: '介绍',
+                    Container(
+                      height: 20,
+                      child: Tab(
+                        text: '介绍',
+                      ),
                     ),
-                    Tab(
-                      text: '说明书',
+                    Container(
+                      height: 20,
+                      child: Tab(
+                        text: '说明书',
+                      ),
                     ),
                   ],
                 ),
               ),
-              preferredSize: const Size.fromHeight(40.0)),
+            ),
+            preferredSize: const Size.fromHeight(40.0),
+          ),
         ),
         body: Container(
           color: ThemeColor.colorFFF3F5F8,
@@ -93,7 +120,7 @@ class MedicationIntroduce extends StatelessWidget {
             model.data != null ? model.data.pictures.length > 1 : false;
         return Container(
           alignment: Alignment.topCenter,
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.symmetric(horizontal: 16),
           child: ListView(
             children: [
               MedicationDetailCard(
@@ -188,7 +215,8 @@ class MedicationIntroduce extends StatelessWidget {
                   children: [
                     FormItem(
                       label: '参考均价：',
-                      value: '￥${model.data?.drugPrice ?? ''}',
+                      value:
+                          '${MoneyUtil.changeF2YWithUnit(model.data?.drugPrice ?? 0, unit: MoneyUnit.YUAN)}',
                       padding: EdgeInsets.symmetric(vertical: 20),
                       borderDirection: FormItemBorderDirection.bottom,
                     ),
@@ -207,30 +235,30 @@ class MedicationIntroduce extends StatelessWidget {
                   ],
                 ),
               ),
-              MedicationDetailCard(
-                child: Column(
-                  children: [
-                    FormItem(
-                      label: '用法用量：',
-                      value: '${model.data?.useInfo ?? ''}',
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      borderDirection: FormItemBorderDirection.bottom,
-                    ),
-                    FormItem(
-                      label: '适应症：',
-                      value: '',
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      borderDirection: FormItemBorderDirection.bottom,
-                    ),
-                    FormItem(
-                      label: '不良反应：',
-                      value: '',
-                      padding: EdgeInsets.only(top: 20),
-                      borderDirection: FormItemBorderDirection.none,
-                    ),
-                  ],
-                ),
-              ),
+              // MedicationDetailCard(
+              //   child: Column(
+              //     children: [
+              //       FormItem(
+              //         label: '用法用量：',
+              //         value: '',
+              //         padding: EdgeInsets.symmetric(vertical: 20),
+              //         borderDirection: FormItemBorderDirection.bottom,
+              //       ),
+              //       FormItem(
+              //         label: '适应症：',
+              //         value: '',
+              //         padding: EdgeInsets.symmetric(vertical: 20),
+              //         borderDirection: FormItemBorderDirection.bottom,
+              //       ),
+              //       FormItem(
+              //         label: '不良反应：',
+              //         value: '',
+              //         padding: EdgeInsets.only(top: 20),
+              //         borderDirection: FormItemBorderDirection.none,
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         );
@@ -257,26 +285,26 @@ class MedicationIntruction extends StatelessWidget {
                 borderDirection: FormItemBorderDirection.bottom,
               ),
               FormItem(
-                label: '商品名：',
-                value: '',
+                label: '商品名称：',
+                value: '${model.data?.generalName ?? ''}',
                 padding: EdgeInsets.symmetric(vertical: 20),
                 borderDirection: FormItemBorderDirection.bottom,
               ),
-              FormItem(
-                label: '英文名：',
-                value: '',
-                padding: EdgeInsets.symmetric(vertical: 20),
-                borderDirection: FormItemBorderDirection.bottom,
-              ),
+              // FormItem(
+              //   label: '英文名：',
+              //   value: '',
+              //   padding: EdgeInsets.symmetric(vertical: 20),
+              //   borderDirection: FormItemBorderDirection.bottom,
+              // ),
               FormItem(
                 label: '规格：',
-                value: '',
+                value: '${model.data?.drugSize ?? ''}',
                 padding: EdgeInsets.symmetric(vertical: 20),
                 borderDirection: FormItemBorderDirection.bottom,
               ),
               FormItem(
                 label: '剂型：',
-                value: model.data?.drugType ?? '',
+                value: '${model.data?.drugType ?? ''}',
                 padding: EdgeInsets.only(top: 20),
                 borderDirection: FormItemBorderDirection.none,
               ),

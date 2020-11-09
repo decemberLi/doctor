@@ -2,7 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:doctor/utils/constants.dart';
 
 defaultFormatDate(int value) =>
-    DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日');
+    DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日 HH:ss');
 formatDateDay(int value) => DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日');
 
 taskTemplateFormat(String value) => TASK_TEMPLATE[value];
@@ -28,10 +28,10 @@ const representName = {
 const createTime = {
   'field': 'createTime',
   'label': '收到学习计划日期',
-  'format': defaultFormatDate,
+  'format': formatDateDay,
 };
 const planImplementEndTime = {
-  'field': 'meetingStartTime',
+  'field': 'planImplementEndTime',
   'label': '截止日期',
   'format': formatDateDay,
 };
@@ -43,7 +43,7 @@ const meetingStartTime = {
 
 const meetingEndTime = {
   'field': 'meetingEndTime',
-  'label': '结束时间',
+  'label': '会议结束时间',
   'format': defaultFormatDate,
 };
 

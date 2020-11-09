@@ -192,6 +192,9 @@ class _MedicationPageState extends State<MedicationPage>
                         width: 10,
                       ),
                       AceButton(
+                        type: AceButtonType.secondary,
+                        color: ThemeColor.primaryColor,
+                        textColor: Colors.white,
                         width: 90,
                         height: 30,
                         text: '完成添加',
