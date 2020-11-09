@@ -61,36 +61,38 @@ class _SearchBarState extends State<SearchBar> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(padding: EdgeInsets.only(left: 10),child: const Icon(
-            Icons.search,
-            color: ThemeColor.colorFF999999,
-            size: 20,
-          ),),
-          Expanded(
-            child: Padding(padding: EdgeInsets.only(right: 10,),child: TextField(
-              controller: _textEditingController,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.text,
-              maxLines: 1,
-              textInputAction: TextInputAction.search,
-              onEditingComplete: () {
-                _doSearch();
-                FocusScope.of(context).unfocus();
-              },
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: widget.hintText,
-                  hintStyle: const TextStyle(
-                      color: ThemeColor.colorFF999999, fontSize: 14),
-                labelStyle: const TextStyle( fontSize: 14)
-              ),
-
-            ),),
+      child: TextField(
+        controller: _textEditingController,
+        textAlign: TextAlign.left,
+        keyboardType: TextInputType.text,
+        maxLines: 1,
+        textInputAction: TextInputAction.search,
+        onEditingComplete: () {
+          _doSearch();
+          FocusScope.of(context).unfocus();
+        },
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(5.0),
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25.0),
+            borderSide: BorderSide(color: Colors.white),
           ),
-        ],
+          enabledBorder: OutlineInputBorder(
+            //未选中时候的颜色
+            borderRadius: BorderRadius.circular(25.0),
+            borderSide: BorderSide(
+              color: Colors.white,
+            ),
+          ),
+          hintText: widget.hintText ?? '',
+          hintStyle: TextStyle(color: Color(0xff999999), fontSize: 14),
+          prefixIcon: Icon(
+            Icons.search,
+            color: Color(0xff999999),
+          ),
+        ),
       ),
     );
   }
@@ -172,8 +174,8 @@ class _SearchWidget<T extends Search> extends State<SearchWidget> {
               Container(
                 decoration: BoxDecoration(
                     border: Border(
-                        bottom:
-                            BorderSide(width: 0.5, color: ThemeColor.colorLine))),
+                        bottom: BorderSide(
+                            width: 0.5, color: ThemeColor.colorLine))),
                 padding: EdgeInsets.only(top: 16, bottom: 16),
                 child: Text(
                   data[index]?.faceText(),

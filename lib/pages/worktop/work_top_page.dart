@@ -317,14 +317,13 @@ class _WorktopPageState extends State<WorktopPage>
         width: 0.5,
       )));
       return Container(
-        margin: EdgeInsets.only(top: 10, right: 16),
+        margin: EdgeInsets.only(top: 10, left: 10),
         child: Row(
           children: [
             Expanded(
               child: GestureDetector(
                 child: Container(
                   alignment: Alignment.center,
-                  color: Colors.white,
                   child: staticsData('拜访', visitCount),
                 ),
                 onTap: () {

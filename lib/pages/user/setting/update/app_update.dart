@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:doctor/pages/user/setting/update/app_repository.dart';
 import 'package:doctor/pages/user/setting/update/app_update_info.dart';
@@ -170,7 +171,12 @@ class AppUpdateHelper {
         builder: (context) => AppUpdateDialog(updateInfo, onPressed: () async {
               if (Platform.isAndroid) {
                 print('download ... ');
-                if (await _showNetDialog(context, updateInfo)) {
+                ConnectivityResult connectivityResult =
+                    await (Connectivity().checkConnectivity());
+
+                if (connectivityResult == ConnectivityResult.wifi) {
+                  _downloadApp(context, updateInfo);
+                } else if (await _showNetDialog(context, updateInfo)) {
                   _downloadApp(context, updateInfo);
                 }
                 return;
