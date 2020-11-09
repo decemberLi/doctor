@@ -21,10 +21,12 @@ class CustomPlayerWithControls extends StatelessWidget {
     return _buildPlayerWithControls(chewieController, context);
   }
 
+  // 视频play部分
   Container _buildPlayerWithControls(
       ChewieController chewieController, BuildContext context) {
     double _width = width;
     double _height = height;
+    // 监听全面屏
     if (chewieController.isFullScreen) {
       _width = MediaQuery.of(context).size.width - 10;
       _height = MediaQuery.of(context).size.height - 10;
@@ -121,15 +123,9 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
     double width;
     double height;
     var _viewRatio = widget._viewRatio;
-    // 监听全面屏
     ChewieController _chewieController = chewieController;
-    // if (_isFullScreen) {}
 
     ///两个宽高比进行比较，保证VideoPlayer不超出容器，且不会产生变形
-    print('监听全面屏-${_chewieController.isFullScreen}');
-    print('111视频播放宽高-_aspectRatio$_aspectRatio<------_viewRatio->$_viewRatio');
-    print(
-        '222视频播放宽高-${MediaQuery.of(context).size.width}--<------widget->${widget.maxWidth}');
     double _maxWidth = widget.maxWidth;
     double _maxHeight = widget.maxHeight;
     if (_chewieController.isFullScreen) {
@@ -138,18 +134,16 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
     }
     if (_aspectRatio > _viewRatio) {
       width = _maxWidth;
-      height = width / _aspectRatio;
+      height = _maxWidth / _aspectRatio;
     } else {
       height = _maxHeight;
-      width = height * _aspectRatio;
+      width = _maxHeight * _aspectRatio;
     }
 
-    print('视频播放宽高-$width<------->$height');
     return Center(
       child: Container(
         width: width,
         height: height,
-        color: Colors.orange,
         child: VideoPlayer(chewieController.videoPlayerController),
       ),
     );

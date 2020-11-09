@@ -328,7 +328,6 @@ class _CustomControlsState extends State<CustomControls> {
   void _onExpandCollapse() {
     setState(() {
       _hideStuff = true;
-
       chewieController.toggleFullScreen();
       _showAfterExpandCollapseTimer = Timer(Duration(milliseconds: 300), () {
         setState(() {
