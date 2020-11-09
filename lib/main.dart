@@ -10,6 +10,7 @@ import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/pages/home_page.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
+  // 强制竖屏
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await AppUtils.init();
   await SessionManager.init();
   dynamic version = await PlatformUtils.getAppVersion();

@@ -64,10 +64,16 @@ class ChewieState extends State<Chewie> {
   void listener() async {
     if (widget.controller.isFullScreen && !_isFullScreen) {
       _isFullScreen = true;
+
       await _pushFullScreenWidget(context);
     } else if (_isFullScreen) {
       Navigator.of(context).pop();
       _isFullScreen = false;
+      SystemChrome.setPreferredOrientations([
+        // 强制竖屏
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown
+      ]);
     }
   }
 
@@ -132,12 +138,20 @@ class ChewieState extends State<Chewie> {
     );
 
     SystemChrome.setEnabledSystemUIOverlays([]);
-    if (isAndroid) {
+    VideoPlayerValue value = widget.controller?.videoPlayerController?.value;
+    if (value.size.width > value.size.height) {
+      // 横屏视频
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ]);
     }
+    // if (isAndroid) {
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeLeft,
+    //   DeviceOrientation.landscapeRight,
+    // ]);
+    // }
 
     if (!widget.controller.allowedScreenSleep) {
       Screen.keepOn(true);

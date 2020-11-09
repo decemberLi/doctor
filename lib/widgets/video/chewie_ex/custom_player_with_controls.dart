@@ -125,6 +125,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
     double height;
     var _viewRatio = widget._viewRatio;
     ChewieController _chewieController = chewieController;
+    VideoPlayerValue value = chewieController?.videoPlayerController?.value;
 
     ///两个宽高比进行比较，保证VideoPlayer不超出容器，且不会产生变形
     double _maxWidth = widget.maxWidth;
@@ -133,16 +134,26 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
       _maxWidth = MediaQuery.of(context).size.width;
       _maxHeight = MediaQuery.of(context).size.height;
     }
-    if (_aspectRatio > _viewRatio) {
-      width = _maxWidth;
-      height = _maxWidth / _aspectRatio;
-    } else {
-      height = _maxHeight;
-      width = _maxWidth * _aspectRatio;
+    // if (_aspectRatio > _viewRatio) {
+    //   width = _maxWidth;
+    //   height = _maxWidth / _aspectRatio;
+    // } else {
+    //   height = _maxHeight;
+    //   width = _maxWidth * _aspectRatio;
+    // }
+
+    // 视频宽高对比
+    if (value.size != null) {
+      if (value.size.width > value.size.height) {
+        // 横屏视频
+        width = _maxWidth;
+        height = _maxWidth / _aspectRatio;
+      } else {
+        width = _maxHeight / (value.size.height / value.size.width);
+        height = _maxWidth * (value.size.height / value.size.width);
+      }
     }
 
-    print('$_aspectRatio------_viewRatio---视频宽高---》》》$_viewRatio');
-    print('$height---------视频宽高---》》》$width');
     return Center(
       child: Container(
         width: width,
