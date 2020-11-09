@@ -104,8 +104,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
           children: [
             AceButton(
               width: 138,
-              type: AceButtonType.grey,
-              textColor: Colors.white,
+              type: AceButtonType.outline,
+              textColor: ThemeColor.primaryColor,
               text: '取消',
               onPressed: () {
                 Navigator.of(context).pop(false);
@@ -134,8 +134,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
         children: [
           AceButton(
             width: 138,
-            type: AceButtonType.grey,
-            textColor: Colors.white,
+            type: AceButtonType.outline,
+            textColor: ThemeColor.primaryColor,
             text: '预览处方',
             onPressed: () {
               if (model.validateData()) {
