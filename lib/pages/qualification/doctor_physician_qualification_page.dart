@@ -490,6 +490,7 @@ class _PhysicianQualificationWidgetState
       return;
     }
     var source = index == 0 ? ImageSource.camera : ImageSource.gallery;
+    await Future.delayed(Duration(milliseconds: 500));
     return await _imagePicker.getImage(source: source);
   }
 
