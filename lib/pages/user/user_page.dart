@@ -203,9 +203,10 @@ class _UserPageState extends State<UserPage> with RouteAware {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      width: 70,
-                      height: 70,
+                      width: 62,
+                      height: 62,
                       decoration: BoxDecoration(
+                        color: Colors.white,
                         boxShadow: [
                           BoxShadow(
                             color: Color(0x2f000000),
@@ -239,7 +240,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                       //       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 10),
+                      margin: EdgeInsets.only(left: 23),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,

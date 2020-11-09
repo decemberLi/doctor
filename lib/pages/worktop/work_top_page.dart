@@ -194,6 +194,7 @@ class _WorktopPageState extends State<WorktopPage>
             height: 70,
             padding: EdgeInsets.all(100),
             decoration: BoxDecoration(
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Color(0x2f000000),
