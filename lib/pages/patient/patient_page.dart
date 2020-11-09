@@ -8,6 +8,7 @@ import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /// 随诊患者列表
@@ -21,6 +22,7 @@ class PatientListPage extends StatefulWidget {
 class _PatientListPageState extends State<PatientListPage>
     with AutomaticKeepAliveClientMixin {
   // 保持不被销毁
+  int subscribeId;
   @override
   bool get wantKeepAlive => true;
 
@@ -55,6 +57,26 @@ class _PatientListPageState extends State<PatientListPage>
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    //监听键盘高度变化
+    subscribeId = KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        if (!visible) {
+          //键盘下降失去焦点
+          FocusScope.of(context).requestFocus(FocusNode());
+        }
+      },
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    KeyboardVisibilityNotification().removeListener(subscribeId);
   }
 
   @override

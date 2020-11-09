@@ -17,6 +17,7 @@ import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 import '../service.dart';
 import 'comment/service.dart';
@@ -62,6 +63,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   String feedbackType;
   bool isKeyboardActived = false; //当前键盘是否激活
   int backfocus = 0; //点击返回按钮状态，第二次点击直接返回
+  int subscribeId;
   Widget resourceRender(ResourceModel data) {
     void openTimer() {
       //需要记录浏览时间
@@ -116,22 +118,30 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
           });
           isKeyboardActived = false;
         }
-        isKeyboardActived = false;
+        // isKeyboardActived = false;
       });
     }
     WidgetsBinding.instance.addObserver(this); //添加观察者
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if(widget.from == 'MESSAGE_CENTER') {
+      if (widget.from == 'MESSAGE_CENTER') {
         _showCommentWidget();
       }
     });
+    //监听键盘高度变化
+    subscribeId = KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        if (!visible) {
+          //键盘下降失去焦点
+          commentFocusNode.unfocus();
+        }
+      },
+    );
     super.initState();
   }
 
   // 文章webview点击时触发
   void _clickWebView() {
     if (widget.learnPlanId != null) {
-      print('文章点击');
       commentFocusNode.unfocus();
       setState(() {
         logo = true;
@@ -158,28 +168,9 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   }
 
   @override
-  void didChangeMetrics() {
-    super.didChangeMetrics();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      print('----------------------------我被打开了 ${commentFocusNode.hasFocus}');
-      //当前是安卓系统并且在焦点聚焦的情况下
-      if (Platform.isAndroid && commentFocusNode.hasFocus) {
-        if (isKeyboardActived) {
-          isKeyboardActived = false;
-          // 使输入框失去焦点
-          commentFocusNode.unfocus();
-          return;
-        }
-        isKeyboardActived = true;
-      } else {
-        isKeyboardActived = false;
-      }
-    });
-  }
-
-  @override
   void dispose() {
     super.dispose();
+    KeyboardVisibilityNotification().removeListener(subscribeId);
     commentFocusNode.dispose();
     WidgetsBinding.instance.removeObserver(this); //卸载观察者
     if (_timer != null) {
@@ -306,6 +297,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
               maxLength: 150,
               controller: commentTextEdit,
               focusNode: commentFocusNode,
+              // enableInteractiveSelection: false,
               onTap: () {
                 FocusScope.of(context).requestFocus(commentFocusNode);
                 setState(() {
@@ -422,11 +414,10 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   Future _showCommentWidget() {
     return CommonModal.showBottomSheet(context,
-                            title: '评论区',
-                            height: Adapt.screenH() * 0.8,
-                            enableDrag: false,
-                            child: CommentListPage(
-                                widget.resourceId, widget.learnPlanId));
+        title: '评论区',
+        height: Adapt.screenH() * 0.8,
+        enableDrag: false,
+        child: CommentListPage(widget.resourceId, widget.learnPlanId));
   }
 
   //发送反馈

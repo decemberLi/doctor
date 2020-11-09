@@ -10,6 +10,7 @@ import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 import 'common_style.dart';
 
@@ -23,6 +24,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
 
   String _mobile, _password;
   bool _agree = false;
+  int subscribeId;
 
   Future _submit() async {
     final form = _formKey.currentState;
@@ -37,6 +39,26 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
           {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
       SessionManager.loginHandler(response);
     }
+  }
+
+  @override
+  void initState() {
+    //监听键盘高度变化
+    subscribeId = KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        if (!visible) {
+          //键盘下降失去焦点
+          FocusScope.of(context).requestFocus(FocusNode());
+        }
+      },
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    KeyboardVisibilityNotification().removeListener(subscribeId);
+    super.dispose();
   }
 
   @override

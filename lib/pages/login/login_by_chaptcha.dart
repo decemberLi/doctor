@@ -11,6 +11,7 @@ import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'dart:async';
 import 'common_style.dart';
 
@@ -24,7 +25,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   Timer _timer;
   int _maxCount = 0;
   String _mobile, _captcha;
-
+  int subscribeId;
   bool _agree = false;
 
   Future _submit() async {
@@ -86,9 +87,23 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
     });
   }
 
+  void initState() {
+    //监听键盘高度变化
+    subscribeId = KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        if (!visible) {
+          //键盘下降失去焦点
+          FocusScope.of(context).requestFocus(FocusNode());
+        }
+      },
+    );
+    super.initState();
+  }
+
   @override
   void dispose() {
     super.dispose();
+    KeyboardVisibilityNotification().removeListener(subscribeId);
     if (_timer != null) {
       _timer.cancel();
     }
