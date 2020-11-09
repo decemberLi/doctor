@@ -67,14 +67,12 @@ dependencies:
   video_player: ^0.10.12+5
   chewie: ^0.9.10
 
-  # 文件预览插件
-  flutter_file_preview:
-    git:
-      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_file_preview.git
   # 图片选择
   image_picker: ^0.6.7+12
   # 图片占位符
   transparent_image: ^1.0.0
+  # 图片压缩
+  flutter_image_compress: ^0.7.0
 
   #图片截取
   image_crop: ^0.3.4
@@ -93,6 +91,8 @@ dependencies:
 
   # toast
   toast: ^0.1.5
+  # PDF viewer
+  advance_pdf_viewer: any
 
 dev_dependencies:
   flutter_test:

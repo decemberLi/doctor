@@ -161,6 +161,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   void didChangeMetrics() {
     super.didChangeMetrics();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      print('----------------------------我被打开了 ${commentFocusNode.hasFocus}');
       //当前是安卓系统并且在焦点聚焦的情况下
       if (Platform.isAndroid && commentFocusNode.hasFocus) {
         if (isKeyboardActived) {

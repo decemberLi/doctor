@@ -41,56 +41,78 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
   Widget messageItem(
       String lable, String img, int msgCount, callBack, int index,
       {Color dotColor = Colors.red}) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(6, 0, 6, 0),
-      decoration: index == 4
-          ? BoxDecoration()
-          : BoxDecoration(
-              border: Border(bottom: Divider.createBorderSide(context)),
-            ),
-      child: ListTile(
-        title: Text(
-          lable,
-          style: fontStyle,
-        ),
-        leading: Image.asset(
-          img,
-          width: 24,
-          height: 24,
-        ),
-        trailing: Stack(
-          overflow: Overflow.visible,
-          children: [
-            Icon(Icons.keyboard_arrow_right),
-            Positioned(
-              left: -20,
-              top: 4,
-              child: Container(
-                // padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: dotColor,
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                constraints: BoxConstraints(
-                  minWidth: 24,
-                  minHeight: 16,
-                ),
-                child: Center(
-                    child: Text(
-                  msgCount > 99 ? '99+' : '$msgCount',
-                  style: TextStyle(
-                    color: Colors.white,
+    return GestureDetector(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(6, 0, 6, 0),
+          decoration: index == 4
+              ? BoxDecoration()
+              : BoxDecoration(
+                  border: Border(
+                    bottom: Divider.createBorderSide(context,
+                        color: ThemeColor.colorFFF3F5F8),
                   ),
-                  textAlign: TextAlign.center,
-                )),
+                ),
+          child: Row(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 11),
+                child: Image.asset(
+                  img,
+                  width: 24,
+                  height: 24,
+                ),
               ),
-            ),
-          ],
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                alignment: Alignment.center,
+                height: 48,
+                child: Text(
+                  lable,
+                  style: fontStyle,
+                ),
+              ),
+              Expanded(
+                  child: Container(
+                alignment: Alignment.centerRight,
+                child: Stack(
+                  overflow: Overflow.visible,
+                  children: [
+                    Icon(
+                      Icons.keyboard_arrow_right,
+                      color: ThemeColor.colorFFBCBCBC,
+                    ),
+                    Positioned(
+                      left: -20,
+                      top: 4,
+                      child: Container(
+                        // padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: dotColor,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                        constraints: BoxConstraints(
+                          minWidth: 24,
+                          minHeight: 16,
+                        ),
+                        child: Center(
+                            child: Text(
+                          msgCount > 99 ? '99+' : '$msgCount',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        )),
+                      ),
+                    ),
+                  ],
+                ),
+              ))
+            ],
+          ),
         ),
         onTap: () {
           callBack();
-        },
-      ),
-    );
+        });
   }
 
   @override
@@ -129,12 +151,12 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                   goMessageList(MessageType.TYPE_LEAN_PLAN);
                 }, 2, dotColor: _dotColor(leanPlanCount)),
                 messageItem(
-                    '患者处方', 'assets/images/msg_interact.png', prescriptionCount,
+                    '患者处方', 'assets/images/msg_patient.png', prescriptionCount,
                     () {
                   goMessageList(MessageType.TYPE_PRESCRIPTION);
                 }, 3, dotColor: _dotColor(prescriptionCount)),
                 messageItem(
-                    '互动消息', 'assets/images/msg_patient.png', interactiveCount,
+                    '互动消息', 'assets/images/msg_interact.png', interactiveCount,
                     () {
                   goMessageList(MessageType.TYPE_INTERACTIVE);
                 }, 4, dotColor: _dotColor(interactiveCount)),
