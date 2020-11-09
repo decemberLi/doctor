@@ -66,6 +66,7 @@ class _PatientListPageState extends State<PatientListPage>
         elevation: 0,
         title: Text(prescriptionNo != null ? '选择随诊患者' : '我的随诊患者'),
       ),
+      resizeToAvoidBottomInset: false,
       body: Container(
         color: ThemeColor.colorFFF3F5F8,
         alignment: Alignment.topCenter,

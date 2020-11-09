@@ -141,10 +141,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                 height: 40,
                 alignment: Alignment.centerRight,
                 child: CircleAvatar(
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.black45,
                   backgroundImage: value == null
                       ? AssetImage(
-                          "assets/images/avatar.png",
+                          "assets/images/doctorAva.png",
                         )
                       : NetworkImage(
                           value['url'] + '?status=${value['ossId']}',

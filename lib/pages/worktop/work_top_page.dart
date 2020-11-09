@@ -178,7 +178,7 @@ class _WorktopPageState extends State<WorktopPage>
       );
     } else {
       avatar = Image.asset(
-        "assets/images/avatar.png",
+        "assets/images/doctorAva.png",
         width: 80,
         fit: BoxFit.fill,
       );
@@ -198,7 +198,7 @@ class _WorktopPageState extends State<WorktopPage>
                 fit: BoxFit.fill,
                 image: doctorInfoEntity?.fullFacePhoto == null
                     ? AssetImage(
-                        "assets/images/avatar.png",
+                        "assets/images/doctorAva.png",
                       )
                     : NetworkImage(
                         '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}',
