@@ -1,12 +1,12 @@
+import 'dart:io';
+
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/widgets/photo_view_gallery_screen.dart';
-import 'package:doctor/widgets/photo_view_simple_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class ImageUpload extends StatefulWidget {
@@ -39,8 +39,6 @@ class ImageUpload extends StatefulWidget {
 class _ImageUploadState extends State<ImageUpload> {
   List<OssFileEntity> _images;
 
-  final _imagePicker = ImagePicker();
-
   initialize() {
     if (_images != widget.images) {
       _images = widget.images;
@@ -64,14 +62,13 @@ class _ImageUploadState extends State<ImageUpload> {
     if (index == null || index == 2) {
       return;
     }
-    var source = index == 0 ? ImageSource.camera : ImageSource.gallery;
-    await Future.delayed(Duration(milliseconds: 500));
-    return await _imagePicker.getImage(source: source);
+
+    return await ImageHelper.pickSingleImage(context, source: index);
   }
 
   _uploadImage() async {
     try {
-      PickedFile image = await _pickImage();
+      File image = await _pickImage();
       if (image == null || image.path == null) {
         return;
       }

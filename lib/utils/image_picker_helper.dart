@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 class DialogHelper {
   static showBottom(BuildContext context) async {
@@ -43,5 +47,43 @@ class DialogHelper {
         );
       },
     );
+  }
+}
+
+class ImageHelper {
+  /// source: 0 camera， 1 gallery
+  static Future<File> pickSingleImage(BuildContext context, {int source = 0}) async {
+    await Future.delayed(Duration(milliseconds: 500));
+    var file;
+    if (0 == source) {
+      var assetEntity = await CameraPicker.pickFromCamera(context);
+      return await  assetEntity.file
+          .timeout(Duration(seconds: 5), onTimeout: () => null);
+    }
+    var assetEntity = await AssetPicker.pickAssets(
+      context,
+      maxAssets: 1,
+      requestType: RequestType.image,
+    );
+    return await assetEntity.first.file
+        .timeout(Duration(seconds: 5), onTimeout: () => null);
+  }
+
+  /// source: 0 camera， 1 gallery
+  static pickSingleVideo(BuildContext context, {int source = 0}) async {
+    await Future.delayed(Duration(milliseconds: 500));
+    var file;
+    if (0 == source) {
+      var assetEntity = await CameraPicker.pickFromCamera(context);
+      return assetEntity.file
+          .timeout(Duration(seconds: 5), onTimeout: () => null);
+    }
+    var assetEntity = await AssetPicker.pickAssets(
+      context,
+      maxAssets: 1,
+      requestType: RequestType.video,
+    );
+    return assetEntity.first.file
+        .timeout(Duration(seconds: 5), onTimeout: () => null);
   }
 }

@@ -8,8 +8,6 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'model/doctor_qualification_model.dart';
@@ -38,7 +36,6 @@ class _PhysicianQualificationWidgetState
 
   EdgeInsetsGeometry _containerPadding =
       const EdgeInsets.only(right: 18, top: 14, bottom: 24);
-  final _imagePicker = ImagePicker();
   final _dashDecoration = DashedDecoration(
     dashedColor: ThemeColor.primaryColor,
     gap: 3,
@@ -461,7 +458,7 @@ class _PhysicianQualificationWidgetState
   }
 
   _selectPicture(TypeOperator type, {FacePhoto facePhoto, int index}) async {
-    PickedFile image = await _pickImage();
+    File image = await _pickImage();
     if (image == null || image.path == null) {
       return;
     }
@@ -489,9 +486,7 @@ class _PhysicianQualificationWidgetState
     if (index == null || index == 2) {
       return;
     }
-    var source = index == 0 ? ImageSource.camera : ImageSource.gallery;
-    await Future.delayed(Duration(milliseconds: 500));
-    return await _imagePicker.getImage(source: source);
+    return await ImageHelper.pickSingleImage(context, source: index);
   }
 
   _buildNoticeWidget(DoctorQualificationModel data) {

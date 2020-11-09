@@ -8,17 +8,18 @@ import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/service.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/route/route_manager.dart';
+
 // import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/utils/no_wifi_notice_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:async';
@@ -33,8 +34,7 @@ class LectureVideosPage extends StatefulWidget {
 
 class _LearnDetailPageState extends State<LectureVideosPage> {
   VideoPlayerController _controller;
-  final ImagePicker _picker = ImagePicker();
-  PickedFile _selectVideoData;
+  File _selectVideoData;
 
   String _doctorName;
   String _taskName;
@@ -59,9 +59,10 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
 
   Future<void> _selectVideos() async {
     try {
-      final PickedFile file = await _picker.getVideo(
-          source: ImageSource.gallery,
-          maxDuration: const Duration(seconds: 10));
+      final File file = await ImageHelper.pickSingleVideo(
+        context,
+        source: 1,
+      );
       if (file != null && mounted) {
         _controller = VideoPlayerController.file(File(file.path));
         await _controller.setVolume(1.0);

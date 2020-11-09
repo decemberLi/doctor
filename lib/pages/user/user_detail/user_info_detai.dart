@@ -14,7 +14,6 @@ import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_picker/Picker.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../service.dart';
 import 'uploadImage.dart';
@@ -52,13 +51,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     if (index == null || index == 2) {
       return;
     }
-    var source = index == 0 ? ImageSource.camera : ImageSource.gallery;
-    final _imagePicker = ImagePicker();
     await Future.delayed(Duration(milliseconds: 500)); // Add this line
-    final pickedFile = await _imagePicker.getImage(source: source);
+    final pickedFile = await ImageHelper.pickSingleImage(context, source: index);
     if (pickedFile != null) {
-      final File file = File(pickedFile.path);
-      cropImage(file);
+      cropImage(pickedFile);
     }
   }
 
