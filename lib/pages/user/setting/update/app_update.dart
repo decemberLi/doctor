@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:doctor/pages/user/setting/update/app_repository.dart';
 import 'package:doctor/pages/user/setting/update/app_update_info.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/adapt.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -267,11 +268,12 @@ class AppUpdateDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Container(
-          padding: EdgeInsets.only(left: 50, right: 50),
+          padding:
+              EdgeInsets.only(left: 50, right: 50, top: Adapt.screenH() * 0.1),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisSize: MainAxisSize.min,
             children: [
               Stack(
                 overflow: Overflow.visible,
