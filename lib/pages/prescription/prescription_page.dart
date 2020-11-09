@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
@@ -102,7 +104,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
     return Consumer<PrescriptionViewModel>(builder: (_, model, __) {
       if (model.data.prescriptionNo != null) {
         return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             AceButton(
               width: 138,
@@ -112,6 +114,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
+            ),
+            SizedBox(
+              width: 10.0,
+              height: 10.0,
             ),
             AceButton(
               width: 138,
@@ -128,7 +134,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
         );
       }
       return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           AceButton(
             width: 138,
@@ -141,6 +147,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                     .pushNamed(RouteManager.PRESCRIPTION_PREVIEW);
               }
             },
+          ),
+          SizedBox(
+            width: 10.0,
+            height: 10.0,
           ),
           PrescriptionCreateBtn(),
         ],
@@ -410,9 +420,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                     top: 35,
                     bottom: 60,
                   ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 25,
-                  ),
+                  // padding: EdgeInsets.symmetric(
+                  //   horizontal: 25,
+                  // ),
                   alignment: Alignment.center,
                   child: renderBottomBtns(),
                 ),

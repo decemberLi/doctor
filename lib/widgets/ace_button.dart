@@ -52,6 +52,7 @@ class AceButton extends StatelessWidget {
       child: child ??
           Text(
             text,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: textColor ?? Colors.white,
               fontSize: fontSize,
@@ -66,6 +67,7 @@ class AceButton extends StatelessWidget {
       child: child ??
           Text(
             text,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: textColor ?? ThemeColor.primaryColor,
               fontSize: fontSize,
@@ -77,6 +79,7 @@ class AceButton extends StatelessWidget {
       child: child ??
           Text(
             text,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: textColor ?? ThemeColor.primaryColor,
               fontSize: fontSize,
