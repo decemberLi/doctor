@@ -26,8 +26,8 @@ class _CustomControlsState extends State<CustomControls> {
   bool _dragging = false;
   bool _displayTapped = false;
 
-  final barHeight = 48.0;
-  final marginSize = 5.0;
+  final barHeight = 40.0;
+  final marginSize = 4.0;
 
   VideoPlayerController controller;
   ChewieController chewieController;
@@ -48,7 +48,7 @@ class _CustomControlsState extends State<CustomControls> {
               ),
             );
     }
-
+    // print('遮罩点击----》》$_hideStuff');
     return MouseRegion(
       onHover: (_) {
         _cancelAndRestartTimer();
@@ -297,7 +297,6 @@ class _CustomControlsState extends State<CustomControls> {
   void _cancelAndRestartTimer() {
     _hideTimer?.cancel();
     _startHideTimer();
-
     setState(() {
       _hideStuff = false;
       _displayTapped = true;

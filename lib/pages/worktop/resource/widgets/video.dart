@@ -36,21 +36,16 @@ class _VideoDetailState extends State<VideoDetail> {
     );
     _controller.addListener(() {
       final bool isPlaying = _controller.value.isPlaying;
-      if (isPlaying && isPlaying != _isPlaying) {
-        setState(() {
-          _isPlaying = isPlaying;
-        });
+      if (isPlaying) {
+        _isPlaying = isPlaying;
         //计时器
         widget.openTimer();
       }
       if (!isPlaying && isPlaying != _isPlaying) {
-        setState(() {
-          _isPlaying = isPlaying;
-        });
+        _isPlaying = isPlaying;
         widget.closeTimer();
       }
     });
-    setState(() {});
     //签到时间为空 且当前时间在会议时间内
     if (widget.learnPlanId != null && widget.data.meetingSignInTime == null) {
       num start = widget.meetingStartTime;
@@ -60,6 +55,7 @@ class _VideoDetailState extends State<VideoDetail> {
         showDialog<void>(context: context, builder: (context) => dialog());
       }
     }
+    setState(() {});
   }
 
 //签到框
@@ -195,7 +191,7 @@ class _VideoDetailState extends State<VideoDetail> {
       child: Column(
         children: [
           // AceVideo(controller: _controller),
-          ChewieVideo(controller: _controller),
+          Container(child: ChewieVideo(controller: _controller)),
           Expanded(
             child: _renderVideoInfo(),
           ),

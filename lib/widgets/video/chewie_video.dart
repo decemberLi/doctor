@@ -77,7 +77,7 @@ class _ChewieVideoWidgetState extends State<ChewieVideo> {
         if (!mounted) {
           return;
         }
-        print('====${result.toString()}');
+        print('Connectivity====${result.toString()}');
       }
     });
   }

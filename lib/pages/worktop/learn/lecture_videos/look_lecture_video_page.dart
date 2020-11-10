@@ -116,13 +116,12 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
               var data = model.data;
               return Container(
                 alignment: Alignment.topCenter,
-                color: ThemeColor.colorFFF3F5F8,
-                padding: EdgeInsets.fromLTRB(0, 10, 0, 40),
+                // color: ThemeColor.colorFFF3F5F8,
+                color: Color.fromRGBO(0, 0, 0, 1),
+                // padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                 child: Column(
                   children: [
-                    Container(
-                        padding: EdgeInsets.all(20),
-                        child: UploadVideoDetail(data, _controller)),
+                    Container(child: UploadVideoDetail(data, _controller)),
                     Expanded(child: _renderVideoInfo(data, _doctorName)),
                   ],
                 ),

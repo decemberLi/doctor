@@ -698,6 +698,43 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     );
   }
 
+  // 评论 没有learnPlanId则默认展示为收藏列表进入的详情页
+  Widget comContent(data) {
+    return (Positioned(
+      left: 0,
+      right: 0,
+      bottom: MediaQuery.of(context).viewInsets.bottom > 0 && !showFeedback
+          ? MediaQuery.of(context).viewInsets.bottom
+          : 0,
+      child: widget.learnPlanId != null
+          ? commentBottom(data)
+          : Container(
+              height: 60,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.white,
+              padding: EdgeInsets.all(10),
+              child: InkWell(
+                onTap: () {
+                  //收藏
+                  setFavoriteStatus({
+                    'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
+                    'resourceId': widget.resourceId,
+                  }).then((res) {
+                    EasyLoading.showToast(_startIcon ? '取消收藏成功' : '收藏成功');
+                    setState(() {
+                      _startIcon = !_startIcon;
+                    });
+                  });
+                },
+                child: Icon(
+                  _startIcon ? MyIcons.icon_star_fill : MyIcons.icon_star,
+                  size: 30,
+                ),
+              ),
+            ),
+    ));
+  }
+
   void setFeedback() {
     //获取反馈信息初始化
     setState(() {
@@ -757,66 +794,32 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                   data.feedback == null;
 
               return Container(
-                color: ThemeColor.colorFFF3F5F8,
-                child: Stack(
-                  // overflow: Overflow.visible,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        commentFocusNode.unfocus();
-                        isKeyboardActived = false;
-                        setState(() {
-                          logo = true;
-                        });
-                      },
-                      child: resourceRender(data),
-                    ),
-                    // 评论 没有learnPlanId则默认展示为收藏列表进入的详情页
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: MediaQuery.of(context).viewInsets.bottom > 0 &&
-                              !showFeedback
-                          ? MediaQuery.of(context).viewInsets.bottom
-                          : 0,
-                      child: widget.learnPlanId != null
-                          ? commentBottom(data)
-                          : Container(
-                              height: 60,
-                              width: MediaQuery.of(context).size.width,
-                              color: Colors.white,
-                              padding: EdgeInsets.all(10),
-                              child: InkWell(
-                                onTap: () {
-                                  //收藏
-                                  setFavoriteStatus({
-                                    'favoriteStatus':
-                                        _startIcon ? 'CANCEL' : 'ADD',
-                                    'resourceId': widget.resourceId,
-                                  }).then((res) {
-                                    EasyLoading.showToast(
-                                        _startIcon ? '取消收藏成功' : '收藏成功');
-                                    setState(() {
-                                      _startIcon = !_startIcon;
-                                    });
-                                  });
-                                },
-                                child: Icon(
-                                  _startIcon
-                                      ? MyIcons.icon_star_fill
-                                      : MyIcons.icon_star,
-                                  size: 30,
-                                ),
-                              ),
-                            ),
-                    ),
-                    // 计时器
-                    if (widget.learnPlanId != null) timerContent(data),
-                    //反馈
-                    if (needFeedback && showFeedback) feedbackWidget(data),
-                  ],
-                ),
-              );
+                  // color: ThemeColor.colorFFF3F5F8,
+                  color: data.resourceType == 'VIDEO'
+                      ? Color.fromRGBO(0, 0, 0, 1)
+                      : ThemeColor.colorFFF3F5F8,
+                  child: Stack(
+                    // overflow: Overflow.visible,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          commentFocusNode.unfocus();
+                          isKeyboardActived = false;
+                          setState(() {
+                            logo = true;
+                          });
+                        },
+                        child: resourceRender(data),
+                      ),
+
+                      // 评论
+                      if (data != null) comContent(data),
+                      // 计时器
+                      if (widget.learnPlanId != null) timerContent(data),
+                      //反馈
+                      if (needFeedback && showFeedback) feedbackWidget(data),
+                    ],
+                  ));
             },
           ),
         ),
