@@ -12,8 +12,10 @@ class DoctorPhysicianInfoEntity {
   int identitySex;
   String identityDate;
   String identityAddress;
-  String identityValidity;
-
+  // 身份证有效期开始日期
+  String identityValidityStart;
+  // 身份证有效期结束日期
+  String identityValidityEnd;
   /// 头像(正面照)
   FacePhoto fullFacePhoto;
 
@@ -39,7 +41,8 @@ class DoctorPhysicianInfoEntity {
       this.identitySex,
       this.identityDate,
       this.identityAddress,
-      this.identityValidity,
+      this.identityValidityStart,
+      this.identityValidityEnd,
       this.fullFacePhoto,
       this.idCardLicense1,
       this.idCardLicense2,

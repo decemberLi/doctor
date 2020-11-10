@@ -148,8 +148,9 @@ class DoctorPhysicianQualificationViewModel {
       notifyDataChange();
 
       var physicianInfo = _model.physicianInfoEntity;
-      physicianInfo.identityValidity =
-          '${recognizeResult.backResult.startDate}-${recognizeResult.backResult.endDate}';
+      physicianInfo.identityValidityStart =
+          recognizeResult.backResult.startDate;
+      physicianInfo.identityValidityEnd = recognizeResult.backResult.endDate;
       return;
     }
 

@@ -15,7 +15,8 @@ DoctorPhysicianInfoEntity _$DoctorPhysicianInfoEntityFromJson(
     json['identitySex'] as int,
     json['identityDate'] as String,
     json['identityAddress'] as String,
-    json['identityValidity'] as String,
+    json['identityValidityStart'] as String,
+    json['identityValidityEnd'] as String,
     json['fullFacePhoto'] == null
         ? null
         : FacePhoto.fromJson(json['fullFacePhoto'] as Map<String, dynamic>),
@@ -49,7 +50,8 @@ Map<String, dynamic> _$DoctorPhysicianInfoEntityToJson(
       'identitySex': instance.identitySex,
       'identityDate': instance.identityDate,
       'identityAddress': instance.identityAddress,
-      'identityValidity': instance.identityValidity,
+      'identityValidityStart': instance.identityValidityStart,
+      'identityValidityEnd': instance.identityValidityEnd,
       'fullFacePhoto': instance.fullFacePhoto?.toJson(),
       'idCardLicense1': instance.idCardLicense1?.toJson(),
       'idCardLicense2': instance.idCardLicense2?.toJson(),
