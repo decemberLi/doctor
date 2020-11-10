@@ -174,6 +174,7 @@ class HttpManager {
       return content;
     } on DioError catch (e) {
       print('error: $e');
+      EasyLoading.showToast(msgMap['networkError']);
       // return e;
       throw e;
     }

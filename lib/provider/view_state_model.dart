@@ -98,7 +98,7 @@ class ViewStateModel with ChangeNotifier {
       message: message,
       errorMessage: e.toString(),
     );
-    EasyLoading.dismiss();
+    // EasyLoading.dismiss();
     printErrorStack(e, stackTrace);
     onError(viewStateError);
   }
