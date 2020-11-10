@@ -204,7 +204,8 @@ class _WorktopPageState extends State<WorktopPage>
               ],
               shape: BoxShape.circle,
               image: DecorationImage(
-                fit: BoxFit.fill,
+                // fit: BoxFit.fill,
+                fit: BoxFit.fitWidth,
                 image: doctorInfoEntity?.fullFacePhoto == null
                     ? AssetImage(
                         "assets/images/doctorAva.png",

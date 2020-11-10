@@ -216,7 +216,8 @@ class _UserPageState extends State<UserPage> with RouteAware {
                         ],
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          fit: BoxFit.fill,
+                          // fit: BoxFit.fill,
+                          fit: BoxFit.fitWidth,
                           image: doctorData['fullFacePhoto'] == null
                               ? AssetImage(
                                   "assets/images/doctorAva.png",
