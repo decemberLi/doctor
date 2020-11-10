@@ -155,9 +155,6 @@ class _UserPageState extends State<UserPage> with RouteAware {
             children: [
               /*2*/
               Container(
-                padding: const EdgeInsets.only(
-                  bottom: 4,
-                ),
                 child: Text(
                   '$counts',
                   style: TextStyle(
