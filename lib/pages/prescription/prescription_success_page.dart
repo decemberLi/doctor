@@ -210,7 +210,8 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                   context, ModalRoute.withName(RouteManager.HOME));
             }
           } else {
-            Navigator.pop(context);
+            model.resetData();
+            Navigator.popUntil(context, ModalRoute.withName(RouteManager.HOME));
           }
         }
 
