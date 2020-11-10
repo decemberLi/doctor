@@ -14,6 +14,7 @@ import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_picker/Picker.dart';
+import 'package:toast/toast.dart';
 
 import '../service.dart';
 import 'uploadImage.dart';
@@ -52,22 +53,25 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       return;
     }
     await Future.delayed(Duration(milliseconds: 500)); // Add this line
-    final pickedFile = await ImageHelper.pickSingleImage(context, source: index);
+    final pickedFile =
+        await ImageHelper.pickSingleImage(context, source: index);
     if (pickedFile != null) {
       cropImage(pickedFile);
     }
   }
 
-  cropImage(File value) {
+  cropImage(File value) async {
     if (value == null || value.path == null) {
       return;
     }
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CropImageRoute(value, _uploadImage),
-      ),
-    );
+
+    File imageFile = await ImageHelper.cropImage(context, value.path);
+    if (imageFile == null) {
+      Toast.show('图片处理失败', context);
+      return;
+    }
+
+    _uploadImage(imageFile);
   }
 
   _uploadImage(image) async {
@@ -198,7 +202,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       '选择医院',
       hintText: '输入医院名称',
       searchConditionCallback: <T extends Search>(condition, streamSink) async {
-        if(condition == null || condition.length == 0){
+        if (condition == null || condition.length == 0) {
           streamSink.add(List());
           return;
         }

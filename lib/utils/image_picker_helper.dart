@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:doctor/pages/user/user_detail/uploadImage.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:path/path.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
@@ -51,22 +54,46 @@ class DialogHelper {
 }
 
 class ImageHelper {
+  static Map<String, CompressFormat> _suffixMap = {
+    'jpg': CompressFormat.jpeg,
+    'png': CompressFormat.png,
+    'heic': CompressFormat.heic,
+    'webp': CompressFormat.webp
+  };
+
+  static Future<File> cropImage(BuildContext context, String path) async {
+    return await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CropImageRoute(File(path)),
+      ),
+    );
+  }
+
   /// source: 0 camera， 1 gallery
-  static Future<File> pickSingleImage(BuildContext context, {int source = 0}) async {
+  static Future<File> pickSingleImage(BuildContext context,
+      {int source = 0, bool needCompress = true}) async {
     await Future.delayed(Duration(milliseconds: 500));
-    var file;
+    var originFile;
     if (0 == source) {
       var assetEntity = await CameraPicker.pickFromCamera(context);
-      return await  assetEntity.file
-          .timeout(Duration(seconds: 5), onTimeout: () => null);
+      originFile = await assetEntity.file;
+    } else if (source == 1) {
+      var assetEntity = await AssetPicker.pickAssets(context);
+      originFile = await assetEntity.first.file;
+    } else {
+      throw Error.safeToString('source type not support.');
     }
-    var assetEntity = await AssetPicker.pickAssets(
-      context,
-      maxAssets: 1,
-      requestType: RequestType.image,
-    );
-    return await assetEntity.first.file
-        .timeout(Duration(seconds: 5), onTimeout: () => null);
+
+    // 压缩
+    if (originFile == null) {
+      return Future.value(null);
+    }
+
+    if (needCompress) {
+      return await _compressImage(originFile);
+    }
+    return originFile;
   }
 
   /// source: 0 camera， 1 gallery
@@ -85,5 +112,35 @@ class ImageHelper {
     );
     return assetEntity.first.file
         .timeout(Duration(seconds: 5), onTimeout: () => null);
+  }
+
+  static Future<File> _compressImage(File originFile) async {
+    var directory = Directory(originFile.path);
+    var baseName = basename(originFile.path);
+    var targetPath = join(directory.parent.path, 'compressed_$baseName');
+
+    print('origin file path ${originFile.path}');
+    print('compressed target file path ${originFile.path}');
+
+    var compressedImageFile = await FlutterImageCompress.compressAndGetFile(
+        originFile.path, targetPath,
+        format: _compressFormat(originFile.path));
+
+    print('compressed image file path is --> ${compressedImageFile?.path}');
+    return compressedImageFile;
+  }
+
+  static Future<File> compressImage(File originFile) async {
+    return _compressImage(originFile);
+  }
+
+  static _compressFormat(String path) {
+    for (var each in _suffixMap.keys) {
+      if (path.endsWith(each)) {
+        return _suffixMap[each];
+      }
+    }
+
+    throw Error.safeToString('Can not support file type, fil is $path');
   }
 }

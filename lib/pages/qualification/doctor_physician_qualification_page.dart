@@ -9,6 +9,7 @@ import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 import 'model/doctor_qualification_model.dart';
 import 'view_model/doctory_physician_qualification_view_model.dart';
@@ -458,7 +459,7 @@ class _PhysicianQualificationWidgetState
   }
 
   _selectPicture(TypeOperator type, {FacePhoto facePhoto, int index}) async {
-    File image = await _pickImage();
+    File image = await _pickImage(needCrop: type == TypeOperator.AVATAR);
     if (image == null || image.path == null) {
       return;
     }
@@ -481,12 +482,23 @@ class _PhysicianQualificationWidgetState
     _model.notifyDataChange();
   }
 
-  _pickImage() async {
+  _pickImage({bool needCrop = false}) async {
     int index = await DialogHelper.showBottom(context);
     if (index == null || index == 2) {
       return;
     }
-    return await ImageHelper.pickSingleImage(context, source: index);
+    File originFile = await ImageHelper.pickSingleImage(context,
+        source: index, needCompress: false);
+    File cropedFile = originFile;
+    if (needCrop) {
+      cropedFile = await ImageHelper.cropImage(context, originFile.path);
+    }
+    File finalFile = await ImageHelper.compressImage(cropedFile);
+    if (finalFile == null) {
+      Toast.show('图片处理失败', context);
+      return;
+    }
+    return finalFile;
   }
 
   _buildNoticeWidget(DoctorQualificationModel data) {

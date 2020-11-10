@@ -4,10 +4,11 @@ import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:image_crop/image_crop.dart';
 
+/// 裁剪的宽高做成可配置功能 @yetian
 class CropImageRoute extends StatefulWidget {
-  File image; //原始图片路径
-  final _uploadImage;
-  CropImageRoute(this.image, this._uploadImage);
+  final File image; //原始图片路径
+
+  CropImageRoute(this.image);
 
   @override
   _CropImageRouteState createState() => new _CropImageRouteState();
@@ -54,7 +55,7 @@ class _CropImageRouteState extends State<CropImageRoute> {
                   ),
                   TextButton(
                     onPressed: () {
-                      _crop(widget.image);
+                      _doCrop(widget.image);
                     },
                     child: Text(
                       '确认',
@@ -71,32 +72,22 @@ class _CropImageRouteState extends State<CropImageRoute> {
     );
   }
 
-  Future<void> _crop(File originalFile) async {
+  Future<void> _doCrop(File originalFile) async {
     final crop = cropKey.currentState;
     final area = crop.area;
     if (area == null) {
       //裁剪结果为空
       print('裁剪不成功');
     }
-    await ImageCrop.requestPermissions().then((value) {
-      if (value) {
-        ImageCrop.cropImage(
-          file: originalFile,
-          area: crop.area,
-        ).then((value) {
-          upload(value);
-        }).catchError(() {
-          print('裁剪不成功');
-        });
-      } else {
-        upload(originalFile);
-      }
-    });
-  }
+    bool hasPermissions = await ImageCrop.requestPermissions();
+    if (hasPermissions) {
+      File cropedFile =
+          await ImageCrop.cropImage(file: originalFile, area: crop.area);
+      Navigator.pop(context, cropedFile);
+      return;
+    }
 
-  ///上传头像
-  void upload(File file) {
-    print('截取图片--->$file');
-    widget._uploadImage(file);
+    print('request permissions failed, return original image file.');
+    Navigator.pop(context, originalFile);
   }
 }
