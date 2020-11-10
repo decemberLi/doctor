@@ -30,11 +30,8 @@ class OssService {
   }
 
   _querySignature() async {
-    if (_policy == null) {
-      // TODO: 缓存策略
-      var result = await _foundation.post('/ali-oss/policy');
-      _policy = OssPolicy.fromJson(result);
-    }
+    var result = await _foundation.post('/ali-oss/policy');
+    _policy = OssPolicy.fromJson(result);
   }
 
   Future<OssFileEntity> _upload(
@@ -48,7 +45,6 @@ class OssService {
 
     String ossFileName = '${_policy.fileNamePrefix}$originName';
     EasyLoading.show(status: loadingText);
-    // TODO: 异常判断
     await _uploadToOss(path, originName, ossFileName);
     Map<String, dynamic> param = {
       'ossFileName': ossFileName,
@@ -78,7 +74,7 @@ class OssService {
     if (response.statusCode == 204) {
       return;
     }
-
+    EasyLoading.dismiss();
     throw Error();
   }
 

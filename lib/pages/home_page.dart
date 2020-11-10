@@ -2,6 +2,7 @@ import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
+import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/user/setting/update/app_update.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/user/user_page.dart';
@@ -71,6 +72,13 @@ class _HomePageState extends State<HomePage>
     messageCenterModel.initData();
   }
 
+  /// 重置处方数据
+  _resetPrescriptionData() {
+    PrescriptionViewModel model =
+        Provider.of<PrescriptionViewModel>(context, listen: false);
+    model.resetData();
+  }
+
   /// 初始化医生用户数据
   initDoctorInfo() async {
     UserInfoViewModel model =
@@ -80,6 +88,7 @@ class _HomePageState extends State<HomePage>
         model.data.basicInfoAuthStatus == 'NOT_COMPLETE') {
       _showModifyUserInfoDialog(model);
     }
+    _resetPrescriptionData();
     _refreshMessageCenterData();
   }
 

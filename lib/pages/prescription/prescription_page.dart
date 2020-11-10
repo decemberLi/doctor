@@ -202,21 +202,24 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                   ),
                 PrescripionCard(
                   title: '患者信息',
-                  trailing: GestureDetector(
-                    child: Text(
-                      '快速开方',
-                      style: MyStyles.primaryTextStyle_12,
-                    ),
-                    onTap: () async {
-                      var patientUserId = await Navigator.of(context).pushNamed(
-                        RouteManager.PATIENT,
-                        arguments: 'QUICK_CREATE',
-                      );
-                      if (patientUserId != null) {
-                        model.getDataByPatient(patientUserId);
-                      }
-                    },
-                  ),
+                  trailing: model.data?.status != 'REJECT'
+                      ? GestureDetector(
+                          child: Text(
+                            '快速开方',
+                            style: MyStyles.primaryTextStyle_12,
+                          ),
+                          onTap: () async {
+                            var patientUserId =
+                                await Navigator.of(context).pushNamed(
+                              RouteManager.PATIENT,
+                              arguments: 'QUICK_CREATE',
+                            );
+                            if (patientUserId != null) {
+                              model.getDataByPatient(patientUserId);
+                            }
+                          },
+                        )
+                      : Container(),
                   children: [
                     FormItem(
                       label: '姓名',

@@ -145,7 +145,7 @@ class _PrescriptionTemplateListState extends State<PrescriptionTemplateList> {
                 onPressed: () async {
                   await Navigator.of(context)
                       .pushNamed(RouteManager.PRESCRIPTION_TEMPLATE_ADD);
-                  model.refreshController.requestRefresh(needMove: false);
+                  model.initData();
                 },
               ),
               SizedBox(

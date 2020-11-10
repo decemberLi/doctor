@@ -105,7 +105,7 @@ class MedicationAddSheet extends StatefulWidget {
       BuildContext context, DrugModel data, Function onSave) {
     return CommonModal.showBottomSheet(
       context,
-      title: '药品用法用量',
+      title: '编辑药品用法用量',
       height: 500,
       child: MedicationAddSheet(
         data,
@@ -194,6 +194,57 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
                 title: Row(
                   children: [
                     Text(
+                      '单次剂量：',
+                      style: MyStyles.inputTextStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                    Container(
+                      width: 50,
+                      height: 32,
+                      margin: EdgeInsets.only(left: 10, top: 4, bottom: 4),
+                      child: TextFormField(
+                        initialValue: singleDose,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: Color(0xFF979797),
+                            ),
+                            gapPadding: 0,
+                          ),
+                          contentPadding: EdgeInsets.all(6),
+                        ),
+                        onChanged: (String value) {
+                          setState(() {
+                            singleDose = value;
+                          });
+                        },
+                        obscureText: false,
+                        keyboardType: TextInputType.number,
+                        style: MyStyles.inputTextStyle,
+                      ),
+                    ),
+                    DropDownSelectInput(
+                      label: '剂量单位',
+                      value: this.doseUnit,
+                      data: DOSEUNIT_LIST,
+                      onChange: (String value) {
+                        setState(() {
+                          this.doseUnit = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 1,
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Row(
+                  children: [
+                    Text(
                       '用药频率：',
                       style: MyStyles.inputTextStyle,
                       textAlign: TextAlign.left,
@@ -271,57 +322,6 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
                 title: Row(
                   children: [
                     Text(
-                      '单次剂量：',
-                      style: MyStyles.inputTextStyle,
-                      textAlign: TextAlign.left,
-                    ),
-                    Container(
-                      width: 50,
-                      height: 32,
-                      margin: EdgeInsets.only(left: 10, top: 4, bottom: 4),
-                      child: TextFormField(
-                        initialValue: singleDose,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: Color(0xFF979797),
-                            ),
-                            gapPadding: 0,
-                          ),
-                          contentPadding: EdgeInsets.all(6),
-                        ),
-                        onChanged: (String value) {
-                          setState(() {
-                            singleDose = value;
-                          });
-                        },
-                        obscureText: false,
-                        keyboardType: TextInputType.number,
-                        style: MyStyles.inputTextStyle,
-                      ),
-                    ),
-                    DropDownSelectInput(
-                      label: '剂量单位',
-                      value: this.doseUnit,
-                      data: DOSEUNIT_LIST,
-                      onChange: (String value) {
-                        setState(() {
-                          this.doseUnit = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Divider(
-                height: 1,
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Row(
-                  children: [
-                    Text(
                       '给药途径：',
                       style: MyStyles.inputTextStyle,
                       textAlign: TextAlign.left,
@@ -373,7 +373,7 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
                 height: 20,
               ),
               AceButton(
-                text: '确认',
+                text: '确认加入处方笺',
                 onPressed: () {
                   widget.item.frequency = frequency;
                   widget.item.singleDose = singleDose;

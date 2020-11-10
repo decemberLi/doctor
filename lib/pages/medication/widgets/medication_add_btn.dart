@@ -34,12 +34,12 @@ class MedicationAddBtn extends StatelessWidget {
         minValue: 0,
         spinnerValue: _quantity,
         onChange: (newValue) {
-          if (data.quantity == 0) {
+          if (newValue == 0) {
             data.quantity = null;
+            model.cartList.remove(data);
           } else {
             data.quantity = newValue;
           }
-          model.cartList.remove(data);
           model.changeDataNotify();
         },
       );

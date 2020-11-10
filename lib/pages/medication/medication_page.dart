@@ -34,9 +34,7 @@ class _MedicationPageState extends State<MedicationPage>
       List<DrugModel> obj =
           ModalRoute.of(context).settings.arguments as List<DrugModel>;
       _model.initCart(obj);
-      if (_model.list.isEmpty) {
-        _model.initData();
-      }
+      _model.initData();
     });
     // MedicationViewModel _model =
     //     Provider.of<MedicationViewModel>(context, listen: false);

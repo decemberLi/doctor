@@ -56,9 +56,7 @@ class MedicationViewModel extends ViewStateRefreshListModel<DrugModel> {
         _model.doseUnit = _cartModel.doseUnit;
         _model.singleDose = _cartModel.singleDose;
         _model.usePattern = _cartModel.usePattern;
-        _cartModel.drugName = _model.drugName;
-        _cartModel.drugSize = _model.drugSize;
-        _cartModel.pictures = _model.pictures;
+        cartList[index] = _model;
       } else {
         /// 如果购物车为空，则全部置为空
         _model.quantity = null;
