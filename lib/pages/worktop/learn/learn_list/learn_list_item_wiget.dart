@@ -109,7 +109,7 @@ class LearnListItemWiget extends StatelessWidget {
           margin: EdgeInsets.only(bottom: 2),
           child: CircularPercentIndicator(
             radius: 60.0,
-            lineWidth: 8.0,
+            lineWidth: listStatus == 'HISTORY' ? 5 : 8.0,
             animation: false,
             percent: percent,
             center: centerText,
