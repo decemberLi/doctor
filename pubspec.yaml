@@ -100,7 +100,9 @@ dependencies:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_file_preview.git
   # 图片压缩
-  flutter_image_compress: ^0.7.0
+  flutter_image_compress:
+    git:
+      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_image_compress.git
   # 文件路径url 操作
   path: ^1.7.0
 
