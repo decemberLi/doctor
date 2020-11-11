@@ -13,6 +13,7 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/utils/debounce.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/utils/no_wifi_notice_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
@@ -91,11 +92,11 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                     fontSize: 16,
                     color: ThemeColor.primaryColor,
                   )),
-              onTap: () {
+              onTap: debounce(() {
                 // 收起键盘
                 FocusScope.of(context).requestFocus(FocusNode());
                 _selectVideos();
-              },
+              }),
             ),
           ],
         ),
@@ -113,11 +114,11 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                   width: 150,
                   height: 87,
                 ),
-                onTap: () {
+                onTap: debounce(() {
                   // 收起键盘
                   FocusScope.of(context).requestFocus(FocusNode());
                   _selectVideos();
-                },
+                }),
               ),
             ),
           ]);

@@ -1,4 +1,5 @@
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/debounce.dart';
 import 'package:flutter/material.dart';
 
 /// 通用业务按钮
@@ -31,7 +32,7 @@ class AceButton extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(height / 2)));
 
     RaisedButton primaryBtn = RaisedButton(
-      onPressed: onPressed,
+      onPressed: debounce(onPressed),
       color: color ?? ThemeColor.primaryColor,
       shape: shape,
       disabledColor: ThemeColor.primaryColor.withOpacity(0.5),
@@ -46,7 +47,7 @@ class AceButton extends StatelessWidget {
           ),
     );
     FlatButton greyBtn = FlatButton(
-      onPressed: onPressed,
+      onPressed: debounce(onPressed),
       color: color ?? ThemeColor.colorFFBCBCBC,
       shape: shape,
       child: child ??
@@ -61,7 +62,7 @@ class AceButton extends StatelessWidget {
     );
 
     FlatButton secondaryBtn = FlatButton(
-      onPressed: onPressed,
+      onPressed: debounce(onPressed),
       color: color ?? ThemeColor.primaryColor.withOpacity(0.4),
       shape: shape,
       child: child ??
@@ -89,7 +90,7 @@ class AceButton extends StatelessWidget {
         shape: shape,
         side: BorderSide(width: 1, color: color ?? ThemeColor.primaryColor),
       ),
-      onPressed: onPressed,
+      onPressed: debounce(onPressed),
     );
 
     Widget btn;

@@ -77,9 +77,10 @@ class ImageHelper {
     await Future.delayed(Duration(milliseconds: 500));
     var originFile;
     if (0 == source && await PermissionHelper.checkCameraPermission(context)) {
-        var assetEntity = await CameraPicker.pickFromCamera(context);
-        originFile = await assetEntity.file;
-    } else if (source == 1 && await PermissionHelper.checkPhotosPermission(context)) {
+      var assetEntity = await CameraPicker.pickFromCamera(context);
+      originFile = await assetEntity.file;
+    } else if (source == 1 &&
+        await PermissionHelper.checkPhotosPermission(context)) {
       var assetEntity = await AssetPicker.pickAssets(context,
           maxAssets: 1, requestType: RequestType.image);
       originFile = await assetEntity.first.file;
@@ -110,6 +111,10 @@ class ImageHelper {
       maxAssets: 1,
       requestType: RequestType.video,
     );
+    if (assetEntity == null) {
+      return null;
+    }
+
     return assetEntity.first.file
         .timeout(Duration(seconds: 5), onTimeout: () => null);
   }
