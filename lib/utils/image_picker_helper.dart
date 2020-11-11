@@ -79,7 +79,8 @@ class ImageHelper {
       var assetEntity = await CameraPicker.pickFromCamera(context);
       originFile = await assetEntity.file;
     } else if (source == 1) {
-      var assetEntity = await AssetPicker.pickAssets(context);
+      var assetEntity = await AssetPicker.pickAssets(context,
+          maxAssets: 1, requestType: RequestType.image);
       originFile = await assetEntity.first.file;
     } else {
       throw Error.safeToString('source type not support.');
