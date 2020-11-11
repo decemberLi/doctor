@@ -97,7 +97,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                   )),
               onTap: debounce(() {
                 // 收起键盘
-                FocusScope.of(context).requestFocus(FocusNode());
+                // FocusScope.of(context).requestFocus(FocusNode());
                 _selectVideos();
               }),
             ),
@@ -119,7 +119,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                 ),
                 onTap: debounce(() {
                   // 收起键盘
-                  FocusScope.of(context).requestFocus(FocusNode());
+                  //FocusScope.of(context).requestFocus(FocusNode());
                   _selectVideos();
                 }),
               ),
