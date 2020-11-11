@@ -97,6 +97,7 @@ class _LoginFooterState extends State<LoginFooter> {
                       FlutterFilePreview.openFile(
                         'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.pdf',
                         title: '易学术服务协议',
+                        context: context,
                       );
                     },
                 ),
@@ -112,6 +113,7 @@ class _LoginFooterState extends State<LoginFooter> {
                       FlutterFilePreview.openFile(
                         'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.pdf',
                         title: '易学术隐私协议',
+                        context: context,
                       );
                     },
                 ),

@@ -14,7 +14,7 @@ class Attacement extends StatelessWidget {
   final _clickWebView;
   Attacement(this.data, this.openTimer, this.closeTimer, this._clickWebView);
 
-  _openFile() async {
+  _openFile(BuildContext context) async {
     var files = await CommonService.getFile({
       'ossIds': [data.attachmentOssId]
     });
@@ -23,8 +23,11 @@ class Attacement extends StatelessWidget {
     }
     //计时器
     openTimer();
-    await FlutterFilePreview.openFile(files[0]['tmpUrl'],
-        title: data.title ?? data.resourceName);
+    await FlutterFilePreview.openFile(
+      files[0]['tmpUrl'],
+      title: data.title ?? data.resourceName,
+      context: context,
+    );
     closeTimer();
   }
 
@@ -60,7 +63,9 @@ class Attacement extends StatelessWidget {
               height: 20,
             ),
             AceButton(
-              onPressed: _openFile,
+              onPressed: () {
+                _openFile(context);
+              },
               text: '在线阅读',
             ),
           ],
