@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:doctor/pages/user/user_detail/uploadImage.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/permission_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -75,15 +76,13 @@ class ImageHelper {
       {int source = 0, bool needCompress = true}) async {
     await Future.delayed(Duration(milliseconds: 500));
     var originFile;
-    if (0 == source) {
-      var assetEntity = await CameraPicker.pickFromCamera(context);
-      originFile = await assetEntity.file;
-    } else if (source == 1) {
+    if (0 == source && await PermissionHelper.checkCameraPermission(context)) {
+        var assetEntity = await CameraPicker.pickFromCamera(context);
+        originFile = await assetEntity.file;
+    } else if (source == 1 && await PermissionHelper.checkPhotosPermission(context)) {
       var assetEntity = await AssetPicker.pickAssets(context,
           maxAssets: 1, requestType: RequestType.image);
       originFile = await assetEntity.first.file;
-    } else {
-      throw Error.safeToString('source type not support.');
     }
 
     // 压缩

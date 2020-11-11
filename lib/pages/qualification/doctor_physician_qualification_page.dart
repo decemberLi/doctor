@@ -489,6 +489,9 @@ class _PhysicianQualificationWidgetState
     }
     File originFile = await ImageHelper.pickSingleImage(context,
         source: index, needCompress: false);
+    if(originFile == null){
+      return null;
+    }
     File cropedFile = originFile;
     if (needCrop) {
       cropedFile = await ImageHelper.cropImage(context, originFile.path);
