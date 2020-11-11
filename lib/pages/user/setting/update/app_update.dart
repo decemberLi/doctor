@@ -248,12 +248,12 @@ class AppUpdateHelper {
       print('last save -> app_update_time is null');
       return true;
     }
-    var nowTime = DateTime.now().millisecondsSinceEpoch;
-    var sinceTime =
-        DateTime.now().subtract(Duration(days: 2)).millisecondsSinceEpoch;
+    var lastCheck = DateTime.fromMillisecondsSinceEpoch(lastTime);
+    var beforeYesteryDay = DateTime.now().subtract(Duration(days: 2));
     print(
-        'last save -> app_update_time is $lastTime, nowTime is $nowTime, time condition ${nowTime - lastTime >= sinceTime}');
-    return nowTime - lastTime >= sinceTime;
+        'last save -> app_update_time is $lastTime, before yesterday time ${beforeYesteryDay.millisecondsSinceEpoch}');
+    lastCheck.isBefore(beforeYesteryDay);
+    return lastCheck.isBefore(beforeYesteryDay);
   }
 }
 
@@ -384,7 +384,9 @@ class AppUpdateDialog extends StatelessWidget {
 
   _record() async {
     var reference = await SharedPreferences.getInstance();
-    reference.setInt('app_update_time', DateTime.now().millisecondsSinceEpoch);
+    var millisecondsSinceEpoch = DateTime.now().millisecondsSinceEpoch;
+    print('record update check time $millisecondsSinceEpoch');
+    reference.setInt('app_update_time', millisecondsSinceEpoch);
   }
 
   List<Widget> _buildUpdateContentWidget(String content) {
