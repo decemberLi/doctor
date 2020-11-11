@@ -55,8 +55,7 @@ class _LearnListPageState extends State<LearnListPage>
       initialIndex: widget.index,
       length: TASK_TYPE_MAP.length,
     )..addListener(() {
-        // 避免触发两次
-        if (_tabController.index.toDouble() == _tabController.animation.value) {
+        if (_currentTabIndex != _tabController.index) {
           setState(() {
             _currentTabIndex = _tabController.index;
             _listModels[_currentTabIndex].initData();
