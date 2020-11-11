@@ -203,12 +203,11 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         EasyLoading.show(status: '视频压缩中...');
         MediaInfo mediaInfo;
         try {
-          mediaInfo = await VideoCompress.compressVideo(
-            _selectVideoData.path,
-            quality: VideoQuality.DefaultQuality,
-            frameRate: 20,
-            deleteOrigin: false, // It's false by default
-          );
+          mediaInfo = await VideoCompress.compressVideo(_selectVideoData.path,
+              quality: VideoQuality.DefaultQuality,
+              frameRate: 20,
+              deleteOrigin: false, // It's false by default
+              includeAudio: true);
           print(mediaInfo.toJson().toString());
         } catch (e) {
           EasyLoading.showToast('压缩失败');
