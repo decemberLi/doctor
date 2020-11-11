@@ -21,6 +21,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:async';
@@ -45,6 +46,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
   FocusNode taskNameFocusNode = FocusNode();
   FocusNode doctorNameFocusNode = FocusNode();
 
+  // final _flutterVideoCompress = FlutterVideoCompress();
+
   @override
   void initState() {
     // 在initState中发出请求
@@ -64,11 +67,16 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         context,
         source: 1,
       );
+      MediaInfo mediaInfo = await VideoCompress.compressVideo(
+        file.path,
+        quality: VideoQuality.LowQuality,
+        deleteOrigin: false, // It's false by default
+      );
       if (file != null && mounted) {
-        _controller = VideoPlayerController.file(File(file.path));
+        _controller = VideoPlayerController.file(File(mediaInfo.file.path));
         await _controller.setVolume(1.0);
         setState(() {
-          _selectVideoData = file;
+          _selectVideoData = mediaInfo.file;
         });
       }
     } on PlatformException {}

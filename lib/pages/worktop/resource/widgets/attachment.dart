@@ -21,11 +21,11 @@ class Attacement extends StatelessWidget {
     if (files.isEmpty) {
       EasyLoading.showToast('打开失败');
     }
-    // TODO: 预览器UI修改
-    FlutterFilePreview.openFile(files[0]['tmpUrl'],
-        title: data.title ?? data.resourceName);
     //计时器
     openTimer();
+    await FlutterFilePreview.openFile(files[0]['tmpUrl'],
+        title: data.title ?? data.resourceName);
+    closeTimer();
   }
 
   @override

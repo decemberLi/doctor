@@ -68,6 +68,8 @@ dependencies:
 
   # 视频播放
   video_player: ^0.11.0
+  # 视频压缩 https://pub.flutter-io.cn/packages/video_compress
+  video_compress: ^2.1.0
   # chewie: ^0.9.10
   screen: 0.0.5
 
