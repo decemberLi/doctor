@@ -30,50 +30,24 @@ class _LearnListPageState extends State<LearnListPage>
   @override
   bool get wantKeepAlive => true;
 
-  TabController _tabController;
-
   int _currentTabIndex = 0;
 
-  // 列表model
-  List<LearnListViewModel> _listModels;
+  LearnListViewModel model;
 
   @override
   void initState() {
     super.initState();
-    _listModels = TASK_TYPE_MAP
-        .map(
-          (e) => LearnListViewModel(widget.learnStatus, e['taskTemplate']),
-        )
-        .toList();
     _currentTabIndex = widget.index;
-
-    _listModels[_currentTabIndex].initData();
-
-    // 添加监听器
-    _tabController = TabController(
-      vsync: this,
-      initialIndex: widget.index,
-      length: TASK_TYPE_MAP.length,
-    )..addListener(() {
-        if (_currentTabIndex != _tabController.index) {
-          setState(() {
-            _currentTabIndex = _tabController.index;
-            _listModels[_currentTabIndex].initData();
-            if (widget.onTaskTypeChange != null) {
-              widget.onTaskTypeChange(
-                  TASK_TYPE_MAP[_currentTabIndex]['taskTemplate']);
-            }
-          });
-        }
-      });
+    model = LearnListViewModel(
+      widget.learnStatus,
+      TASK_TYPE_MAP[_currentTabIndex]['taskTemplate'],
+    );
+    model.initData();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
-    _listModels.forEach((model) {
-      model.dispose();
-    });
+    model.dispose();
     super.dispose();
   }
 
@@ -82,20 +56,31 @@ class _LearnListPageState extends State<LearnListPage>
     if (index == _currentTabIndex) {
       color = ThemeColor.primaryColor;
     }
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.all(Radius.circular(34)),
-      ),
-      padding: EdgeInsets.fromLTRB(12, 4, 12, 4),
-      margin: EdgeInsets.only(
-        right: 10,
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 12,
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _currentTabIndex = index;
+          model.taskTemplate = TASK_TYPE_MAP[_currentTabIndex]['taskTemplate'];
+          model.initData();
+          model?.refreshController?.position?.animateTo(0.0,
+              duration: Duration(milliseconds: 16), curve: Curves.linear);
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.all(Radius.circular(34)),
+        ),
+        padding: EdgeInsets.fromLTRB(12, 4, 12, 4),
+        margin: EdgeInsets.only(
+          right: 10,
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
         ),
       ),
     );
@@ -138,15 +123,6 @@ class _LearnListPageState extends State<LearnListPage>
     );
   }
 
-  // Widget _renderList(taskTemplate) {
-  //   return ProviderWidget<LearnListViewModel>(
-  //     model: LearnListViewModel(widget.learnStatus, taskTemplate),
-  //     onModelReady: (model) => model.initData(),
-  //     // autoDispose: false,
-  //     builder: ,
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -159,55 +135,54 @@ class _LearnListPageState extends State<LearnListPage>
         backgroundColor: ThemeColor.colorFFF3F5F8,
         title: Container(
           alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(left: 8),
+          padding: EdgeInsets.only(left: 20),
           child: Theme(
-              data: ThemeData(
-                ///默认显示的背景颜色
-                backgroundColor: ThemeColor.colorFFF3F5F8,
+            data: ThemeData(
+              ///默认显示的背景颜色
+              backgroundColor: ThemeColor.colorFFF3F5F8,
 
-                ///点击的背景高亮颜色
-                highlightColor: ThemeColor.colorFFF3F5F8,
+              ///点击的背景高亮颜色
+              highlightColor: ThemeColor.colorFFF3F5F8,
 
-                ///点击水波纹颜色
-                splashColor: Color.fromRGBO(0, 0, 0, 0),
-              ),
-              child: new TabBar(
-                physics: NeverScrollableScrollPhysics(),
-                controller: this._tabController,
-                isScrollable: true,
-                labelPadding: EdgeInsets.symmetric(horizontal: 8),
-                indicator: UnderlineTabIndicator(
-                    borderSide: BorderSide(style: BorderStyle.none)),
-                tabs: TASK_TYPE_MAP
-                    .map(
-                      (e) => Tab(
-                        child: _renderTop(e['text'], TASK_TYPE_MAP.indexOf(e)),
-                      ),
-                    )
-                    .toList(),
-              )),
+              ///点击水波纹颜色
+              splashColor: Color.fromRGBO(0, 0, 0, 0),
+            ),
+            child: Row(
+              children: TASK_TYPE_MAP
+                  .map(
+                    (e) => _renderTop(
+                      e['text'],
+                      TASK_TYPE_MAP.indexOf(e),
+                    ),
+                  )
+                  .toList(),
+            ),
+            // child: new TabBar(
+            //   physics: NeverScrollableScrollPhysics(),
+            //   controller: this._tabController,
+            //   isScrollable: true,
+            //   labelPadding: EdgeInsets.symmetric(horizontal: 8),
+            //   indicator: UnderlineTabIndicator(
+            //       borderSide: BorderSide(style: BorderStyle.none)),
+            //   tabs: TASK_TYPE_MAP
+            //       .map(
+            //         (e) => Tab(
+            //           child: _renderTop(e['text'], TASK_TYPE_MAP.indexOf(e)),
+            //         ),
+            //       )
+            //       .toList(),
+            // ),
+          ),
         ),
       ),
       body: Container(
-          child: TabBarView(
-        physics: NeverScrollableScrollPhysics(),
-        controller: this._tabController,
-        children: _listModels != null
-            ? _listModels
-                .map(
-                  (model) => Container(
-                    // child: _renderList(e['taskTemplate']),
-                    child: ChangeNotifierProvider<LearnListViewModel>.value(
-                      value: model,
-                      child: Consumer<LearnListViewModel>(
-                        builder: this._renderList,
-                      ),
-                    ),
-                  ),
-                )
-                .toList()
-            : [],
-      )),
+        child: ChangeNotifierProvider<LearnListViewModel>.value(
+          value: model,
+          child: Consumer<LearnListViewModel>(
+            builder: this._renderList,
+          ),
+        ),
+      ),
     );
   }
 }
