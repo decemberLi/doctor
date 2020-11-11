@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:doctor/http/result_data.dart';
 import 'package:doctor/http/servers.dart';
 import 'package:doctor/http/session_manager.dart';
+import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -174,8 +175,10 @@ class HttpManager {
       return content;
     } on DioError catch (e) {
       print('error: $e');
-      EasyLoading.showToast(msgMap['networkError']);
       // return e;
+      if(e!= null && e.error is SocketException){
+        EasyLoading.showToast(msgMap['networkError']);
+      }
       throw e;
     }
   }
