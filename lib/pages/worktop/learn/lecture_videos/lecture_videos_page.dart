@@ -67,16 +67,11 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         context,
         source: 1,
       );
-      MediaInfo mediaInfo = await VideoCompress.compressVideo(
-        file.path,
-        quality: VideoQuality.LowQuality,
-        deleteOrigin: false, // It's false by default
-      );
       if (file != null && mounted) {
-        _controller = VideoPlayerController.file(File(mediaInfo.file.path));
+        _controller = VideoPlayerController.file(File(file.path));
         await _controller.setVolume(1.0);
         setState(() {
-          _selectVideoData = mediaInfo.file;
+          _selectVideoData = file;
         });
       }
     } on PlatformException {}
@@ -204,8 +199,26 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
     }
     if (bindConfirm) {
       OssFileEntity entity;
-      if (_selectVideoData != null)
-        entity = await OssService.upload(_selectVideoData.path);
+      if (_selectVideoData != null) {
+        EasyLoading.show(status: '视频压缩中...');
+        MediaInfo mediaInfo;
+        try {
+          mediaInfo = await VideoCompress.compressVideo(
+            _selectVideoData.path,
+            quality: VideoQuality.DefaultQuality,
+            frameRate: 20,
+            deleteOrigin: false, // It's false by default
+          );
+          print(mediaInfo.toJson().toString());
+        } catch (e) {
+          EasyLoading.showToast('压缩失败');
+        }
+
+        entity = await OssService.upload(
+          mediaInfo?.file?.path ?? _selectVideoData.path,
+        );
+        await VideoCompress.deleteAllCache();
+      }
 
       await addLectureSubmit({
         'learnPlanId': learnPlanId,
