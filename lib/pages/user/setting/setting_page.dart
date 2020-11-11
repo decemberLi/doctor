@@ -14,7 +14,7 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  bool _flag = false;
+  bool _flag = true;
   String _version = '';
 
   @override
