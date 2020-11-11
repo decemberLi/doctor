@@ -140,7 +140,8 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
     //   width = _maxWidth * _aspectRatio;
     // }
 
-    print('视频大小数据value====》》》$value');
+    print(
+        '_aspectRatio:$_aspectRatio---_viewRatio:$_viewRatio--视频大小数据value====》》》$value');
     // 视频宽高对比
     if (value.size != null) {
       if (value.size.width > value.size.height) {
@@ -150,6 +151,14 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
       } else {
         width = _maxHeight / (value.size.height / value.size.width);
         height = _maxWidth * (value.size.height / value.size.width);
+      }
+    } else {
+      if (_aspectRatio > _viewRatio) {
+        width = _maxWidth;
+        height = _maxWidth / _aspectRatio;
+      } else {
+        height = _maxHeight;
+        width = (_maxWidth * _aspectRatio) * (_maxHeight / _maxWidth);
       }
     }
 
