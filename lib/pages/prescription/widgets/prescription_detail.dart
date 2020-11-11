@@ -86,6 +86,7 @@ class PerscriptionDetail extends StatelessWidget {
               FadeRoute(
                 page: PhotoViewGalleryScreen(
                   images: this.data.attachments.map((e) => e.url).toList(),
+                  index: this.data.attachments.indexOf(e),
                 ),
               ),
             );

@@ -41,7 +41,7 @@ class PrescriptionTemplateItem extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  '疾病诊断：${data.clinicalDiagnosis}',
+                  '临床诊断：${data.clinicalDiagnosis}',
                   style: MyStyles.labelTextStyle_12,
                 ),
                 SizedBox(

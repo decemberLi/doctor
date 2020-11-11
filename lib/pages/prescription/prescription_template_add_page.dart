@@ -85,6 +85,7 @@ class _PrescriptionTemplageAddPageState
                       border: InputBorder.none,
                       fillColor: Colors.white,
                       filled: true,
+                      hintText: '请填写模板名称',
                     ),
                     maxLength: 15,
                     validator: (val) {
@@ -124,6 +125,7 @@ class _PrescriptionTemplageAddPageState
                       border: InputBorder.none,
                       fillColor: Colors.white,
                       filled: true,
+                      hintText: '请填写临床诊断',
                     ),
                     maxLength: 15,
                     validator: (val) => val.length < 1 ? '临床诊断不能为空' : null,

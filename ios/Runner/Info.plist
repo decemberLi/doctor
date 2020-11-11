@@ -28,11 +28,11 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Used to demonstrate image picker plugin</string>
+	<string>为了您使用纸质处方上传、医师资质认证等服务，请允许易学术使用摄像头功能</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Used to capture audio for image picker plugin</string>
+	<string>为了您使用纸质处方上传、医师资质认证等服务，请允许易学术使用麦克风功能</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Used to demonstrate image picker plugin</string>
+	<string>为了您使用纸质处方上传、医师资质认证等服务，请允许易学术访问所有照片</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
