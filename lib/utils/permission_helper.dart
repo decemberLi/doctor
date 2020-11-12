@@ -18,7 +18,7 @@ class PermissionHelper {
     if (status == PermissionStatus.denied ||
         status.isPermanentlyDenied ||
         status.isRestricted) {
-      await showPermissionDialog(context, '请允许易学术访问你的摄像头和麦克风');
+      await showPermissionDialog(context, '请在手机的隐私设置中，允许易学术访问你的相机');
       var againResult = await Permission.camera.request().isGranted;
       print('Again request camera permission, isGranted: $againResult');
       return againResult;
@@ -39,7 +39,7 @@ class PermissionHelper {
 
     // 完全完毕
     if (status == PermissionStatus.denied) {
-      await showPermissionDialog(context, '请允许易学术访问你的摄像头和麦克风');
+      await showPermissionDialog(context, '请在手机的隐私设置中，允许易学术访问你的相册');
       var againResult = await Permission.photos.request().isGranted;
       print('Again request photos permission, isGranted: $againResult');
       return againResult;

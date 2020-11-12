@@ -101,22 +101,22 @@ class ImageHelper {
   static pickSingleVideo(BuildContext context, {int source = 0}) async {
     await Future.delayed(Duration(milliseconds: 500));
     var file;
-    if (0 == source) {
+    if (0 == source && await PermissionHelper.checkCameraPermission(context)) {
       var assetEntity = await CameraPicker.pickFromCamera(context);
-      return assetEntity.file
-          .timeout(Duration(seconds: 5), onTimeout: () => null);
-    }
-    var assetEntity = await AssetPicker.pickAssets(
-      context,
-      maxAssets: 1,
-      requestType: RequestType.video,
-    );
-    if (assetEntity == null) {
-      return null;
+      file = assetEntity?.file
+          ?.timeout(Duration(seconds: 5), onTimeout: () => null);
+    } else if (source == 1 &&
+        await PermissionHelper.checkCameraPermission(context)) {
+      var assetEntity = await AssetPicker.pickAssets(
+        context,
+        maxAssets: 1,
+        requestType: RequestType.video,
+      );
+      file = assetEntity?.first?.file
+          ?.timeout(Duration(seconds: 5), onTimeout: () => null);
     }
 
-    return assetEntity.first.file
-        .timeout(Duration(seconds: 5), onTimeout: () => null);
+    return file;
   }
 
   static Future<File> _compressImage(File originFile) async {
