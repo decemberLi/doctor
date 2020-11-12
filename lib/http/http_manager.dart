@@ -44,6 +44,7 @@ class HttpManager {
         InterceptorsWrapper(
           onRequest: (RequestOptions options) async {
             debugPrint('request--->url--> ${options.baseUrl}${options.path}');
+            options.headers['_greyVersion'] = '2.0';
             Map extra = options.extra;
             if (!extra['ignoreSession']) {
               String session = SessionManager().getSession();
@@ -176,7 +177,7 @@ class HttpManager {
     } on DioError catch (e) {
       print('error: $e');
       // return e;
-      if(e!= null && e.error is SocketException){
+      if (e != null && e.error is SocketException) {
         EasyLoading.showToast(msgMap['networkError']);
       }
       throw e;

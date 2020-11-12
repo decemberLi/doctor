@@ -88,7 +88,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
           setState(() {
             args = args;
           });
-          Navigator.pop(context);
+          // Navigator.pop(context);
         }
       });
     } else {

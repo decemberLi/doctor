@@ -222,7 +222,8 @@ class _QuestionPageState extends State<QuestionPage> {
     String charCode = String.fromCharCode(65 + optionIndex);
     bool _dispatch = false;
     if (widget.data.learnStatus == 'FINISHED' ||
-        widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
+        widget.data.learnPlanStatus == 'SUBMIT_LEARN' ||
+        widget.data.learnPlanStatus == 'ACCEPTED') {
       _dispatch = true;
     }
     return new Row(
@@ -281,7 +282,8 @@ class _QuestionPageState extends State<QuestionPage> {
     String charCode = String.fromCharCode(65 + optionIndex);
     bool _dispatch = false;
     if (widget.data.learnStatus == 'FINISHED' ||
-        widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
+        widget.data.learnPlanStatus == 'SUBMIT_LEARN' ||
+        widget.data.learnPlanStatus == 'ACCEPTED') {
       _dispatch = true;
     }
     return new Row(
@@ -352,7 +354,8 @@ class _QuestionPageState extends State<QuestionPage> {
     // 文本字段（`TextField`）组件，允许用户使用硬件键盘或屏幕键盘输入文本。
     bool _dispatch = true;
     if (widget.data.learnStatus == 'FINISHED' ||
-        widget.data.learnPlanStatus == 'SUBMIT_LEARN') {
+        widget.data.learnPlanStatus == 'SUBMIT_LEARN' ||
+        widget.data.learnPlanStatus == 'ACCEPTED') {
       _dispatch = false;
     }
 

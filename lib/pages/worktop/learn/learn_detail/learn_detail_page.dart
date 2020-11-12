@@ -1,8 +1,6 @@
-// import 'package:doctor/route/route_manager.dart';
-// import 'package:common_utils/common_utils.dart';
+import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
-import 'package:doctor/pages/worktop/learn/lecture_videos/test_video.dart';
-// import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
@@ -15,6 +13,7 @@ import 'package:doctor/utils/constants.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
+import 'package:provider/provider.dart';
 
 // * @Desc: 计划详情页  */
 class LearnDetailPage extends StatefulWidget {
@@ -25,6 +24,22 @@ class LearnDetailPage extends StatefulWidget {
 }
 
 class _LearnDetailPageState extends State<LearnDetailPage> {
+  DoctorDetailInfoEntity userInfo;
+  @override
+  void initState() {
+    super.initState();
+    updateDoctorInfo();
+  }
+
+  updateDoctorInfo() {
+    UserInfoViewModel model =
+        Provider.of<UserInfoViewModel>(context, listen: false);
+    if (model?.data != null) {
+      model.queryDoctorInfo();
+      userInfo = model.data;
+    }
+  }
+
   //确认弹窗
   Future<bool> confirmDialog(int learnProgress) {
     return showCupertinoDialog<bool>(
@@ -415,8 +430,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                           .resourceId,
                                                       'learnPlanId':
                                                           data.learnPlanId,
-                                                      'doctorName':
-                                                          data.doctorName,
+                                                      'doctorName': userInfo
+                                                              ?.doctorName ??
+                                                          '',
                                                       'taskName': data.taskName,
                                                       'from': arguments['from'],
                                                     });
