@@ -9,7 +9,7 @@
     <application
         android:name="com.emedclouds.doctor.YYYApplication"
         android:icon="@mipmap/ic_launcher"
-        android:label="doctor"
+        android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
