@@ -95,11 +95,12 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                     fontSize: 16,
                     color: ThemeColor.primaryColor,
                   )),
-              onTap: debounce(() {
+              onTap: () {
                 // 收起键盘
                 // FocusScope.of(context).requestFocus(FocusNode());
+                _controller?.pause();
                 _selectVideos();
-              }),
+              },
             ),
           ],
         ),
@@ -120,6 +121,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                 onTap: debounce(() {
                   // 收起键盘
                   //FocusScope.of(context).requestFocus(FocusNode());
+                  _controller?.pause();
                   _selectVideos();
                 }),
               ),
