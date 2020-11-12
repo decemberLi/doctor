@@ -1,6 +1,7 @@
 // import 'package:doctor/route/route_manager.dart';
 // import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
+import 'package:doctor/pages/worktop/learn/lecture_videos/test_video.dart';
 // import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
@@ -396,6 +397,13 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                             text: _aceText(data.taskTemplate,
                                                 data.reLearn),
                                             onPressed: () async {
+                                              // Navigator.of(context)
+                                              //     .push(MaterialPageRoute(
+                                              //   builder:
+                                              //       (BuildContext context) =>
+                                              //           TestVideo(),
+                                              // ));
+                                              // return;
                                               if (data.taskTemplate ==
                                                   'DOCTOR_LECTURE') {
                                                 Navigator.of(context).pushNamed(

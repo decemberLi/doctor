@@ -10,13 +10,13 @@ class LearnRecordingItem {
   String videoOssId;
   String videoUrl;
   int lectureId;
-  LearnRecordingItem(
+  LearnRecordingItem({
     this.videoTitle,
     this.presenter,
     this.videoOssId,
     this.videoUrl,
     this.lectureId,
-  );
+  });
 
   factory LearnRecordingItem.fromJson(Map<String, dynamic> json) =>
       _$LearnRecordingItemFromJson(json);

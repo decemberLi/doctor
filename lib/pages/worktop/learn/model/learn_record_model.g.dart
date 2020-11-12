@@ -8,11 +8,11 @@ part of 'learn_record_model.dart';
 
 LearnRecordingItem _$LearnRecordingItemFromJson(Map<String, dynamic> json) {
   return LearnRecordingItem(
-    json['videoTitle'] as String,
-    json['presenter'] as String,
-    json['videoOssId'] as String,
-    json['videoUrl'] as String,
-    json['lectureId'] as int,
+    videoTitle: json['videoTitle'] as String,
+    presenter: json['presenter'] as String,
+    videoOssId: json['videoOssId'] as String,
+    videoUrl: json['videoUrl'] as String,
+    lectureId: json['lectureId'] as int,
   );
 }
 

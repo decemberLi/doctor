@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/worktop/learn/lecture_videos/upload_video.dart';
+import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/service.dart';
@@ -35,22 +36,26 @@ class LectureVideosPage extends StatefulWidget {
 }
 
 class _LearnDetailPageState extends State<LectureVideosPage> {
+  final _formKey = GlobalKey<FormState>();
+
+  TextEditingController titleController = TextEditingController();
+  TextEditingController presenterController = TextEditingController();
   VideoPlayerController _controller;
   File _selectVideoData;
 
-  String _doctorName;
-  String _taskName;
-  String _showDoctorName;
-  String _showTaskName;
+  String learnPlanId;
+  String resourceId;
+  bool reLearn = false;
+  LearnRecordingItem data = LearnRecordingItem();
 
   FocusNode taskNameFocusNode = FocusNode();
   FocusNode doctorNameFocusNode = FocusNode();
 
-  // final _flutterVideoCompress = FlutterVideoCompress();
-
   @override
   void initState() {
-    // 在initState中发出请求
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      this.initData();
+    });
     super.initState();
   }
 
@@ -61,6 +66,35 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
     doctorNameFocusNode.dispose();
   }
 
+  initData() async {
+    dynamic obj = ModalRoute.of(context).settings.arguments;
+    if (obj != null) {
+      learnPlanId = obj["learnPlanId"].toString();
+      resourceId = obj['resourceId'].toString();
+      reLearn = obj['reLearn'];
+    }
+    if (!reLearn) {
+      titleController.text = obj['taskName'];
+      presenterController.text = obj['doctorName'];
+      return;
+    }
+    try {
+      var result = await http.post('/doctor-lecture/detail', params: {
+        'learnPlanId': this.learnPlanId,
+        'resourceId': this.resourceId,
+      });
+
+      setState(() {
+        this.data = LearnRecordingItem.fromJson(result);
+        titleController.text = this.data.videoTitle;
+        presenterController.text = this.data.presenter;
+        print(this.data.toJson());
+      });
+    } catch (e) {
+      return e;
+    }
+  }
+
   Future<void> _selectVideos() async {
     try {
       final File file = await ImageHelper.pickSingleVideo(
@@ -68,7 +102,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         source: 1,
       );
       if (file != null && mounted) {
-        _controller = VideoPlayerController.file(File(file.path));
+        _controller = VideoPlayerController.file(file);
         await _controller.setVolume(1.0);
         setState(() {
           _selectVideoData = file;
@@ -78,15 +112,15 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
   }
 
   // 视频播放
-  Widget _videoBox(dynamic videdata) {
-    if (_controller != null || videdata?.videoUrl != null) {
+  Widget _videoBox() {
+    if (_controller != null || this.data?.videoUrl != null) {
       return Container(
         padding: EdgeInsets.fromLTRB(0, 10, 0, 40),
         child: Column(
           children: [
             Container(
                 padding: EdgeInsets.all(20),
-                child: UploadVideoDetail(videdata, _controller)),
+                child: UploadVideoDetail(this.data, _controller)),
             GestureDetector(
               child: Text('重新选择视频',
                   textAlign: TextAlign.center,
@@ -95,12 +129,12 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                     fontSize: 16,
                     color: ThemeColor.primaryColor,
                   )),
-              onTap: () {
+              onTap: debounce(() {
                 // 收起键盘
                 // FocusScope.of(context).requestFocus(FocusNode());
                 _controller?.pause();
                 _selectVideos();
-              },
+              }),
             ),
           ],
         ),
@@ -165,24 +199,19 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
   }
 
   // 上传提交
-  void _onUpVideoClick(data, learnPlanId, resourceId, from) async {
-    var _videoTitle = _taskName;
-    var _presenter = _doctorName;
-    if (_showTaskName != null && _taskName == null) {
-      _videoTitle = _showTaskName;
-    }
-    if (_showDoctorName != null && _doctorName == null) {
-      _presenter = _showDoctorName;
-    }
-    if (_selectVideoData == null && data == null) {
+  void _onUpVideoClick() async {
+    _controller.pause();
+    final form = _formKey.currentState;
+    form.save();
+    if (_selectVideoData == null) {
       EasyLoading.showToast('请选择视频');
       return;
     }
-    if (_videoTitle == null || !_videoTitle.isNotEmpty) {
+    if (this.data.videoTitle.isEmpty) {
       EasyLoading.showToast('请填写视频标题');
       return;
     }
-    if (_presenter == null || !_presenter.isNotEmpty) {
+    if (this.data.presenter.isEmpty) {
       EasyLoading.showToast('请填写视频主讲人');
       return;
     }
@@ -224,13 +253,15 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       await addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
-        'videoTitle': _videoTitle,
-        'presenter': _presenter,
+        'videoTitle': this.data.videoTitle,
+        'presenter': this.data.presenter,
         'videoOssId': entity != null ? entity.ossId : data.videoOssId,
       }).then((res) {
         EasyLoading.showToast('提交成功');
         // 延时1s执行返回
         Future.delayed(Duration(seconds: 1), () {
+          dynamic obj = ModalRoute.of(context).settings.arguments;
+          String from = obj['from'];
           if (from != null && from == 'work_top') {
             // 工作台进入详情页--只有返回
             //  第一个参数表示将要加入栈中的页面，第二个参数表示栈中要保留的页面底线
@@ -255,170 +286,125 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
   @override
   Widget build(BuildContext context) {
     dynamic obj = ModalRoute.of(context).settings.arguments;
-    String learnPlanId;
-    String resourceId;
-    bool reLearn;
-    if (obj != null) {
-      learnPlanId = obj["learnPlanId"].toString();
-      resourceId = obj['resourceId'].toString();
-      reLearn = obj['reLearn'];
-    }
-
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Text('讲课视频上传'),
-        ),
-        body: ProviderWidget<LearnRecordingModel>(
-            model: LearnRecordingModel(learnPlanId, resourceId, reLearn),
-            onModelReady: (model) => model.initData(),
-            builder: (context, model, child) {
-              if (model.isBusy) {
-                return Container();
-              }
-              // if (model.isError || model.isEmpty) {
-              //   return ViewStateEmptyWidget(onPressed: model.initData);
-              // }
-              var data = model.data;
-
-              _showDoctorName = _doctorName;
-              _showTaskName = _taskName;
-              if (data != null && data?.videoTitle != null) {
-                if (_taskName == null && data?.videoTitle != null) {
-                  _showTaskName = data.videoTitle;
-                }
-                if (_doctorName == null && data?.presenter != null) {
-                  _showDoctorName = data.presenter;
-                }
-              } else {
-                if (_taskName == null) {
-                  _showTaskName = obj['taskName'];
-                }
-                if (_doctorName == null) {
-                  _showDoctorName = obj['doctorName'];
-                }
-              }
-              return GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    // 触摸收起键盘
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  child: Container(
-                    alignment: Alignment.topCenter,
-                    color: ThemeColor.colorFFF3F5F8,
-                    child: ListView(
-                      // mainAxisAlignment: MainAxisAlignment.start,
+      appBar: AppBar(
+        elevation: 0,
+        title: Text('讲课视频上传'),
+      ),
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          // 触摸收起键盘
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Container(
+          alignment: Alignment.topCenter,
+          color: ThemeColor.colorFFF3F5F8,
+          child: ListView(
+            // mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
                       children: [
-                        Column(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                              // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
-                              ),
-                              child: ListTile(
-                                title: TextField(
-                                  keyboardType: TextInputType.multiline, //多行
-                                  inputFormatters: [
-                                    LengthLimitingTextInputFormatter(50)
-                                  ],
-                                  textAlign: TextAlign.right,
-                                  controller: TextEditingController(
-                                      text: _showTaskName),
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.all(10.0),
-                                  ),
-                                  autofocus: false,
-                                  focusNode: taskNameFocusNode,
-                                  style:
-                                      TextStyle(color: ThemeColor.primaryColor),
-                                  onChanged: (value) {
-                                    _taskName = value;
-                                  },
-                                ),
-                                leading: Text('视频标题',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20,
-                                      color: ThemeColor.primaryColor,
-                                    )),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                              // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
-                              ),
-                              child: ListTile(
-                                title: TextField(
-                                  keyboardType: TextInputType.multiline, //多行
-                                  inputFormatters: [
-                                    LengthLimitingTextInputFormatter(10)
-                                  ],
-
-                                  textAlign: TextAlign.right,
-                                  controller: TextEditingController(
-                                      text: _showDoctorName),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.all(10.0),
-                                    border: InputBorder.none,
-                                  ),
-                                  autofocus: false,
-                                  focusNode: doctorNameFocusNode,
-                                  style:
-                                      TextStyle(color: ThemeColor.primaryColor),
-
-                                  onChanged: (value) {
-                                    _doctorName = value;
-                                  },
-                                ),
-                                leading: Text('主讲人',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20,
-                                      color: ThemeColor.primaryColor,
-                                    )),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Container(
-                                    margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                                    padding: EdgeInsets.fromLTRB(16, 10, 0, 10),
-                                    child: Text('上传视频',
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 20,
-                                          color: ThemeColor.primaryColor,
-                                        )))
+                        Container(
+                          margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                          // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          child: ListTile(
+                            title: TextFormField(
+                              controller: titleController,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(50)
                               ],
+                              textAlign: TextAlign.right,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.all(10.0),
+                              ),
+                              autofocus: false,
+                              onSaved: (val) => this.data.videoTitle = val,
+                              // focusNode: taskNameFocusNode,
+                              style: TextStyle(color: ThemeColor.primaryColor),
                             ),
-                            _videoBox(data),
-                            AceButton(
-                                text: '上传并提交',
-                                onPressed: () => {
-                                      // 收起键盘
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode()),
-                                      _onUpVideoClick(data, learnPlanId,
-                                          resourceId, obj['from'])
-                                    }),
-                          ],
+                            leading: Text('视频标题',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 20,
+                                  color: ThemeColor.primaryColor,
+                                )),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                          // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          child: ListTile(
+                            title: TextFormField(
+                              controller: presenterController,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(10)
+                              ],
+                              textAlign: TextAlign.right,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10.0),
+                                border: InputBorder.none,
+                              ),
+                              autofocus: false,
+                              onSaved: (val) => this.data.presenter = val,
+                              // focusNode: doctorNameFocusNode,
+                              style: TextStyle(color: ThemeColor.primaryColor),
+                            ),
+                            leading: Text('主讲人',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 20,
+                                  color: ThemeColor.primaryColor,
+                                )),
+                          ),
                         ),
                       ],
                     ),
-                  ));
-            }));
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                          padding: EdgeInsets.fromLTRB(16, 10, 0, 10),
+                          child: Text('上传视频',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                                color: ThemeColor.primaryColor,
+                              )))
+                    ],
+                  ),
+                  _videoBox(),
+                  AceButton(
+                    text: '上传并提交',
+                    onPressed: () => {
+                      // 收起键盘
+                      FocusScope.of(context).requestFocus(FocusNode()),
+                      _onUpVideoClick()
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

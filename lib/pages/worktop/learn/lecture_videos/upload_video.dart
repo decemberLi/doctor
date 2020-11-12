@@ -29,6 +29,7 @@ class _UploadVideoDetailState extends State<UploadVideoDetail> {
         files[0]['tmpUrl'],
       );
     }
+    print('===========${_controller.dataSource}======');
     setState(() {});
   }
 
@@ -46,7 +47,7 @@ class _UploadVideoDetailState extends State<UploadVideoDetail> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    // _controller?.dispose();
     super.dispose();
   }
 
