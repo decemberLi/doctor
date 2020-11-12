@@ -267,10 +267,11 @@ class PlanDetailList extends StatelessWidget {
               "meetingEndTime": data.meetingEndTime,
               "taskDetailId": data.taskDetailId,
             });
-
-            ///提交学习时间
-            if (result != null) {
-              await updateLearnTime(result);
+            if (data.taskTemplate != 'DOCTOR_LECTURE') {
+              ///提交学习时间
+              if (result != null) {
+                await updateLearnTime(result);
+              }
             }
             LearnDetailViewModel _model =
                 Provider.of<LearnDetailViewModel>(context, listen: false);
