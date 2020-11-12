@@ -499,13 +499,15 @@ class _QuestionPageState extends State<QuestionPage> {
                       height: 60,
                     ),
                     if (widget.data.learnStatus != 'FINISHED' &&
-                        widget.data.learnPlanStatus != 'SUBMIT_LEARN') //已完成、已提交
+                        widget.data.learnPlanStatus != 'SUBMIT_LEARN' &&
+                        widget.data.learnPlanStatus != 'ACCEPTED') //已完成、已提交
                       AceButton(
                         onPressed: _openFile,
                         text: '提交',
                       ),
                     if (widget.data.learnStatus != 'FINISHED' &&
-                        widget.data.learnPlanStatus != 'SUBMIT_LEARN') //已完成、已提交
+                        widget.data.learnPlanStatus != 'SUBMIT_LEARN' &&
+                        widget.data.learnPlanStatus != 'ACCEPTED') //已完成、已提交
                       SizedBox(
                         height: 360,
                       ),
