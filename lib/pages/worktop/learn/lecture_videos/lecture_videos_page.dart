@@ -22,6 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:video_compress/video_compress.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/rendering.dart';
@@ -42,6 +43,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
   TextEditingController presenterController = TextEditingController();
   VideoPlayerController _controller;
   File _selectVideoData;
+
+  final ImagePicker _picker = ImagePicker();
 
   String learnPlanId;
   String resourceId;
@@ -97,18 +100,35 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
 
   Future<void> _selectVideos() async {
     try {
-      final File file = await ImageHelper.pickSingleVideo(
-        context,
-        source: 1,
-      );
+      // final File file = await ImageHelper.pickSingleVideo(
+      //   context,
+      //   source: 1,
+      // );
+      await Future.delayed(Duration(milliseconds: 500));
+      final PickedFile file = await _picker.getVideo(
+          source: ImageSource.gallery,
+          maxDuration: const Duration(seconds: 10));
       if (file != null && mounted) {
-        _controller = VideoPlayerController.file(file);
+        EasyLoading.show(status: '视频压缩中...');
+        MediaInfo mediaInfo = await VideoCompress.compressVideo(
+          file.path,
+          quality: VideoQuality.DefaultQuality,
+          frameRate: 20,
+          deleteOrigin: false, // It's false by default
+          includeAudio: true,
+        );
+        print(mediaInfo.toJson().toString());
+        _controller = VideoPlayerController.file(mediaInfo.file);
         await _controller.setVolume(1.0);
+        EasyLoading.dismiss();
         setState(() {
-          _selectVideoData = file;
+          _selectVideoData = mediaInfo.file;
         });
       }
-    } on PlatformException {}
+    } catch (e) {
+      EasyLoading.showToast('压缩失败');
+      print(e.toString());
+    }
   }
 
   // 视频播放
@@ -231,21 +251,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
     if (bindConfirm) {
       OssFileEntity entity;
       if (_selectVideoData != null) {
-        EasyLoading.show(status: '视频压缩中...');
-        MediaInfo mediaInfo;
-        try {
-          mediaInfo = await VideoCompress.compressVideo(_selectVideoData.path,
-              quality: VideoQuality.DefaultQuality,
-              frameRate: 20,
-              deleteOrigin: false, // It's false by default
-              includeAudio: true);
-          print(mediaInfo.toJson().toString());
-        } catch (e) {
-          EasyLoading.showToast('压缩失败');
-        }
-
         entity = await OssService.upload(
-          mediaInfo?.file?.path ?? _selectVideoData.path,
+          _selectVideoData.path,
         );
         await VideoCompress.deleteAllCache();
       }
