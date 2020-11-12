@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:doctor/http/common_service.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/worktop/learn/lecture_videos/upload_video.dart';
@@ -18,6 +19,7 @@ import 'package:doctor/utils/debounce.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/utils/no_wifi_notice_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
+import 'package:doctor/widgets/video/chewie_video.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -64,9 +66,10 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
 
   @override
   void dispose() {
-    super.dispose();
     taskNameFocusNode.dispose();
     doctorNameFocusNode.dispose();
+    _controller?.dispose();
+    super.dispose();
   }
 
   initData() async {
@@ -87,11 +90,17 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         'resourceId': this.resourceId,
       });
 
+      var files = await CommonService.getFile({
+        'ossIds': [result['videoOssId']],
+      });
+      _controller = VideoPlayerController.network(
+        files[0]['tmpUrl'],
+      );
+
       setState(() {
         this.data = LearnRecordingItem.fromJson(result);
         titleController.text = this.data.videoTitle;
         presenterController.text = this.data.presenter;
-        print(this.data.toJson());
       });
     } catch (e) {
       return e;
@@ -139,8 +148,9 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         child: Column(
           children: [
             Container(
-                padding: EdgeInsets.all(20),
-                child: UploadVideoDetail(this.data, _controller)),
+              padding: EdgeInsets.all(20),
+              child: ChewieVideo(controller: _controller),
+            ),
             GestureDetector(
               child: Text('重新选择视频',
                   textAlign: TextAlign.center,
@@ -220,10 +230,10 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
 
   // 上传提交
   void _onUpVideoClick() async {
-    _controller.pause();
+    _controller?.pause();
     final form = _formKey.currentState;
     form.save();
-    if (_selectVideoData == null) {
+    if (_selectVideoData == null && this.data?.videoOssId == null) {
       EasyLoading.showToast('请选择视频');
       return;
     }
@@ -267,22 +277,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         EasyLoading.showToast('提交成功');
         // 延时1s执行返回
         Future.delayed(Duration(seconds: 1), () {
-          dynamic obj = ModalRoute.of(context).settings.arguments;
-          String from = obj['from'];
-          if (from != null && from == 'work_top') {
-            // 工作台进入详情页--只有返回
-            //  第一个参数表示将要加入栈中的页面，第二个参数表示栈中要保留的页面底线
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => LearnPlanPage()),
-                ModalRoute.withName(RouteManager.HOME));
-            // Navigator.of(context)
-            //     .popUntil(ModalRoute.withName(RouteManager.HOME));
-          } else {
-            // 点击回到learn_page，连带着之前也一起退出
-            Navigator.of(context)
-                .popUntil(ModalRoute.withName(RouteManager.LEARN_PAGE));
-          }
-          // Navigator.of(context).pushNamed(RouteManager.LEARN_PAGE);
+          Navigator.of(context).pop(true);
         });
       }).catchError((error) {
         EasyLoading.showToast(error.errorMsg);

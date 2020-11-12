@@ -95,12 +95,12 @@ class _ChewieVideoWidgetState extends State<ChewieVideo> {
   }
 
   //网络结束监听
-  connectivityDispose() {
-    _connectivitySubscription.cancel();
+  Future<void> connectivityDispose() async {
+    await _connectivitySubscription.cancel();
   }
 
   @override
-  void dispose() {
+  dispose() {
     _chewieController?.pause();
     _chewieController?.dispose();
     _controller?.dispose();

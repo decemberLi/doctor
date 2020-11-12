@@ -63,7 +63,6 @@ class _SettingPageState extends State<SettingPage> {
     return GestureDetector(
       child: Container(
         height: 50,
-        padding: EdgeInsets.only(right: 18),
         margin: EdgeInsets.only(left: 16, right: 16, top: 12),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -75,7 +74,7 @@ class _SettingPageState extends State<SettingPage> {
           children: [
             Expanded(
               child: Container(
-                margin: EdgeInsets.only(left: 24),
+                alignment: Alignment.center,
                 child: Text(
                   '退出登录',
                   style:

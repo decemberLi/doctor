@@ -272,7 +272,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                           children: <Widget>[
                             if (data.taskTemplate == 'DOCTOR_LECTURE' &&
                                 data.reLearnReason != null &&
-                                arguments['listStatus'] != 'HISTORY')
+                                data.status != 'SUBMIT_LEARN' &&
+                                data.status != 'ACCEPTED')
                               Container(
                                 alignment: Alignment.centerLeft,
                                 margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -421,21 +422,28 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                               // return;
                                               if (data.taskTemplate ==
                                                   'DOCTOR_LECTURE') {
-                                                Navigator.of(context).pushNamed(
-                                                    RouteManager.LECTURE_VIDEOS,
-                                                    arguments: {
-                                                      'reLearn': data.reLearn,
-                                                      'resourceId': data
-                                                          .resources[0]
-                                                          .resourceId,
-                                                      'learnPlanId':
-                                                          data.learnPlanId,
-                                                      'doctorName': userInfo
-                                                              ?.doctorName ??
-                                                          '',
-                                                      'taskName': data.taskName,
-                                                      'from': arguments['from'],
-                                                    });
+                                                var result =
+                                                    await Navigator.of(context)
+                                                        .pushNamed(
+                                                  RouteManager.LECTURE_VIDEOS,
+                                                  arguments: {
+                                                    'reLearn': data.reLearn,
+                                                    'resourceId': data
+                                                        .resources[0]
+                                                        .resourceId,
+                                                    'learnPlanId':
+                                                        data.learnPlanId,
+                                                    'doctorName':
+                                                        userInfo?.doctorName ??
+                                                            '',
+                                                    'taskName': data.taskName,
+                                                    'from': arguments['from'],
+                                                  },
+                                                );
+                                                if (data.reLearn &&
+                                                    result == true) {
+                                                  model.initData();
+                                                }
                                               } else {
                                                 // EasyLoading.showToast('暂未开放'),
                                                 if (data.learnProgress == 0) {
