@@ -440,8 +440,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                     'from': arguments['from'],
                                                   },
                                                 );
-                                                if (data.reLearn &&
-                                                    result == true) {
+                                                if (result == true) {
                                                   model.initData();
                                                 }
                                               } else {
