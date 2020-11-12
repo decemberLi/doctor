@@ -81,6 +81,7 @@ class RpList extends StatelessWidget {
             margin: EdgeInsets.only(top: 14),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
               children: [
                 Icon(
                   Icons.circle,
@@ -90,9 +91,11 @@ class RpList extends StatelessWidget {
                 SizedBox(
                   width: 4,
                 ),
-                Text(
-                  '国家规定，对首诊患者进行医疗行为时，必须当面诊查。',
-                  style: MyStyles.labelTextStyle_12.copyWith(fontSize: 10),
+                Expanded(
+                  child: Text(
+                    '国家规定，对首诊患者进行医疗行为时，必须当面诊查。',
+                    style: MyStyles.labelTextStyle_12.copyWith(fontSize: 10),
+                  ),
                 ),
               ],
             ),

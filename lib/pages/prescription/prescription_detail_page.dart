@@ -90,6 +90,7 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
   Widget _buildEditBtn() {
     return Container(
       alignment: Alignment.topCenter,
+      padding: EdgeInsets.symmetric(horizontal: 10),
       child: Consumer2<PrescriptionDetailModel, PrescriptionViewModel>(
         builder: (_, model, prescriptionViewModel, __) {
           if (model.data?.status == 'REJECT') {

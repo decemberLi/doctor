@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PrescriptionCreateBtn extends StatelessWidget {
+  final double width;
+  PrescriptionCreateBtn({this.width = 138});
   @override
   Widget build(BuildContext context) {
     return Consumer<PrescriptionViewModel>(
@@ -14,7 +16,7 @@ class PrescriptionCreateBtn extends StatelessWidget {
           type: AceButtonType.secondary,
           color: ThemeColor.primaryColor,
           textColor: Colors.white,
-          width: 138,
+          width: this.width,
           text: '生成处方',
           onPressed: () {
             model.savePrescription((String prescriptionNo) async {

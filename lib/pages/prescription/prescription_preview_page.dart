@@ -39,7 +39,7 @@ class PrescriptionPreviewPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AceButton(
-                width: 138,
+                width: 110,
                 type: AceButtonType.outline,
                 textColor: ThemeColor.primaryColor,
                 text: '去修改',
@@ -47,7 +47,13 @@ class PrescriptionPreviewPage extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-              PrescriptionCreateBtn(),
+              SizedBox(
+                width: 10.0,
+                height: 10.0,
+              ),
+              PrescriptionCreateBtn(
+                width: 110,
+              ),
             ],
           ),
         ),

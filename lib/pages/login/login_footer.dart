@@ -80,45 +80,47 @@ class _LoginFooterState extends State<LoginFooter> {
             ),
             onPressed: saveAgree,
           ),
-          Container(
-            padding: EdgeInsets.only(top: 2),
-            width: 260,
-            child: Text.rich(
-              TextSpan(children: [
-                TextSpan(
-                  text: "登录代表你已阅读并同意 ",
-                  style: MyStyles.greyTextStyle_12,
-                ),
-                TextSpan(
-                  text: "《易学术服务协议》",
-                  style: MyStyles.primaryTextStyle_12,
-                  recognizer: _tap1
-                    ..onTap = () {
-                      FlutterFilePreview.openFile(
-                        'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.pdf',
-                        title: '易学术服务协议',
-                        context: context,
-                      );
-                    },
-                ),
-                TextSpan(
-                  text: "及 ",
-                  style: MyStyles.greyTextStyle_12,
-                ),
-                TextSpan(
-                  text: "《易学术隐私协议》",
-                  style: MyStyles.primaryTextStyle_12,
-                  recognizer: _tap2
-                    ..onTap = () {
-                      FlutterFilePreview.openFile(
-                        'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.pdf',
-                        title: '易学术隐私协议',
-                        context: context,
-                      );
-                    },
-                ),
-              ]),
-              textAlign: TextAlign.center,
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.only(top: 2),
+              width: 260,
+              child: Text.rich(
+                TextSpan(children: [
+                  TextSpan(
+                    text: "登录代表你已阅读并同意 ",
+                    style: MyStyles.greyTextStyle_12,
+                  ),
+                  TextSpan(
+                    text: "《易学术服务协议》",
+                    style: MyStyles.primaryTextStyle_12,
+                    recognizer: _tap1
+                      ..onTap = () {
+                        FlutterFilePreview.openFile(
+                          'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.pdf',
+                          title: '易学术服务协议',
+                          context: context,
+                        );
+                      },
+                  ),
+                  TextSpan(
+                    text: "及 ",
+                    style: MyStyles.greyTextStyle_12,
+                  ),
+                  TextSpan(
+                    text: "《易学术隐私协议》",
+                    style: MyStyles.primaryTextStyle_12,
+                    recognizer: _tap2
+                      ..onTap = () {
+                        FlutterFilePreview.openFile(
+                          'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.pdf',
+                          title: '易学术隐私协议',
+                          context: context,
+                        );
+                      },
+                  ),
+                ]),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ],
