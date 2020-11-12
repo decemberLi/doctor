@@ -14,7 +14,7 @@ class AppRepository {
       'appType': 'DOCTOR',
       'appVersoin': await PlatformUtils.getAppVersion(),
       'platform': Platform.isAndroid ? 'ANDROID' : 'IOS'
-    });
+    }, showLoading: false);
     if(response == null || response.length == 0){
       print('无升级版本');
       return null;

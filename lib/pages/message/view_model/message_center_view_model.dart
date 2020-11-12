@@ -10,7 +10,8 @@ class MessageCenterViewModel extends ViewStateModel {
   MessageCenterEntity data;
 
   initData() async {
-    var result = await foundation.post('/message/unread-type-count');
+    var result =
+        await foundation.post('/message/unread-type-count', showLoading: false);
     data = MessageCenterEntity.fromJson(result);
     notifyListeners();
   }

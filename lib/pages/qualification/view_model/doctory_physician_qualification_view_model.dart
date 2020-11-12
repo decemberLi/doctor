@@ -68,14 +68,15 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   setAvatar(String path) async {
+    UploadFileEntity entity = await uploadImageToOss(path);
     if (_model.physicianInfoEntity.fullFacePhoto == null) {
       _model.physicianInfoEntity.fullFacePhoto = FacePhoto.create();
     }
+
     var facePhoto = _model.physicianInfoEntity.fullFacePhoto;
     facePhoto.path = path;
     facePhoto.url = null;
     notifyDataChange();
-    UploadFileEntity entity = await uploadImageToOss(path);
     facePhoto.url = entity.url;
     facePhoto.ossId = entity.ossId;
     facePhoto.name = entity.ossFileName;
@@ -184,6 +185,8 @@ class DoctorPhysicianQualificationViewModel {
 
   _processUploadImgLogic(List<FacePhoto> list, String path,
       FacePhoto toBeChange, int index) async {
+
+    UploadFileEntity entity = await uploadImageToOss(path);
     // update
     FacePhoto toBeChange;
     if (index < list.length) {
@@ -192,11 +195,9 @@ class DoctorPhysicianQualificationViewModel {
       toBeChange = FacePhoto.create();
       list.add(toBeChange);
     }
-
     toBeChange.path = path;
     toBeChange.url = null;
     notifyDataChange();
-    UploadFileEntity entity = await uploadImageToOss(path);
     toBeChange.ossId = entity.ossId;
     toBeChange.url = entity.url;
     toBeChange.name = entity.ossFileName;

@@ -1,21 +1,24 @@
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/model/oss_policy.dart';
 import 'package:doctor/model/uploaded_file_entity.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 /// 临时方案
 ///
 
 _querySignature() async {
-  var result = await foundation.post('/ali-oss/policy');
+  var result = await foundation.post('/ali-oss/policy', showLoading: false);
   return OssPolicy.fromJson(result);
 }
 
 _saveImage(Map<String, dynamic> param) async {
-  var result = await foundation.post('/ali-oss/save', params: param);
+  var result =
+      await foundation.post('/ali-oss/save', params: param, showLoading: false);
   return UploadFileEntity.fromJson(result);
 }
 
 uploadImageToOss(String path) async {
+  EasyLoading.show();
   OssPolicy policy = await _querySignature();
 
   String originName = path.substring(path.lastIndexOf('/') + 1, path.length);
@@ -32,5 +35,6 @@ uploadImageToOss(String path) async {
   };
   UploadFileEntity entity = await _saveImage(param);
   entity.ossFileName = ossFileName;
+  EasyLoading.dismiss();
   return entity;
 }

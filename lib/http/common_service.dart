@@ -28,7 +28,6 @@ class CommonService {
     Map<String, dynamic> param,
     String loadingText = '加载中...',
   }) async {
-    EasyLoading.show(status: loadingText);
 
     var formData = FormData.fromMap({
       'key': key,
