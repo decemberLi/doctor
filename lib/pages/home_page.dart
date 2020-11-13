@@ -44,10 +44,10 @@ class _HomePageState extends State<HomePage>
     if (index == _currentIndex) {
       return;
     }
-    // if (index == 1) {
-    //   showComingSoonToast();
-    //   return;
-    // }
+    if (index == 1) {
+      showComingSoonToast();
+      return;
+    }
     int preTabIndex = _currentIndex;
     if (index == 0) {
       this.updateDoctorInfo();

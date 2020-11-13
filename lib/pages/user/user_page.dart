@@ -368,22 +368,25 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   messageItem('资质认证', 'assets/images/zzrz.png', () {
-                    // showComingSoonToast();
-                    // return;
-                    if (doctorData['authStatus'] == 'VERIFYING' ||
-                        doctorData['authStatus'] == 'PASS') {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DoctorPhysicianStatusPage(
-                                  doctorData['authStatus'])));
-                      return;
-                    }
-                    Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
-                        arguments: {
-                          'doctorData': doctorData,
-                          'qualification': true,
-                        });
+                    showComingSoonToast();
+                    return;
+                    // if (doctorData['authStatus'] == 'VERIFYING' ||
+                    //     doctorData['authStatus'] == 'PASS') {
+                    //   Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) => DoctorPhysicianStatusPage(
+                    //               doctorData['authStatus'])));
+                    //   return;
+                    // }
+                    // Navigator.pushNamed(
+                    //   context,
+                    //   RouteManager.USERINFO_DETAIL,
+                    //   arguments: {
+                    //     'doctorData': doctorData,
+                    //     'qualification': true,
+                    //   },
+                    // );
                   }),
                   messageItem('设置', 'assets/images/setting.png', () {
                     Navigator.pushNamed(context, RouteManager.SETTING);

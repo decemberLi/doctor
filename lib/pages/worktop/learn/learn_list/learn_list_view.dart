@@ -62,6 +62,10 @@ class _LearnListPageState extends State<LearnListPage>
           _currentTabIndex = index;
           model.taskTemplate = TASK_TYPE_MAP[_currentTabIndex]['taskTemplate'];
           model.initData();
+          if (widget.onTaskTypeChange != null) {
+            widget.onTaskTypeChange(
+                TASK_TYPE_MAP[_currentTabIndex]['taskTemplate']);
+          }
           model?.refreshController?.position?.animateTo(0.0,
               duration: Duration(milliseconds: 16), curve: Curves.linear);
         });
