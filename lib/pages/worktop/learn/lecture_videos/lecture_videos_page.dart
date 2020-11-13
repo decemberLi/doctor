@@ -113,7 +113,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       //   context,
       //   source: 1,
       // );
-      await Future.delayed(Duration(milliseconds: 500));
+      // await Future.delayed(Duration(milliseconds: 500));
       final PickedFile file = await _picker.getVideo(
           source: ImageSource.gallery,
           maxDuration: const Duration(seconds: 10));
@@ -164,7 +164,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                 // FocusScope.of(context).requestFocus(FocusNode());
                 _controller?.pause();
                 _selectVideos();
-              }),
+              }, duration: 500),
             ),
           ],
         ),
@@ -187,7 +187,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
                   //FocusScope.of(context).requestFocus(FocusNode());
                   _controller?.pause();
                   _selectVideos();
-                }),
+                }, duration: 500),
               ),
             ),
           ]);
