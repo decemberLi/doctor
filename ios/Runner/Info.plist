@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -27,12 +27,28 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>禁止后将无法访问你的媒体资料库</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>禁止后将无法访问你的日历</string>
 	<key>NSCameraUsageDescription</key>
 	<string>为了您使用纸质处方上传、医师资质认证等服务，请允许易学术使用摄像头功能</string>
+	<key>NSContactsUsageDescription</key>
+	<string>禁止后将无法访问你的通讯录</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>易学术 需要使用定位,如果你拒绝,将可能影响正常使用</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>易学术 需要使用定位,如果你拒绝,定位和地图部分功能将不能正常使用.使用这种持续定位方式,将会在后台消耗你的电量,你也可以在iOS的设置中修改定位模式</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>易学术 需要使用定位,如果你拒绝,定位和地图部分功能将不能正常使用</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>为了您使用纸质处方上传、医师资质认证等服务，请允许易学术使用麦克风功能</string>
+	<key>NSMotionUsageDescription</key>
+	<string>App需要您的同意,才能访问运动与健身</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>为了您使用纸质处方上传、医师资质认证等服务，请允许易学术访问所有照片</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>禁止后将无法使用语音转换文字</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -41,10 +57,6 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>arm64</string>
-	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -59,6 +71,8 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>
 </plist>
