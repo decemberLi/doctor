@@ -9,7 +9,6 @@ import 'package:doctor/pages/user/user_page.dart';
 import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/utils/coming_soon_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,10 +41,6 @@ class _HomePageState extends State<HomePage>
 
   void onTabTapped(int index) {
     if (index == _currentIndex) {
-      return;
-    }
-    if (index == 1) {
-      showComingSoonToast();
       return;
     }
     int preTabIndex = _currentIndex;
