@@ -12,6 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class PrescriptionTemplageAddPage extends StatefulWidget {
+  final String action;
+
+  final PrescriptionTemplateModel data;
+
+  bool isAddPrescriptionTemplate() => action == 'add';
+
+  PrescriptionTemplageAddPage({this.action, this.data});
+
   @override
   _PrescriptionTemplageAddPageState createState() =>
       _PrescriptionTemplageAddPageState();
@@ -24,6 +32,14 @@ class _PrescriptionTemplageAddPageState
   final _formKey = GlobalKey<FormState>();
 
   HttpManager http = HttpManager('dtp');
+
+  @override
+  void initState() {
+    if (widget.data != null) {
+      this.data = widget.data;
+    }
+    super.initState();
+  }
 
   changeDataNotify() {
     setState(() {});
@@ -38,7 +54,12 @@ class _PrescriptionTemplageAddPageState
       }
       form.save();
       try {
-        var res = await addPrescriptionTemplate(this.data.toJson());
+        var res;
+        if (widget.isAddPrescriptionTemplate()) {
+          res = await addPrescriptionTemplate(this.data.toJson());
+        } else {
+          res = await modifyPrescriptionTemplate(this.data.toJson());
+        }
         if (!(res is DioError)) {
           Navigator.pop(context, true);
         }
@@ -58,7 +79,8 @@ class _PrescriptionTemplageAddPageState
         child: Scaffold(
           appBar: AppBar(
             elevation: 0,
-            title: Text('添加处方模板'),
+            title:
+                Text(widget.isAddPrescriptionTemplate() ? '添加处方模板' : '编辑处方模版'),
           ),
           // 避免键盘弹起时高度错误
           resizeToAvoidBottomInset: false,
