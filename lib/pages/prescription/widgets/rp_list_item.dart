@@ -93,6 +93,7 @@ class RpListItem extends StatelessWidget {
                   ),
                 ),
                 AceSpinnerInput(
+                  maxValue: data.purchaseLimit,
                   spinnerValue: data.quantity + .0 ?? 1,
                   onChange: (newValue) {
                     data.quantity = newValue;
