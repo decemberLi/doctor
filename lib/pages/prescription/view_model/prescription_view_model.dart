@@ -13,6 +13,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 /// 开处方主页面viewModel
 class PrescriptionViewModel extends ViewStateModel {
   PrescriptionModel data = PrescriptionModel();
+
   // PrescriptionModel data = PrescriptionModel(attachments: [
   //   OssFileEntity(
   //     ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
@@ -103,6 +104,13 @@ class PrescriptionViewModel extends ViewStateModel {
     }
     if (this.data.prescriptionPatientSex == null) {
       EasyLoading.showToast('请选择性别');
+      return false;
+    }
+    if (this.data.prescriptionPatientAge > 14) {
+      this.data.weight = null;
+    } else if (this.data.prescriptionPatientAge <= 14 &&
+        this.data.weight == null) {
+      EasyLoading.showToast('体重不能为空');
       return false;
     }
     if (this.data.clinicalDiagnosis == null ||

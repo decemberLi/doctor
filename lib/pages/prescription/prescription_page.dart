@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
@@ -39,6 +41,16 @@ class _PrescriptionPageState extends State<PrescriptionPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  bool _needShowWeight = false;
+  Timer _timer;
+
+  @override
+  void dispose() {
+    if (_timer != null && _timer.isActive) {
+      _timer.cancel();
+    }
+    super.dispose();
+  }
 
   // 显示临床诊断弹窗
   Future<void> _showClinicalDiagnosisSheet(Function onSave) {
@@ -260,6 +272,21 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             return;
                           }
                           model.data.prescriptionPatientAge = int.parse(value);
+                          var needShow =
+                              model.data.prescriptionPatientAge != null &&
+                                  model.data.prescriptionPatientAge <= 14;
+                          if (_timer != null && _timer.isActive) {
+                            _timer.cancel();
+                          }
+                          print('check');
+                          _timer = new Timer(const Duration(milliseconds: 800), () {
+                            setState(() {
+                              if(!(_needShowWeight && needShow)){
+                                model.data.weight = null;
+                              }
+                              _needShowWeight = needShow;
+                            });
+                          });
                           // model.changeDataNotify();
                         },
                         obscureText: false,
@@ -278,6 +305,35 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             model.data.prescriptionPatientSex = value;
                           }),
                     ),
+                    _needShowWeight
+                        ? FormItem(
+                            label: '体重',
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: '请输入患者体重',
+                                counterText: '',
+                              ),
+                              controller: TextEditingController(),
+                              validator: (val) =>
+                                  val.length < 1 ? '体重不能为空' : null,
+                              onChanged: (String value) {
+                                if (value.isEmpty) {
+                                  model.data.weight = null;
+                                  return;
+                                }
+                                model.data.weight = int.parse(value);
+                                // model.changeDataNotify();
+                              },
+                              obscureText: false,
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: false),
+                              style: MyStyles.inputTextStyle,
+                              textAlign: TextAlign.right,
+                            )..controller.text =
+                                model.data?.weight?.toString() ?? '',
+                          )
+                        : Container()
                   ],
                 ),
                 PrescripionCard(
