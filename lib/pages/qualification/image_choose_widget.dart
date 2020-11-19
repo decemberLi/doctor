@@ -84,9 +84,12 @@ class ImageChooseWidget extends StatelessWidget {
           Container(
             alignment: Alignment.center,
             height: height > 85 ? height : 85,
-            width: width?? double.infinity,
+            width: width ?? double.infinity,
             decoration: _dashDecoration,
-            child: Image.network(url, fit: BoxFit.fill),
+            child: GestureDetector(child: Image.network(url, fit: BoxFit.fill),
+            onTap: (){
+              showOriginImgCallback();
+            },),
           ),
           Positioned(
             right: -6,

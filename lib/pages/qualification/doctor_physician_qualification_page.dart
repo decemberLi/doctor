@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:doctor/model/face_photo.dart';
 import 'package:doctor/pages/qualification/image_choose_widget.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/dashed_decoration.dart';
+import 'package:doctor/widgets/photo_view_gallery_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,7 +81,7 @@ class _PhysicianQualificationWidgetState
                           child:
                               _hintTextStyle('医师执业证、资格证、专业技术资格证（支持原件或彩色扫描件）'),
                           margin:
-                              EdgeInsets.only(left: 10, top: 18, bottom: 18),
+                              EdgeInsets.only(left: 18, top: 18, bottom: 18),
                         ),
                         _buildPracticeWidget(snapshot.data),
                         _buildPhysicianWidget(snapshot.data),
@@ -112,14 +114,14 @@ class _PhysicianQualificationWidgetState
     );
   }
 
-  _buildGrid(
-      {String title,
-      List<FacePhoto> list,
-      OnItemCallback callback,
-      OnRemoveImageCallback removeCallback,
-      String sampleAssets,
-      TypeOperator type,
-      showDesc = false}) {
+  _buildGrid({
+    String title,
+    List<FacePhoto> list,
+    OnItemCallback callback,
+    OnRemoveImageCallback removeCallback,
+    String sampleAssets,
+    TypeOperator type,
+  }) {
     List<Widget> widgets = [];
     for (var idx = 0; idx < list.length; idx++) {
       FacePhoto photo = list[idx];
@@ -131,6 +133,9 @@ class _PhysicianQualificationWidgetState
         },
         removeImgCallback: () {
           removeCallback(idx);
+        },
+        showOriginImgCallback: () {
+          _showOriginImage(list.map((e) => e.url).toList(), idx);
         },
       ));
     }
@@ -153,7 +158,7 @@ class _PhysicianQualificationWidgetState
 
     return Card(
       child: Container(
-        padding: EdgeInsets.only(top: 0, bottom: 16, left: 10),
+        padding: EdgeInsets.only(left: 18, right: 18, bottom: 18),
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,17 +168,23 @@ class _PhysicianQualificationWidgetState
               margin: EdgeInsets.only(top: 10),
               child: Wrap(
                 clipBehavior: Clip.none,
-                runSpacing: 10,
-                spacing: 10,
+                runSpacing: 20,
+                spacing: 20,
                 children: widgets,
               ),
             ),
-            showDesc
-                ? Container(
-                    child: _hintTextStyle('医师执业证、资格证、专业技术资格证（支持原件或彩色扫描件）'),
-                  )
-                : Container(),
           ],
+        ),
+      ),
+    );
+  }
+
+  _showOriginImage(List data, int idx) {
+    Navigator.of(context).push(
+      FadeRoute(
+        page: PhotoViewGalleryScreen(
+          images: data,
+          index: idx,
         ),
       ),
     );
@@ -198,7 +209,10 @@ class _PhysicianQualificationWidgetState
               removeImgCallback: () {
                 _model.setAvatar(null);
               },
-              showOriginImgCallback: () {},
+              showOriginImgCallback: () {
+                _showOriginImage(
+                    [model?.physicianInfoEntity?.fullFacePhoto?.url], 0);
+              },
             ),
             Container(
               width: 10,
@@ -233,9 +247,13 @@ class _PhysicianQualificationWidgetState
   }
 
   _buildIdCardWidget(DoctorQualificationModel model) {
+    List<String> data = [
+      model?.physicianInfoEntity?.idCardLicense1?.url,
+      model?.physicianInfoEntity?.idCardLicense2?.url
+    ];
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -252,7 +270,9 @@ class _PhysicianQualificationWidgetState
                   addImgCallback: () =>
                       _selectPicture(TypeOperator.ID_CARD_FACE_SIDE),
                   removeImgCallback: () => _model.setIdCardFaceSide(null),
-                  showOriginImgCallback: () {},
+                  showOriginImgCallback: () {
+                    _showOriginImage(data, 0);
+                  },
                 )),
                 Container(
                   width: 10,
@@ -264,7 +284,9 @@ class _PhysicianQualificationWidgetState
                   addImgCallback: () =>
                       _selectPicture(TypeOperator.ID_CARD_BG_SIDE),
                   removeImgCallback: () => _model.setIdCardFaceSide(null),
-                  showOriginImgCallback: () {},
+                  showOriginImgCallback: () {
+                    _showOriginImage(data, 1);
+                  },
                 )),
               ],
             ),
@@ -279,7 +301,6 @@ class _PhysicianQualificationWidgetState
         model?.physicianInfoEntity?.practiceCertificates ?? [];
 
     return _buildGrid(
-        showDesc: true,
         title: '医师执业证（至少需上传编码页和执业地点页）',
         list: originList,
         type: TypeOperator.PRACTICE_CERTIFICATES,
@@ -395,20 +416,23 @@ class _PhysicianQualificationWidgetState
   }
 
   _buildNoticeWidget(DoctorQualificationModel data) {
-    var style = TextStyle(fontSize: 12, color: ThemeColor.colorFF222222);
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(left: 0, top: 10, right: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('完成医师资质认证后，将为您开通复诊开方服务',
-              style: TextStyle(fontSize: 14, color: ThemeColor.colorFF222222)),
-          Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Text('平台认证有效后，即可开通电子处方功能', style: style)),
-          Text('请您放心填写，以下信息仅供认证使用，我们将严格保密', style: style)
-        ],
+    var style = TextStyle(fontSize: 12, color: Colors.white);
+    return Card(
+      color: ThemeColor.colorFF8FC1FE,
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('完成医师资质认证后，将为您开通复诊开方服务',
+                style: TextStyle(fontSize: 14, color: Colors.white)),
+            Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Text('平台认证有效后，即可开通电子处方功能', style: style)),
+            Text('请您放心填写，以下信息仅供认证使用，我们将严格保密', style: style)
+          ],
+        ),
       ),
     );
   }
@@ -461,7 +485,7 @@ class _PhysicianQualificationWidgetState
     var url = model?.physicianInfoEntity?.signature?.url;
     return Card(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
+        padding: EdgeInsets.fromLTRB(18, 18, 18, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -505,7 +529,10 @@ class _PhysicianQualificationWidgetState
 
   _signatureContent(String url) {
     if (url != null && url != '') {
-      return Image.network(url, width: 108, height: 54);
+      return GestureDetector(
+        child: Image.network(url, width: 108, height: 54),
+        onTap: () => _showOriginImage([url], 0),
+      );
     } else {
       return Row(
         mainAxisSize: MainAxisSize.min,
