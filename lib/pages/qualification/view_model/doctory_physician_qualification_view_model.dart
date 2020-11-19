@@ -220,8 +220,11 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   void setSignature(path) async {
-    var uploadResult = uploadImageToOss(path);
-    _model.physicianInfoEntity.signature = uploadResult;
+    UploadFileEntity entity = await uploadImageToOss(path);
+    _model.physicianInfoEntity.signature = FacePhoto.create();
+    _model.physicianInfoEntity.signature.url = entity.url;
+    _model.physicianInfoEntity.signature.name = entity.ossFileName;
+    _model.physicianInfoEntity.signature.ossId = entity.ossId;
     notifyDataChange();
   }
 
