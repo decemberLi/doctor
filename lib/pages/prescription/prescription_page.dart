@@ -44,6 +44,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
   bool get wantKeepAlive => true;
   bool _needShowWeight = false;
   Timer _timer;
+  bool _showUnit = false;
 
   @override
   void dispose() {
@@ -310,31 +311,44 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                     _needShowWeight
                         ? FormItem(
                             label: '体重',
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: '请输入患者体重',
-                                counterText: '',
-                              ),
-                              controller: TextEditingController(),
-                              validator: (val) =>
-                                  val.length < 1 ? '体重不能为空' : null,
-                              onChanged: (String value) {
-                                if (value.isEmpty) {
-                                  model.data.weight = null;
-                                  return;
-                                }
-                                model.data.weight = int.parse(value);
-                                // model.changeDataNotify();
-                              },
-                              obscureText: false,
-                              keyboardType: TextInputType.numberWithOptions(
-                                  decimal: false),
-                              style: MyStyles.inputTextStyle,
-                              textAlign: TextAlign.right,
-                            )..controller.text =
-                                model.data?.weight?.toString() ?? '',
-                          )
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: '请输入患者体重',
+                                      counterText: '',
+                                    ),
+                                    controller: TextEditingController(),
+                                    validator: (val) =>
+                                        val.length < 1 ? '体重不能为空' : null,
+                                    onChanged: (String value) {
+                                      if (value.isEmpty) {
+                                        model.data.weight = null;
+                                        _showUnit = false;
+                                        setState(() {});
+                                        return;
+                                      }
+                                      _showUnit = true;
+                                      model.data.weight = int.parse(value);
+                                      setState(() {});
+                                      // model.changeDataNotify();
+                                    },
+                                    obscureText: false,
+                                    keyboardType:
+                                        TextInputType.numberWithOptions(
+                                            decimal: false),
+                                    style: MyStyles.inputTextStyle,
+                                    textAlign: TextAlign.right,
+                                  )..controller.text =
+                                      model.data?.weight?.toString() ?? '',
+                                ),
+                                _showUnit
+                                    ? Text('kg', style: MyStyles.inputTextStyle)
+                                    : Container()
+                              ],
+                            ))
                         : Container()
                   ],
                 ),
