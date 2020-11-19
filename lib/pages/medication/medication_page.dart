@@ -9,6 +9,7 @@ import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -197,6 +198,10 @@ class _MedicationPageState extends State<MedicationPage>
                         height: 30,
                         text: '完成添加',
                         onPressed: () {
+                          if(model?.cartList?.length != null && model.cartList.length >5){
+                            EasyLoading.showToast('最多只能选择5种药品');
+                            return;
+                          }
                           Navigator.pop(context, model.cartList);
                         },
                       ),
