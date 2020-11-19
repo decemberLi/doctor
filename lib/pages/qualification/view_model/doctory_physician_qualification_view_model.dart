@@ -20,7 +20,7 @@ HttpManager foundation = HttpManager('foundation');
 
 class DoctorPhysicianQualificationViewModel {
   StreamController<DoctorQualificationModel> _controller =
-  StreamController<DoctorQualificationModel>();
+      StreamController<DoctorQualificationModel>();
   var _model = DoctorQualificationModel();
 
   get stream => _controller.stream;
@@ -52,7 +52,7 @@ class DoctorPhysicianQualificationViewModel {
 
   _recognizeIdCard(Map<String, dynamic> param) async {
     var result =
-    await foundation.post('/ocr/recognize-identity-card', params: param);
+        await foundation.post('/ocr/recognize-identity-card', params: param);
     return RecognizeEntity.fromJson(result);
   }
 
@@ -124,7 +124,7 @@ class DoctorPhysicianQualificationViewModel {
       physicianInfo.identityNo = recognizeResult.frontResult.iDNumber;
       physicianInfo.identityName = recognizeResult.frontResult.name;
       physicianInfo.identitySex =
-      recognizeResult.frontResult.gender == '男' ? 1 : 0;
+          recognizeResult.frontResult.gender == '男' ? 1 : 0;
       physicianInfo.identityDate = recognizeResult.frontResult.birthDate;
       physicianInfo.identityAddress = recognizeResult.frontResult.address;
       return;
@@ -217,6 +217,12 @@ class DoctorPhysicianQualificationViewModel {
     }
     _processUploadImgLogic(
         _model.physicianInfoEntity.jobCertificates, path, toBeChange, index);
+  }
+
+  void setSignature(path) async {
+    var uploadResult = uploadImageToOss(path);
+    _model.physicianInfoEntity.signature = uploadResult;
+    notifyDataChange();
   }
 
   removeJobCertificates(int index) async {

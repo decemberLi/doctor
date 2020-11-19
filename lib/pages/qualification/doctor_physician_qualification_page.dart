@@ -8,9 +8,12 @@ import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:screen/screen.dart';
 import 'package:toast/toast.dart';
 
+import 'doctor_signature_widget.dart';
 import 'model/doctor_qualification_model.dart';
 import 'view_model/doctory_physician_qualification_view_model.dart';
 
@@ -68,6 +71,7 @@ class _PhysicianQualificationWidgetState
                   _buildPracticeWidget(snapshot.data),
                   _buildPhysicianWidget(snapshot.data),
                   _buildProfessionWidget(snapshot.data),
+                  _buildDoctorSignatureWidget(snapshot.data),
                   Container(
                     margin: EdgeInsets.only(top: 50, bottom: 20),
                     child: AceButton(
@@ -427,6 +431,55 @@ class _PhysicianQualificationWidgetState
       _showSamplePicDialog(
           'assets/images/sample_job_certificates.png', '专业技术资格证示例');
     }
+  }
+
+  _buildDoctorSignatureWidget(DoctorQualificationModel model) {
+    print(model?.physicianInfoEntity?.toJson());
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: Text('电子签名', style: _titleStyle),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('点击此处去签名'),
+                    ),
+                    onTap: () async {
+                      SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.landscapeLeft,
+                        DeviceOrientation.landscapeRight,
+                      ]);
+                      var path = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DoctorSignatureWidget(
+                              model?.physicianInfoEntity?.signature?.url),
+                        ),
+                      );
+                      SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                        DeviceOrientation.portraitDown
+                      ]);
+                      _model.setSignature(path);
+                      // 处理结果
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
