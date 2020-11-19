@@ -11,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:screen/screen.dart';
 import 'package:toast/toast.dart';
 
 import 'doctor_signature_widget.dart';
@@ -73,9 +72,21 @@ class _PhysicianQualificationWidgetState
                   _buildNoticeWidget(snapshot.data),
                   _buildAvatarWidget(snapshot.data),
                   _buildIdCardWidget(snapshot.data),
-                  _buildPracticeWidget(snapshot.data),
-                  _buildPhysicianWidget(snapshot.data),
-                  _buildProfessionWidget(snapshot.data),
+                  Card(
+                    child: Column(
+                      children: [
+                        Container(
+                          child:
+                              _hintTextStyle('医师执业证、资格证、专业技术资格证（支持原件或彩色扫描件）'),
+                          margin:
+                              EdgeInsets.only(left: 10, top: 18, bottom: 18),
+                        ),
+                        _buildPracticeWidget(snapshot.data),
+                        _buildPhysicianWidget(snapshot.data),
+                        _buildProfessionWidget(snapshot.data),
+                      ],
+                    ),
+                  ),
                   _buildDoctorSignatureWidget(snapshot.data),
                   Container(
                     margin: EdgeInsets.only(top: 50, bottom: 20),
@@ -101,14 +112,14 @@ class _PhysicianQualificationWidgetState
     );
   }
 
-  _buildGrid({
-    String title,
-    List<FacePhoto> list,
-    OnItemCallback callback,
-    OnRemoveImageCallback removeCallback,
-    String sampleAssets,
-    TypeOperator type,
-  }) {
+  _buildGrid(
+      {String title,
+      List<FacePhoto> list,
+      OnItemCallback callback,
+      OnRemoveImageCallback removeCallback,
+      String sampleAssets,
+      TypeOperator type,
+      showDesc = false}) {
     List<Widget> widgets = [];
     for (var idx = 0; idx < list.length; idx++) {
       FacePhoto photo = list[idx];
@@ -142,7 +153,7 @@ class _PhysicianQualificationWidgetState
 
     return Card(
       child: Container(
-        padding: EdgeInsets.only(top: 10, bottom: 16, left: 10),
+        padding: EdgeInsets.only(top: 0, bottom: 16, left: 10),
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,6 +168,11 @@ class _PhysicianQualificationWidgetState
                 children: widgets,
               ),
             ),
+            showDesc
+                ? Container(
+                    child: _hintTextStyle('医师执业证、资格证、专业技术资格证（支持原件或彩色扫描件）'),
+                  )
+                : Container(),
           ],
         ),
       ),
@@ -174,26 +190,30 @@ class _PhysicianQualificationWidgetState
               padding: EdgeInsets.only(bottom: 12),
               child: Text('头像', style: _titleStyle)),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Expanded(
-                child: ImageChooseWidget(
+            ImageChooseWidget(
+              width: 85,
+              height: 85,
               url: model?.physicianInfoEntity?.fullFacePhoto?.url,
               addImgCallback: () => _selectPicture(TypeOperator.AVATAR),
               removeImgCallback: () {
                 _model.setAvatar(null);
               },
               showOriginImgCallback: () {},
-            )),
+            ),
             Container(
               width: 10,
             ),
-            Expanded(
-                child: GestureDetector(
-                    child: Image.asset('assets/images/avatar_sample.png',
-                        fit: BoxFit.fill, filterQuality: FilterQuality.high),
-                    onTap: () {
-                      _showSamplePicDialog(
-                          'assets/images/sample_avatar.png', '头像');
-                    })),
+            GestureDetector(
+                child: Image.asset(
+                  'assets/images/avatar_sample.png',
+                  fit: BoxFit.fill,
+                  filterQuality: FilterQuality.high,
+                  width: 85,
+                  height: 85,
+                ),
+                onTap: () {
+                  _showSamplePicDialog('assets/images/sample_avatar.png', '头像');
+                }),
             Container(
               width: 10,
             ),
@@ -248,9 +268,6 @@ class _PhysicianQualificationWidgetState
                 )),
               ],
             ),
-            Container(
-              child: _hintTextStyle('医师执业证、资格证、专业技术资格证（支持原件或彩色扫描件）'),
-            ),
           ],
         ),
       ),
@@ -262,6 +279,7 @@ class _PhysicianQualificationWidgetState
         model?.physicianInfoEntity?.practiceCertificates ?? [];
 
     return _buildGrid(
+        showDesc: true,
         title: '医师执业证（至少需上传编码页和执业地点页）',
         list: originList,
         type: TypeOperator.PRACTICE_CERTIFICATES,
@@ -443,7 +461,7 @@ class _PhysicianQualificationWidgetState
     var url = model?.physicianInfoEntity?.signature?.url;
     return Card(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(10, 14, 10, 20),
+        padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

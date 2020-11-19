@@ -92,15 +92,10 @@ class ImageSelectWidget extends StatelessWidget {
   _doLoadImage(FacePhoto photo, {double aspectRatio = 1 / 1}) {
     Widget icon;
     Widget hintWidget = Container(
-      margin: EdgeInsets.only(top: 6),
-      child: Text(hint,
-          style: TextStyle(color: ThemeColor.primaryColor, fontSize: 12)),
-    );
-    icon = Image.asset(
-      'assets/images/camera.png',
-      width: 32,
-      height: 28,
-    );
+        margin: EdgeInsets.only(top: 6),
+        child: Text(hint,
+            style: TextStyle(color: ThemeColor.colorFF8FC1FE, fontSize: 12)));
+    icon = Image.asset('assets/images/camera.png', width: 32, height: 28);
     if (photo != null && photo.url != null) {
       icon = ConstrainedBox(
           child: Image.network(photo.url, fit: BoxFit.cover),
