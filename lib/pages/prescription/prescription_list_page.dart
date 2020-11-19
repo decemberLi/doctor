@@ -5,32 +5,81 @@ import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+const FROM_PRESCRIPTION_HISTORY = '_prescription_history';
+const FROM_PRESCRIPTION_QUICKLY = '_prescription_quickly';
+
 /// 处方记录列表
 class PrescriptionListPage extends StatefulWidget {
-  PrescriptionListPage();
+  final String from;
+
+  PrescriptionListPage({this.from = FROM_PRESCRIPTION_HISTORY});
+
+  bool get isQuickCratePrescription => from == FROM_PRESCRIPTION_QUICKLY;
 
   @override
   _PrescriptionListPageState createState() => _PrescriptionListPageState();
 }
 
 class _PrescriptionListPageState extends State<PrescriptionListPage> {
+  final PrescriptionListViewModel _model = PrescriptionListViewModel();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('处方记录'),
+        title: Text(widget.isQuickCratePrescription ? '选择处方记录' : '处方记录'),
+        bottom: PreferredSize(
+          preferredSize: Size(343, 60),
+          child: Container(
+            height: 56,
+            color: Colors.white,
+            padding: EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 10),
+            child: Theme(
+              data: new ThemeData(primaryColor: Colors.white),
+              child: TextField(
+                onSubmitted: (text) {
+                  _model.queryKey = text;
+                  _model.refresh();
+                },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(5.0),
+                  fillColor: Color(0XFFF3F5F8),
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    //未选中时候的颜色
+                    borderRadius: BorderRadius.circular(25.0),
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                    ),
+                  ),
+                  hintText: '搜索患者姓名或药品名称',
+                  hintStyle: TextStyle(color: Color(0xff999999)),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Color(0xff999999),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
       body: Container(
         color: ThemeColor.colorFFF3F5F8,
         alignment: Alignment.topCenter,
         padding: EdgeInsets.zero,
         child: ProviderWidget<PrescriptionListViewModel>(
-          model: PrescriptionListViewModel(),
+          model: _model,
           onModelReady: (model) => model.initData(),
           builder: (context, model, child) {
             if (model.isError || model.isEmpty) {
@@ -51,6 +100,10 @@ class _PrescriptionListPageState extends State<PrescriptionListPage> {
                   return GestureDetector(
                     child: PrescriptionListLitem(item),
                     onTap: () {
+                      if (widget.isQuickCratePrescription) {
+                        Navigator.pop(context, item);
+                        return;
+                      }
                       Navigator.of(context).pushNamed(
                         RouteManager.PRESCRIPTION_DETAIL,
                         arguments: item.prescriptionNo,

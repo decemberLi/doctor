@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
+import 'package:doctor/pages/prescription/prescription_list_page.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
 import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
@@ -180,7 +181,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
           if (widget.showActicons)
             TextButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(RouteManager.PRESCRIPTION_LIST);
+                Navigator.of(context).pushNamed(RouteManager.PRESCRIPTION_LIST,
+                    arguments: {'from': FROM_PRESCRIPTION_HISTORY});
               },
               child: Text(
                 '处方记录',
@@ -193,6 +195,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
       ),
       body: Consumer<PrescriptionViewModel>(
         builder: (_, model, __) {
+          _needShowWeight = (model?.data?.prescriptionPatientAge ?? 0) <= 14;
           return Container(
             child: ListView(
               padding: EdgeInsets.symmetric(
@@ -221,13 +224,11 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             style: MyStyles.primaryTextStyle_12,
                           ),
                           onTap: () async {
-                            var patientUserId =
-                                await Navigator.of(context).pushNamed(
-                              RouteManager.PATIENT,
-                              arguments: 'QUICK_CREATE',
-                            );
-                            if (patientUserId != null) {
-                              model.getDataByPatient(patientUserId);
+                            var item = await Navigator.of(context).pushNamed(
+                                RouteManager.PRESCRIPTION_LIST,
+                                arguments: {'from': FROM_PRESCRIPTION_QUICKLY});
+                            if (item != null) {
+                              model.echoByHistoryPatient(item);
                             }
                           },
                         )
@@ -279,9 +280,10 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             _timer.cancel();
                           }
                           print('check');
-                          _timer = new Timer(const Duration(milliseconds: 800), () {
+                          _timer =
+                              new Timer(const Duration(milliseconds: 800), () {
                             setState(() {
-                              if(!(_needShowWeight && needShow)){
+                              if (!(_needShowWeight && needShow)) {
                                 model.data.weight = null;
                               }
                               _needShowWeight = needShow;

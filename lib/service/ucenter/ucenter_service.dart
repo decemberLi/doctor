@@ -1,5 +1,6 @@
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
+import 'package:doctor/pages/patient/service/service.dart';
 
 HttpManager uCenter = HttpManager('ucenter');
 
@@ -16,5 +17,10 @@ class UCenter {
   /// http://yapi.e-medclouds.com:3000/project/7/interface/api/5046
   static Future modifyDoctorInfo(Map<String, dynamic> param) async {
     return await uCenter.post('/personal/edit-doctor-info', params: param);
+  }
+  
+  
+  static Future queryDoctorRelation() async{
+    return ucenter.post('/personal/query-dtp-represent-exist');
   }
 }

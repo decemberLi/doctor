@@ -110,7 +110,12 @@ class RouteManager {
       );
     },
     PRESCRIPTION_SUCCESS: (context) => PrescriptionSuccessPage(),
-    PRESCRIPTION_LIST: (context) => PrescriptionListPage(),
+    PRESCRIPTION_LIST: (context) {
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return PrescriptionListPage(
+        from: obj['from'],
+      );
+    },
     PRESCRIPTION_DETAIL: (context) => PrescriptionDetailPage(),
     PRESCRIPTION_PREVIEW: (context) => PrescriptionPreviewPage(),
     PATIENT: (context) => PatientListPage(),

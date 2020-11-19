@@ -33,15 +33,16 @@ class PrescriptionViewModel extends ViewStateModel {
   double get totalPrice =>
       data.drugRps?.fold(
         0,
-        (previousValue, drugModel) => NumUtil.add(
-          previousValue,
-          NumUtil.multiply(
-            drugModel.drugPrice ?? 0,
-            drugModel.quantity ?? 0,
-          ),
-        ),
+            (previousValue, drugModel) =>
+            NumUtil.add(
+              previousValue,
+              NumUtil.multiply(
+                drugModel.drugPrice ?? 0,
+                drugModel.quantity ?? 0,
+              ),
+            ),
       ) ??
-      0;
+          0;
 
   List<String> get clinicaList =>
       this.data.clinicalDiagnosis?.split(CLINICAL_DIAGNOSIS_SPLIT_MARK) ?? [];
@@ -136,14 +137,17 @@ class PrescriptionViewModel extends ViewStateModel {
     this.setData(data, isNew: true);
   }
 
+  echoByHistoryPatient(PrescriptionModel model) {
+    this.setData(model, isNew: true);
+  }
+
   resetData() {
     this.data = PrescriptionModel();
     this.changeDataNotify();
   }
 
   /// 重新设置开处方数据
-  setData(
-    PrescriptionModel newData, {
+  setData(PrescriptionModel newData, {
     bool isNew = false,
     VoidCallback callBack,
   }) {
@@ -212,11 +216,19 @@ class PrescriptionViewModel extends ViewStateModel {
 
 /// 处方记录viewModel
 class PrescriptionListViewModel extends ViewStateRefreshListModel {
+
+  String _queryKey;
+
+  set queryKey(String value) {
+    _queryKey = value;
+  }
+
   @override
   Future<List<PrescriptionModel>> loadData({int pageNum}) async {
     var list = await loadPrescriptionList({
       'ps': 10,
       'pn': pageNum,
+      'queryKey':_queryKey
     });
     return list['records']
         .map<PrescriptionModel>((item) => PrescriptionModel.fromJson(item))

@@ -38,18 +38,6 @@ class MedicationDetailPage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                   unselectedLabelColor: ThemeColor.colorFF222222,
-                  // indicator: CircleTabIndicator(
-                  //     color: ThemeColor.primaryColor, radius: 12),
-                  // indicator: ShapeDecoration(
-                  //   // color: ThemeColor.primaryColor,
-                  //   shape: UnderlineInputBorder(
-                  //     borderSide:
-                  //         BorderSide(width: 2, color: ThemeColor.primaryColor),
-                  //     borderRadius: BorderRadius.only(
-                  //         topLeft: Radius.circular(12.0),
-                  //         topRight: Radius.circular(12.0)),
-                  //   ),
-                  // ),
                   indicatorPadding: EdgeInsets.symmetric(vertical: 0),
                   indicatorSize: TabBarIndicatorSize.label,
                   indicatorColor: ThemeColor.primaryColor,
@@ -130,7 +118,6 @@ class MedicationIntroduce extends StatelessWidget {
                     Container(
                       height: 260,
                       child: Swiper(
-                        autoplay: morePics,
                         loop: morePics,
                         itemBuilder: (BuildContext context, int index) {
                           if (model.data == null) {
@@ -235,30 +222,6 @@ class MedicationIntroduce extends StatelessWidget {
                   ],
                 ),
               ),
-              // MedicationDetailCard(
-              //   child: Column(
-              //     children: [
-              //       FormItem(
-              //         label: '用法用量：',
-              //         value: '',
-              //         padding: EdgeInsets.symmetric(vertical: 20),
-              //         borderDirection: FormItemBorderDirection.bottom,
-              //       ),
-              //       FormItem(
-              //         label: '适应症：',
-              //         value: '',
-              //         padding: EdgeInsets.symmetric(vertical: 20),
-              //         borderDirection: FormItemBorderDirection.bottom,
-              //       ),
-              //       FormItem(
-              //         label: '不良反应：',
-              //         value: '',
-              //         padding: EdgeInsets.only(top: 20),
-              //         borderDirection: FormItemBorderDirection.none,
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
           ),
         );
