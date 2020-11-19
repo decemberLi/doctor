@@ -44,13 +44,13 @@ class PrescriptionViewModel extends ViewStateModel {
       0;
 
   List<String> get clinicaList =>
-      this.data.clinicalDiagnosis?.split('@@') ?? [];
+      this.data.clinicalDiagnosis?.split(CLINICAL_DIAGNOSIS_SPLIT_MARK) ?? [];
 
   set clinicaList(List<String> value) {
     if (value.isEmpty) {
       this.data.clinicalDiagnosis = null;
     } else {
-      this.data.clinicalDiagnosis = value.join('@@');
+      this.data.clinicalDiagnosis = value.join(CLINICAL_DIAGNOSIS_SPLIT_MARK);
     }
   }
 
@@ -58,7 +58,7 @@ class PrescriptionViewModel extends ViewStateModel {
   addClinica(String value) {
     List<String> list = this.clinicaList;
     list.add(value);
-    this.data.clinicalDiagnosis = list.join('@@');
+    this.data.clinicalDiagnosis = list.join(CLINICAL_DIAGNOSIS_SPLIT_MARK);
     notifyListeners();
   }
 
