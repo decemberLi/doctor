@@ -61,7 +61,9 @@ class _PrescriptionPageState extends State<PrescriptionPage>
       title: '临床诊断',
       height: 550,
       child: ClinicaDiagInput(onSave: (String value) {
-        onSave(value);
+        if(value != null) {
+          onSave(value);
+        }
         Navigator.pop(context);
       }),
     );

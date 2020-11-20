@@ -1,4 +1,5 @@
 import 'package:doctor/theme/common_style.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -6,12 +7,14 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 /// 临床诊断输入框
 class ClinicaDiagInput extends StatelessWidget {
   final Function onSave;
+  String _input;
   ClinicaDiagInput({
     this.onSave,
   });
+
   @override
   Widget build(BuildContext context) {
-    String input;
+    
     return Container(
       alignment: Alignment.topLeft,
       child: Column(
@@ -35,13 +38,14 @@ class ClinicaDiagInput extends StatelessWidget {
                 hintText: '填写疾病诊断',
                 border: InputBorder.none,
                 counterText: '',
+                suffixIcon: _suffixWidget(),
               ),
               // maxLength: 15,
               obscureText: false,
               keyboardType: TextInputType.text,
               style: MyStyles.inputTextStyle,
               onChanged: (String value) {
-                input = value;
+                _input = value;
               },
             ),
           ),
@@ -69,6 +73,34 @@ class ClinicaDiagInput extends StatelessWidget {
           // ),
         ],
       ),
+    );
+  }
+
+  _suffixWidget() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          child: Image.asset('assets/images/close.png',width: 20,height: 20,),
+          onTap: () {
+            onSave(null);
+          },
+        ),
+        GestureDetector(
+          child: Container(
+            margin: EdgeInsets.only(left: 5),
+            padding: EdgeInsets.only(left: 10, right: 10),
+            decoration: BoxDecoration(
+                border: Border.all(color: ThemeColor.primaryColor, width: 1),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                color: Colors.white),
+            child: Text('添加'),
+          ),
+          onTap: () {
+            onSave(_input);
+          },
+        )
+      ],
     );
   }
 }
