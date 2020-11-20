@@ -179,7 +179,8 @@ class PerscriptionDetail extends StatelessWidget {
                           ),
                         ),
                         FormItem(
-                          padding: EdgeInsets.symmetric(vertical: 10),
+                          borderDirection: FormItemBorderDirection.top,
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -198,7 +199,22 @@ class PerscriptionDetail extends StatelessWidget {
                             ],
                           ),
                         ),
+                        if (data?.weight != null)
+                          FormItem(
+                            borderDirection: FormItemBorderDirection.none,
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '体重：${data?.weight ?? ''}',
+                                  style: MyStyles.inputTextStyle,
+                                ),
+                              ],
+                            ),
+                          ),
                         FormItem(
+                          borderDirection: FormItemBorderDirection.top,
                           padding: EdgeInsets.symmetric(vertical: 10),
                           child: Text(
                             '科室：${data?.depart ?? defaultDepart}',

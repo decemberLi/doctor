@@ -33,16 +33,15 @@ class PrescriptionViewModel extends ViewStateModel {
   double get totalPrice =>
       data.drugRps?.fold(
         0,
-            (previousValue, drugModel) =>
-            NumUtil.add(
-              previousValue,
-              NumUtil.multiply(
-                drugModel.drugPrice ?? 0,
-                drugModel.quantity ?? 0,
-              ),
-            ),
+        (previousValue, drugModel) => NumUtil.add(
+          previousValue,
+          NumUtil.multiply(
+            drugModel.drugPrice ?? 0,
+            drugModel.quantity ?? 0,
+          ),
+        ),
       ) ??
-          0;
+      0;
 
   List<String> get clinicaList =>
       this.data.clinicalDiagnosis?.split(CLINICAL_DIAGNOSIS_SPLIT_MARK) ?? [];
@@ -109,10 +108,19 @@ class PrescriptionViewModel extends ViewStateModel {
     }
     if (this.data.prescriptionPatientAge > 14) {
       this.data.weight = null;
-    } else if (this.data.prescriptionPatientAge <= 14 &&
-        this.data.weight == null) {
-      EasyLoading.showToast('体重不能为空');
-      return false;
+    } else {
+      if (this.data.weight == null) {
+        EasyLoading.showToast('体重不能为空');
+        return false;
+      }
+      if ( this.data.weight > 999) {
+        EasyLoading.showToast('体重不能超过999kg');
+        return false;
+      }
+      if ( this.data.weight <= 0) {
+        EasyLoading.showToast('体重不能为0kg哦');
+        return false;
+      }
     }
     if (this.data.clinicalDiagnosis == null ||
         this.data.clinicalDiagnosis.isEmpty) {
@@ -147,7 +155,8 @@ class PrescriptionViewModel extends ViewStateModel {
   }
 
   /// 重新设置开处方数据
-  setData(PrescriptionModel newData, {
+  setData(
+    PrescriptionModel newData, {
     bool isNew = false,
     VoidCallback callBack,
   }) {
@@ -225,11 +234,8 @@ class PrescriptionListViewModel extends ViewStateRefreshListModel {
 
   @override
   Future<List<PrescriptionModel>> loadData({int pageNum}) async {
-    var list = await loadPrescriptionList({
-      'ps': 10,
-      'pn': pageNum,
-      'queryKey':_queryKey
-    });
+    var list = await loadPrescriptionList(
+        {'ps': 10, 'pn': pageNum, 'queryKey': _queryKey});
     return list['records']
         .map<PrescriptionModel>((item) => PrescriptionModel.fromJson(item))
         .toList();
