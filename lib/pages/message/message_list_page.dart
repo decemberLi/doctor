@@ -121,17 +121,12 @@ class _MessageListPageState extends State<MessageListPage> {
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 5),
-                            child: widget._type == MessageType.TYPE_SYSTEM
-                                ? Text(
-                                    entity?.messageContent ?? '',
-                                    softWrap: true,
-                                  )
-                                : Text(
-                                    entity?.messageContent ?? '',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: true,
-                                  ),
+                            child: Text(
+                              entity?.messageContent ?? '',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                            ),
                           )
                         ],
                       ),
