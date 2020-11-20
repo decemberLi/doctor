@@ -61,7 +61,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
       title: '临床诊断',
       height: 550,
       child: ClinicaDiagInput(onSave: (String value) {
-        if(value != null && value != '') {
+        if (value != null && value != '') {
           onSave(value);
         }
         Navigator.pop(context);
@@ -198,6 +198,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
       ),
       body: Consumer<PrescriptionViewModel>(
         builder: (_, model, __) {
+          var age = model?.data?.prescriptionPatientAge;
+          _needShowWeight = age != null && age <= 14;
           return Container(
             child: ListView(
               padding: EdgeInsets.symmetric(
@@ -260,51 +262,55 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                           model.data.prescriptionPatientName ?? '',
                     ),
                     FormItem(
-                      label: '年龄',
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: '请输入患者年龄',
-                          counterText: '',
-                        ),
-                        controller: TextEditingController(),
-                        validator: (val) => val.length < 1 ? '年龄不能为空' : null,
-                        onChanged: (String value) {
-                          if (value.isEmpty) {
-                            model.data.prescriptionPatientAge = null;
-                            return;
-                          }
-                          model.data.prescriptionPatientAge = int.parse(value);
-                          var needShow =
-                              model.data.prescriptionPatientAge != null &&
-                                  model.data.prescriptionPatientAge <= 14;
-                          if (_timer != null && _timer.isActive) {
-                            _timer.cancel();
-                          }
-                          print('check');
-                          _timer =
-                              new Timer(const Duration(milliseconds: 800), () {
-                            setState(() {
-                              if (!(_needShowWeight && needShow)) {
-                                model.data.weight = null;
-                              }
-                              _needShowWeight = needShow;
+                        label: '年龄',
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: '请输入患者年龄',
+                            counterText: '',
+                          ),
+                          controller: TextEditingController(),
+                          validator: (val) => val.length < 1 ? '年龄不能为空' : null,
+                          onChanged: (String value) {
+                            if (value.isEmpty) {
+                              model.data.prescriptionPatientAge = null;
+                              return;
+                            }
+                            model.data.prescriptionPatientAge =
+                                int.parse(value);
+                            var needShow =
+                                model.data.prescriptionPatientAge != null &&
+                                    model.data.prescriptionPatientAge <= 14;
+                            if (_timer != null && _timer.isActive) {
+                              _timer.cancel();
+                            }
+                            print('check');
+                            _timer = new Timer(
+                                const Duration(milliseconds: 800), () {
+                              setState(() {
+                                if (!(_needShowWeight && needShow)) {
+                                  model.data.weight = null;
+                                }
+                                _needShowWeight = needShow;
+                              });
                             });
-                          });
-                          // model.changeDataNotify();
-                        },
-                        obscureText: false,
-                        keyboardType:
-                            TextInputType.numberWithOptions(decimal: false),
-                        style: MyStyles.inputTextStyle,
-                        textAlign: TextAlign.right,
-                      )..controller.text =
-                          model.data?.prescriptionPatientAge?.toString() ?? ''
-                      ..controller.selection = TextSelection.fromPosition(TextPosition(
-                          affinity: TextAffinity.downstream,
-                          offset: '${model.data?.prescriptionPatientAge??''}'.length
-                      ))
-                    ),
+                            // model.changeDataNotify();
+                          },
+                          obscureText: false,
+                          keyboardType:
+                              TextInputType.numberWithOptions(decimal: false),
+                          style: MyStyles.inputTextStyle,
+                          textAlign: TextAlign.right,
+                        )
+                          ..controller.text =
+                              model.data?.prescriptionPatientAge?.toString() ??
+                                  ''
+                          ..controller.selection = TextSelection.fromPosition(
+                              TextPosition(
+                                  affinity: TextAffinity.downstream,
+                                  offset:
+                                      '${model.data?.prescriptionPatientAge ?? ''}'
+                                          .length))),
                     FormItem(
                       label: '性别',
                       child: SexRadioRow(
@@ -346,12 +352,15 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                                             decimal: false),
                                     style: MyStyles.inputTextStyle,
                                     textAlign: TextAlign.right,
-                                  )..controller.text =
-                                      model.data?.weight?.toString() ?? ''
-                                    ..controller.selection = TextSelection.fromPosition(TextPosition(
-                                        affinity: TextAffinity.downstream,
-                                        offset: '${model.data?.weight??''}'.length
-                                    )),
+                                  )
+                                    ..controller.text =
+                                        model.data?.weight?.toString() ?? ''
+                                    ..controller.selection =
+                                        TextSelection.fromPosition(TextPosition(
+                                            affinity: TextAffinity.downstream,
+                                            offset:
+                                                '${model.data?.weight ?? ''}'
+                                                    .length)),
                                 ),
                                 _showUnit
                                     ? Text('kg', style: MyStyles.inputTextStyle)
