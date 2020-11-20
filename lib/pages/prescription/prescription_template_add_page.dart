@@ -95,7 +95,7 @@ class _PrescriptionTemplageAddPageState
           appBar: AppBar(
             elevation: 0,
             title:
-                Text(widget.isAddPrescriptionTemplate() ? '添加处方模板' : '编辑处方模版'),
+                Text(widget.isAddPrescriptionTemplate() ? '添加处方模板' : '编辑处方模板'),
           ),
           // 避免键盘弹起时高度错误
           resizeToAvoidBottomInset: false,
