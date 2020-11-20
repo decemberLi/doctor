@@ -24,6 +24,9 @@ class MedicationAddBtn extends StatelessWidget {
           fontSize: 14,
           text: '加入处方笺',
           onPressed: () {
+            if(!model.checkCount()){
+              return;
+            }
             MedicationAddSheet.show(context, data, () {
               model.addToCart(data);
             });

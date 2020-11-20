@@ -283,7 +283,7 @@ class _PhysicianQualificationWidgetState
                   url: model?.physicianInfoEntity?.idCardLicense2?.url,
                   addImgCallback: () =>
                       _selectPicture(TypeOperator.ID_CARD_BG_SIDE),
-                  removeImgCallback: () => _model.setIdCardFaceSide(null),
+                  removeImgCallback: () => _model.setIdCardBackgroundSide(null),
                   showOriginImgCallback: () {
                     _showOriginImage(data, 1);
                   },

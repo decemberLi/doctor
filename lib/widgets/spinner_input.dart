@@ -276,7 +276,7 @@ class _SpinnerInputState extends State<SpinnerInput>
         widget.onChange(value);
       });
     } else {
-      EasyLoading.showToast('数量不能大于${widget.maxValue.toStringAsFixed(0)}');
+      EasyLoading.showToast('数量不能大于${widget.maxValue.toStringAsFixed(0)}天最大处方量');
     }
   }
 
