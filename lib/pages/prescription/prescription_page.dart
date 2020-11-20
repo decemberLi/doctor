@@ -198,7 +198,6 @@ class _PrescriptionPageState extends State<PrescriptionPage>
       ),
       body: Consumer<PrescriptionViewModel>(
         builder: (_, model, __) {
-          _needShowWeight = (model?.data?.prescriptionPatientAge ?? 0) <= 14;
           return Container(
             child: ListView(
               padding: EdgeInsets.symmetric(

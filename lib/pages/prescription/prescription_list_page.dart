@@ -31,6 +31,7 @@ class _PrescriptionListPageState extends State<PrescriptionListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 0,
         title: Text(widget.isQuickCratePrescription ? '选择处方记录' : '处方记录'),
