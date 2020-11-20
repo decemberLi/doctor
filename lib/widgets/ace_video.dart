@@ -124,9 +124,9 @@ class _AceVideoState extends State<AceVideo> {
     return _buildIndicator();
     // return Chewie(
     //   controller: ChewieController(
-    //     aspectRatio: _controller.value.aspectRatio,
     //     videoPlayerController: _controller,
-    //     // aspectRatio: 3 / 2,
+    //     aspectRatio: 3 / 2,
+    //     // aspectRatio: _controller.value.aspectRatio,
     //     autoPlay: false,
     //     autoInitialize: true,
     //   ),

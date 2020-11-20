@@ -111,7 +111,7 @@ class _ChewieVideoWidgetState extends State<ChewieVideo> {
   Widget _buildIndicator() {
     return Container(
       alignment: Alignment.center,
-      height: 240,
+      height: 210,
       child: CircularProgressIndicator(),
     );
   }
