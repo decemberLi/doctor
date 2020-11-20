@@ -1,5 +1,4 @@
 import 'package:common_utils/common_utils.dart';
-import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
@@ -113,11 +112,11 @@ class PrescriptionViewModel extends ViewStateModel {
         EasyLoading.showToast('体重不能为空');
         return false;
       }
-      if ( this.data.weight > 999) {
+      if (this.data.weight > 999) {
         EasyLoading.showToast('体重不能超过999kg');
         return false;
       }
-      if ( this.data.weight <= 0) {
+      if (this.data.weight <= 0) {
         EasyLoading.showToast('体重不能为0kg哦');
         return false;
       }
@@ -146,6 +145,15 @@ class PrescriptionViewModel extends ViewStateModel {
   }
 
   echoByHistoryPatient(PrescriptionModel model) {
+    if (model != null && model.drugRps != null) {
+      // filter
+      model.drugRps.removeWhere((element) => element.disable ?? false);
+      for (var each in model.drugRps) {
+        if (each.quantity < each.purchaseLimit) {
+          each.quantity = each.purchaseLimit;
+        }
+      }
+    }
     this.setData(model, isNew: true);
   }
 
@@ -225,7 +233,6 @@ class PrescriptionViewModel extends ViewStateModel {
 
 /// 处方记录viewModel
 class PrescriptionListViewModel extends ViewStateRefreshListModel {
-
   String _queryKey;
 
   set queryKey(String value) {

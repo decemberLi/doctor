@@ -8,6 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 class ClinicaDiagInput extends StatelessWidget {
   final Function onSave;
   String _input;
+
   ClinicaDiagInput({
     this.onSave,
   });
@@ -20,23 +21,19 @@ class ClinicaDiagInput extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
-            child: Image.asset('assets/images/close.png',width: 20,height: 20,),
-            onTap: () {
-              _input = '';
-              controller.text = _input;
-            },
-          ),
-          GestureDetector(
             child: Container(
               margin: EdgeInsets.only(left: 10),
-              padding: EdgeInsets.only(left: 10, right: 10),
+              padding: EdgeInsets.only(left: 10, right: 10, top: 1, bottom: 1),
               decoration: BoxDecoration(
                   border: Border.all(color: ThemeColor.primaryColor, width: 1),
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   color: Colors.white),
-              child: Text('添加'),
+              child: Text('添加',textAlign: TextAlign.center,),
             ),
             onTap: () {
+              if (_input == '' || _input == null) {
+                return;
+              }
               onSave(_input);
             },
           )
@@ -51,17 +48,13 @@ class ClinicaDiagInput extends StatelessWidget {
           EasyLoading.showToast('临床诊断不能为空');
           return;
         }
-        if (value.length > 15) {
-          EasyLoading.showToast('临床诊断字数不能超过15字');
-          return;
-        }
         this.onSave(value);
       },
       decoration: InputDecoration(
-        hintText: '填写疾病诊断',
-        border: InputBorder.none,
-        counterText: '',
-      ),
+          hintText: '填写疾病诊断',
+          border: InputBorder.none,
+          counterText: '',
+          suffixIcon: _suffixWidget()),
       // maxLength: 15,
       obscureText: false,
       keyboardType: TextInputType.text,
@@ -104,5 +97,4 @@ class ClinicaDiagInput extends StatelessWidget {
       ),
     );
   }
-
 }

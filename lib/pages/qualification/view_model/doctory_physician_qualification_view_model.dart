@@ -292,6 +292,10 @@ class DoctorPhysicianQualificationViewModel {
       EasyLoading.showToast('请上传专业技术资格证');
       return false;
     }
+    if (_model.physicianInfoEntity.signature == null) {
+      EasyLoading.showToast('请输入电子签名');
+      return false;
+    }
 
     await uCenter.post('/personal/commit-doctor-verify-info',
         params: _model.physicianInfoEntity.toJson());
