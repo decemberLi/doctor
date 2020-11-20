@@ -132,9 +132,6 @@ class _PrescriptionTemplageAddPageState
                       if (val.length > 15) {
                         return '名称超过15个字符';
                       }
-                      if (AppRegexUtil.isSpecialChart(val)) {
-                        return '名称不能含有特殊字符';
-                      }
                       return null;
                     },
                     onSaved: (val) => {data.prescriptionTemplateName = val},
