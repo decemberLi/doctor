@@ -149,13 +149,15 @@ class _HomePageState extends State<HomePage>
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     if (model.data?.authStatus == 'PASS') {
-      showToastIfNeeded();
       return;
     }
     // 如果没有通过认证再次查询，再次判断
     await model.queryDoctorInfo();
     if (model.data?.authStatus == 'PASS') {
-      showToastIfNeeded();
+      return;
+    }
+
+    if(!await showToastIfNeeded()){
       return;
     }
 
@@ -340,9 +342,12 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  void showToastIfNeeded() async {
+  showToastIfNeeded() async {
     if (!await UCenter.queryDoctorRelation()) {
       EasyLoading.showToast('您没有绑定医药代表，暂不能开具处方');
+      return false;
     }
+
+    return true;
   }
 }

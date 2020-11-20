@@ -149,7 +149,7 @@ class PrescriptionViewModel extends ViewStateModel {
       // filter
       model.drugRps.removeWhere((element) => element.disable ?? false);
       for (var each in model.drugRps) {
-        if (each.quantity < each.purchaseLimit) {
+        if (each.quantity > each.purchaseLimit) {
           each.quantity = each.purchaseLimit;
         }
       }
