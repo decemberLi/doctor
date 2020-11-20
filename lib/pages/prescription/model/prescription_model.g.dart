@@ -29,7 +29,7 @@ PrescriptionModel _$PrescriptionModelFromJson(Map<String, dynamic> json) {
             ? null
             : OssFileEntity.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-    weight: json['weight'],
+    weight: json['weight'] as num,
       doctorSignatureUrl:json['doctorSignatureUrl']
   )
     ..expireTime = json['expireTime'] as num

@@ -14,40 +14,70 @@ class ClinicaDiagInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
+    var controller = TextEditingController();
+    _suffixWidget() {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            child: Image.asset('assets/images/close.png',width: 20,height: 20,),
+            onTap: () {
+              _input = '';
+              controller.text = _input;
+            },
+          ),
+          GestureDetector(
+            child: Container(
+              margin: EdgeInsets.only(left: 10),
+              padding: EdgeInsets.only(left: 10, right: 10),
+              decoration: BoxDecoration(
+                  border: Border.all(color: ThemeColor.primaryColor, width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Colors.white),
+              child: Text('添加'),
+            ),
+            onTap: () {
+              onSave(_input);
+            },
+          )
+        ],
+      );
+    }
+
+    var textField = TextFormField(
+      controller: controller,
+      onFieldSubmitted: (String value) {
+        if (value == '' || value == null) {
+          EasyLoading.showToast('临床诊断不能为空');
+          return;
+        }
+        if (value.length > 15) {
+          EasyLoading.showToast('临床诊断字数不能超过15字');
+          return;
+        }
+        this.onSave(value);
+      },
+      decoration: InputDecoration(
+        hintText: '填写疾病诊断',
+        border: InputBorder.none,
+        counterText: '',
+        suffixIcon: _suffixWidget(),
+      ),
+      // maxLength: 15,
+      obscureText: false,
+      keyboardType: TextInputType.text,
+      style: MyStyles.inputTextStyle,
+      onChanged: (String value) {
+        _input = value;
+      },
+    )..controller.text = _input;
     return Container(
       alignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            child: TextFormField(
-              initialValue: '',
-              onFieldSubmitted: (String value) {
-                if (value == '' || value == null) {
-                  EasyLoading.showToast('临床诊断不能为空');
-                  return;
-                }
-                if (value.length > 15) {
-                  EasyLoading.showToast('临床诊断字数不能超过15字');
-                  return;
-                }
-                this.onSave(value);
-              },
-              decoration: InputDecoration(
-                hintText: '填写疾病诊断',
-                border: InputBorder.none,
-                counterText: '',
-                suffixIcon: _suffixWidget(),
-              ),
-              // maxLength: 15,
-              obscureText: false,
-              keyboardType: TextInputType.text,
-              style: MyStyles.inputTextStyle,
-              onChanged: (String value) {
-                _input = value;
-              },
-            ),
+            child: textField,
           ),
           Divider(
             height: 1,
@@ -76,31 +106,4 @@ class ClinicaDiagInput extends StatelessWidget {
     );
   }
 
-  _suffixWidget() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GestureDetector(
-          child: Image.asset('assets/images/close.png',width: 20,height: 20,),
-          onTap: () {
-            onSave(null);
-          },
-        ),
-        GestureDetector(
-          child: Container(
-            margin: EdgeInsets.only(left: 5),
-            padding: EdgeInsets.only(left: 10, right: 10),
-            decoration: BoxDecoration(
-                border: Border.all(color: ThemeColor.primaryColor, width: 1),
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Colors.white),
-            child: Text('添加'),
-          ),
-          onTap: () {
-            onSave(_input);
-          },
-        )
-      ],
-    );
-  }
 }

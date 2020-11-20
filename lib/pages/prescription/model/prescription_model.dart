@@ -95,7 +95,7 @@ class PrescriptionModel {
       ? DateUtil.formatDateMs(auditTime, format: 'yyyy.MM.dd HH:mm')
       : '';
 
-  int weight;
+  num weight;
 
   String doctorSignatureUrl;
 
