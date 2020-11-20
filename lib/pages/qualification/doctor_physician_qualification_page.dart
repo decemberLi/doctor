@@ -494,10 +494,11 @@ class _PhysicianQualificationWidgetState
               child: Row(
                 children: [
                   Expanded(child: Text('电子签名', style: _titleStyle)),
-                  GestureDetector(
-                    child: Text('点击此处修改签名', style: signatureTextStyle),
-                    onTap: () => doSignature(model),
-                  ),
+                  if (url != null && url != '')
+                    GestureDetector(
+                      child: Text('点击此处修改签名', style: signatureTextStyle),
+                      onTap: () => doSignature(model),
+                    ),
                 ],
               ),
             ),

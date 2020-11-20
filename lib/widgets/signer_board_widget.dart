@@ -24,13 +24,17 @@ class SignerBoardWidget extends StatefulWidget {
     _state.reset();
   }
 
+  bool isPaintted(){
+    return _state.isPaintted();
+  }
+
   Future<DartUI.Image> capture() async {
     return await _state.capture();
   }
 }
 
 class SignerBoardWidgetState extends State<SignerBoardWidget> {
-  List<Offset> _points = <Offset>[];
+  final List<Offset> _points = <Offset>[];
 
   @override
   void initState() {
@@ -51,7 +55,7 @@ class SignerBoardWidgetState extends State<SignerBoardWidget> {
         RenderBox referenceBox = context.findRenderObject();
         Offset point = referenceBox.globalToLocal(details.globalPosition);
         setState(() {
-          _points = List.from(_points)..add(point);
+          _points..add(point);
         });
       },
       onPanEnd: (DragEndDetails details) => _points.add(null),
@@ -80,9 +84,15 @@ class SignerBoardWidgetState extends State<SignerBoardWidget> {
   }
 
   void reset() {
-    setState(() {
-      _points.clear();
-    });
+    _points.clear();
+    setState(() {});
+  }
+
+  bool isPaintted() {
+    if(_points==null){
+      return false;
+    }
+    return _points.length == 0;
   }
 }
 
@@ -122,6 +132,6 @@ class PenSignerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(PenSignerPainter oldDelegate) {
-    return oldDelegate.points != points;
+    return true;
   }
 }
