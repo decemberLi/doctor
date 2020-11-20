@@ -248,19 +248,39 @@ class PerscriptionDetail extends StatelessWidget {
                             ],
                           ),
                         ),
-                        if (data?.doctorName != null)
+                        if (data?.doctorName != null ||
+                            data?.doctorSignatureUrl != null)
                           FormItem(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: OneLineText(
-                              '处方医生：${data?.doctorName ?? ''}',
-                              style: MyStyles.inputTextStyle,
+                            padding: EdgeInsets.only(top: 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '处方医生：',
+                                  style: MyStyles.inputTextStyle,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                data?.doctorSignatureUrl != null
+                                    ? FadeInImage.memoryNetwork(
+                                        placeholder: kTransparentImage,
+                                        image: data?.doctorSignatureUrl,
+                                        width: 54,
+                                        fit: BoxFit.fitWidth,
+                                      )
+                                    : Text(
+                                        data?.doctorName ?? '',
+                                        style: MyStyles.inputTextStyle,
+                                      ),
+                              ],
                             ),
                           ),
                         if (data?.pharmacist != null || data?.auditor != null)
                           FormItem(
-                            padding: EdgeInsets.symmetric(vertical: 10),
+                            borderDirection: FormItemBorderDirection.bottom,
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   '处方药师：',

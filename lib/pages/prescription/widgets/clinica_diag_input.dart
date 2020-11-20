@@ -61,7 +61,6 @@ class ClinicaDiagInput extends StatelessWidget {
         hintText: '填写疾病诊断',
         border: InputBorder.none,
         counterText: '',
-        suffixIcon: _suffixWidget(),
       ),
       // maxLength: 15,
       obscureText: false,
