@@ -300,7 +300,11 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                         style: MyStyles.inputTextStyle,
                         textAlign: TextAlign.right,
                       )..controller.text =
-                          model.data?.prescriptionPatientAge?.toString() ?? '',
+                          model.data?.prescriptionPatientAge?.toString() ?? ''
+                      ..controller.selection = TextSelection.fromPosition(TextPosition(
+                          affinity: TextAffinity.downstream,
+                          offset: '${model.data?.prescriptionPatientAge??''}'.length
+                      ))
                     ),
                     FormItem(
                       label: '性别',
@@ -344,7 +348,11 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                                     style: MyStyles.inputTextStyle,
                                     textAlign: TextAlign.right,
                                   )..controller.text =
-                                      model.data?.weight?.toString() ?? '',
+                                      model.data?.weight?.toString() ?? ''
+                                    ..controller.selection = TextSelection.fromPosition(TextPosition(
+                                        affinity: TextAffinity.downstream,
+                                        offset: '${model.data?.weight??''}'.length
+                                    )),
                                 ),
                                 _showUnit
                                     ? Text('kg', style: MyStyles.inputTextStyle)
