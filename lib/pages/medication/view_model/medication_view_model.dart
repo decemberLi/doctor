@@ -58,9 +58,6 @@ class MedicationViewModel extends ViewStateRefreshListModel<DrugModel> {
         _model.singleDose = _cartModel.singleDose;
         _model.usePattern = _cartModel.usePattern;
         cartList[index] = _model;
-      } else {
-        /// 如果购物车为空，则全部置为空
-        _model.quantity = null;
       }
     }
   }
@@ -73,8 +70,8 @@ class MedicationViewModel extends ViewStateRefreshListModel<DrugModel> {
     }
   }
 
-  bool checkCount(){
-    if(cartList.length >=5){
+  bool checkCount() {
+    if (cartList.length >= 5) {
       EasyLoading.showToast('最多只能选择5种药品');
       return false;
     }
