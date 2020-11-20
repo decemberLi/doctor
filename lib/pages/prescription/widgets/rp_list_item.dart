@@ -37,7 +37,7 @@ class RpListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  data.drugName,
+                  '${data.drugName} ${data.generalName??''}',
                   style: MyStyles.inputTextStyle_12,
                 ),
                 Text(
@@ -93,6 +93,7 @@ class RpListItem extends StatelessWidget {
                   ),
                 ),
                 AceSpinnerInput(
+                  maxValue: data.purchaseLimit,
                   spinnerValue: data.quantity + .0 ?? 1,
                   onChange: (newValue) {
                     data.quantity = newValue;

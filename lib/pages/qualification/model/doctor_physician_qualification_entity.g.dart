@@ -38,6 +38,9 @@ DoctorPhysicianInfoEntity _$DoctorPhysicianInfoEntityFromJson(
         ?.map((e) =>
             e == null ? null : FacePhoto.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    json['signature'] == null
+        ? null
+        : FacePhoto.fromJson(json['signature'] as Map<String, dynamic>),
   );
 }
 
@@ -55,6 +58,7 @@ Map<String, dynamic> _$DoctorPhysicianInfoEntityToJson(
       'fullFacePhoto': instance.fullFacePhoto?.toJson(),
       'idCardLicense1': instance.idCardLicense1?.toJson(),
       'idCardLicense2': instance.idCardLicense2?.toJson(),
+      'signature': instance.signature?.toJson(),
       'qualifications':
           instance.qualifications?.map((e) => e?.toJson())?.toList(),
       'practiceCertificates':

@@ -102,9 +102,20 @@ class RouteManager {
     QUALIFICATION_PAGE: (context) => DoctorBasicInfoPage(),
     MEDICATION_LIST: (context) => MedicationPage(),
     MEDICATION_DETAIL: (context) => MedicationDetailPage(),
-    PRESCRIPTION_TEMPLATE_ADD: (context) => PrescriptionTemplageAddPage(),
+    PRESCRIPTION_TEMPLATE_ADD: (context) {
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return PrescriptionTemplageAddPage(
+        action: obj['action'],
+        data: obj['data'],
+      );
+    },
     PRESCRIPTION_SUCCESS: (context) => PrescriptionSuccessPage(),
-    PRESCRIPTION_LIST: (context) => PrescriptionListPage(),
+    PRESCRIPTION_LIST: (context) {
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return PrescriptionListPage(
+        from: obj['from'],
+      );
+    },
     PRESCRIPTION_DETAIL: (context) => PrescriptionDetailPage(),
     PRESCRIPTION_PREVIEW: (context) => PrescriptionPreviewPage(),
     PATIENT: (context) => PatientListPage(),

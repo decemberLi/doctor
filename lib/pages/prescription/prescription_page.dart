@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
+import 'package:doctor/pages/prescription/prescription_list_page.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
 import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
@@ -39,6 +42,17 @@ class _PrescriptionPageState extends State<PrescriptionPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  bool _needShowWeight = false;
+  Timer _timer;
+  bool _showUnit = false;
+
+  @override
+  void dispose() {
+    if (_timer != null && _timer.isActive) {
+      _timer.cancel();
+    }
+    super.dispose();
+  }
 
   // 显示临床诊断弹窗
   Future<void> _showClinicalDiagnosisSheet(Function onSave) {
@@ -168,7 +182,8 @@ class _PrescriptionPageState extends State<PrescriptionPage>
           if (widget.showActicons)
             TextButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(RouteManager.PRESCRIPTION_LIST);
+                Navigator.of(context).pushNamed(RouteManager.PRESCRIPTION_LIST,
+                    arguments: {'from': FROM_PRESCRIPTION_HISTORY});
               },
               child: Text(
                 '处方记录',
@@ -181,6 +196,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
       ),
       body: Consumer<PrescriptionViewModel>(
         builder: (_, model, __) {
+          _needShowWeight = (model?.data?.prescriptionPatientAge ?? 0) <= 14;
           return Container(
             child: ListView(
               padding: EdgeInsets.symmetric(
@@ -209,13 +225,11 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             style: MyStyles.primaryTextStyle_12,
                           ),
                           onTap: () async {
-                            var patientUserId =
-                                await Navigator.of(context).pushNamed(
-                              RouteManager.PATIENT,
-                              arguments: 'QUICK_CREATE',
-                            );
-                            if (patientUserId != null) {
-                              model.getDataByPatient(patientUserId);
+                            var item = await Navigator.of(context).pushNamed(
+                                RouteManager.PRESCRIPTION_LIST,
+                                arguments: {'from': FROM_PRESCRIPTION_QUICKLY});
+                            if (item != null) {
+                              model.echoByHistoryPatient(item);
                             }
                           },
                         )
@@ -260,6 +274,22 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             return;
                           }
                           model.data.prescriptionPatientAge = int.parse(value);
+                          var needShow =
+                              model.data.prescriptionPatientAge != null &&
+                                  model.data.prescriptionPatientAge <= 14;
+                          if (_timer != null && _timer.isActive) {
+                            _timer.cancel();
+                          }
+                          print('check');
+                          _timer =
+                              new Timer(const Duration(milliseconds: 800), () {
+                            setState(() {
+                              if (!(_needShowWeight && needShow)) {
+                                model.data.weight = null;
+                              }
+                              _needShowWeight = needShow;
+                            });
+                          });
                           // model.changeDataNotify();
                         },
                         obscureText: false,
@@ -278,6 +308,48 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             model.data.prescriptionPatientSex = value;
                           }),
                     ),
+                    _needShowWeight
+                        ? FormItem(
+                            label: '体重',
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: '请输入患者体重',
+                                      counterText: '',
+                                    ),
+                                    controller: TextEditingController(),
+                                    validator: (val) =>
+                                        val.length < 1 ? '体重不能为空' : null,
+                                    onChanged: (String value) {
+                                      if (value.isEmpty) {
+                                        model.data.weight = null;
+                                        _showUnit = false;
+                                        setState(() {});
+                                        return;
+                                      }
+                                      _showUnit = true;
+                                      model.data.weight = int.parse(value);
+                                      setState(() {});
+                                      // model.changeDataNotify();
+                                    },
+                                    obscureText: false,
+                                    keyboardType:
+                                        TextInputType.numberWithOptions(
+                                            decimal: false),
+                                    style: MyStyles.inputTextStyle,
+                                    textAlign: TextAlign.right,
+                                  )..controller.text =
+                                      model.data?.weight?.toString() ?? '',
+                                ),
+                                _showUnit
+                                    ? Text('kg', style: MyStyles.inputTextStyle)
+                                    : Container()
+                              ],
+                            ))
+                        : Container()
                   ],
                 ),
                 PrescripionCard(

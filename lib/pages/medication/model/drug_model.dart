@@ -50,6 +50,9 @@ class DrugModel {
   /// 数量
   num quantity;
 
+  /// 最大用药量
+  num purchaseLimit;
+
   /// 用法用量
   String get useInfo =>
       '${frequency ?? ''}；${singleDose ?? ''}${doseUnit ?? ''}；${usePattern ?? ''}';
@@ -70,6 +73,7 @@ class DrugModel {
     this.doseUnit,
     this.usePattern,
     this.quantity,
+    this.purchaseLimit
   });
   factory DrugModel.fromJson(Map<String, dynamic> json) =>
       _$DrugModelFromJson(json);

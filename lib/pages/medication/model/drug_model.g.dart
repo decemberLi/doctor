@@ -23,6 +23,7 @@ DrugModel _$DrugModelFromJson(Map<String, dynamic> json) {
     doseUnit: json['doseUnit'] as String,
     usePattern: json['usePattern'] as String,
     quantity: json['quantity'] as num,
+    purchaseLimit: json['purchaseLimit'] as num,
   );
 }
 
@@ -42,4 +43,5 @@ Map<String, dynamic> _$DrugModelToJson(DrugModel instance) => <String, dynamic>{
       'doseUnit': instance.doseUnit,
       'usePattern': instance.usePattern,
       'quantity': instance.quantity,
+      'purchaseLimit': instance.purchaseLimit,
     };

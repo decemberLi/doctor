@@ -5,6 +5,7 @@ import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 /// 处方药品列表
 class RpList extends StatelessWidget {
@@ -49,6 +50,10 @@ class RpList extends StatelessWidget {
           AceButton(
             type: AceButtonType.secondary,
             onPressed: () async {
+              if (list?.length != null && list.length >= 5) {
+                EasyLoading.showToast('最多只能选择5种药品');
+                return;
+              }
               var addList = await Navigator.pushNamed(
                 context,
                 RouteManager.MEDICATION_LIST,

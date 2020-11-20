@@ -3,15 +3,28 @@ import 'package:dio/dio.dart';
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/pages/prescription/service/service.dart';
+import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
+import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
 import 'package:doctor/pages/prescription/widgets/rp_list.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/app_regex_util.dart';
 import 'package:doctor/widgets/ace_button.dart';
+import 'package:doctor/widgets/common_modal.dart';
+import 'package:doctor/widgets/form_item.dart';
+import 'package:doctor/widgets/remove_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class PrescriptionTemplageAddPage extends StatefulWidget {
+  final String action;
+
+  final PrescriptionTemplateModel data;
+
+  bool isAddPrescriptionTemplate() => action == 'add';
+
+  PrescriptionTemplageAddPage({this.action, this.data});
+
   @override
   _PrescriptionTemplageAddPageState createState() =>
       _PrescriptionTemplageAddPageState();
@@ -25,6 +38,14 @@ class _PrescriptionTemplageAddPageState
 
   HttpManager http = HttpManager('dtp');
 
+  @override
+  void initState() {
+    if (widget.data != null) {
+      this.data = widget.data;
+    }
+    super.initState();
+  }
+
   changeDataNotify() {
     setState(() {});
   }
@@ -32,13 +53,28 @@ class _PrescriptionTemplageAddPageState
   submitData() async {
     final form = _formKey.currentState;
     if (form.validate()) {
+      if(data.clinicalDiagnosis == null || data.clinicalDiagnosis == ''){
+        EasyLoading.showToast('请选择临床诊断');
+        return;
+      }
       if (data.drugRps == null || data.drugRps.isEmpty) {
         EasyLoading.showToast('请添加药品信息');
         return;
       }
+
+      if(data.drugRps.length >5){
+        EasyLoading.showToast('最多只能选择5种药品');
+        return;
+      }
+
       form.save();
       try {
-        var res = await addPrescriptionTemplate(this.data.toJson());
+        var res;
+        if (widget.isAddPrescriptionTemplate()) {
+          res = await addPrescriptionTemplate(this.data.toJson());
+        } else {
+          res = await modifyPrescriptionTemplate(this.data.toJson());
+        }
         if (!(res is DioError)) {
           Navigator.pop(context, true);
         }
@@ -58,7 +94,8 @@ class _PrescriptionTemplageAddPageState
         child: Scaffold(
           appBar: AppBar(
             elevation: 0,
-            title: Text('添加处方模板'),
+            title:
+                Text(widget.isAddPrescriptionTemplate() ? '添加处方模板' : '编辑处方模版'),
           ),
           // 避免键盘弹起时高度错误
           resizeToAvoidBottomInset: false,
@@ -112,32 +149,47 @@ class _PrescriptionTemplageAddPageState
                   SizedBox(
                     height: 12,
                   ),
-                  Text(
-                    '临床诊断',
-                    style: MyStyles.inputTextStyle,
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  TextFormField(
-                    initialValue: data.clinicalDiagnosis ?? '',
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      fillColor: Colors.white,
-                      filled: true,
-                      hintText: '请填写临床诊断',
-                    ),
-                    maxLength: 15,
-                    validator: (val) => val.length < 1 ? '临床诊断不能为空' : null,
-                    onSaved: (val) => {data.clinicalDiagnosis = val},
-                    obscureText: false,
-                    keyboardType: TextInputType.text,
-                    style: MyStyles.inputTextStyle,
-                    // onChanged: (value) {
-                    //   setState(() {
-                    //     data.clinicalDiagnosis = value;
-                    //   });
-                    // },
+                  PrescripionCard(
+                    title: '临床诊断',
+                    children: [
+                      FormItem(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 14, horizontal: 0),
+                        child: Wrap(
+                          spacing: 16.0,
+                          runSpacing: 8.0,
+                          alignment: WrapAlignment.start,
+                          children: [
+                            ...data.clinicaList
+                                .map(
+                                  (e) => RemoveButton(
+                                    text: e,
+                                    onPressed: () {
+                                      setState(() {
+                                        data.removeClinica(
+                                            data.clinicaList.indexOf(e));
+                                      });
+                                    },
+                                  ),
+                                )
+                                .toList(),
+                            AceButton(
+                              type: AceButtonType.secondary,
+                              onPressed: () {
+                                _showClinicalDiagnosisSheet((value) {
+                                  data.addClinica(value);
+                                  setState(() {});
+                                });
+                              },
+                              text: '添加诊断',
+                              width: 60,
+                              height: 30,
+                              fontSize: 10,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
                   SizedBox(
                     height: 12,
@@ -195,6 +247,19 @@ class _PrescriptionTemplageAddPageState
           ),
         ),
       ),
+    );
+  }
+
+  // 显示临床诊断弹窗
+  Future<void> _showClinicalDiagnosisSheet(Function onSave) {
+    return CommonModal.showBottomSheet(
+      context,
+      title: '临床诊断',
+      height: 550,
+      child: ClinicaDiagInput(onSave: (String value) {
+        onSave(value);
+        Navigator.pop(context);
+      }),
     );
   }
 }

@@ -421,7 +421,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   }
 
   //发送反馈
-  void sendFeedback(content) {
+  void sendFeedback(content, {String level='其他'}) {
     //上传反馈 测试使用
     // setState(() {
     //   successFeedback = true;
@@ -447,7 +447,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       feedbackService({
         'learnPlanId': widget.learnPlanId,
         'resourceId': widget.resourceId,
-        'feedback': content
+        'feedback': content,
+        'level':level
       }).then((res) {
         setState(() {
           successFeedback = true;
@@ -522,7 +523,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                         ..._feedbackData.map((item) {
                           return GestureDetector(
                             onTap: () {
-                              sendFeedback(item['content']);
+                              sendFeedback(item['content'],level: item['level']);
                             },
                             child: Stack(
                               overflow: Overflow.visible,
@@ -744,17 +745,20 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       setState(() {
         _feedbackData = [
           {
-            'content': res['perfectList'][0],
+            'content': res['perfects'][0]['content'],
+            'level': res['perfects'][0]['level'],
             'icon': MyIcons.icon_dianzan,
             'index': 0
           },
           {
-            'content': res['goodList'][0],
+            'content': res['goods'][0]['content'],
+            'level': res['goods'][0]['level'],
             'icon': MyIcons.icon_xiaolian,
             'index': 1
           },
           {
-            'content': res['middleList'][0],
+            'content': res['middles'][0]['content'],
+            'level': res['middles'][0]['level'],
             'icon': MyIcons.icon_kulian,
             'index': 2
           }

@@ -32,6 +32,7 @@ class MedicationAddBtn extends StatelessWidget {
       }
       return AceSpinnerInput(
         minValue: 0,
+        maxValue: data.purchaseLimit,
         spinnerValue: _quantity,
         onChange: (newValue) {
           if (newValue == 0) {

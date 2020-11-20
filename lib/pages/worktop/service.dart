@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:doctor/http/http_manager.dart';
+import 'package:doctor/pages/qualification/view_model/doctory_physician_qualification_view_model.dart';
+import 'package:doctor/service/ucenter/ucenter_service.dart';
 
 import 'learn/model/learn_list_model.dart';
 

@@ -7,10 +7,6 @@ class FacePhoto {
   String ossId;
   String url;
   String name;
-  String path;
-  String assetsPath;
-  bool addImgPlaceHolder = false;
-  bool sampleImgPlaceHolder = false;
 
   FacePhoto(this.ossId, this.url, this.name);
 

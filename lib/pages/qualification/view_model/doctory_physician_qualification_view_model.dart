@@ -68,13 +68,17 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   setAvatar(String path) async {
+    if (path == null) {
+      _model?.physicianInfoEntity?.fullFacePhoto = null;
+      notifyDataChange();
+      return;
+    }
     UploadFileEntity entity = await uploadImageToOss(path);
     if (_model.physicianInfoEntity.fullFacePhoto == null) {
       _model.physicianInfoEntity.fullFacePhoto = FacePhoto.create();
     }
 
     var facePhoto = _model.physicianInfoEntity.fullFacePhoto;
-    facePhoto.path = path;
     facePhoto.url = null;
     notifyDataChange();
     facePhoto.url = entity.url;
@@ -83,6 +87,16 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   setIdCardFaceSide(String path) async {
+    if (path == null) {
+      _model.physicianInfoEntity.identityNo = null;
+      _model.physicianInfoEntity.identityName = null;
+      _model.physicianInfoEntity.identitySex = null;
+      _model.physicianInfoEntity.identityDate = null;
+      _model.physicianInfoEntity.identityAddress = null;
+      _model.physicianInfoEntity?.idCardLicense1 = null;
+      notifyDataChange();
+      return;
+    }
     UploadFileEntity entity = await uploadImageToOss(path);
 
     // ocr
@@ -100,7 +114,6 @@ class DoctorPhysicianQualificationViewModel {
         _model.physicianInfoEntity.idCardLicense1 = FacePhoto.create();
       }
       var idCardFace = _model.physicianInfoEntity.idCardLicense1;
-      idCardFace.path = path;
       idCardFace.url = null;
       idCardFace.url = entity.url;
       idCardFace.ossId = entity.ossId;
@@ -120,8 +133,13 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   setIdCardBackgroundSide(String path) async {
-    //C19B79335322E659697E90E4E7B96688
-
+    if (path == null) {
+      _model.physicianInfoEntity.identityValidityStart = null;
+      _model.physicianInfoEntity.identityValidityEnd = null;
+      _model.physicianInfoEntity.idCardLicense2 = null;
+      notifyDataChange();
+      return;
+    }
     UploadFileEntity entity = await uploadImageToOss(path);
     Map<String, dynamic> param = {};
     param['imgUrl'] = entity.url;
@@ -135,13 +153,11 @@ class DoctorPhysicianQualificationViewModel {
         recognizeResult.backResult.startDate.length != 0 &&
         recognizeResult.backResult.endDate != null &&
         recognizeResult.backResult.endDate.length != 0) {
-
       // 识别成功后再展示内容
       if (_model.physicianInfoEntity.idCardLicense2 == null) {
         _model.physicianInfoEntity.idCardLicense2 = FacePhoto.create();
       }
       var idCardBackground = _model.physicianInfoEntity.idCardLicense2;
-      idCardBackground.path = path;
       idCardBackground.url = null;
       idCardBackground.url = entity.url;
       idCardBackground.ossId = entity.ossId;
@@ -167,6 +183,16 @@ class DoctorPhysicianQualificationViewModel {
         _model.physicianInfoEntity.qualifications, path, toBeChange, index);
   }
 
+  removeQualifications(int index) async {
+    if (_model.physicianInfoEntity.qualifications == null) {
+      _model.physicianInfoEntity.qualifications = [];
+    }
+    if (_model.physicianInfoEntity.qualifications.length > index) {
+      _model.physicianInfoEntity.qualifications.removeAt(index);
+      notifyDataChange();
+    }
+  }
+
   setPracticeCertificates(String path, FacePhoto toBeChange, int index) async {
     if (_model.physicianInfoEntity.practiceCertificates == null) {
       _model.physicianInfoEntity.practiceCertificates = [];
@@ -175,7 +201,17 @@ class DoctorPhysicianQualificationViewModel {
         path, toBeChange, index);
   }
 
-  setJobCertificatess(String path, FacePhoto toBeChange, int index) async {
+  removePracticeCertificates(int index) async {
+    if (_model.physicianInfoEntity.practiceCertificates == null) {
+      _model.physicianInfoEntity.practiceCertificates = [];
+    }
+    if (_model.physicianInfoEntity.practiceCertificates.length > index) {
+      _model.physicianInfoEntity.practiceCertificates.removeAt(index);
+      notifyDataChange();
+    }
+  }
+
+  setJobCertificates(String path, FacePhoto toBeChange, int index) async {
     if (_model.physicianInfoEntity.jobCertificates == null) {
       _model.physicianInfoEntity.jobCertificates = [];
     }
@@ -183,9 +219,27 @@ class DoctorPhysicianQualificationViewModel {
         _model.physicianInfoEntity.jobCertificates, path, toBeChange, index);
   }
 
+  void setSignature(path) async {
+    UploadFileEntity entity = await uploadImageToOss(path);
+    _model.physicianInfoEntity.signature = FacePhoto.create();
+    _model.physicianInfoEntity.signature.url = entity.url;
+    _model.physicianInfoEntity.signature.name = entity.ossFileName;
+    _model.physicianInfoEntity.signature.ossId = entity.ossId;
+    notifyDataChange();
+  }
+
+  removeJobCertificates(int index) async {
+    if (_model.physicianInfoEntity.jobCertificates == null) {
+      _model.physicianInfoEntity.jobCertificates = [];
+    }
+    if (_model.physicianInfoEntity.jobCertificates.length > index) {
+      _model.physicianInfoEntity.jobCertificates.removeAt(index);
+      notifyDataChange();
+    }
+  }
+
   _processUploadImgLogic(List<FacePhoto> list, String path,
       FacePhoto toBeChange, int index) async {
-
     UploadFileEntity entity = await uploadImageToOss(path);
     // update
     FacePhoto toBeChange;
@@ -195,12 +249,10 @@ class DoctorPhysicianQualificationViewModel {
       toBeChange = FacePhoto.create();
       list.add(toBeChange);
     }
-    toBeChange.path = path;
-    toBeChange.url = null;
-    notifyDataChange();
     toBeChange.ossId = entity.ossId;
     toBeChange.url = entity.url;
     toBeChange.name = entity.ossFileName;
+    notifyDataChange();
   }
 
   submitData(BuildContext context) async {
