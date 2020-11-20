@@ -6,6 +6,7 @@ import 'package:doctor/utils/platform_utils.dart';
 import 'package:doctor/widgets/signer_board_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DoctorSignatureWidget extends StatefulWidget {
@@ -104,6 +105,10 @@ class _DoctorSignatureWidgetState extends State<DoctorSignatureWidget> {
                             ),
                           ),
                           onTap: () async {
+                            if (signerBoard.isPaintted()) {
+                              EasyLoading.showToast('请输入电子签名');
+                              return;
+                            }
                             var image = await signerBoard.capture();
                             var pngBytes = await image.toByteData(
                                 format: ImageByteFormat.png);
