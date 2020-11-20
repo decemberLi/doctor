@@ -356,7 +356,7 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
                       width: 100.0,
                       child: AceSpinnerInput(
                         spinnerValue: this.quantity,
-                        maxValue: widget.item.purchaseLimit,
+                        maxValue: double.parse('${widget.item.purchaseLimit}'),
                         onChange: (newValue) {
                           setState(() {
                             this.quantity = newValue;

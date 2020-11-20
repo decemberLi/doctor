@@ -257,7 +257,7 @@ class _PrescriptionTemplageAddPageState
       title: '临床诊断',
       height: 550,
       child: ClinicaDiagInput(onSave: (String value) {
-        if(value != null) {
+        if(value != null && value != '') {
           onSave(value);
         }
         Navigator.pop(context);

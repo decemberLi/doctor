@@ -75,7 +75,7 @@ class PrescriptionListLitem extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 20,
+            right: 30,
             top: 0,
             child: Image.asset(
               'assets/images/${data.orderStatusImage}',
