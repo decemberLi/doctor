@@ -59,25 +59,27 @@ class DrugModel {
   String get useInfo =>
       '${frequency ?? ''}；${singleDose ?? ''}${doseUnit ?? ''}；${usePattern ?? ''}';
 
-  DrugModel({
-    this.drugId,
-    this.drugName,
-    this.drugNo,
-    this.generalName,
-    this.approvalNo,
-    this.drugType,
-    this.drugPrice,
-    this.producer,
-    this.pictures,
-    this.drugSize,
-    this.frequency,
-    this.singleDose,
-    this.doseUnit,
-    this.usePattern,
-    this.quantity,
-    this.purchaseLimit,
-    this.disable
-  });
+  String get drugFullName => '${drugName ?? ''} ${generalName ?? ''}';
+
+  DrugModel(
+      {this.drugId,
+      this.drugName,
+      this.drugNo,
+      this.generalName,
+      this.approvalNo,
+      this.drugType,
+      this.drugPrice,
+      this.producer,
+      this.pictures,
+      this.drugSize,
+      this.frequency,
+      this.singleDose,
+      this.doseUnit,
+      this.usePattern,
+      this.quantity,
+      this.purchaseLimit,
+      this.disable});
+
   factory DrugModel.fromJson(Map<String, dynamic> json) =>
       _$DrugModelFromJson(json);
 

@@ -43,7 +43,7 @@ class PrescriptionListLitem extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              e.drugName,
+                              e.drugFullName,
                               style: MyStyles.inputTextStyle_12,
                             ),
                             Text(

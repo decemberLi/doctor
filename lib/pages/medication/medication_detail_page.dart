@@ -243,7 +243,7 @@ class MedicationIntruction extends StatelessWidget {
             children: [
               FormItem(
                 label: '药品名称：',
-                value: '${model.data?.drugName ?? ''}',
+                value: model.data?.drugName,
                 padding: EdgeInsets.symmetric(vertical: 20),
                 borderDirection: FormItemBorderDirection.bottom,
               ),

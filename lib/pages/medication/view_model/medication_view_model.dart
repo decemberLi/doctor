@@ -63,7 +63,10 @@ class MedicationViewModel extends ViewStateRefreshListModel<DrugModel> {
   }
 
   void initCart(List<DrugModel> data) {
-    this.cartList = [...data];
+    cartList.clear();
+    for(var each in data){
+      cartList.add(DrugModel.fromJson(each.toJson()));
+    }
     if (this.list.isNotEmpty) {
       combineListToCart(this.list);
       notifyListeners();

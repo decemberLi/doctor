@@ -149,15 +149,17 @@ class _HomePageState extends State<HomePage>
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     if (model.data?.authStatus == 'PASS') {
+      if(!await showToastIfNeeded()) {
+        onTabTapped(preTabIndex);
+      }
       return;
     }
     // 如果没有通过认证再次查询，再次判断
     await model.queryDoctorInfo();
     if (model.data?.authStatus == 'PASS') {
-      return;
-    }
-
-    if(!await showToastIfNeeded()){
+      if(!await showToastIfNeeded()) {
+        onTabTapped(preTabIndex);
+      }
       return;
     }
 

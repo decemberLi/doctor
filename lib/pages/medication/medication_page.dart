@@ -202,7 +202,11 @@ class _MedicationPageState extends State<MedicationPage>
                             EasyLoading.showToast('最多只能选择5种药品');
                             return;
                           }
-                          Navigator.pop(context, model.cartList);
+                          List resultList = [];
+                          for(var each in model.cartList){
+                            resultList.add(DrugModel.fromJson(each.toJson()));
+                          }
+                          Navigator.pop(context, resultList);
                         },
                       ),
                     ],
