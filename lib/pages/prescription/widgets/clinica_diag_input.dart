@@ -28,7 +28,11 @@ class ClinicaDiagInput extends StatelessWidget {
                   border: Border.all(color: ThemeColor.primaryColor, width: 1),
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   color: Colors.white),
-              child: Text('添加',textAlign: TextAlign.center,),
+              child: Text(
+                '添加',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: ThemeColor.primaryColor),
+              ),
             ),
             onTap: () {
               if (_input == '' || _input == null) {

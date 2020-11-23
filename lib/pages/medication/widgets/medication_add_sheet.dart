@@ -170,7 +170,7 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(
-                  '药品名称：${widget.item.drugName ?? ''}',
+                  '药品名称：${widget.item.drugFullName ?? ''}',
                   style: MyStyles.inputTextStyle,
                   textAlign: TextAlign.left,
                 ),

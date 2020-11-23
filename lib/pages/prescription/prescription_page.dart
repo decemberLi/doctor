@@ -45,11 +45,15 @@ class _PrescriptionPageState extends State<PrescriptionPage>
   bool _needShowWeight = false;
   Timer _timer;
   bool _showUnit = false;
+  FocusNode _commentFocusNode = FocusNode();
 
   @override
   void dispose() {
     if (_timer != null && _timer.isActive) {
       _timer.cancel();
+    }
+    if(_commentFocusNode != null){
+      _commentFocusNode.unfocus();
     }
     super.dispose();
   }
@@ -248,6 +252,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                           hintText: '请输入患者姓名',
                           counterText: '',
                         ),
+                        focusNode: _commentFocusNode,
                         maxLength: 6,
                         validator: (val) => val.length < 1 ? '姓名不能为空' : null,
                         onChanged: (String value) {
@@ -269,6 +274,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             hintText: '请输入患者年龄',
                             counterText: '',
                           ),
+                          focusNode: _commentFocusNode,
                           controller: TextEditingController(),
                           validator: (val) => val.length < 1 ? '年龄不能为空' : null,
                           onChanged: (String value) {
@@ -331,6 +337,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                                       hintText: '请输入患者体重',
                                       counterText: '',
                                     ),
+                                    focusNode: _commentFocusNode,
                                     controller: TextEditingController(),
                                     validator: (val) =>
                                         val.length < 1 ? '体重不能为空' : null,

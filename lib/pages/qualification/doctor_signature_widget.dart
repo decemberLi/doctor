@@ -112,8 +112,13 @@ class _DoctorSignatureWidgetState extends State<DoctorSignatureWidget> {
                             var image = await signerBoard.capture();
                             var pngBytes = await image.toByteData(
                                 format: ImageByteFormat.png);
-                            var directory = await getExternalStorageDirectory();
-                            var path = '${directory.path}/doctor_signature.png';
+                            var dir;
+                            if (Platform.isIOS) {
+                              dir = await getApplicationDocumentsDirectory();
+                            } else {
+                              dir = await getExternalStorageDirectory();
+                            }
+                            var path = '${dir.path}/doctor_signature.png';
                             var file = File(path);
                             file.writeAsBytesSync(
                                 pngBytes.buffer.asUint8List());

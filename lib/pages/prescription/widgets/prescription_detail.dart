@@ -35,7 +35,7 @@ class PerscriptionDetail extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        '${data.drugRps.indexOf(e) + 1}、${e.drugName}',
+                        '${data.drugRps.indexOf(e) + 1}、${e.drugFullName}',
                         style: MyStyles.inputTextStyle_12,
                       ),
                     ),

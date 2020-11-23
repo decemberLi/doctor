@@ -37,7 +37,7 @@ class RpListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${data.drugName} ${data.generalName??''}',
+                  '${data.drugFullName}',
                   style: MyStyles.inputTextStyle_12,
                 ),
                 Text(
