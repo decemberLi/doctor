@@ -497,7 +497,7 @@ class _PhysicianQualificationWidgetState
                   if (url != null && url != '')
                     GestureDetector(
                       child: Text('点击此处修改签名', style: signatureTextStyle),
-                      onTap: () => doSignature(model),
+                      onTap: () => doSignature(url),
                     ),
                 ],
               ),
@@ -505,19 +505,16 @@ class _PhysicianQualificationWidgetState
             Row(
               children: [
                 Expanded(
-                  child: GestureDetector(
-                    child: Container(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      decoration: DashedDecoration(
-                        dashedColor: ThemeColor.colorFF8FC1FE,
-                        gap: 3,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: _signatureContent(url),
+                  child: Container(
+                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    decoration: DashedDecoration(
+                      dashedColor: ThemeColor.colorFF8FC1FE,
+                      gap: 3,
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    onTap: () => doSignature(model),
+                    child: _signatureContent(url),
                   ),
                 ),
               ],
@@ -532,27 +529,32 @@ class _PhysicianQualificationWidgetState
     if (url != null && url != '') {
       return GestureDetector(
         child: Image.network(url, width: 108, height: 54),
-        onTap: () => _showOriginImage([url], 0),
+        onTap: () {
+          print('看大图忽略');
+        },
       );
     } else {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('点击此处去签名', style: signatureTextStyle),
-          Container(
-            margin: EdgeInsets.only(left: 4),
-            child: Image.asset(
-              'assets/images/signature_icon.png',
-              width: 12,
-              height: 12,
+      return GestureDetector(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('点击此处去签名', style: signatureTextStyle),
+            Container(
+              margin: EdgeInsets.only(left: 4),
+              child: Image.asset(
+                'assets/images/signature_icon.png',
+                width: 12,
+                height: 12,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+        onTap: () => doSignature(url),
       );
     }
   }
 
-  Future doSignature(DoctorQualificationModel model) async {
+  Future doSignature(String url) async {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -560,8 +562,7 @@ class _PhysicianQualificationWidgetState
     var path = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            DoctorSignatureWidget(model?.physicianInfoEntity?.signature?.url),
+        builder: (context) => DoctorSignatureWidget(),
       ),
     );
     SystemChrome.setPreferredOrientations(
