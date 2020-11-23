@@ -23,15 +23,14 @@ class ClinicaDiagInput extends StatelessWidget {
           GestureDetector(
             child: Container(
               margin: EdgeInsets.only(left: 10),
-              padding: EdgeInsets.only(left: 10, right: 10, top: 1, bottom: 1),
+              padding: EdgeInsets.only(left: 12, right: 12, top: 3, bottom: 3),
               decoration: BoxDecoration(
-                  border: Border.all(color: ThemeColor.primaryColor, width: 1),
                   borderRadius: BorderRadius.all(Radius.circular(20)),
-                  color: Colors.white),
+                  color: ThemeColor.colorFF8FC1FE),
               child: Text(
                 '添加',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: ThemeColor.primaryColor),
+                style: TextStyle(color: ThemeColor.primaryColor,fontSize: 10),
               ),
             ),
             onTap: () {

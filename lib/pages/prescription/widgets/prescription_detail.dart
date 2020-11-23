@@ -207,7 +207,7 @@ class PerscriptionDetail extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  '体重：${data?.weight ?? ''}',
+                                  '体重：${data?.weight ?? ''}kg',
                                   style: MyStyles.inputTextStyle,
                                 ),
                               ],

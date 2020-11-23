@@ -10,9 +10,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DoctorSignatureWidget extends StatefulWidget {
-  final String url;
 
-  DoctorSignatureWidget(this.url);
+  DoctorSignatureWidget();
 
   @override
   State<StatefulWidget> createState() => _DoctorSignatureWidgetState();
