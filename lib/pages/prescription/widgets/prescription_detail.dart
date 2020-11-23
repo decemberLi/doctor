@@ -288,7 +288,7 @@ class PerscriptionDetail extends StatelessWidget {
                                         imageErrorBuilder:
                                             (context, object, stackTrace) {
                                           return Text(
-                                            data?.auditor ?? '',
+                                            data?.doctorName ?? '',
                                             style: MyStyles.inputTextStyle,
                                           );
                                         })
