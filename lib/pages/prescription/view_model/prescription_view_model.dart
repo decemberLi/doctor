@@ -71,10 +71,8 @@ class PrescriptionViewModel extends ViewStateModel {
 
   addByTemplate(PrescriptionTemplateModel data) {
     this.data.clinicalDiagnosis = data.clinicalDiagnosis;
+    data.drugRps.removeWhere((element) => element.disable ?? false);
     for (var each in data.drugRps) {
-      if(each.disable == null || !each.disable){
-        continue;
-      }
       if (each.quantity > each.purchaseLimit) {
         each.quantity = each.purchaseLimit;
       }
@@ -157,9 +155,6 @@ class PrescriptionViewModel extends ViewStateModel {
       // filter
       model.drugRps.removeWhere((element) => element.disable ?? false);
       for (var each in model.drugRps) {
-        if(each.disable == null || !each.disable){
-          continue;
-        }
         if (each.quantity > each.purchaseLimit) {
           each.quantity = each.purchaseLimit;
         }
