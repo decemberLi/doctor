@@ -45,12 +45,9 @@ class _PrescriptionListPageState extends State<PrescriptionListPage> {
               child: TextField(
                 onSubmitted: (text) {
                   _model.queryKey = text;
-                  if (_model.isEmpty || _model.isError || _model.isIdle) {
-                    _model.refresh(init: true);
-                  } else {
-                    _model.refreshController
-                        .requestRefresh(duration: Duration(microseconds: 1));
-                  }
+                  _model.refresh(init: true);
+                  _model.refreshController
+                      .requestRefresh(duration: Duration(microseconds: 1));
                 },
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(5.0),
