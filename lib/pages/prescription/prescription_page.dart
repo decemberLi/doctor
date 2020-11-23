@@ -24,6 +24,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../main.dart';
+
 /// 开处方主页面
 class PrescriptionPage extends StatefulWidget {
   final String title;
@@ -39,26 +41,51 @@ class PrescriptionPage extends StatefulWidget {
 }
 
 class _PrescriptionPageState extends State<PrescriptionPage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, RouteAware {
   @override
   bool get wantKeepAlive => true;
   bool _needShowWeight = false;
   Timer _timer;
   bool _showUnit = false;
-  FocusNode _commentFocusNode = FocusNode();
+  FocusNode _ageFocusNode = FocusNode();
+  FocusNode _nameFocusNode = FocusNode();
+  FocusNode _weightFocusNode = FocusNode();
 
   @override
   void dispose() {
     if (_timer != null && _timer.isActive) {
       _timer.cancel();
     }
-    if(_commentFocusNode != null){
-      _commentFocusNode.unfocus();
-    }
+    routeObserver.unsubscribe(this);
     super.dispose();
   }
 
-  // 显示临床诊断弹窗
+  void _resetFocus() {
+    if (_ageFocusNode != null) {
+      _ageFocusNode.unfocus();
+    }
+    if (_nameFocusNode != null) {
+      _nameFocusNode.unfocus();
+    }
+    if (_weightFocusNode != null) {
+      _weightFocusNode.unfocus();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void didPushNext() {
+    // TODO: implement didPushNext
+    _resetFocus();
+    print('----------------------didPushNext-------------------');
+    super.didPushNext();
+  }
+
   Future<void> _showClinicalDiagnosisSheet(Function onSave) {
     return CommonModal.showBottomSheet(
       context,
@@ -252,7 +279,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                           hintText: '请输入患者姓名',
                           counterText: '',
                         ),
-                        focusNode: _commentFocusNode,
+                        focusNode: _nameFocusNode,
                         maxLength: 6,
                         validator: (val) => val.length < 1 ? '姓名不能为空' : null,
                         onChanged: (String value) {
@@ -274,7 +301,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                             hintText: '请输入患者年龄',
                             counterText: '',
                           ),
-                          focusNode: _commentFocusNode,
+                          focusNode: _ageFocusNode,
                           controller: TextEditingController(),
                           validator: (val) => val.length < 1 ? '年龄不能为空' : null,
                           onChanged: (String value) {
@@ -337,7 +364,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                                       hintText: '请输入患者体重',
                                       counterText: '',
                                     ),
-                                    focusNode: _commentFocusNode,
+                                    focusNode: _weightFocusNode,
                                     controller: TextEditingController(),
                                     validator: (val) =>
                                         val.length < 1 ? '体重不能为空' : null,

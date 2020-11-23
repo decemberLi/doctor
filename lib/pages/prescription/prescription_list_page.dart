@@ -5,7 +5,6 @@ import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -46,7 +45,12 @@ class _PrescriptionListPageState extends State<PrescriptionListPage> {
               child: TextField(
                 onSubmitted: (text) {
                   _model.queryKey = text;
-                  _model.refresh();
+                  if (_model.isEmpty || _model.isError || _model.isIdle) {
+                    _model.refresh(init: true);
+                  } else {
+                    _model.refreshController
+                        .requestRefresh(duration: Duration(microseconds: 1));
+                  }
                 },
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(5.0),
