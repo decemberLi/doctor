@@ -14,6 +14,7 @@ import 'package:transparent_image/transparent_image.dart';
 class PerscriptionDetail extends StatelessWidget {
   final PrescriptionModel data;
   final Widget bottom;
+
   PerscriptionDetail(
     this.data, {
     this.bottom,
@@ -284,7 +285,13 @@ class PerscriptionDetail extends StatelessWidget {
                                         image: data?.doctorSignatureUrl,
                                         width: 54,
                                         fit: BoxFit.fitWidth,
-                                      )
+                                        imageErrorBuilder:
+                                            (context, object, stackTrace) {
+                                          return Text(
+                                            data?.auditor ?? '',
+                                            style: MyStyles.inputTextStyle,
+                                          );
+                                        })
                                     : Text(
                                         data?.doctorName ?? '',
                                         style: MyStyles.inputTextStyle,
@@ -294,6 +301,7 @@ class PerscriptionDetail extends StatelessWidget {
                           ),
                         if (data?.pharmacist != null || data?.auditor != null)
                           FormItem(
+                            padding: EdgeInsets.only(bottom: 10),
                             borderDirection: FormItemBorderDirection.bottom,
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -311,6 +319,13 @@ class PerscriptionDetail extends StatelessWidget {
                                         image: data?.pharmacist,
                                         width: 54,
                                         fit: BoxFit.fitWidth,
+                                        imageErrorBuilder:
+                                            (context, object, stackTrace) {
+                                          return Text(
+                                            data?.auditor ?? '',
+                                            style: MyStyles.inputTextStyle,
+                                          );
+                                        },
                                       )
                                     : Text(
                                         data?.auditor ?? '',
