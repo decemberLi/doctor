@@ -170,7 +170,7 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(
-                  '药品名称：${widget.item.drugName ?? ''}',
+                  '药品名称：${widget.item.drugFullName ?? ''}',
                   style: MyStyles.inputTextStyle,
                   textAlign: TextAlign.left,
                 ),
@@ -356,6 +356,7 @@ class _MedicationAddSheetState extends State<MedicationAddSheet> {
                       width: 100.0,
                       child: AceSpinnerInput(
                         spinnerValue: this.quantity,
+                        maxValue: double.parse('${widget.item.purchaseLimit}'),
                         onChange: (newValue) {
                           setState(() {
                             this.quantity = newValue;

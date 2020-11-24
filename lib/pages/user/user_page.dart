@@ -5,7 +5,6 @@ import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
-import 'package:doctor/utils/coming_soon_helper.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/material.dart';
 
@@ -368,25 +367,23 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   messageItem('资质认证', 'assets/images/zzrz.png', () {
-                    showComingSoonToast();
-                    return;
-                    // if (doctorData['authStatus'] == 'VERIFYING' ||
-                    //     doctorData['authStatus'] == 'PASS') {
-                    //   Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //           builder: (context) => DoctorPhysicianStatusPage(
-                    //               doctorData['authStatus'])));
-                    //   return;
-                    // }
-                    // Navigator.pushNamed(
-                    //   context,
-                    //   RouteManager.USERINFO_DETAIL,
-                    //   arguments: {
-                    //     'doctorData': doctorData,
-                    //     'qualification': true,
-                    //   },
-                    // );
+                    if (doctorData['authStatus'] == 'VERIFYING' ||
+                        doctorData['authStatus'] == 'PASS') {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DoctorPhysicianStatusPage(
+                                  doctorData['authStatus'])));
+                      return;
+                    }
+                    Navigator.pushNamed(
+                      context,
+                      RouteManager.USERINFO_DETAIL,
+                      arguments: {
+                        'doctorData': doctorData,
+                        'qualification': true,
+                      },
+                    );
                   }),
                   messageItem('设置', 'assets/images/setting.png', () {
                     Navigator.pushNamed(context, RouteManager.SETTING);

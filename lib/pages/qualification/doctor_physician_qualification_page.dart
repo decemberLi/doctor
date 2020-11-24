@@ -1,20 +1,26 @@
 import 'dart:io';
 
 import 'package:doctor/model/face_photo.dart';
+import 'package:doctor/pages/qualification/image_choose_widget.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/dashed_decoration.dart';
+import 'package:doctor/widgets/photo_view_gallery_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
+import 'doctor_signature_widget.dart';
 import 'model/doctor_qualification_model.dart';
 import 'view_model/doctory_physician_qualification_view_model.dart';
 
 typedef OnItemCallback = Function(FacePhoto model, int index);
+typedef OnRemoveImageCallback = void Function(int index);
 
 class PhysicianQualificationWidget extends StatefulWidget {
   @override
@@ -26,22 +32,15 @@ class PhysicianQualificationWidget extends StatefulWidget {
 class _PhysicianQualificationWidgetState
     extends State<PhysicianQualificationWidget> {
   var _model = DoctorPhysicianQualificationViewModel();
+  var signatureTextStyle = TextStyle(
+      color: ThemeColor.colorFF8FC1FE,
+      fontSize: 14,
+      fontWeight: FontWeight.bold);
 
   TextStyle _titleStyle = TextStyle(
       color: ThemeColor.colorFF222222,
       fontSize: 14,
       fontWeight: FontWeight.bold);
-
-  TextStyle _imgHintText =
-      TextStyle(color: ThemeColor.primaryColor, fontSize: 12);
-
-  EdgeInsetsGeometry _containerPadding =
-      const EdgeInsets.only(right: 18, top: 14, bottom: 24);
-  final _dashDecoration = DashedDecoration(
-    dashedColor: ThemeColor.primaryColor,
-    gap: 3,
-    borderRadius: BorderRadius.circular(8),
-  );
 
   @override
   void initState() {
@@ -75,9 +74,22 @@ class _PhysicianQualificationWidgetState
                   _buildNoticeWidget(snapshot.data),
                   _buildAvatarWidget(snapshot.data),
                   _buildIdCardWidget(snapshot.data),
-                  _buildPracticeWidget(snapshot.data),
-                  _buildPhysicianWidget(snapshot.data),
-                  _buildProfessionWidget(snapshot.data),
+                  Card(
+                    child: Column(
+                      children: [
+                        Container(
+                          child:
+                              _hintTextStyle('医师执业证、资格证、专业技术资格证（支持原件或彩色扫描件）'),
+                          margin:
+                              EdgeInsets.only(left: 18, top: 18, bottom: 18),
+                        ),
+                        _buildPracticeWidget(snapshot.data),
+                        _buildPhysicianWidget(snapshot.data),
+                        _buildProfessionWidget(snapshot.data),
+                      ],
+                    ),
+                  ),
+                  _buildDoctorSignatureWidget(snapshot.data),
                   Container(
                     margin: EdgeInsets.only(top: 50, bottom: 20),
                     child: AceButton(
@@ -102,248 +114,239 @@ class _PhysicianQualificationWidgetState
     );
   }
 
-  _buildGridView({
+  _buildGrid({
     String title,
     List<FacePhoto> list,
     OnItemCallback callback,
+    OnRemoveImageCallback removeCallback,
+    String sampleAssets,
     TypeOperator type,
   }) {
-    return Container(
-        color: Colors.white,
-        padding: EdgeInsets.only(right: 16, top: 14, bottom: 24),
-        margin: EdgeInsets.only(top: 10),
+    List<Widget> widgets = [];
+    for (var idx = 0; idx < list.length; idx++) {
+      FacePhoto photo = list[idx];
+      widgets.add(ImageChooseWidget(
+        width: 85,
+        url: photo?.url,
+        addImgCallback: () {
+          callback(photo, idx);
+        },
+        removeImgCallback: () {
+          removeCallback(idx);
+        },
+        showOriginImgCallback: () {
+          _showOriginImage(list.map((e) => e.url).toList(), idx);
+        },
+      ));
+    }
+    if (widgets.length < 5) {
+      widgets.add(ImageChooseWidget(
+        url: null,
+        width: 85,
+        addImgCallback: () {
+          callback(null, 5);
+        },
+      ));
+    }
+
+    widgets.add(GestureDetector(
+      child: Image.asset(sampleAssets, fit: BoxFit.fill, width: 85, height: 85),
+      onTap: () {
+        _showOriginPic(type);
+      },
+    ));
+
+    return Card(
+      child: Container(
+        padding: EdgeInsets.only(left: 18, right: 18, bottom: 18),
+        width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Text(title ?? '头像', style: _titleStyle),
-            ),
-            GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: list?.length,
-              addRepaintBoundaries: false,
-              addSemanticIndexes: false,
-              padding: EdgeInsets.only(left: 16, top: 13),
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
+            Text(title, style: _titleStyle),
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Wrap(
+                clipBehavior: Clip.none,
+                runSpacing: 20,
+                spacing: 20,
+                children: widgets,
               ),
-              itemBuilder: (BuildContext context, int index) {
-                var photo = list[index];
-                var widget;
-                if (photo.addImgPlaceHolder ?? false) {
-                  widget = _addImageWidget();
-                } else if (photo.sampleImgPlaceHolder ?? false) {
-                  widget = _imageWidget(photo);
-                } else {
-                  widget = _imageWidget(photo);
-                }
-                return GestureDetector(
-                  child: widget,
-                  onTap: () {
-                    if (index == list.length - 1) {
-                      _showOriginPic(type);
-                    } else {
-                      callback(photo, index);
-                    }
-                  },
-                );
-              },
-            )
+            ),
           ],
-        ));
+        ),
+      ),
+    );
+  }
+
+  _showOriginImage(List data, int idx) {
+    Navigator.of(context).push(
+      FadeRoute(
+        page: PhotoViewGalleryScreen(
+          images: data,
+          index: idx,
+        ),
+      ),
+    );
   }
 
   _buildAvatarWidget(DoctorQualificationModel model) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.only(right: 16, top: 14, bottom: 24),
-      margin: EdgeInsets.only(top: 10),
+    return Card(
+        child: Padding(
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Text('头像', style: _titleStyle),
-          ),
-          GridView(
-            physics: NeverScrollableScrollPhysics(),
-            addRepaintBoundaries: false,
-            addSemanticIndexes: false,
-            padding: EdgeInsets.only(left: 16, top: 13),
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
+              padding: EdgeInsets.only(bottom: 12),
+              child: Text('头像', style: _titleStyle)),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            ImageChooseWidget(
+              width: 85,
+              height: 85,
+              url: model?.physicianInfoEntity?.fullFacePhoto?.url,
+              addImgCallback: () => _selectPicture(TypeOperator.AVATAR),
+              removeImgCallback: () {
+                _model.setAvatar(null);
+              },
+              showOriginImgCallback: () {
+                _showOriginImage(
+                    [model?.physicianInfoEntity?.fullFacePhoto?.url], 0);
+              },
             ),
-            children: [
-              GestureDetector(
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: _dashDecoration,
-                  child:
-                      _doLoadImage(model?.physicianInfoEntity?.fullFacePhoto),
-                ),
-                onTap: () => _selectPicture(TypeOperator.AVATAR),
-              ),
-              GestureDetector(
+            Container(
+              width: 10,
+            ),
+            GestureDetector(
                 child: Image.asset(
                   'assets/images/avatar_sample.png',
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.high,
+                  width: 85,
+                  height: 85,
                 ),
                 onTap: () {
                   _showSamplePicDialog('assets/images/sample_avatar.png', '头像');
-                },
-              ),
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _hintTextStyle('个人正面免冠头像'),
-                    _hintTextStyle('背景尽量使用白色'),
-                    _hintTextStyle('着装需穿着工作服'),
-                  ],
-                ),
-              ),
-            ],
-          ),
+                }),
+            Container(
+              width: 10,
+            ),
+            Expanded(
+                child: Container(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                  _hintTextStyle('个人正面免冠头像'),
+                  _hintTextStyle('背景尽量使用白色'),
+                  _hintTextStyle('着装需穿着工作服'),
+                ]))),
+          ])
         ],
       ),
-    );
+    ));
   }
 
   _buildIdCardWidget(DoctorQualificationModel model) {
-    return Container(
-      width: double.infinity,
-      color: Colors.white,
-      padding: _containerPadding,
-      margin: EdgeInsets.only(top: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _titleWidget('身份证（需拍摄原件）'),
-          Wrap(
-            direction: Axis.horizontal,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          child: Container(
-                            margin:
-                                EdgeInsets.only(top: 12, bottom: 10, left: 18),
-                            height: 85,
-                            decoration: _dashDecoration,
-                            child: _doLoadImage(
-                                model?.physicianInfoEntity?.idCardLicense1,
-                                text: '人像面照片',
-                                aspectRatio: 144 / 85),
-                          ),
-                          onTap: () =>
-                              _selectPicture(TypeOperator.ID_CARD_FACE_SIDE),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          child: Container(
-                            margin:
-                                EdgeInsets.only(top: 12, left: 19, bottom: 10),
-                            height: 85,
-                            decoration: _dashDecoration,
-                            child: _doLoadImage(
-                                model?.physicianInfoEntity?.idCardLicense2,
-                                text: '国徽面照片',
-                                aspectRatio: 144 / 85),
-                          ),
-                          onTap: () =>
-                              _selectPicture(TypeOperator.ID_CARD_BG_SIDE),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 18),
-                child: _hintTextStyle('医师执业证、资格证、专业技术资格证（支持原件或彩色扫描件）'),
-              ),
-            ],
-          )
-        ],
+    List<String> data = [
+      model?.physicianInfoEntity?.idCardLicense1?.url,
+      model?.physicianInfoEntity?.idCardLicense2?.url
+    ];
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: Text('身份证（需拍摄原件）', style: _titleStyle),
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: ImageChooseWidget(
+                  hintText: '人像面照片',
+                  url: model?.physicianInfoEntity?.idCardLicense1?.url,
+                  addImgCallback: () =>
+                      _selectPicture(TypeOperator.ID_CARD_FACE_SIDE),
+                  removeImgCallback: () => _model.setIdCardFaceSide(null),
+                  showOriginImgCallback: () {
+                    _showOriginImage(data, 0);
+                  },
+                )),
+                Container(
+                  width: 10,
+                ),
+                Expanded(
+                    child: ImageChooseWidget(
+                  hintText: '国徽面照片',
+                  url: model?.physicianInfoEntity?.idCardLicense2?.url,
+                  addImgCallback: () =>
+                      _selectPicture(TypeOperator.ID_CARD_BG_SIDE),
+                  removeImgCallback: () => _model.setIdCardBackgroundSide(null),
+                  showOriginImgCallback: () {
+                    _showOriginImage(data, 1);
+                  },
+                )),
+              ],
+            ),
+          ],
+        ),
       ),
     );
-  }
-
-  _addPlaceHolderPhotoIfNeeded(
-      List<FacePhoto> originList, String sampleAssetPath, int count) {
-    List<FacePhoto> list = [];
-    list.addAll(originList);
-
-    if (list.length < count) {
-      var addMsgPhoto = FacePhoto.create();
-      addMsgPhoto.addImgPlaceHolder = true;
-      list.add(addMsgPhoto);
-    }
-    var samplePhoto = FacePhoto.create();
-    samplePhoto.sampleImgPlaceHolder = true;
-    samplePhoto.assetsPath = 'assets/images/practice.png';
-    list.add(samplePhoto);
-    return list;
   }
 
   _buildPracticeWidget(DoctorQualificationModel model) {
     List<FacePhoto> originList =
         model?.physicianInfoEntity?.practiceCertificates ?? [];
-    List<FacePhoto> list = _addPlaceHolderPhotoIfNeeded(
-        originList, 'assets/images/practice.png', 5);
 
-    return _buildGridView(
+    return _buildGrid(
         title: '医师执业证（至少需上传编码页和执业地点页）',
-        list: list,
+        list: originList,
         type: TypeOperator.PRACTICE_CERTIFICATES,
+        sampleAssets: 'assets/images/practice.png',
         callback: (FacePhoto value, index) {
           _selectPicture(TypeOperator.PRACTICE_CERTIFICATES,
               facePhoto: value, index: index);
+        },
+        removeCallback: (idx) {
+          _model.removePracticeCertificates(idx);
         });
   }
 
   _buildPhysicianWidget(DoctorQualificationModel model) {
     List<FacePhoto> originList =
         model?.physicianInfoEntity?.qualifications ?? [];
-    List<FacePhoto> list = _addPlaceHolderPhotoIfNeeded(
-        originList, 'assets/images/practice.png', 5);
 
-    return _buildGridView(
+    return _buildGrid(
         title: '医师资格证（至少需上传头像页和毕业院校页）',
-        list: list,
+        list: originList,
         type: TypeOperator.QUALIFICATIONS,
+        sampleAssets: 'assets/images/practice.png',
         callback: (FacePhoto value, index) {
           _selectPicture(TypeOperator.QUALIFICATIONS,
               facePhoto: value, index: index);
+        },
+        removeCallback: (idx) {
+          _model.removeQualifications(idx);
         });
   }
 
   _buildProfessionWidget(DoctorQualificationModel model) {
     List<FacePhoto> originList =
         model?.physicianInfoEntity?.jobCertificates ?? [];
-    List<FacePhoto> list = _addPlaceHolderPhotoIfNeeded(
-        originList, 'assets/images/practice.png', 5);
 
-    return _buildGridView(
+    return _buildGrid(
         title: '专业技术资格证',
-        list: list,
+        list: originList,
         type: TypeOperator.JOB_CERTIFICATES,
+        sampleAssets: 'assets/images/practice.png',
         callback: (FacePhoto value, index) {
           _selectPicture(TypeOperator.JOB_CERTIFICATES,
               facePhoto: value, index: index);
+        },
+        removeCallback: (idx) {
+          _model.removeJobCertificates(idx);
         });
   }
 
@@ -354,107 +357,15 @@ class _PhysicianQualificationWidgetState
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            margin: EdgeInsets.only(right: 5),
-            width: 4,
-            height: 4,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle, color: ThemeColor.primaryColor),
-          ),
-          Text(
-            text,
-            style: TextStyle(color: ThemeColor.colorFF222222, fontSize: 10),
-          )
+              margin: EdgeInsets.only(right: 5),
+              width: 4,
+              height: 4,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle, color: ThemeColor.primaryColor)),
+          Text(text,
+              style: TextStyle(color: ThemeColor.colorFF222222, fontSize: 10))
         ],
       ),
-    );
-  }
-
-  _border({Widget child}) {
-    return Container(
-      width: 85,
-      height: 85,
-      decoration: _dashDecoration,
-      child: child,
-    );
-  }
-
-  _addImageWidget({String text}) {
-    return _border(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset(
-            'assets/images/camera.png',
-            fit: BoxFit.scaleDown,
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 6),
-            child: Text(text ?? '上传照片', style: _imgHintText),
-          ),
-        ],
-      ),
-    );
-  }
-
-  _doLoadImage(FacePhoto photo, {String text, double aspectRatio = 1 / 1}) {
-    Widget icon;
-    Widget hintWidget = Container(
-      margin: EdgeInsets.only(top: 6),
-      child: Text(text ?? '上传照片', style: _imgHintText),
-    );
-    icon = Image.asset(
-      'assets/images/camera.png',
-      width: 32,
-      height: 28,
-    );
-    if (photo != null) {
-      if (photo.url != null) {
-        icon = AspectRatio(
-            child: Image.network(photo.url, fit: BoxFit.cover),
-            aspectRatio: aspectRatio);
-        hintWidget = Container();
-      } else if (photo.path != null) {
-        icon = AspectRatio(
-            child: Image.file(File(photo.path), fit: BoxFit.cover),
-            aspectRatio: aspectRatio);
-        hintWidget = Container();
-      }
-    }
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [icon, hintWidget],
-    );
-  }
-
-  _imageWidget(FacePhoto photo) {
-    var icon;
-    Decoration decoration = _dashDecoration;
-    if (photo != null) {
-      if (photo.url != null) {
-        icon = Image.network(photo.url, fit: BoxFit.fill);
-      } else if (photo.path != null) {
-        icon = Image.file(File(photo.path), fit: BoxFit.fill);
-      } else {
-        decoration = BoxDecoration();
-        icon = Image.asset(photo.assetsPath, fit: BoxFit.fill);
-      }
-    }
-
-    return Container(
-      width: 85,
-      height: 85,
-      decoration: decoration,
-      child: AspectRatio(child: icon, aspectRatio: 1 / 1),
-    );
-  }
-
-  _titleWidget(String text) {
-    return Container(
-      margin: EdgeInsets.only(left: 18),
-      child: Text(text, style: _titleStyle),
     );
   }
 
@@ -477,7 +388,7 @@ class _PhysicianQualificationWidgetState
       _model.setPracticeCertificates(image.path, facePhoto, index);
     } else if (type == TypeOperator.JOB_CERTIFICATES) {
       // 职称
-      _model.setJobCertificatess(image.path, facePhoto, index);
+      _model.setJobCertificates(image.path, facePhoto, index);
     }
     _model.notifyDataChange();
   }
@@ -489,7 +400,7 @@ class _PhysicianQualificationWidgetState
     }
     File originFile = await ImageHelper.pickSingleImage(context,
         source: index, needCompress: false);
-    if(originFile == null){
+    if (originFile == null) {
       return null;
     }
     File cropedFile = originFile;
@@ -505,21 +416,23 @@ class _PhysicianQualificationWidgetState
   }
 
   _buildNoticeWidget(DoctorQualificationModel data) {
-    var style = TextStyle(fontSize: 12, color: ThemeColor.colorFF222222);
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(left: 0, top: 10, right: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('完成医师资质认证后，将为您开通复诊开方服务',
-              style: TextStyle(fontSize: 14, color: ThemeColor.colorFF222222)),
-          Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Text('平台认证有效后，即可开通电子处方功能', style: style),
-          ),
-          Text('请您放心填写，以下信息仅供认证使用，我们将严格保密', style: style)
-        ],
+    var style = TextStyle(fontSize: 12, color: Colors.white);
+    return Card(
+      color: ThemeColor.colorFF8FC1FE,
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('完成医师资质认证后，将为您开通复诊开方服务',
+                style: TextStyle(fontSize: 14, color: Colors.white)),
+            Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Text('平台认证有效后，即可开通电子处方功能', style: style)),
+            Text('请您放心填写，以下信息仅供认证使用，我们将严格保密', style: style)
+          ],
+        ),
       ),
     );
   }
@@ -565,6 +478,99 @@ class _PhysicianQualificationWidgetState
       _showSamplePicDialog(
           'assets/images/sample_job_certificates.png', '专业技术资格证示例');
     }
+  }
+
+  _buildDoctorSignatureWidget(DoctorQualificationModel model) {
+    print(model?.physicianInfoEntity?.toJson());
+    var url = model?.physicianInfoEntity?.signature?.url;
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(18, 18, 18, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  Expanded(child: Text('电子签名', style: _titleStyle)),
+                  if (url != null && url != '')
+                    GestureDetector(
+                      child: Text('点击此处修改签名', style: signatureTextStyle),
+                      onTap: () => doSignature(url),
+                    ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    decoration: DashedDecoration(
+                      dashedColor: ThemeColor.colorFF8FC1FE,
+                      gap: 3,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: _signatureContent(url),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _signatureContent(String url) {
+    if (url != null && url != '') {
+      return GestureDetector(
+        child: Image.network(url, width: 108, height: 54),
+        onTap: () {
+          print('看大图忽略');
+        },
+      );
+    } else {
+      return GestureDetector(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('点击此处去签名', style: signatureTextStyle),
+            Container(
+              margin: EdgeInsets.only(left: 4),
+              child: Image.asset(
+                'assets/images/signature_icon.png',
+                width: 12,
+                height: 12,
+              ),
+            ),
+          ],
+        ),
+        onTap: () => doSignature(url),
+      );
+    }
+  }
+
+  Future doSignature(String url) async {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    var path = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DoctorSignatureWidget(),
+      ),
+    );
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    if (path == null || path == '') {
+      return;
+    }
+    _model.setSignature(path);
   }
 }
 

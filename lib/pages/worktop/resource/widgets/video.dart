@@ -47,7 +47,11 @@ class _VideoDetailState extends State<VideoDetail> {
       }
     });
     //签到时间为空 且当前时间在会议时间内
-    if (widget.learnPlanId != null && widget.data.meetingSignInTime == null) {
+    if (widget.meetingEndTime != null &&
+        widget.meetingStartTime != null &&
+        widget.learnPlanId != null &&
+        widget.data.resourceType == 'VIDEO' &&
+        widget.data.meetingSignInTime == null) {
       num start = widget.meetingStartTime;
       num end = widget.meetingEndTime;
       num nowDate = DateTime.now().millisecondsSinceEpoch;

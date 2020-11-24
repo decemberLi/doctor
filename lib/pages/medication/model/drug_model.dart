@@ -50,27 +50,36 @@ class DrugModel {
   /// 数量
   num quantity;
 
+  /// 最大用药量
+  num purchaseLimit;
+
+  bool disable;
+
   /// 用法用量
   String get useInfo =>
       '${frequency ?? ''}；${singleDose ?? ''}${doseUnit ?? ''}；${usePattern ?? ''}';
 
-  DrugModel({
-    this.drugId,
-    this.drugName,
-    this.drugNo,
-    this.generalName,
-    this.approvalNo,
-    this.drugType,
-    this.drugPrice,
-    this.producer,
-    this.pictures,
-    this.drugSize,
-    this.frequency,
-    this.singleDose,
-    this.doseUnit,
-    this.usePattern,
-    this.quantity,
-  });
+  String get drugFullName => '${drugName ?? ''} ${generalName ?? ''}';
+
+  DrugModel(
+      {this.drugId,
+      this.drugName,
+      this.drugNo,
+      this.generalName,
+      this.approvalNo,
+      this.drugType,
+      this.drugPrice,
+      this.producer,
+      this.pictures,
+      this.drugSize,
+      this.frequency,
+      this.singleDose,
+      this.doseUnit,
+      this.usePattern,
+      this.quantity,
+      this.purchaseLimit,
+      this.disable});
+
   factory DrugModel.fromJson(Map<String, dynamic> json) =>
       _$DrugModelFromJson(json);
 

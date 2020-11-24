@@ -34,6 +34,8 @@ class DoctorPhysicianInfoEntity {
   /// 医师职称证
   List<FacePhoto> jobCertificates;
 
+  FacePhoto signature;
+
   DoctorPhysicianInfoEntity(
       this.doctorUserId,
       this.identityNo,
@@ -48,7 +50,8 @@ class DoctorPhysicianInfoEntity {
       this.idCardLicense2,
       this.qualifications,
       this.practiceCertificates,
-      this.jobCertificates);
+      this.jobCertificates,
+      this.signature);
 
   factory DoctorPhysicianInfoEntity.create() =>
       DoctorPhysicianInfoEntity.fromJson(Map<String, dynamic>());

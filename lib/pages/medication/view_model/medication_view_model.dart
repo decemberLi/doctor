@@ -3,6 +3,7 @@ import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 HttpManager http = HttpManager('dtp');
 
@@ -57,19 +58,27 @@ class MedicationViewModel extends ViewStateRefreshListModel<DrugModel> {
         _model.singleDose = _cartModel.singleDose;
         _model.usePattern = _cartModel.usePattern;
         cartList[index] = _model;
-      } else {
-        /// 如果购物车为空，则全部置为空
-        _model.quantity = null;
       }
     }
   }
 
   void initCart(List<DrugModel> data) {
-    this.cartList = [...data];
+    cartList.clear();
+    for(var each in data){
+      cartList.add(DrugModel.fromJson(each.toJson()));
+    }
     if (this.list.isNotEmpty) {
       combineListToCart(this.list);
       notifyListeners();
     }
+  }
+
+  bool checkCount() {
+    if (cartList.length >= 5) {
+      EasyLoading.showToast('最多只能选择5种药品');
+      return false;
+    }
+    return true;
   }
 
   void addToCart(DrugModel item) {

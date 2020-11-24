@@ -8,10 +8,11 @@ import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/user/user_page.dart';
 import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/service/ucenter/ucenter_service.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/utils/coming_soon_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 /// 首页
@@ -42,10 +43,6 @@ class _HomePageState extends State<HomePage>
 
   void onTabTapped(int index) {
     if (index == _currentIndex) {
-      return;
-    }
-    if (index == 1) {
-      showComingSoonToast();
       return;
     }
     int preTabIndex = _currentIndex;
@@ -152,11 +149,17 @@ class _HomePageState extends State<HomePage>
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     if (model.data?.authStatus == 'PASS') {
+      if(!await showToastIfNeeded()) {
+        onTabTapped(preTabIndex);
+      }
       return;
     }
     // 如果没有通过认证再次查询，再次判断
     await model.queryDoctorInfo();
     if (model.data?.authStatus == 'PASS') {
+      if(!await showToastIfNeeded()) {
+        onTabTapped(preTabIndex);
+      }
       return;
     }
 
@@ -339,5 +342,14 @@ class _HomePageState extends State<HomePage>
         ],
       );
     });
+  }
+
+  showToastIfNeeded() async {
+    if (!await UCenter.queryDoctorRelation()) {
+      EasyLoading.showToast('您没有绑定医药代表，暂不能开具处方');
+      return false;
+    }
+
+    return true;
   }
 }

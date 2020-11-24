@@ -118,7 +118,7 @@ class PrescripionListItem extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        '${data.drugRps.indexOf(e) + 1}、${e.drugName}',
+                                        '${data.drugRps.indexOf(e) + 1}、${e.drugFullName}',
                                         style: MyStyles.inputTextStyle_12,
                                       ),
                                       Text(

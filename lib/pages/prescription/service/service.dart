@@ -38,6 +38,10 @@ Future loadPrescriptionTemplateList(params) async {
 Future addPrescriptionTemplate(params) async {
   return await http.post('/prescription-template/add', params: params);
 }
+/// 编辑处方模板
+Future modifyPrescriptionTemplate(params) async {
+  return await http.post('/prescription-template/edit', params: params);
+}
 
 /// 处方绑定校验
 Future checkPrescriptionBeforeBind(String prescriptionNo) async {

@@ -387,22 +387,34 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
           //保存
           List pickerData = picker.getSelectedValues();
           if (pickerData.length > 1) {
-            String departmentsName;
-            final departChild = departments
-                .where((element) => element['code'] == pickerData[0])
-                .toList();
-            if (departChild != null) {
-              List children = departChild[0]['children'];
-              departmentsName = children
-                  .where((element) => element['code'] == pickerData[1])
-                  .toList()[0]['name'];
-            }
             if (lable == '科室') {
+              String departmentsName;
+              final departChild = departments
+                  .where((element) => element['code'] == pickerData[0])
+                  .toList();
+
+              if (departChild != null) {
+                List children = departChild[0]['children'];
+                departmentsName = children
+                    .where((element) => element['code'] == pickerData[1])
+                    .toList()[0]['name'];
+              }
               updateDoctorInfo({
                 'departmentsName': departmentsName,
                 'departmentsCode': pickerData[1]
               }, false);
             } else if (lable == '易学术执业科室') {
+              String departmentsName;
+              final departChild = doctorPractice
+                  .where((element) => element['code'] == pickerData[0])
+                  .toList();
+
+              if (departChild != null) {
+                List children = departChild[0]['children'];
+                departmentsName = children
+                    .where((element) => element['code'] == pickerData[1])
+                    .toList()[0]['name'];
+              }
               updateDoctorInfo({
                 'practiceDepartmentName': departmentsName,
                 'practiceDepartmentCode': pickerData[1]

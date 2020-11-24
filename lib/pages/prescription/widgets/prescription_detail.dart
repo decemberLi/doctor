@@ -14,6 +14,7 @@ import 'package:transparent_image/transparent_image.dart';
 class PerscriptionDetail extends StatelessWidget {
   final PrescriptionModel data;
   final Widget bottom;
+
   PerscriptionDetail(
     this.data, {
     this.bottom,
@@ -35,7 +36,7 @@ class PerscriptionDetail extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        '${data.drugRps.indexOf(e) + 1}、${e.drugName}',
+                        '${data.drugRps.indexOf(e) + 1}、${e.drugFullName}',
                         style: MyStyles.inputTextStyle_12,
                       ),
                     ),
@@ -179,7 +180,8 @@ class PerscriptionDetail extends StatelessWidget {
                           ),
                         ),
                         FormItem(
-                          padding: EdgeInsets.symmetric(vertical: 10),
+                          borderDirection: FormItemBorderDirection.top,
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -198,7 +200,22 @@ class PerscriptionDetail extends StatelessWidget {
                             ],
                           ),
                         ),
+                        if (data?.weight != null)
+                          FormItem(
+                            borderDirection: FormItemBorderDirection.none,
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '体重：${data?.weight ?? ''}kg',
+                                  style: MyStyles.inputTextStyle,
+                                ),
+                              ],
+                            ),
+                          ),
                         FormItem(
+                          borderDirection: FormItemBorderDirection.top,
                           padding: EdgeInsets.symmetric(vertical: 10),
                           child: Text(
                             '科室：${data?.depart ?? defaultDepart}',
@@ -248,19 +265,46 @@ class PerscriptionDetail extends StatelessWidget {
                             ],
                           ),
                         ),
-                        if (data?.doctorName != null)
+                        if (data?.doctorName != null ||
+                            data?.doctorSignatureUrl != null)
                           FormItem(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: OneLineText(
-                              '处方医生：${data?.doctorName ?? ''}',
-                              style: MyStyles.inputTextStyle,
+                            padding: EdgeInsets.only(top: 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '处方医生：',
+                                  style: MyStyles.inputTextStyle,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                data?.doctorSignatureUrl != null
+                                    ? FadeInImage.memoryNetwork(
+                                        placeholder: kTransparentImage,
+                                        image: data?.doctorSignatureUrl,
+                                        width: 54,
+                                        fit: BoxFit.fitWidth,
+                                        imageErrorBuilder:
+                                            (context, object, stackTrace) {
+                                          return Text(
+                                            data?.doctorName ?? '',
+                                            style: MyStyles.inputTextStyle,
+                                          );
+                                        })
+                                    : Text(
+                                        data?.doctorName ?? '',
+                                        style: MyStyles.inputTextStyle,
+                                      ),
+                              ],
                             ),
                           ),
                         if (data?.pharmacist != null || data?.auditor != null)
                           FormItem(
-                            padding: EdgeInsets.symmetric(vertical: 10),
+                            padding: EdgeInsets.only(bottom: 10),
+                            borderDirection: FormItemBorderDirection.bottom,
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   '处方药师：',
@@ -275,6 +319,13 @@ class PerscriptionDetail extends StatelessWidget {
                                         image: data?.pharmacist,
                                         width: 54,
                                         fit: BoxFit.fitWidth,
+                                        imageErrorBuilder:
+                                            (context, object, stackTrace) {
+                                          return Text(
+                                            data?.auditor ?? '',
+                                            style: MyStyles.inputTextStyle,
+                                          );
+                                        },
                                       )
                                     : Text(
                                         data?.auditor ?? '',

@@ -95,6 +95,10 @@ class PrescriptionModel {
       ? DateUtil.formatDateMs(auditTime, format: 'yyyy.MM.dd HH:mm')
       : '';
 
+  num weight;
+
+  String doctorSignatureUrl;
+
   PrescriptionModel({
     this.id,
     this.prescriptionPatientName,
@@ -110,6 +114,8 @@ class PrescriptionModel {
     this.drugRps = const <DrugModel>[],
     this.createTime,
     this.attachments,
+    this.weight,
+    this.doctorSignatureUrl,
   });
   factory PrescriptionModel.fromJson(Map<String, dynamic> json) =>
       _$PrescriptionModelFromJson(json);

@@ -29,6 +29,8 @@ PrescriptionModel _$PrescriptionModelFromJson(Map<String, dynamic> json) {
             ? null
             : OssFileEntity.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    weight: json['weight'] as num,
+      doctorSignatureUrl:json['doctorSignatureUrl']
   )
     ..expireTime = json['expireTime'] as num
     ..doctorName = json['doctorName'] as String
@@ -60,4 +62,6 @@ Map<String, dynamic> _$PrescriptionModelToJson(PrescriptionModel instance) =>
       'auditorId': instance.auditorId,
       'auditor': instance.auditor,
       'auditTime': instance.auditTime,
+      'weight': instance.weight,
+      'doctorSignatureUrl': instance.doctorSignatureUrl,
     };

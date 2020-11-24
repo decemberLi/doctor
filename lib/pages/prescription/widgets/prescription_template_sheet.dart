@@ -24,6 +24,7 @@ class PrescriptionTemplateItem extends StatelessWidget {
         .toList()
         .join(',');
     return Container(
+      color: Colors.white,
       alignment: Alignment.topLeft,
       padding: EdgeInsets.symmetric(vertical: 15),
       child: Row(
@@ -121,7 +122,13 @@ class _PrescriptionTemplateListState extends State<PrescriptionTemplateList> {
               child: ListView.separated(
                 itemBuilder: (context, index) {
                   PrescriptionTemplateModel item = model.list[index];
-                  return PrescriptionTemplateItem(item, widget.onSelected);
+                  return GestureDetector(
+                    child: PrescriptionTemplateItem(item, widget.onSelected),
+                    onTap: () {
+                      _openPrescriptTemplatePage(
+                          context, model, item, 'modify');
+                    },
+                  );
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return Divider();
@@ -142,10 +149,8 @@ class _PrescriptionTemplateListState extends State<PrescriptionTemplateList> {
               AceButton(
                 text: '+ 添加模板',
                 type: AceButtonType.secondary,
-                onPressed: () async {
-                  await Navigator.of(context)
-                      .pushNamed(RouteManager.PRESCRIPTION_TEMPLATE_ADD);
-                  model.initData();
+                onPressed: () {
+                  _openPrescriptTemplatePage(context, model, null, 'add');
                 },
               ),
               SizedBox(
@@ -156,5 +161,20 @@ class _PrescriptionTemplateListState extends State<PrescriptionTemplateList> {
         },
       ),
     );
+  }
+
+  Future _openPrescriptTemplatePage(
+      BuildContext context,
+      PrescriptionTemplateViewModel model,
+      PrescriptionTemplateModel item,
+      String action) async {
+    await Navigator.of(context).pushNamed(
+      RouteManager.PRESCRIPTION_TEMPLATE_ADD,
+      arguments: {
+        'action': action,
+        'data': item,
+      },
+    );
+    model.initData();
   }
 }

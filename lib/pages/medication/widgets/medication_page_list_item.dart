@@ -116,7 +116,7 @@ class _MedicationListItemState extends State<MedicationListItem> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      child: Text(widget.item.drugName,
+                      child: Text('${widget.item.drugFullName}',
                           style: MyStyles.boldTextStyle),
                     ),
                     Consumer<MedicationViewModel>(

@@ -42,10 +42,11 @@ class PrescriptionListLitem extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              e.drugName,
+                            Expanded(
+                                child: Text(
+                              e.drugFullName,
                               style: MyStyles.inputTextStyle_12,
-                            ),
+                            )),
                             Text(
                               'X${e.quantity}',
                               style: MyStyles.inputTextStyle_12,
@@ -75,7 +76,7 @@ class PrescriptionListLitem extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 20,
+            right: 30,
             top: 0,
             child: Image.asset(
               'assets/images/${data.orderStatusImage}',

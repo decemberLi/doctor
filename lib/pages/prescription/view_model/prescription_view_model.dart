@@ -1,5 +1,4 @@
 import 'package:common_utils/common_utils.dart';
-import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
@@ -13,6 +12,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 /// 开处方主页面viewModel
 class PrescriptionViewModel extends ViewStateModel {
   PrescriptionModel data = PrescriptionModel();
+
   // PrescriptionModel data = PrescriptionModel(attachments: [
   //   OssFileEntity(
   //     ossId: '20201026A37A3BC727384B7C995382481D8B79B0',
@@ -43,13 +43,13 @@ class PrescriptionViewModel extends ViewStateModel {
       0;
 
   List<String> get clinicaList =>
-      this.data.clinicalDiagnosis?.split('@@') ?? [];
+      this.data.clinicalDiagnosis?.split(CLINICAL_DIAGNOSIS_SPLIT_MARK) ?? [];
 
   set clinicaList(List<String> value) {
     if (value.isEmpty) {
       this.data.clinicalDiagnosis = null;
     } else {
-      this.data.clinicalDiagnosis = value.join('@@');
+      this.data.clinicalDiagnosis = value.join(CLINICAL_DIAGNOSIS_SPLIT_MARK);
     }
   }
 
@@ -57,7 +57,7 @@ class PrescriptionViewModel extends ViewStateModel {
   addClinica(String value) {
     List<String> list = this.clinicaList;
     list.add(value);
-    this.data.clinicalDiagnosis = list.join('@@');
+    this.data.clinicalDiagnosis = list.join(CLINICAL_DIAGNOSIS_SPLIT_MARK);
     notifyListeners();
   }
 
@@ -71,6 +71,12 @@ class PrescriptionViewModel extends ViewStateModel {
 
   addByTemplate(PrescriptionTemplateModel data) {
     this.data.clinicalDiagnosis = data.clinicalDiagnosis;
+    data.drugRps.removeWhere((element) => element.disable ?? false);
+    for (var each in data.drugRps) {
+      if (each.quantity > each.purchaseLimit) {
+        each.quantity = each.purchaseLimit;
+      }
+    }
     this.data.drugRps = data.drugRps;
     notifyListeners();
   }
@@ -105,6 +111,22 @@ class PrescriptionViewModel extends ViewStateModel {
       EasyLoading.showToast('请选择性别');
       return false;
     }
+    if (this.data.prescriptionPatientAge > 14) {
+      this.data.weight = null;
+    } else {
+      if (this.data.weight == null) {
+        EasyLoading.showToast('体重不能为空');
+        return false;
+      }
+      if (this.data.weight > 999) {
+        EasyLoading.showToast('体重不能超过999kg');
+        return false;
+      }
+      if (this.data.weight <= 0) {
+        EasyLoading.showToast('体重不能为0kg哦');
+        return false;
+      }
+    }
     if (this.data.clinicalDiagnosis == null ||
         this.data.clinicalDiagnosis.isEmpty) {
       EasyLoading.showToast('请添加临床诊断');
@@ -126,6 +148,19 @@ class PrescriptionViewModel extends ViewStateModel {
 
     PrescriptionModel data = PrescriptionModel.fromJson(res);
     this.setData(data, isNew: true);
+  }
+
+  echoByHistoryPatient(PrescriptionModel model) {
+    if (model != null && model.drugRps != null) {
+      // filter
+      model.drugRps.removeWhere((element) => element.disable ?? false);
+      for (var each in model.drugRps) {
+        if (each.quantity > each.purchaseLimit) {
+          each.quantity = each.purchaseLimit;
+        }
+      }
+    }
+    this.setData(model, isNew: true);
   }
 
   resetData() {
@@ -204,12 +239,16 @@ class PrescriptionViewModel extends ViewStateModel {
 
 /// 处方记录viewModel
 class PrescriptionListViewModel extends ViewStateRefreshListModel {
+  String _queryKey;
+
+  set queryKey(String value) {
+    _queryKey = value;
+  }
+
   @override
   Future<List<PrescriptionModel>> loadData({int pageNum}) async {
-    var list = await loadPrescriptionList({
-      'ps': 10,
-      'pn': pageNum,
-    });
+    var list = await loadPrescriptionList(
+        {'ps': 10, 'pn': pageNum, 'queryKey': _queryKey});
     return list['records']
         .map<PrescriptionModel>((item) => PrescriptionModel.fromJson(item))
         .toList();

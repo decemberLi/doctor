@@ -121,7 +121,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                             AceButton(
                               type: AceButtonType.outline,
                               text: '查看处方详情',
-                              width: 120,
+                              width: 140,
                               height: 36,
                               onPressed: () {
                                 Navigator.of(context).pushNamed(
