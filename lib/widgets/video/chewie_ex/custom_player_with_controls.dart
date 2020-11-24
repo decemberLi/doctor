@@ -26,10 +26,17 @@ class CustomPlayerWithControls extends StatelessWidget {
       ChewieController chewieController, BuildContext context) {
     double _width = width;
     double _height = height;
+    VideoPlayerValue value = chewieController?.videoPlayerController?.value;
     // 监听全面屏
     if (chewieController.isFullScreen) {
-      _width = MediaQuery.of(context).size.width - 10;
-      _height = MediaQuery.of(context).size.height - 20;
+      if (value.size.width > value.size.height) {
+        // 横屏视频
+        _width = MediaQuery.of(context).size.width - 40;
+        _height = MediaQuery.of(context).size.height;
+      } else {
+        _width = MediaQuery.of(context).size.width;
+        _height = MediaQuery.of(context).size.height - 60;
+      }
     }
     return Container(
       width: _width,
@@ -135,7 +142,6 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
     }
 
     // 方案1：-----------------start-------------------
-
     // if (_aspectRatio > _viewRatio) {
     //   width = _maxWidth;
     //   height = _maxWidth / _aspectRatio;
@@ -146,7 +152,6 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
     // 方案1：-----------------end-------------------
 
     // 方案2：-----------------start-------------------
-
     // if (_aspectRatio > _viewRatio) {
     //   width = _maxWidth;
     //   height = _maxWidth / _aspectRatio;
@@ -154,19 +159,17 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
     //   height = _maxHeight;
     //   width = (_maxWidth * _aspectRatio) * (_maxHeight / _maxWidth);
     // }
-
     // 方案2：-----------------end-------------------
 
     // 方案3：-----------------start-------------------
-
     // 视频宽高对比
     if (value.size != null) {
-      print(
-          '${value.size.width}<=>$_maxWidth<=width=${_chewieController.isFullScreen}==value.size==height=>${value.size.height}<=>$_maxHeight');
+      // print(
+      //     '${value.size.width}<=>$_maxWidth<=width=${_chewieController.isFullScreen}==value.size==height=>${value.size.height}<=>$_maxHeight');
       if (value.size.width > value.size.height) {
         // 横屏视频
         if (_chewieController.isFullScreen) {
-          width = _maxWidth * _aspectRatio;
+          width = _maxHeight * _aspectRatio;
           height = _maxHeight;
         } else {
           width = _maxWidth;
@@ -175,7 +178,7 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
       } else {
         // 竖屏视频
         if (_chewieController.isFullScreen) {
-          width = _maxWidth;
+          width = _maxHeight * _aspectRatio;
           height = _maxHeight;
         } else {
           width = _maxHeight * _aspectRatio;
@@ -194,15 +197,15 @@ class _VideoPlayerContainerState extends State<VideoPlayerContainer> {
 
     // 方案3：-----------------end-------------------
 
-    print(
-        '_aspectRatio:$_aspectRatio---_viewRatio:$_viewRatio--视频大小数据value====》》》$value');
+    // print(
+    //     '_aspectRatio:$_aspectRatio---_viewRatio:$_viewRatio--视频大小数据value====》》》$value');
     return Center(
       child: Container(
         width: width,
         height: height,
-        decoration: BoxDecoration(
-          border: Border.all(color: Color(0xFFff484c)),
-        ),
+        // decoration: BoxDecoration(
+        //   border: Border.all(color: Color(0xFFff484c)),
+        // ),
         child: VideoPlayer(chewieController.videoPlayerController),
       ),
     );
