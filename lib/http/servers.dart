@@ -1,4 +1,4 @@
-const ENV = 'dev';
+const ENV = 'prod';
 
 const HOST_MAP = {
   'dev': 'https://gateway-dev.e-medclouds.com',
