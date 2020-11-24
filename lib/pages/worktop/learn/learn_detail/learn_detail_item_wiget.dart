@@ -263,8 +263,8 @@ class PlanDetailList extends StatelessWidget {
               "learnPlanId": data.learnPlanId,
               "resourceId": item.resourceId,
               "taskTemplate": data.taskTemplate,
-              "meetingStartTime": data.meetingStartTime,
-              "meetingEndTime": data.meetingEndTime,
+              "meetingStartTime": isMeetingType?data.meetingStartTime:null,
+              "meetingEndTime": isMeetingType?data.meetingEndTime:null,
               "taskDetailId": data.taskDetailId,
             });
             if (data.taskTemplate != 'DOCTOR_LECTURE') {
