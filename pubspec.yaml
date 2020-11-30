@@ -112,6 +112,7 @@ dependencies:
   # 文件路径url 操作
   path: ^1.7.0
   permission_handler: ^5.0.1+1
+  event_bus: ^1.1.1
 
 dev_dependencies:
   flutter_test:

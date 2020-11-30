@@ -1,15 +1,13 @@
 import 'package:doctor/http/session_manager.dart';
-// import 'package:doctor/pages/login/login_page.dart';
-import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/platform_utils.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor/theme/theme.dart';
-import 'package:doctor/pages/home_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -36,6 +34,7 @@ void main() async {
 }
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+final EventBus eventBus = EventBus();
 
 class MyApp extends StatelessWidget {
   final showGuide;
