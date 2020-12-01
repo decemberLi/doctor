@@ -333,7 +333,7 @@ class _HomePageState extends State<HomePage>
         width: 24,
         height: 24,
       );
-      tabText = '向上滚动';
+      tabText = '回到顶部';
     }
     return new BottomNavigationBarItem(
       icon: Image.asset(
