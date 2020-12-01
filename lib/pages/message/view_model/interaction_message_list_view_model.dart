@@ -5,4 +5,7 @@ class InteractionMessageListViewModel extends RefreshableViewStateModel {
   Future<List> loadData({int pageNum}) {
     return Future.value([]);
   }
+
+  @override
+  int get size => 10;
 }
