@@ -62,7 +62,10 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
 
   Widget itemWidget(BuildContext context, int index);
 
-  Widget divider(BuildContext context, int index);
+  Widget divider(BuildContext context, int index) => Divider(
+        color: ThemeColor.colorFFF3F5F8,
+        height: 12,
+      );
 
   void scrollOutOfScreen(bool outScreen) {
     // Do nothing

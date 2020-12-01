@@ -17,6 +17,7 @@ class ScrollOutScreenViewModel extends ViewStateModel {
     }
     var event = map[page];
     event.isOutScreen = inScreen;
+    _currentEvent = event;
     notifyListeners();
   }
 
