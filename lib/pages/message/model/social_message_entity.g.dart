@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'social_message_model.dart';
+part of 'social_message_entity.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

@@ -10,12 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../main.dart';
-import '../model/doctor_circle_model.dart';
+import '../model/doctor_circle_entity.dart';
 
 final _avatarPanel = {};
 
 class GossipNewsItemWidget extends StatelessWidget {
-  final DoctorCircleModel data;
+  final DoctorCircleEntity data;
   final int index;
 
   final List<Color> colors = [

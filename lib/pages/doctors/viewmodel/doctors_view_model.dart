@@ -2,7 +2,7 @@ import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/provider/refreshable_view_state_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../model/doctor_circle_model.dart';
+import '../model/doctor_circle_entity.dart';
 
 HttpManager dtp = HttpManager('dtp');
 
@@ -40,7 +40,7 @@ String formatViewCount(int count) {
   return '$mainPart$pointValue万阅读';
 }
 
-class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleModel> {
+class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -56,7 +56,7 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleModel> {
         params: {'type': this.type, 'ps': 20, 'pn': pageNum},
         showLoading: false);
     list['records']
-        .map<DoctorCircleModel>((item) => DoctorCircleModel.fromJson(item))
+        .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
         .toList();
     return Future.value([]);
   }

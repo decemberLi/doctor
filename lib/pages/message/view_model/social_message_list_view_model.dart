@@ -1,7 +1,7 @@
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/provider/refreshable_view_state_model.dart';
 
-import '../model/social_message_model.dart';
+import '../model/social_message_entity.dart';
 
 HttpManager foundation = HttpManager('foundation');
 enum SocialMessageType {

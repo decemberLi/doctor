@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'social_message_model.g.dart';
+part 'social_message_entity.g.dart';
 
 @JsonSerializable()
 class SocialMessageModel {

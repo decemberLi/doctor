@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'doctor_circle_model.dart';
+part of 'doctor_circle_entity.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-DoctorCircleModel _$DoctorCircleModelFromJson(Map<String, dynamic> json) {
-  return DoctorCircleModel()
+DoctorCircleEntity _$DoctorCircleEntityFromJson(Map<String, dynamic> json) {
+  return DoctorCircleEntity()
     ..postTitle = json['postTitle'] as String
     ..postId = json['postId'] as int
     ..postContent = json['postContent'] as String
@@ -18,7 +18,7 @@ DoctorCircleModel _$DoctorCircleModelFromJson(Map<String, dynamic> json) {
     ..postUserHeader = json['postUserHeader'] as String;
 }
 
-Map<String, dynamic> _$DoctorCircleModelToJson(DoctorCircleModel instance) =>
+Map<String, dynamic> _$DoctorCircleEntityToJson(DoctorCircleEntity instance) =>
     <String, dynamic>{
       'postTitle': instance.postTitle,
       'postId': instance.postId,

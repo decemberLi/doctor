@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 
-part 'doctor_circle_model.g.dart';
+part 'doctor_circle_entity.g.dart';
 
 @JsonSerializable()
-class DoctorCircleModel {
+class DoctorCircleEntity {
   /// 帖子标题
   String postTitle;
 
@@ -31,10 +31,10 @@ class DoctorCircleModel {
   /// 发帖人头像
   String postUserHeader;
 
-  DoctorCircleModel();
+  DoctorCircleEntity();
 
-  factory DoctorCircleModel.fromJson(Map<String, dynamic> param) =>
-      _$DoctorCircleModelFromJson(param);
+  factory DoctorCircleEntity.fromJson(Map<String, dynamic> param) =>
+      _$DoctorCircleEntityFromJson(param);
 
-  Map<String, dynamic> toJson() => _$DoctorCircleModelToJson(this);
+  Map<String, dynamic> toJson() => _$DoctorCircleEntityToJson(this);
 }

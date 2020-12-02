@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../../main.dart';
 import '../viewmodel/doctors_view_model.dart';
-import '../model/doctor_circle_model.dart';
+import '../model/doctor_circle_entity.dart';
 
 class DoctorCircleItemWidget extends StatelessWidget {
   final _colorPanel = {
@@ -18,7 +18,7 @@ class DoctorCircleItemWidget extends StatelessWidget {
     '案例解析': ThemeColor.colorFF107BFD,
     '每日一讲': ThemeColor.colorFFFAAD14,
   };
-  final DoctorCircleModel data;
+  final DoctorCircleEntity data;
 
   DoctorCircleItemWidget(this.data);
 

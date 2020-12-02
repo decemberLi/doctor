@@ -4,7 +4,7 @@ import 'package:doctor/widgets/common_widget_style.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../model/social_message_model.dart';
+import '../model/social_message_entity.dart';
 
 class LikeMessagePage extends StatefulWidget {
   LikeMessagePage();
@@ -35,9 +35,6 @@ class _LikeMessagePageState
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) {
-    if(!data is SocialMessageModel){
-      throw Error();
-    }
     return Container(
       padding: EdgeInsets.all(12),
       decoration: itemContainerDecoration,
