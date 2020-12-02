@@ -10,16 +10,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../main.dart';
+import '../model/doctor_circle_model.dart';
+
+final _avatarPanel = {};
 
 class GossipNewsItemWidget extends StatelessWidget {
+  final DoctorCircleModel data;
   final int index;
+
   final List<Color> colors = [
     const Color(0xFF62C1FF),
     const Color(0xFF92E06B),
     const Color(0xFFFABB3E),
   ];
 
-  GossipNewsItemWidget(this.index);
+  GossipNewsItemWidget(this.data, this.index);
+
+  Color _avatarColor(int idx) {
+    Color color = _avatarPanel[idx];
+    if (color != null) {
+      return color;
+    }
+    ;
+    var hitColor = colors[Random().nextInt(3)];
+    _avatarPanel[idx] = hitColor;
+    return hitColor;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +59,18 @@ class GossipNewsItemWidget extends StatelessWidget {
                     width: 30,
                     height: 30,
                     decoration: BoxDecoration(
-                        color: colors[Random().nextInt(3)],
+                        color: _avatarColor(index),
                         borderRadius:
                             new BorderRadius.all(Radius.circular(15))),
                     child: Text(
-                      '周',
+                      data?.postUserName?.substring(0, 1) ?? '',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 4),
-                    child: Text('周杰伦',
+                    child: Text(data?.postUserName ?? '',
                         style: TextStyle(
                             fontSize: 14, color: ThemeColor.colorFF444444)),
                   )
@@ -64,26 +80,26 @@ class GossipNewsItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    '1.2万阅读',
+                    formatViewCount(data?.viewNum),
                     style: TextStyle(
                         color: ThemeColor.colorFF999999, fontSize: 10),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Text(
-                      '28讨论',
-                      style: TextStyle(
-                          color: ThemeColor.colorFF999999, fontSize: 10),
-                    ),
-                  )
+                  if (data?.commentNum != null)
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Text(
+                        '${data?.commentNum}讨论',
+                        style: TextStyle(
+                            color: ThemeColor.colorFF999999, fontSize: 10),
+                      ),
+                    )
                 ],
               )
             ],
           ),
           Padding(
             padding: EdgeInsets.only(top: 6),
-            child: Text(
-                '这里是一个描述描述描述描述描述这里是一个描述描述描述描述描述这里是一个描述描述这里是一个描述描述描述描述描述这里是一个描述描述描述描述描述这里是一个描述描述这里是一个描述描述描述描述描述这里是一个描述描述描述描述描述这里是一个描述描',
+            child: Text(data?.postContent ?? '',
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style:
@@ -129,11 +145,11 @@ class GossipNewsPageState
       );
 
   @override
-  DoctorsViewMode getModel() => DoctorsViewMode();
+  DoctorsViewMode getModel() => DoctorsViewMode('ACADEMIC');
 
   @override
-  Widget itemWidget(BuildContext context, int index) =>
-      GossipNewsItemWidget(index);
+  Widget itemWidget(BuildContext context, int index, dynamic data) =>
+      GossipNewsItemWidget(data, index);
 
   @override
   void scrollOutOfScreen(bool outScreen) {

@@ -33,7 +33,10 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
                 controller: _controller,
                 itemCount: _model.size,
                 itemBuilder: (context, index) {
-                  return itemWidget(context, index);
+                  if (_model.list == null || _model.list.length <= index) {
+                    return itemWidget(context, index, null);
+                  }
+                  return itemWidget(context, index, _model.list[index]);
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return divider(context, index);
@@ -60,7 +63,7 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
 
   M getModel();
 
-  Widget itemWidget(BuildContext context, int index);
+  Widget itemWidget(BuildContext context, int index, dynamic data);
 
   Widget divider(BuildContext context, int index) => Divider(
         color: ThemeColor.colorFFF3F5F8,

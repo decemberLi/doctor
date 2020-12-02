@@ -47,7 +47,7 @@ class _LikeMessageListWidgetState extends AbstractListPageState<
       InteractionMessageListViewModel();
 
   @override
-  Widget itemWidget(BuildContext context, int index) {
+  Widget itemWidget(BuildContext context, int index, dynamic data) {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: itemContainerDecoration,
