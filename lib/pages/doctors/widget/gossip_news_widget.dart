@@ -59,7 +59,7 @@ class GossipNewsItemWidget extends StatelessWidget {
                     width: 30,
                     height: 30,
                     decoration: BoxDecoration(
-                        color: _avatarColor(index),
+                        color: Color(0xFF62C1FF),
                         borderRadius:
                             new BorderRadius.all(Radius.circular(15))),
                     child: Text(
