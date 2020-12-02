@@ -1,10 +1,10 @@
-import 'package:common_utils/common_utils.dart';
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/provider/refreshable_view_state_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import '../model/doctor_circle_model.dart';
 
-HttpManager foundation = HttpManager('foundation');
+HttpManager dtp = HttpManager('dtp');
 
 void main() {}
 
@@ -52,7 +52,7 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleModel> {
 
   @override
   Future<List> loadData({int pageNum}) async {
-    var list = await foundation.post('/comment/list',
+    var list = await dtp.post('/post/list',
         params: {'type': this.type, 'ps': 20, 'pn': pageNum},
         showLoading: false);
     list['records']
