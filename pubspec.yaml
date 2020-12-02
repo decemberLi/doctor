@@ -58,7 +58,7 @@ dependencies:
   # flutter_html: ^1.0.2
 
   # third_app
-  # 启动第三方app
+  # 启动第三方appflu
   url_launcher: ^5.7.2
 
   device_info: ^0.4.2+7
@@ -66,7 +66,7 @@ dependencies:
 
   open_file: ^3.0.1
 
-  webview_flutter: ^1.0.1
+  webview_flutter: ^1.0.7
 
   # 视频播放
   video_player: ^0.11.0
