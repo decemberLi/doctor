@@ -1,16 +1,8 @@
-import 'package:doctor/main.dart';
-import 'package:doctor/pages/user/collect/view_model/collect_view_model.dart';
-import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
-import 'package:doctor/route/route_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:screen/screen.dart';
-
-import 'collect_detail_item.dart';
-import 'model/collect_list_model.dart';
 import '../../doctors/tab_indicator.dart';
 
 /// 渲染列表
@@ -151,12 +143,6 @@ class _ClooectStudyCell extends StatelessWidget {
 
   Widget content(){
     return Container(
-              margin: EdgeInsets.only(bottom: 12),
-              // margin: EdgeInsets.only(left: 20, top: 10, bottom: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-              ),
               child: Stack(
                 alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
                 children: <Widget>[
@@ -243,7 +229,10 @@ class _ClooectStudyCell extends StatelessWidget {
       padding: EdgeInsets.only(bottom:12),
       child: Container(
         height:107,
-        color: ThemeColor.colorFFFFFF,
+        decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
         child: content(),
       ),
     );
@@ -278,12 +267,6 @@ class _DoctorTimeLineCell extends StatelessWidget {
 
   Widget content(){
     return Container(
-              margin: EdgeInsets.only(bottom: 12),
-              // margin: EdgeInsets.only(left: 20, top: 10, bottom: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-              ),
               child: Stack(
                 alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
                 children: <Widget>[
@@ -364,7 +347,10 @@ class _DoctorTimeLineCell extends StatelessWidget {
       padding: EdgeInsets.only(bottom:12),
       child: Container(
         height:107,
-        color: ThemeColor.colorFFFFFF,
+        decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
         child: content(),
       ),
     );

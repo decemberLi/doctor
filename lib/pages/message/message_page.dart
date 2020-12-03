@@ -1,4 +1,5 @@
 import 'package:doctor/main.dart';
+import 'package:doctor/pages/message/message_promotion_list.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/message/widget/like_message_list_widget.dart';
 import 'package:doctor/theme/theme.dart';
@@ -149,18 +150,18 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                           systemCount, () {
                         goMessageList(MessageType.TYPE_SYSTEM);
                       }, 1, dotColor: _dotColor(systemCount)),
-                      messageItem('学习计划', 'assets/images/msg_learn_plan.png',
+                      messageItem('学术推广', 'assets/images/msg_learn_plan.png',
                           leanPlanCount, () {
-                        goMessageList(MessageType.TYPE_LEAN_PLAN);
-                      }, 2, dotColor: _dotColor(leanPlanCount)),
+                        goStudyPlane();
+                      }, 2, dotColor: _dotColor(leanPlanCount+interactiveCount)),
                       messageItem('患者处方', 'assets/images/msg_patient.png',
                           prescriptionCount, () {
                         goMessageList(MessageType.TYPE_PRESCRIPTION);
                       }, 3, dotColor: _dotColor(prescriptionCount)),
-                      messageItem('互动消息', 'assets/images/msg_interact.png',
-                          interactiveCount, () {
-                        goMessageList(MessageType.TYPE_INTERACTIVE);
-                      }, 4, dotColor: _dotColor(interactiveCount)),
+                      // messageItem('互动消息', 'assets/images/msg_interact.png',
+                      //     interactiveCount, () {
+                      //   goMessageList(MessageType.TYPE_INTERACTIVE);
+                      // }, 4, dotColor: _dotColor(interactiveCount)),
                     ],
                   ),
                 )
@@ -182,6 +183,10 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
       MaterialPageRoute(builder: (context) => MessageListPage(type)),
     );
     _model.initData();
+  }
+
+  goStudyPlane() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MessagePromotionList()));
   }
 
   _buildMessageIcon({
