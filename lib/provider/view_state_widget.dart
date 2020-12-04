@@ -36,8 +36,8 @@ class ViewStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var titleStyle =
-        Theme.of(context).textTheme.subtitle1.copyWith(color: Colors.grey);
+    var titleStyle = TextStyle(fontSize: 10,color: Color(0xff888888));
+        // Theme.of(context).textTheme.subtitle1.copyWith(color: Colors.grey);
     var messageStyle = titleStyle.copyWith(
         color: titleStyle.color.withOpacity(0.7), fontSize: 14);
     return Column(
@@ -146,7 +146,7 @@ class ViewStateEmptyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewStateWidget(
       onPressed: this.onPressed,
-      image: image,
+      image: image ?? Image.asset("assets/images/empty.png"),
       title: message ?? '暂无数据',
       buttonText: buttonText,
       buttonTextData: '刷新',
