@@ -153,7 +153,9 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                       messageItem('学术推广', 'assets/images/msg_learn_plan.png',
                           leanPlanCount, () {
                         goStudyPlane();
-                      }, 2, dotColor: _dotColor(leanPlanCount+interactiveCount)),
+                      }, 2,
+                          dotColor:
+                              _dotColor(leanPlanCount + interactiveCount)),
                       messageItem('患者处方', 'assets/images/msg_patient.png',
                           prescriptionCount, () {
                         goMessageList(MessageType.TYPE_PRESCRIPTION);
@@ -186,7 +188,8 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
   }
 
   goStudyPlane() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MessagePromotionList()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => MessagePromotionList()));
   }
 
   _buildMessageIcon({
@@ -257,22 +260,16 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                 assetPath: 'assets/images/icon_like.png',
                 label: '点赞',
                 unreadMsg: 10),
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        LikeMessagePage())),
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => LikeMessagePage())),
           ),
           GestureDetector(
             child: _buildMessageIcon(
                 assetPath: 'assets/images/icon_comment.png',
                 label: '评论',
                 unreadMsg: 1000),
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        CommentMessagePage())),
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => CommentMessagePage())),
           ),
         ],
       ),
