@@ -48,6 +48,7 @@ class _DoctorsHomeState extends State<DoctorsHome>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         toolbarHeight: 46,
         flexibleSpace: SafeArea(
           child: Container(
