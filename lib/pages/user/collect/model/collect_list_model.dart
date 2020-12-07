@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'collect_list_model.g.dart';
+
 // /// 资源类型
 @JsonSerializable()
 class CollectResources {
@@ -34,7 +35,31 @@ class CollectInfo {
   int duration;
   String summary;
   CollectInfo(this.duration, this.summary);
-  factory CollectInfo.fromJson(Map<String, dynamic> json) => _$CollectInfoFromJson(json);
+  factory CollectInfo.fromJson(Map<String, dynamic> json) =>
+      _$CollectInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$CollectInfoToJson(this);
+}
+
+@JsonSerializable()
+class CollectTimeLineResources {
+  String postType;
+  String postUserName;
+  String postUserHeader;
+  String anonymityName;
+  String postTitle;
+  String postStatus;
+  String postId;
+  CollectTimeLineResources(
+      this.postType,
+      this.postUserName,
+      this.postUserHeader,
+      this.anonymityName,
+      this.postTitle,
+      this.postStatus,
+      this.postId);
+  factory CollectTimeLineResources.fromJson(Map<String, dynamic> json) =>
+      _$CollectTimeLineResourcesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CollectTimeLineResourcesToJson(this);
 }
