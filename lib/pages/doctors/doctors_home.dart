@@ -69,7 +69,7 @@ class _DoctorsHomeState extends State<DoctorsHome>
                       fontSize: 18,
                       fontWeight: FontWeight.normal,
                       color: ThemeColor.colorFF999999),
-                  tabs: tabs.map((e) => Text(e)).toList()),
+                  tabs: _titleWidget()),
             ),
           ),
         ),
@@ -82,5 +82,24 @@ class _DoctorsHomeState extends State<DoctorsHome>
         ],
       ),
     );
+  }
+
+  _titleWidget() {
+    List<Widget> tabWidgetList = [];
+    tabWidgetList.add(Text(tabs[0]));
+    var gossip = Stack(
+      overflow: Overflow.visible,
+      children: [
+        Text(tabs[1]),
+        Positioned(
+            bottom: 0,
+            right: -20,
+            child: Image.asset('assets/images/gossip_icon.png',
+                width: 20, height: 18))
+      ],
+    );
+    tabWidgetList.add(gossip);
+
+    return tabWidgetList;
   }
 }

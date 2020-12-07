@@ -32,6 +32,11 @@ class _CommentMessagePageState extends AbstractListPageState<
   }
 
   @override
+  Widget emptyWidget(String msg) {
+    return super.emptyWidget('还没有任何评论，好落寞');
+  }
+
+  @override
   SocialMessageListViewModel getModel() =>
       SocialMessageListViewModel(SocialMessageType.TYPE_COMMENT);
 

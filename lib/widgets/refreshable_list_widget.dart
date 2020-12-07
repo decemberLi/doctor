@@ -1,4 +1,5 @@
 import 'package:doctor/provider/refreshable_view_state_model.dart';
+import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,28 +25,32 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: SmartRefresher(
               controller: _model.refreshController,
-              enablePullUp: true,
+              enablePullUp: !_model.isError,
               header: ClassicHeader(),
               footer: ClassicFooter(),
               onRefresh: _model.refresh,
               onLoading: _model.loadMore,
-              child: ListView.separated(
-                controller: _controller,
-                itemCount: _model.size,
-                itemBuilder: (context, index) {
-                  if (_model.list == null || _model.list.length <= index) {
-                    return itemWidget(context, index, null);
-                  }
-                  return itemWidget(context, index, _model.list[index]);
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return divider(context, index);
-                },
-              ),
+              child: bodyWidget(),
             ),
           );
         },
       ),
+    );
+  }
+
+  bodyWidget() {
+    if (_model.isError || _model.list == null || _model.list.length == 0) {
+      return emptyWidget(null);
+    }
+    return ListView.separated(
+      controller: _controller,
+      itemCount: _model.size,
+      itemBuilder: (context, index) {
+        return itemWidget(context, index, _model.list[index]);
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return divider(context, index);
+      },
     );
   }
 
@@ -60,6 +65,12 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
     super.dispose();
     _model.dispose();
   }
+
+  Widget emptyWidget(String msg) => Center(
+        child: ViewStateEmptyWidget(
+          message: msg ?? '',
+        ),
+      );
 
   M getModel();
 

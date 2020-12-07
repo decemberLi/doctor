@@ -129,6 +129,11 @@ class DoctorPageState
   bool _currentIsOutScreen = false;
 
   @override
+  Widget emptyWidget(String msg) {
+    return super.emptyWidget('暂无数据，请刷新后重试');
+  }
+
+  @override
   void initState() {
     super.initState();
     eventBus.on().listen((event) {

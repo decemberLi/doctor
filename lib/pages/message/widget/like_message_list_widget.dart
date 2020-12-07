@@ -34,6 +34,11 @@ class _LikeMessagePageState
       SocialMessageListViewModel(SocialMessageType.TYPE_LIKE);
 
   @override
+  Widget emptyWidget(String msg) {
+    return super.emptyWidget('还没有任何赞，好落寞');
+  }
+
+  @override
   Widget itemWidget(BuildContext context, int index, dynamic data) {
     return Container(
       padding: EdgeInsets.all(12),

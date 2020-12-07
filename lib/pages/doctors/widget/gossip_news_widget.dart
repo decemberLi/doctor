@@ -148,6 +148,11 @@ class GossipNewsPageState
   DoctorsViewMode getModel() => DoctorsViewMode('ACADEMIC');
 
   @override
+  Widget emptyWidget(String msg) {
+    return super.emptyWidget('暂无数据，请刷新后重试');
+  }
+
+  @override
   Widget itemWidget(BuildContext context, int index, dynamic data) =>
       GossipNewsItemWidget(data, index);
 
