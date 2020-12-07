@@ -100,8 +100,6 @@ class GossipNewsItemWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 6),
             child: Text(data?.postContent ?? '',
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
                 style:
                     TextStyle(fontSize: 14, color: ThemeColor.colorFF222222)),
           ),
@@ -146,6 +144,11 @@ class GossipNewsPageState
 
   @override
   DoctorsViewMode getModel() => DoctorsViewMode('ACADEMIC');
+
+  @override
+  Widget emptyWidget(String msg) {
+    return super.emptyWidget('暂无数据，请刷新后重试');
+  }
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) =>

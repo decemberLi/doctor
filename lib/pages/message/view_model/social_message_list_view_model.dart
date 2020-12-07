@@ -36,7 +36,4 @@ class SocialMessageListViewModel extends RefreshableViewStateModel<SocialMessage
         .map<SocialMessageModel>((item) => SocialMessageModel.fromJson(item))
         .toList();
   }
-
-  @override
-  int get size => 10;
 }
