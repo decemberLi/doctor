@@ -15,7 +15,7 @@ SocialMessageModel _$SocialMessageModelFromJson(Map<String, dynamic> json) {
     ..postId = json['postId'] as String
     ..postType = json['postType'] as String
     ..anonymityName = json['anonymityName'] as String
-    ..sendUserUrl = json['sendUserUrl'] as String
+    ..sendUserHeader = json['sendUserHeader'] as String
     ..createTime = json['createTime'] as String;
 }
 
@@ -28,6 +28,6 @@ Map<String, dynamic> _$SocialMessageModelToJson(SocialMessageModel instance) =>
       'postId': instance.postId,
       'postType': instance.postType,
       'anonymityName': instance.anonymityName,
-      'sendUserUrl': instance.sendUserUrl,
+      'sendUserHeader': instance.sendUserHeader,
       'createTime': instance.createTime,
     };

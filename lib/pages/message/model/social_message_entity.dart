@@ -26,7 +26,7 @@ class SocialMessageModel {
   String anonymityName;
 
   /// 发送消息人头像（只有学术圈会返）
-  String sendUserUrl;
+  String sendUserHeader;
 
   /// 点赞时间
   String createTime;
