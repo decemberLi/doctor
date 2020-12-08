@@ -87,7 +87,11 @@ class CollectDetailList extends StatelessWidget {
                     },
                     showLoading: false,
                   );
-                  return data;
+                  List<CollectTimeLineResources> list = data['records']
+                      .map<CollectTimeLineResources>(
+                          (item) => CollectTimeLineResources.fromJson(item))
+                      .toList();
+                  return list;
                 },
                 itemBuilder: (context, data) {
                   return _DoctorTimeLineCell(data);
@@ -129,15 +133,29 @@ class _SubCollectState<T> extends State<_SubCollectList>
 
   void onRefresh() async {
     try {
-      int page = _list.length ~/ widget.pageSize;
-      _list = await widget.getData(page);
+      _list = await widget.getData(0);
     } catch (e) {}
 
     setState(() {});
     _controller.headerMode.value = RefreshStatus.completed;
   }
 
-  void onLoading() async {}
+  void onLoading() async {
+    try {
+      int page = _list.length ~/ widget.pageSize;
+      var array = await widget.getData(page);
+      _list += array;
+      if (array.length >= widget.pageSize) {
+        _controller.footerMode.value = LoadStatus.idle;
+      } else {
+        _controller.footerMode.value = LoadStatus.noMore;
+      }
+
+      setState(() {});
+    } catch (e) {
+      _controller.footerMode.value = LoadStatus.failed;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -199,6 +217,8 @@ class _ClooectStudyCell extends StatelessWidget {
       summaryShow = data.info.summary;
     }
 
+    var title = data.title ?? "资料";
+
     return Container(
         child: Stack(
       alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
@@ -211,7 +231,7 @@ class _ClooectStudyCell extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      data.title,
+                      title,
                       maxLines: 1,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
