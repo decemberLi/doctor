@@ -38,7 +38,6 @@ class _DoctorsHomeState extends State<DoctorsHome>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _inScreenViewModel.clean();
   }

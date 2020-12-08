@@ -6,12 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class AbstractListPageState<M extends RefreshableViewStateModel,
-    T extends StatefulWidget> extends State<T> {
+        T extends StatefulWidget> extends State<T>
+    with AutomaticKeepAliveClientMixin {
   RefreshableViewStateModel _model;
-  final ScrollController _controller = ScrollController();
+  ScrollController _controller;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var height = MediaQuery.of(context).size.height;
     _controller.addListener(() {
       scrollOutOfScreen(_controller.offset > height);
@@ -57,7 +62,9 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
   @override
   void initState() {
     super.initState();
+    _controller = ScrollController();
     _model = getModel();
+    _model.refresh(init: true);
   }
 
   @override

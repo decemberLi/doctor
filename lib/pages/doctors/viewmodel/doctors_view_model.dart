@@ -6,8 +6,6 @@ import '../model/doctor_circle_entity.dart';
 
 HttpManager dtp = HttpManager('dtp');
 
-void main() {}
-
 /*
   /// Test case
   print(formatViewCount(0));
@@ -53,12 +51,11 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   @override
   Future<List> loadData({int pageNum}) async {
     var list = await dtp.post('/post/list',
-        params: {'type': this.type, 'ps': 20, 'pn': pageNum},
+        params: {'postType': this.type, 'ps': 20, 'pn': pageNum},
         showLoading: false);
-    list['records']
+    var value = list['records']
         .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
         .toList();
-    return Future.value([]);
+    return Future.value(value);
   }
-
 }

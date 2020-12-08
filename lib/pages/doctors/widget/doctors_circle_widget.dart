@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../../main.dart';
 import '../viewmodel/doctors_view_model.dart';
 import '../model/doctor_circle_entity.dart';
+import 'doctors_detail_widget.dart';
 
 class DoctorCircleItemWidget extends StatelessWidget {
   final _colorPanel = {
@@ -123,7 +124,7 @@ class DoctorsPage extends StatefulWidget {
 }
 
 class DoctorPageState
-    extends AbstractListPageState<DoctorsViewMode, DoctorsPage> {
+    extends AbstractListPageState<DoctorsViewMode, DoctorsPage>{
   ScrollOutScreenViewModel _inScreenViewModel;
 
   bool _currentIsOutScreen = false;
@@ -155,7 +156,7 @@ class DoctorPageState
       );
 
   @override
-  DoctorsViewMode getModel() => DoctorsViewMode('GOSSIP');
+  DoctorsViewMode getModel() => DoctorsViewMode('ACADEMIC');
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) =>

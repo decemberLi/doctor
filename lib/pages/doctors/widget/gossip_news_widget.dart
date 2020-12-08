@@ -116,7 +116,6 @@ class GossipNewsPage extends StatefulWidget {
 
 class GossipNewsPageState
     extends AbstractListPageState<DoctorsViewMode, GossipNewsPage> {
-  DoctorsViewMode mode;
   ScrollOutScreenViewModel _inScreenViewModel;
 
   bool _currentIsOutScreen = false;
@@ -143,7 +142,7 @@ class GossipNewsPageState
       );
 
   @override
-  DoctorsViewMode getModel() => DoctorsViewMode('ACADEMIC');
+  DoctorsViewMode getModel() => DoctorsViewMode('GOSSIP');
 
   @override
   Widget emptyWidget(String msg) {
