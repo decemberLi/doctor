@@ -22,6 +22,10 @@ class CollectDetailList extends StatelessWidget {
       return _ClooectStudyCell(data);
     }
 
+    Widget timeLineCell(BuildContext context, dynamic data) {
+      return _DoctorTimeLineCell(data);
+    }
+
     var content = Scaffold(
       backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
@@ -68,10 +72,16 @@ class CollectDetailList extends StatelessWidget {
                     },
                     showLoading: false,
                   );
-                  List<CollectResources> list = data['records']
-                      .map<CollectResources>(
-                          (item) => CollectResources.fromJson(item))
-                      .toList();
+                  List<CollectResources> list = [];
+                  try {
+                    list = data['records']
+                        .map<CollectResources>(
+                            (item) => CollectResources.fromJson(item))
+                        .toList();
+                  } catch (e) {
+                    print(e);
+                  }
+
                   return list;
                 },
                 itemBuilder: studyCell,
@@ -87,15 +97,18 @@ class CollectDetailList extends StatelessWidget {
                     },
                     showLoading: false,
                   );
-                  List<CollectTimeLineResources> list = data['records']
-                      .map<CollectTimeLineResources>(
-                          (item) => CollectTimeLineResources.fromJson(item))
-                      .toList();
+                  List<CollectTimeLineResources> list = [];
+                  try {
+                    list = data['records']
+                        .map<CollectTimeLineResources>(
+                            (item) => CollectTimeLineResources.fromJson(item))
+                        .toList();
+                  } catch (e) {
+                    print(e);
+                  }
                   return list;
                 },
-                itemBuilder: (context, data) {
-                  return _DoctorTimeLineCell(data);
-                },
+                itemBuilder: timeLineCell,
                 emptyMsg: "暂无收藏",
               ),
             ]),
@@ -133,10 +146,18 @@ class _SubCollectState<T> extends State<_SubCollectList>
 
   void onRefresh() async {
     try {
-      _list = await widget.getData(0);
+      var array = await widget.getData(0);
+      if (array.length >= widget.pageSize) {
+        _controller.footerMode.value = LoadStatus.idle;
+      } else {
+        _controller.footerMode.value = LoadStatus.noMore;
+      }
+
+      setState(() {
+        _list = array;
+      });
     } catch (e) {}
 
-    setState(() {});
     _controller.headerMode.value = RefreshStatus.completed;
   }
 
@@ -304,11 +325,13 @@ class _ClooectStudyCell extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 12),
       child: FlatButton(
         onPressed: () {
-          Navigator.of(context)
-              .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
-            "resourceId": data.resourceId,
-            "favoriteId": data.favoriteId,
-          });
+          Navigator.of(context).pushNamed(
+            RouteManager.RESOURCE_DETAIL,
+            arguments: {
+              "resourceId": data.resourceId,
+              "favoriteId": data.favoriteId,
+            },
+          );
         },
         child: Container(
           height: 107,
@@ -361,17 +384,20 @@ class _DoctorTimeLineCell extends StatelessWidget {
   Widget content() {
     String name;
     Widget head;
-    //FF62C1FF
-    //ACADEMIC-学术圈，GOSSIP-八卦圈
+    // ACADEMIC-学术圈，GOSSIP-八卦圈
     if (data.postType == "ACADEMIC") {
-      name = data.postUserName;
-      head = ImageWidget(url: data.postUserHeader);
+      name = "sss"; // data.postUserName;
+      head = ImageWidget(
+        url: data.postUserHeader ?? "",
+        width: 20,
+        height: 20,
+      );
     } else {
       name = data.anonymityName;
       head = Text(
-        data.anonymityName,
+        name[0],
         style: TextStyle(
-          fontSize: 8,
+          fontSize: 12,
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
@@ -391,8 +417,9 @@ class _DoctorTimeLineCell extends StatelessWidget {
                     child: head,
                     width: 20,
                     height: 20,
+                    alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: Color(0xFF62C1FF),
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                   ),
@@ -418,7 +445,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
                   children: [
                     Expanded(
                         child: Text(
-                      data.postTitle,
+                      "这是一条圈子", //data.postTitle ??
                       softWrap: true,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,

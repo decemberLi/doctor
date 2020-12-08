@@ -53,13 +53,13 @@ Map<String, dynamic> _$CollectInfoToJson(CollectInfo instance) =>
 CollectTimeLineResources _$CollectTimeLineResourcesFromJson(
     Map<String, dynamic> json) {
   return CollectTimeLineResources(
-    json['postType'] as String,
-    json['postUserName'] as String,
-    json['postUserHeader'] as String,
-    json['anonymityName'] as String,
-    json['postTitle'] as String,
-    json['postStatus'] as String,
-    json['postId'] as String,
+    json['postType'],
+    json['postUserName'],
+    json['postUserHeader'],
+    json['anonymityName'],
+    json['postTitle'],
+    json['postStatus'],
+    json['postId'],
   );
 }
 
