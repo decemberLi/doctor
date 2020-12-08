@@ -14,10 +14,10 @@ class SocialMessageModel {
   String messageContent;
 
   /// 是否已读（0-未读，1-已读）
-  String readed;
+  bool readed;
 
   /// 帖子Id（点赞，评论的是帖子则取bizId
-  String postId;
+  int postId;
 
   /// 帖子类型
   String postType;
@@ -29,7 +29,9 @@ class SocialMessageModel {
   String sendUserHeader;
 
   /// 点赞时间
-  String createTime;
+  num createTime;
+
+  int messageId;
 
   SocialMessageModel();
 

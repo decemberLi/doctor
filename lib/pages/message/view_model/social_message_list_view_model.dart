@@ -3,7 +3,7 @@ import 'package:doctor/provider/refreshable_view_state_model.dart';
 
 import '../model/social_message_entity.dart';
 
-HttpManager foundation = HttpManager('foundation');
+HttpManager foundation = HttpManager('foundationSystem');
 enum SocialMessageType {
   TYPE_LIKE,
   TYPE_COMMENT,
@@ -36,4 +36,11 @@ class SocialMessageListViewModel extends RefreshableViewStateModel<SocialMessage
         .map<SocialMessageModel>((item) => SocialMessageModel.fromJson(item))
         .toList();
   }
+
+  Future messageClicked(String messageId) async {
+    await foundation.post('/message/update-status',params: {
+      'messageId':messageId
+    }, showLoading: false);
+  }
+
 }

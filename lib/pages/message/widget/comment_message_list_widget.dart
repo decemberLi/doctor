@@ -1,5 +1,8 @@
 import 'package:doctor/pages/message/view_model/social_message_list_view_model.dart';
+import 'package:doctor/pages/message/widget/redoc_logic.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/common_widget_style.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,37 +53,25 @@ class _CommentMessagePageState extends AbstractListPageState<
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              margin: EdgeInsets.only(right: 12),
-              alignment: Alignment.center,
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                  color: ThemeColor.colorFFf25CDA1,
-                  borderRadius: BorderRadius.circular(20)),
-              child: Text(
-                '李',
-                style: TextStyle(fontSize: 24, color: ThemeColor.colorFFFFFF),
-              ),
-            ),
+            buildMessageItemAvatar(data),
             Expanded(
               child: Container(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('《这里是标题这里是标题这里是标题这里是标题这里题》',
+                    Text('《${data?.messageAbstract ?? ''}》',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: textStyle),
                     Padding(
                       padding: EdgeInsets.only(top: 4),
-                      child: Text('李科回复了你的评论了“这个药效很好很…', style: textStyle),
+                      child: Text(data?.messageTitle ?? '', style: textStyle),
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 6),
                       child: Text(
-                        '点赞了你的评论“超级厉害，说的很对…',
+                        data?.messageContent ?? '',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -94,11 +85,18 @@ class _CommentMessagePageState extends AbstractListPageState<
             Container(
               height: double.infinity,
               padding: EdgeInsets.only(left: 8),
-              child: Text('昨天', style: textStyle),
+              child: Text(dateFormat(data?.createTime), style: textStyle),
             )
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void onItemClicked(SocialMessageListViewModel model, itemData) {
+    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+        arguments: {'postId': itemData?.postId});
+    model?.messageClicked(itemData.postId);
   }
 }

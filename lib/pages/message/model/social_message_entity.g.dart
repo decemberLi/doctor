@@ -11,12 +11,13 @@ SocialMessageModel _$SocialMessageModelFromJson(Map<String, dynamic> json) {
     ..messageAbstract = json['messageAbstract'] as String
     ..messageTitle = json['messageTitle'] as String
     ..messageContent = json['messageContent'] as String
-    ..readed = json['readed'] as String
-    ..postId = json['postId'] as String
+    ..readed = json['readed'] as bool
+    ..postId = json['postId'] as int
     ..postType = json['postType'] as String
     ..anonymityName = json['anonymityName'] as String
     ..sendUserHeader = json['sendUserHeader'] as String
-    ..createTime = json['createTime'] as String;
+    ..createTime = json['createTime'] as num
+    ..messageId = json['messageId'] as int;
 }
 
 Map<String, dynamic> _$SocialMessageModelToJson(SocialMessageModel instance) =>
@@ -30,4 +31,5 @@ Map<String, dynamic> _$SocialMessageModelToJson(SocialMessageModel instance) =>
       'anonymityName': instance.anonymityName,
       'sendUserHeader': instance.sendUserHeader,
       'createTime': instance.createTime,
+      'messageId': instance.messageId,
     };
