@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:toast/toast.dart';
 import '../../doctors/tab_indicator.dart';
 
 /// 渲染列表
@@ -226,7 +225,7 @@ class _ClooectStudyCell extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 14,
+                fontSize: 12,
                 color: Colors.white,
               )),
         ));
@@ -241,32 +240,34 @@ class _ClooectStudyCell extends StatelessWidget {
     var title = data.title ?? "资料";
 
     return Container(
-        child: Stack(
-      alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(top: 20, left: 30, right: 10),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      title,
-                      maxLines: 1,
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF222222),
-                        fontWeight: FontWeight.w600,
+      child: Stack(
+        alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(top: 20, left: 30, right: 10),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF222222),
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: Row(
+                  ],
+                ),
+                Container(
+                  height: 10,
+                ),
+                Row(
                   children: [
                     Expanded(
                       child: Text(
@@ -290,33 +291,40 @@ class _ClooectStudyCell extends StatelessWidget {
                         child: Stack(
                           alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
                           children: <Widget>[
-                            Image.network(data.thumbnailUrl,
-                                width: 90, height: 50, fit: BoxFit.cover),
+                            Image.network(
+                              data.thumbnailUrl,
+                              width: 90,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
                           ],
                         ),
                       ),
                   ],
                 ),
-              ),
-            ],
+                Container(
+                  height: 12,
+                ),
+              ],
+            ),
           ),
-        ),
-        Positioned(
-          left: -52,
-          top: -28,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 6),
-            child: Transform(
-                //对齐方式
-                alignment: Alignment.topRight,
-                //设置扭转值
-                transform: Matrix4.rotationZ(-0.9),
-                //设置被旋转的容器
-                child: typeDecoratedBox("ARTICLE")),
+          Positioned(
+            left: -52,
+            top: -28,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 6),
+              child: Transform(
+                  //对齐方式
+                  alignment: Alignment.topRight,
+                  //设置扭转值
+                  transform: Matrix4.rotationZ(-0.9),
+                  //设置被旋转的容器
+                  child: typeDecoratedBox("ARTICLE")),
+            ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
   }
 
   @override
@@ -334,7 +342,7 @@ class _ClooectStudyCell extends StatelessWidget {
           );
         },
         child: Container(
-          height: 107,
+          // height: 107,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -373,7 +381,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 14,
+            fontSize: 12,
             color: Colors.white,
           ),
         ),
