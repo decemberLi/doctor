@@ -386,7 +386,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
     Widget head;
     // ACADEMIC-学术圈，GOSSIP-八卦圈
     if (data.postType == "ACADEMIC") {
-      name = "sss"; // data.postUserName;
+      name = data.postUserName ?? "匿名";
       head = ImageWidget(
         url: data.postUserHeader ?? "",
         width: 20,
@@ -445,7 +445,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
                   children: [
                     Expanded(
                         child: Text(
-                      "这是一条圈子", //data.postTitle ??
+                      data.postTitle ?? "这是一条圈子",
                       softWrap: true,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
