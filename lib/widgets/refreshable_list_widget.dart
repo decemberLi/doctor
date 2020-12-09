@@ -8,7 +8,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 abstract class AbstractListPageState<M extends RefreshableViewStateModel,
         T extends StatefulWidget> extends State<T>
     with AutomaticKeepAliveClientMixin {
-  RefreshableViewStateModel _model;
+  M _model;
   ScrollController _controller;
 
   @override
@@ -51,7 +51,13 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
       controller: _controller,
       itemCount: _model.size,
       itemBuilder: (context, index) {
-        return itemWidget(context, index, _model.list[index]);
+        var model = _model.list[index];
+        return GestureDetector(
+          child: itemWidget(context, index, _model.list[index]),
+          onTap: () {
+            onItemClicked(_model, model);
+          },
+        );
       },
       separatorBuilder: (BuildContext context, int index) {
         return divider(context, index);
@@ -64,7 +70,7 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
     super.initState();
     _controller = ScrollController();
     _model = getModel();
-    _model.refresh(init: true);
+    _model.refresh(init: false);
   }
 
   @override
@@ -73,11 +79,8 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
     _model.dispose();
   }
 
-  Widget emptyWidget(String msg) => Center(
-        child: ViewStateEmptyWidget(
-          message: msg ?? '',
-        ),
-      );
+  Widget emptyWidget(String msg) =>
+      Center(child: ViewStateEmptyWidget(message: msg ?? ''));
 
   M getModel();
 
@@ -102,4 +105,6 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
     _model.refreshController
         .requestRefresh(duration: Duration(milliseconds: 100));
   }
+
+  void onItemClicked(M model, itemData) {}
 }

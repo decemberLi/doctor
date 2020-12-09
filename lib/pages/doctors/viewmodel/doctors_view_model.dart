@@ -3,6 +3,7 @@ import 'package:doctor/provider/refreshable_view_state_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../model/doctor_circle_entity.dart';
+import '../model/doctor_article_detail_entity.dart';
 
 HttpManager dtp = HttpManager('dtp');
 
@@ -44,7 +45,7 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
 
   final String type;
 
-  DoctorsViewMode(this.type);
+  DoctorsViewMode({this.type});
 
   RefreshController get refreshController => _refreshController;
 
@@ -57,5 +58,22 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
         .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
         .toList();
     return Future.value(value);
+  }
+
+  Future<DoctorArticleDetailEntity> queryDetail(int postId) async {
+    var result = await dtp.post('/post/query', params: {'postId': postId});
+    return Future.value(DoctorArticleDetailEntity.fromJson(result));
+  }
+
+  Future<bool> like(int postId) async {
+    await dtp.post('/like/post-or-comment',
+        params: {'postId': postId}, showLoading: false);
+    return Future.value(true);
+  }
+
+  Future<bool> collect(int postId) async {
+    await dtp.post('/post/favorite',
+        params: {'postId': postId}, showLoading: false);
+    return Future.value(true);
   }
 }

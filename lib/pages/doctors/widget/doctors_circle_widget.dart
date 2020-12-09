@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,13 +13,13 @@ import '../../../main.dart';
 import '../viewmodel/doctors_view_model.dart';
 import '../model/doctor_circle_entity.dart';
 import 'doctors_detail_widget.dart';
-
+final _colorPanel = {
+  '文献专区': ThemeColor.colorFF52C41A,
+  '案例解析': ThemeColor.colorFF107BFD,
+  '每日一讲': ThemeColor.colorFFFAAD14,
+};
 class DoctorCircleItemWidget extends StatelessWidget {
-  final _colorPanel = {
-    '文献专区': ThemeColor.colorFF52C41A,
-    '案例解析': ThemeColor.colorFF107BFD,
-    '每日一讲': ThemeColor.colorFFFAAD14,
-  };
+
   final DoctorCircleEntity data;
 
   DoctorCircleItemWidget(this.data);
@@ -30,7 +31,7 @@ class DoctorCircleItemWidget extends StatelessWidget {
     }
     var batch = _colorPanel.entries.toList();
     var hitColor = batch[Random().nextInt(batch.length)].value;
-    _colorPanel[category] = hitColor;
+    _colorPanel.putIfAbsent(category, () => hitColor);
     return hitColor;
   }
 
@@ -124,7 +125,7 @@ class DoctorsPage extends StatefulWidget {
 }
 
 class DoctorPageState
-    extends AbstractListPageState<DoctorsViewMode, DoctorsPage>{
+    extends AbstractListPageState<DoctorsViewMode, DoctorsPage> {
   ScrollOutScreenViewModel _inScreenViewModel;
 
   bool _currentIsOutScreen = false;
@@ -156,7 +157,7 @@ class DoctorPageState
       );
 
   @override
-  DoctorsViewMode getModel() => DoctorsViewMode('ACADEMIC');
+  DoctorsViewMode getModel() => DoctorsViewMode(type:'ACADEMIC');
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) =>
@@ -166,5 +167,11 @@ class DoctorPageState
   void scrollOutOfScreen(bool outScreen) {
     _currentIsOutScreen = outScreen;
     _inScreenViewModel.updateState(PAGE_DOCTOR, _currentIsOutScreen);
+  }
+
+  @override
+  void onItemClicked(DoctorsViewMode model, itemData) {
+    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+        arguments: {'postId': itemData?.postId});
   }
 }

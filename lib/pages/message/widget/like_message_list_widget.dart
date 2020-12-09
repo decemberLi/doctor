@@ -1,9 +1,13 @@
 import 'package:doctor/pages/message/view_model/social_message_list_view_model.dart';
+import 'package:doctor/pages/message/widget/redoc_logic.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/common_widget_style.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../model/social_message_entity.dart';
 
 class LikeMessagePage extends StatefulWidget {
@@ -40,25 +44,16 @@ class _LikeMessagePageState
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) {
+    if (!(data is SocialMessageModel)) {
+      return Container();
+    }
     return Container(
       padding: EdgeInsets.all(12),
       decoration: itemContainerDecoration,
       child: IntrinsicHeight(
         child: Row(
           children: [
-            Container(
-              margin: EdgeInsets.only(right: 12),
-              alignment: Alignment.center,
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                  color: ThemeColor.colorFFf25CDA1,
-                  borderRadius: BorderRadius.circular(20)),
-              child: Text(
-                '李',
-                style: TextStyle(fontSize: 24, color: ThemeColor.colorFFFFFF),
-              ),
-            ),
+            buildMessageItemAvatar(data as SocialMessageModel),
             Expanded(
               child: Container(
                 child: Column(
@@ -67,7 +62,7 @@ class _LikeMessagePageState
                   children: [
                     Container(
                       child: Text(
-                        '李科',
+                        data?.messageTitle ?? '',
                         style: TextStyle(
                             fontSize: 12, color: ThemeColor.colorFF444444),
                       ),
@@ -75,7 +70,7 @@ class _LikeMessagePageState
                     Padding(
                       padding: EdgeInsets.only(top: 6),
                       child: Text(
-                        '点赞了你的评论“超级厉害，说的很对…',
+                        data?.messageContent ?? '',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -89,7 +84,7 @@ class _LikeMessagePageState
             Container(
               height: double.infinity,
               padding: EdgeInsets.only(left: 8),
-              child: Text('昨天',
+              child: Text(dateFormat(data?.createTime),
                   style:
                       TextStyle(fontSize: 10, color: ThemeColor.colorFF444444)),
             )
@@ -97,5 +92,12 @@ class _LikeMessagePageState
         ),
       ),
     );
+  }
+
+  @override
+  void onItemClicked(SocialMessageListViewModel model, itemData) {
+    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+        arguments: {'postId': itemData?.postId});
+    model?.messageClicked(itemData?.postId);
   }
 }

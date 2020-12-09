@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -142,7 +143,7 @@ class GossipNewsPageState
       );
 
   @override
-  DoctorsViewMode getModel() => DoctorsViewMode('GOSSIP');
+  DoctorsViewMode getModel() => DoctorsViewMode(type: 'GOSSIP');
 
   @override
   Widget emptyWidget(String msg) {
@@ -157,5 +158,11 @@ class GossipNewsPageState
   void scrollOutOfScreen(bool outScreen) {
     _currentIsOutScreen = outScreen;
     _inScreenViewModel.updateState(PAGE_GOSSIP, _currentIsOutScreen);
+  }
+
+  @override
+  void onItemClicked(DoctorsViewMode model, itemData) {
+    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+        arguments: {'postId': itemData?.postId});
   }
 }
