@@ -486,12 +486,11 @@ class _DoctorTimeLineCell extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 12),
       child: FlatButton(
         onPressed: () {
-          if (data.postStatus == "SHELVES") {
-          } else if (data.postStatus == "DOWN_SHELVES") {
-            Toast.show("帖子已被删除", context);
-          } else {
-            Toast.show("未知错误", context);
-          }
+          Navigator.pushNamed(
+            context,
+            RouteManager.DOCTORS_ARTICLE_DETAIL,
+            arguments: {'postId': data.postId},
+          );
         },
         child: Container(
           height: 107,
