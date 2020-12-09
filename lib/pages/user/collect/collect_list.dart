@@ -408,7 +408,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
       alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(top: 20, left: 30, right: 10),
+          padding: EdgeInsets.only(top: 20, left: 30, right: 28),
           child: Column(
             children: [
               Row(
@@ -440,23 +440,27 @@ class _DoctorTimeLineCell extends StatelessWidget {
                   )),
                 ],
               ),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: Text(
-                      data.postTitle ?? "这是一条圈子",
-                      softWrap: true,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF444444),
-                        fontWeight: FontWeight.normal,
-                      ),
-                    )),
-                  ],
-                ),
+              Container(
+                height: 6,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                      child: Text(
+                    data.postTitle ?? "这是一条圈子",
+                    softWrap: true,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF444444),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  )),
+                ],
+              ),
+              Container(
+                height: 12,
               ),
             ],
           ),
@@ -493,7 +497,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
           );
         },
         child: Container(
-          height: 107,
+          // height: 107,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(8)),
