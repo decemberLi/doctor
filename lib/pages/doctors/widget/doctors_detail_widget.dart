@@ -99,7 +99,8 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
   }
 
   _callJs(param) {
-    _controller.evaluateJavascript('nativeCall($param)');
+    print("nativeCall('$param')");
+    _controller.evaluateJavascript("nativeCall('$param')");
   }
 
   @override
@@ -138,10 +139,8 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                       name: 'jsCall',
                       onMessageReceived: (param) async {
                         var message = json.decode(param.message);
-                        var result = await map[message['dispatchType']](
+                        map[message['dispatchType']](
                             message['param'], message['bizType']);
-                        _controller.evaluateJavascript(
-                            'nativeCall({param:$result, bizType:${message['bizType']}})');
                       },
                     ),
                   ].toSet(),
@@ -168,10 +167,10 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            blurRadius: 10,
-            spreadRadius: 2,
-            color: ThemeColor.colorFFE7E7E7,
-          ),
+              blurRadius: 4,
+              spreadRadius: 1,
+              color: ThemeColor.colorFFE7E7E7,
+              offset: Offset(0, -4)),
         ],
       ),
       child: Column(

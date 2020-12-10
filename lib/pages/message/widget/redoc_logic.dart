@@ -9,7 +9,7 @@ buildMessageItemAvatar(SocialMessageModel data) {
       children: [
         data?.postType == 'GOSSIP'
             ? _buildGossipAvatar(data?.messageTitle ?? '')
-            : _buildUserAvatar('url'),
+            : _buildUserAvatar(data?.sendUserHeader),
         Positioned(
             right: 8,
             top: -3,
