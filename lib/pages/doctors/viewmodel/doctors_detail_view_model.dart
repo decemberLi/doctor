@@ -1,4 +1,3 @@
-
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -20,7 +19,11 @@ class DoctorsDetailViewMode extends ViewStateModel {
 
   void like(int postId) async {
     await dtp.post('/like/post-or-comment',
-        params: {'postId': postId}, showLoading: false);
+        params: {
+          'postId': postId,
+          'status': 'LIKE_POST',
+        },
+        showLoading: false);
     if (_detailEntity == null) {
       return;
     }
@@ -30,8 +33,15 @@ class DoctorsDetailViewMode extends ViewStateModel {
   }
 
   void collect(int postId) async {
+    if (_detailEntity == null) {
+      return;
+    }
     await dtp.post('/post/favorite',
-        params: {'postId': postId}, showLoading: false);
+        params: {
+          'postId': postId,
+          'status': _detailEntity.favoriteFlag ?? false ? 'CANCEL' : 'FAVORITE'
+        },
+        showLoading: false);
     if (!_detailEntity.favoriteFlag) {
       EasyLoading.showToast('收藏成功');
     } else {

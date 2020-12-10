@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
   ScrollOutScreenViewModel _outScreenViewModel;
+  bool isDoctors = false;
 
   int _currentIndex = 0;
   final List<Widget> _children = [
@@ -50,7 +51,12 @@ class _HomePageState extends State<HomePage>
 
   void onTabTapped(int index) {
     if (index == 2) {
-      eventBus.fire(_outScreenViewModel.event);
+      if (isDoctors) {
+        eventBus.fire(_outScreenViewModel.event);
+      }
+      isDoctors = true;
+    } else {
+      isDoctors = false;
     }
     if (index == _currentIndex) {
       return;
@@ -232,7 +238,8 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    _outScreenViewModel = Provider.of<ScrollOutScreenViewModel>(context,listen: false);
+    _outScreenViewModel =
+        Provider.of<ScrollOutScreenViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       this.initDoctorInfo();
     });
@@ -249,7 +256,10 @@ class _HomePageState extends State<HomePage>
           // 触摸收起键盘
           FocusScope.of(context).requestFocus(FocusNode());
         },
-        child: _children[_currentIndex],
+        child: IndexedStack(
+          children: _children,
+          index: _currentIndex,
+        ),
       ),
       bottomNavigationBar: Consumer<ScrollOutScreenViewModel>(
         builder: (BuildContext context, ScrollOutScreenViewModel value,
@@ -327,7 +337,10 @@ class _HomePageState extends State<HomePage>
       height: 24,
     );
     var tabText = '医生圈';
-    if (value != null && value.event != null && value.event.isOutScreen) {
+    if (value != null &&
+        value.event != null &&
+        value.event.isOutScreen &&
+        isDoctors) {
       iconImg = Image.asset(
         'assets/images/doctors_to_top_icon.png',
         width: 24,

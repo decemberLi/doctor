@@ -108,11 +108,13 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
       _commentFocusNode.unfocus();
     }
     _kvn.removeListener(_subscribeId);
+    EasyLoading.dismiss();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    EasyLoading.show(status: '加载中...');
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(title: Text('帖子详情'), elevation: 0),
@@ -127,10 +129,10 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                 child: WebView(
                   javascriptMode: JavascriptMode.unrestricted,
                   initialUrl:
-                      'http://192.168.1.27:8000/#/detail?id=${widget.postId}&from=${widget.from}',
+                      'https://m-dev.e-medclouds.com/mpost/#/detail?id=${widget.postId}&from=${widget.from}',
                   onWebViewCreated: (controller) => _controller = controller,
                   onPageFinished: (url) {
-                    print(url);
+                    EasyLoading.dismiss();
                   },
                   userAgent: 'Medclouds-doctor',
                   javascriptChannels: <JavascriptChannel>[
@@ -434,7 +436,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                               color: ThemeColor.colorFFD9D5D5,
                             ),
                           ),
-                          hintText: hintText,
+                          hintText: '请输入',
                           hintStyle:
                               TextStyle(color: ThemeColor.colorFF999999)),
                       cursorHeight: 20,
