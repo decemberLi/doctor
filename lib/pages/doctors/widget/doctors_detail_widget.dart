@@ -1,3 +1,4 @@
+import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_detail_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/theme/theme.dart';
@@ -6,13 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:convert';
 
 import '../model/doctor_article_detail_entity.dart';
 
 class DoctorsDetailPage extends StatefulWidget {
   final int postId;
 
-  DoctorsDetailPage(this.postId);
+  final String type;
+
+  final String from;
+
+  DoctorsDetailPage({this.postId, this.type, this.from = ''});
 
   @override
   State<StatefulWidget> createState() => _DoctorsDetailPageState();
@@ -20,29 +26,47 @@ class DoctorsDetailPage extends StatefulWidget {
 
 class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
   WebViewController _controller;
-  TextEditingController _commentTextEdit = TextEditingController();
+  TextEditingController _commentTextEditController = TextEditingController();
   FocusNode _commentFocusNode = FocusNode();
   DoctorsDetailViewMode _model = DoctorsDetailViewMode();
   final _kvn = KeyboardVisibilityNotification();
-  bool _isInputModel = false;
   int _subscribeId;
+  bool _inputModel = false;
+  int _commentTo = null;
+  Map<String, dynamic> map;
 
   @override
   void initState() {
     super.initState();
     _subscribeId = _kvn.addNewListener(
       onChange: (bool visible) {
+        print('visible ----- $visible');
         if (!visible) {
-          //键盘下降失去焦点
-          setState(() {
-            // logo = false;
-            _isInputModel = false;
-          });
           _commentFocusNode.unfocus();
+          Navigator.pop(context);
+          //键盘下降失去焦点
+          setState(() {});
         }
       },
     );
-    _model.initArticleDetail(widget.postId);
+    map = {
+      'closeWindow': (jsonMsg, callJsType) {
+        Navigator.pop(context);
+      },
+      'updatePostDetail': (jsonMsg, callJsType) {
+        _model.updateDetail(jsonMsg);
+      },
+      'comment': (jsonParam, callJsType) {
+        var postId = jsonParam['postId'];
+        var commentId = jsonParam['commentId'];
+        var commentContent = jsonParam['commentContent'];
+        var name = jsonParam['name'];
+        _model.postComment(postId, commentId, commentContent);
+      },
+      'ticket': (jsonMsg, callJsType) {
+        return SessionManager.getLoginInfo()?.ticket;
+      }
+    };
   }
 
   @override
@@ -56,48 +80,49 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       appBar: AppBar(title: Text('帖子详情'), elevation: 0),
       body: ProviderWidget<DoctorsDetailViewMode>(
         model: _model,
         builder: (context, model, child) {
           return Stack(
             children: [
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.only(bottom: 50),
-                  height: MediaQuery.of(context).size.height,
-                  child: WebView(
-                    javascriptMode: JavascriptMode.unrestricted,
-                    initialUrl:
-                        'http://192.168.1.27:8000/#/detail?id=${widget.postId}',
-                    onWebViewCreated: (controller) => _controller = controller,
-                    onPageFinished: (url) {
-                      print(url);
-                    },
-                    javascriptChannels: <JavascriptChannel>[
-                      JavascriptChannel(
-                          name: 'reply', onMessageReceived: (message) {}),
-                      JavascriptChannel(
-                          name: 'ticket', onMessageReceived: (message) {}),
-                    ].toSet(),
-                  ),
+              Container(
+                padding: EdgeInsets.only(bottom: 50),
+                height: MediaQuery.of(context).size.height,
+                child: WebView(
+                  javascriptMode: JavascriptMode.unrestricted,
+                  initialUrl:
+                      'http://192.168.1.27:8000/#/detail?id=${widget.postId}&from=${widget.from}',
+                  onWebViewCreated: (controller) => _controller = controller,
+                  onPageFinished: (url) {
+                    print(url);
+                  },
+                  javascriptChannels: <JavascriptChannel>[
+                    JavascriptChannel(
+                      name: 'jsCall',
+                      onMessageReceived: (param) async {
+                        var message = json.decode(param.message);
+                        var result = await map[message['dispatchType']](
+                            message['param'], message['bizType']);
+                        _controller.evaluateJavascript(
+                            'nativeCall({param:$result, bizType:${message['bizType']}})');
+                      },
+                    ),
+                  ].toSet(),
                 ),
               ),
-              Positioned(
-                bottom: 0,
-                child: _bottomBar(_model.detailEntity),
-              )
+              Positioned(bottom: 0, child: _bottomBar(_model.detailEntity))
             ],
           );
         },
       ),
-    );
+    ));
   }
 
   _bottomBar(DoctorArticleDetailEntity entity) {
     return Container(
-      height: 50,
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(vertical: 6, horizontal: 22),
       decoration: BoxDecoration(
@@ -115,56 +140,47 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Expanded(
-            child: TextField(
-              minLines: 1,
-              maxLines: 10,
-              maxLength: 150,
-              controller: _commentTextEdit,
-              focusNode: _commentFocusNode,
-              // enableInteractiveSelection: false,
-              onTap: () {
-                FocusScope.of(context).requestFocus(_commentFocusNode);
-                setState(() {
-                  // logo = false;
-                  _isInputModel = true;
-                });
-              },
-              onChanged: (text) {
-                setState(() {
-                  // commentContent = text;
-                });
-              },
-              decoration: InputDecoration(
-                counterText: "",
-                fillColor: Color(0XFFEDEDED),
-                filled: true,
-                contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  //未选中时候的颜色
-                  borderRadius: BorderRadius.circular(25.0),
-                  borderSide: BorderSide(
-                    color: Colors.white,
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                    alignment: Alignment.centerLeft,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25.0),
+                      color: ThemeColor.colorFFEDEDED,
+                    ),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 5),
+                          child: Icon(
+                            Icons.edit,
+                            color: ThemeColor.colorFF999999,
+                            size: 12,
+                          ),
+                        ),
+                        Text(
+                          '写讨论',
+                          style: TextStyle(
+                              fontSize: 14, color: ThemeColor.colorFF999999),
+                        )
+                      ],
+                    ),
                   ),
+                  onTap: () {
+                    _showInputBar(widget.type == 'ACADEMIC' ? '写评论' : '写讨论');
+                  },
                 ),
-                focusColor: Colors.transparent,
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                  borderSide: BorderSide(
-                    color: Colors.white,
-                  ),
-                ),
-                hintText: '写评论',
               ),
-            ),
+              _operatorArea(entity)
+            ],
           ),
-          if (!_isInputModel) _operatorArea(entity)
         ],
       ),
     );
@@ -176,7 +192,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
         GestureDetector(
           child: Container(
             alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 24),
+            margin: EdgeInsets.only(left: 22),
             child: _operatorWidget(
                 entity?.likeFlag ?? false
                     ? 'assets/images/liked_checked.png'
@@ -194,14 +210,14 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
         ),
         Container(
           alignment: Alignment.center,
-          margin: EdgeInsets.only(left: 24),
+          margin: EdgeInsets.only(left: 22),
           child: _operatorWidget('assets/images/comment_normal.png', '评论',
               entity?.commentNum ?? 0),
         ),
         GestureDetector(
           child: Container(
             alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 24),
+            margin: EdgeInsets.only(left: 22),
             child: _operatorWidget(
                 entity?.favoriteFlag ?? false
                     ? 'assets/images/collect_checked.png'
@@ -216,32 +232,134 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
   }
 
   _operatorWidget(String asstPath, String text, int number) {
-    return Stack(
-      overflow: Overflow.visible,
-      children: [
-        Container(
-          child: Column(
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                asstPath,
-                width: 20,
-                height: 20,
-              ),
-              Text(
-                text,
-                style: TextStyle(fontSize: 10, color: ThemeColor.colorFF999999),
-              )
+              Image.asset(asstPath, width: 20, height: 20),
+              Text(text,
+                  style:
+                      TextStyle(fontSize: 10, color: ThemeColor.colorFF999999))
             ],
           ),
-        ),
-        Positioned(
-          right: -12,
-          child: Text(
-            '${number ?? ''}',
-            style: TextStyle(fontSize: 10, color: ThemeColor.colorFF999999),
+          if (number != null)
+            Container(
+              margin: EdgeInsets.only(left: 2),
+              child: Text(
+                '${number ?? ''}',
+                style: TextStyle(fontSize: 10, color: ThemeColor.colorFF999999),
+              ),
+            )
+        ],
+      ),
+    );
+  }
+
+  _buildCommendArea() {
+    return Container(
+      padding: EdgeInsets.only(bottom: 12, top: 6, left: 2, right: 2),
+      width: double.infinity,
+      child: Text(
+        '回复 张三: 惺惺相惜放假时间发了多少分惺惺相惜放假时间发了多少分惺惺相惜放假时间发了',
+        style: TextStyle(color: ThemeColor.colorFF999999, fontSize: 14),
+      ),
+    );
+  }
+
+  _buildPublishArea() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      height: 60,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${_commentTextEditController.text?.length ?? 0}/150',
+            style: TextStyle(color: ThemeColor.colorFF999999, fontSize: 16),
           ),
-        )
-      ],
+          Text(
+            '发表',
+            style: TextStyle(color: ThemeColor.primaryColor, fontSize: 16),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _showInputBar(String hintText) {
+    showModalBottomSheet(
+      backgroundColor: ThemeColor.colorFFFAFAFA,
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return AnimatedPadding(
+          padding: MediaQuery.of(context).viewInsets,
+          duration: Duration(milliseconds: 20),
+          child: IntrinsicHeight(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 22),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildCommendArea(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          style: TextStyle(fontSize: 14),
+                          minLines: 1,
+                          maxLines: 5,
+                          controller: _commentTextEditController,
+                          focusNode: _commentFocusNode,
+                          enableInteractiveSelection: true,
+                          autofocus: true,
+                          onChanged: (text) {
+                            setState(() {
+                              // commentContent = text;
+                            });
+                          },
+                          decoration: InputDecoration(
+                              counterText: "",
+                              fillColor: Colors.white,
+                              filled: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 8),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: BorderSide(
+                                  color: ThemeColor.colorFFD9D5D5,
+                                ),
+                              ),
+                              focusColor: Colors.transparent,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: BorderSide(
+                                  color: ThemeColor.colorFFD9D5D5,
+                                ),
+                              ),
+                              hintText: hintText,
+                              hintStyle:
+                                  TextStyle(color: ThemeColor.colorFF999999)),
+                          cursorHeight: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                  _buildPublishArea(),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

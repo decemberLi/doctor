@@ -97,7 +97,7 @@ class _LikeMessagePageState
   @override
   void onItemClicked(SocialMessageListViewModel model, itemData) {
     Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {'postId': itemData?.postId});
-    model?.messageClicked(itemData?.postId);
+        arguments: {'postId': itemData?.postId,'from':'msg'});
+    model?.messageClicked(itemData?.messageId);
   }
 }

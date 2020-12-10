@@ -172,6 +172,6 @@ class DoctorPageState
   @override
   void onItemClicked(DoctorsViewMode model, itemData) {
     Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {'postId': itemData?.postId});
+        arguments: {'postId': itemData?.postId,'from':'list'},);
   }
 }

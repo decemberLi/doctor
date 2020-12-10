@@ -208,13 +208,13 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
             Container(
               child: Image.asset(assetPath, width: 40, height: 40),
             ),
-            if (unreadMsg != null)
+            if (unreadMsg != null && unreadMsg > 0)
               Positioned(
                 right: -17,
                 top: -10,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: ThemeColor.colorFFF57575,
                       borderRadius: BorderRadius.all(Radius.circular(12))),
                   padding: EdgeInsets.all(1.5),
                   child: Container(

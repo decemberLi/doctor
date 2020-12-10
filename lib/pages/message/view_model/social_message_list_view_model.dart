@@ -37,10 +37,12 @@ class SocialMessageListViewModel extends RefreshableViewStateModel<SocialMessage
         .toList();
   }
 
-  Future messageClicked(String messageId) async {
+  Future messageClicked(int messageId) async {
     await foundation.post('/message/update-status',params: {
       'messageId':messageId
     }, showLoading: false);
+    await refresh();
+    notifyListeners();
   }
 
 }

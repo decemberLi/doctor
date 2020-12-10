@@ -138,7 +138,11 @@ class RouteManager {
     },
     DOCTORS_ARTICLE_DETAIL: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
-      return  DoctorsDetailPage(obj['postId']);
+      return DoctorsDetailPage(
+        postId: obj['postId'],
+        type: obj['type'],
+        from: obj['from'],
+      );
     },
   };
 }

@@ -1,10 +1,11 @@
-import 'package:doctor/http/http_manager.dart';
-import 'package:doctor/provider/refreshable_view_state_model.dart';
-import 'package:doctor/provider/view_state_model.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'dart:convert';
 
-import '../model/doctor_circle_entity.dart';
+import 'package:doctor/http/http_manager.dart';
+import 'package:doctor/provider/view_state_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:path/path.dart';
+
 import '../model/doctor_article_detail_entity.dart';
 
 HttpManager dtp = HttpManager('dtp');
@@ -38,4 +39,24 @@ class DoctorsDetailViewMode extends ViewStateModel {
     _detailEntity.favoriteFlag = !_detailEntity.favoriteFlag;
     notifyListeners();
   }
+
+  void updateDetail(dynamic message) {
+    _detailEntity = DoctorArticleDetailEntity.fromJson(message);
+    notifyListeners();
+  }
+
+  void postComment(postId, commentId, commentContent) async {
+    await dtp.post('/comment/add-comment',
+        params: {
+          'postId': postId,
+          'commentId': commentId,
+          'commentContent': commentContent
+        },
+        showLoading: false);
+    if (_detailEntity != null) {
+      _detailEntity.commentNum++;
+      notifyListeners();
+    }
+  }
+
 }
