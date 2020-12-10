@@ -99,7 +99,6 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
   }
 
   _callJs(param) {
-    print("nativeCall('$param')");
     _controller.evaluateJavascript("nativeCall('$param')");
   }
 
