@@ -505,7 +505,6 @@ class _DoctorTimeLineCell extends StatelessWidget {
           );
         },
         child: Container(
-          // height: 107,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(8)),

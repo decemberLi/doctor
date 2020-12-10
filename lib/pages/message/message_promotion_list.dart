@@ -69,6 +69,9 @@ class _MessagePromotionListState extends State<MessagePromotionList> {
                       item,
                       onTap: (data) {
                         model.mark('${data.messageId}');
+                        setState(() {
+                          item.readed = true;
+                        });
                         if (data.params == null ||
                             data.params['learnPlanId'] == null) {
                           return;
@@ -87,6 +90,9 @@ class _MessagePromotionListState extends State<MessagePromotionList> {
                       item,
                       onTap: (data) {
                         model.mark('${data.messageId}');
+                        setState(() {
+                          item.readed = true;
+                        });
                         Navigator.of(context).pushNamed(
                             RouteManager.RESOURCE_DETAIL,
                             arguments: {
@@ -117,7 +123,11 @@ class _SubCollectList extends StatefulWidget {
   }
 }
 
-class _SubCollectState extends State<_SubCollectList> {
+class _SubCollectState extends State<_SubCollectList>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     return ProviderWidget<MessageListModel>(
