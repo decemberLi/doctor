@@ -108,13 +108,11 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
       _commentFocusNode.unfocus();
     }
     _kvn.removeListener(_subscribeId);
-    EasyLoading.dismiss();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    EasyLoading.show(status: '加载中...');
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(title: Text('帖子详情'), elevation: 0),
@@ -132,7 +130,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                       'https://m-dev.e-medclouds.com/mpost/#/detail?id=${widget.postId}&from=${widget.from}',
                   onWebViewCreated: (controller) => _controller = controller,
                   onPageFinished: (url) {
-                    EasyLoading.dismiss();
+                    print(url);
                   },
                   userAgent: 'Medclouds-doctor',
                   javascriptChannels: <JavascriptChannel>[
