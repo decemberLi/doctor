@@ -1,13 +1,15 @@
+import 'dart:convert';
+
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_detail_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'dart:convert';
 
 import '../model/doctor_article_detail_entity.dart';
 
@@ -31,42 +33,73 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
   DoctorsDetailViewMode _model = DoctorsDetailViewMode();
   final _kvn = KeyboardVisibilityNotification();
   int _subscribeId;
-  bool _inputModel = false;
-  int _commentTo = null;
+  String _commentTo;
+  String _replyContent;
+  int _commentId;
+  int _lastCommentId;
+  String _cachedContent;
+  int _commentContentLength = 0;
+
   Map<String, dynamic> map;
+  var aMap = {};
 
   @override
   void initState() {
     super.initState();
     _subscribeId = _kvn.addNewListener(
       onChange: (bool visible) {
-        print('visible ----- $visible');
         if (!visible) {
+          if (!ModalRoute.of(context).isCurrent) {
+            Navigator.pop(context);
+          }
           _commentFocusNode.unfocus();
-          Navigator.pop(context);
           //键盘下降失去焦点
           setState(() {});
         }
       },
     );
     map = {
-      'closeWindow': (jsonMsg, callJsType) {
+      'closeWindow': (jsonParam, callJsType) {
+        debugPrint(
+            'closeWindow -> param: [$jsonParam], callJsType: [$callJsType] ');
         Navigator.pop(context);
       },
-      'updatePostDetail': (jsonMsg, callJsType) {
-        _model.updateDetail(jsonMsg);
+      'updatePostDetail': (jsonParam, callJsType) {
+        debugPrint(
+            'updatePostDetail -> param: [$jsonParam], callJsType: [$callJsType] ');
+        _model.updateDetail(jsonParam);
       },
       'comment': (jsonParam, callJsType) {
-        var postId = jsonParam['postId'];
-        var commentId = jsonParam['commentId'];
-        var commentContent = jsonParam['commentContent'];
-        var name = jsonParam['name'];
-        _model.postComment(postId, commentId, commentContent);
+        debugPrint(
+            'comment -> param: [$jsonParam], callJsType: [$callJsType] ');
+        _commentId = jsonParam['id'];
+        _replyContent = jsonParam['commentContent'];
+        _commentTo = jsonParam['commentUserName'];
+        _showInputBar(_hintText(), true);
       },
-      'ticket': (jsonMsg, callJsType) {
-        return SessionManager.getLoginInfo()?.ticket;
+      'ticket': (jsonMsg, bizType) {
+        debugPrint('comment -> param: [$jsonMsg], callJsType: [$bizType] ');
+        _callJs(_commonResult(
+            bizType: bizType, content: SessionManager.getLoginInfo().ticket));
+      },
+      'addNewBizType': (jsonParam, bizType) {
+        aMap.putIfAbsent(jsonParam['key'], () => bizType);
+      },
+      'removeBizType': (jsonParam, bizType) {
+        aMap.remove(jsonParam['key']);
       }
     };
+  }
+
+  _commonResult({String bizType, int code = 0, dynamic content}) {
+    return json.encode({
+      'bizType': bizType,
+      'param': {'code': code, 'content': content}
+    });
+  }
+
+  _callJs(param) {
+    _controller.evaluateJavascript('nativeCall($param)');
   }
 
   @override
@@ -99,6 +132,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                   onPageFinished: (url) {
                     print(url);
                   },
+                  userAgent: 'Medclouds-doctor',
                   javascriptChannels: <JavascriptChannel>[
                     JavascriptChannel(
                       name: 'jsCall',
@@ -166,7 +200,12 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                           ),
                         ),
                         Text(
-                          '写讨论',
+                          _cachedContent == null || _cachedContent.length == 0
+                              ? _hintText()
+                              : _cachedContent,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                          textAlign: TextAlign.left,
                           style: TextStyle(
                               fontSize: 14, color: ThemeColor.colorFF999999),
                         )
@@ -174,7 +213,9 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                     ),
                   ),
                   onTap: () {
-                    _showInputBar(widget.type == 'ACADEMIC' ? '写评论' : '写讨论');
+                    _commentTextEditController.text = null;
+                    _commentId = null;
+                    _showInputBar(_hintText(), false);
                   },
                 ),
               ),
@@ -185,6 +226,8 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
       ),
     );
   }
+
+  String _hintText() => _model.isAcademic() ? '写评论' : '写讨论';
 
   _operatorArea(DoctorArticleDetailEntity entity) {
     return Row(
@@ -208,11 +251,16 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
             _model.like(widget.postId);
           },
         ),
-        Container(
-          alignment: Alignment.center,
-          margin: EdgeInsets.only(left: 22),
-          child: _operatorWidget('assets/images/comment_normal.png', '评论',
-              entity?.commentNum ?? 0),
+        GestureDetector(
+          child: Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.only(left: 22),
+            child: _operatorWidget('assets/images/comment_normal.png', '评论',
+                entity?.commentNum ?? 0),
+          ),
+          onTap: () {
+            _callJs(_commonResult(bizType: aMap['scrollToCommentArea']));
+          },
         ),
         GestureDetector(
           child: Container(
@@ -259,106 +307,147 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
   }
 
   _buildCommendArea() {
+    if (_commentTo == null || _replyContent == null) {
+      return Container();
+    }
     return Container(
       padding: EdgeInsets.only(bottom: 12, top: 6, left: 2, right: 2),
       width: double.infinity,
       child: Text(
-        '回复 张三: 惺惺相惜放假时间发了多少分惺惺相惜放假时间发了多少分惺惺相惜放假时间发了',
+        '回复 $_commentTo: $_replyContent',
         style: TextStyle(color: ThemeColor.colorFF999999, fontSize: 14),
       ),
     );
   }
 
   _buildPublishArea() {
+    var length = _commentContentLength ?? 0;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       height: 60,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            '${_commentTextEditController.text?.length ?? 0}/150',
-            style: TextStyle(color: ThemeColor.colorFF999999, fontSize: 16),
+          Container(
+            child: Row(
+              children: [
+                Text('$length',
+                    style: TextStyle(
+                        color: length > 150
+                            ? ThemeColor.colorFFF67777
+                            : ThemeColor.colorFF999999,
+                        fontSize: 16)),
+                Text(
+                  '/150',
+                  style:
+                      TextStyle(color: ThemeColor.colorFF999999, fontSize: 16),
+                )
+              ],
+            ),
           ),
-          Text(
-            '发表',
-            style: TextStyle(color: ThemeColor.primaryColor, fontSize: 16),
+          GestureDetector(
+            child: Text(
+              '发表',
+              style: TextStyle(color: ThemeColor.primaryColor, fontSize: 16),
+            ),
+            onTap: () async {
+              if (_commentTextEditController.text == null ||
+                  _commentTextEditController.text.length == 0) {
+                EasyLoading.showToast('${_hintText()}内容不能为空');
+                return;
+              }
+              if (_commentTextEditController.text.length > 150) {
+                EasyLoading.showToast('字数超过限制');
+                return;
+              }
+              await _model.postComment(
+                  widget.postId, _commentId, _commentTextEditController.text);
+              _callJs(_commonResult(bizType: aMap['updateComment']));
+              _commentTextEditController.text = '';
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
     );
   }
 
-  _showInputBar(String hintText) {
+  _showInputBar(String hintText, bool isReply) {
+    if (_lastCommentId != _commentId) {
+      _commentTextEditController.text = '';
+      _cachedContent = null;
+      _commentContentLength = 0;
+    }
+    _lastCommentId = _commentId;
     showModalBottomSheet(
       backgroundColor: ThemeColor.colorFFFAFAFA,
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return AnimatedPadding(
-          padding: MediaQuery.of(context).viewInsets,
-          duration: Duration(milliseconds: 20),
-          child: IntrinsicHeight(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 22),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _buildCommendArea(),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          style: TextStyle(fontSize: 14),
-                          minLines: 1,
-                          maxLines: 5,
-                          controller: _commentTextEditController,
-                          focusNode: _commentFocusNode,
-                          enableInteractiveSelection: true,
-                          autofocus: true,
-                          onChanged: (text) {
-                            setState(() {
-                              // commentContent = text;
-                            });
-                          },
-                          decoration: InputDecoration(
-                              counterText: "",
-                              fillColor: Colors.white,
-                              filled: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 8),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: BorderSide(
-                                  color: ThemeColor.colorFFD9D5D5,
-                                ),
-                              ),
-                              focusColor: Colors.transparent,
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: BorderSide(
-                                  color: ThemeColor.colorFFD9D5D5,
-                                ),
-                              ),
-                              hintText: hintText,
-                              hintStyle:
-                                  TextStyle(color: ThemeColor.colorFF999999)),
-                          cursorHeight: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                  _buildPublishArea(),
-                ],
+        return StatefulBuilder(builder: (ctx, state) {
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: Duration(milliseconds: 20),
+            child: IntrinsicHeight(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 22),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (isReply) _buildCommendArea(),
+                    TextField(
+                      style: TextStyle(fontSize: 14),
+                      minLines: 1,
+                      maxLines: 5,
+                      controller: _commentTextEditController,
+                      focusNode: _commentFocusNode,
+                      enableInteractiveSelection: true,
+                      autofocus: true,
+                      onChanged: (text) {
+                        if (_commentId == null) {
+                          _cachedContent = text;
+                        }
+                        state(() {
+                          _commentContentLength = text?.length ?? 0;
+                        });
+                        setState(() {});
+                      },
+                      decoration: InputDecoration(
+                          counterText: "",
+                          fillColor: Colors.white,
+                          filled: true,
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide(
+                              color: ThemeColor.colorFFD9D5D5,
+                            ),
+                          ),
+                          focusColor: Colors.transparent,
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide(
+                              color: ThemeColor.colorFFD9D5D5,
+                            ),
+                          ),
+                          hintText: hintText,
+                          hintStyle:
+                              TextStyle(color: ThemeColor.colorFF999999)),
+                      cursorHeight: 20,
+                    ),
+                    _buildPublishArea(),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
+          );
+        });
       },
     );
   }

@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import '../../../main.dart';
 import '../viewmodel/doctors_view_model.dart';
 import '../model/doctor_circle_entity.dart';
-import 'doctors_detail_widget.dart';
+
 final _colorPanel = {
   '文献专区': ThemeColor.colorFF52C41A,
   '案例解析': ThemeColor.colorFF107BFD,
@@ -29,10 +29,11 @@ class DoctorCircleItemWidget extends StatelessWidget {
     if (color != null) {
       return color;
     }
-    var batch = _colorPanel.entries.toList();
-    var hitColor = batch[Random().nextInt(batch.length)].value;
-    _colorPanel.putIfAbsent(category, () => hitColor);
-    return hitColor;
+    return ThemeColor.colorFF107BFD;
+    // var batch = _colorPanel.entries.toList();
+    // var hitColor = batch[Random().nextInt(batch.length)].value;
+    // _colorPanel.putIfAbsent(category, () => hitColor);
+    // return hitColor;
   }
 
   @override
@@ -100,6 +101,7 @@ class DoctorCircleItemWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: ThemeColor.colorFFF6F6F6,
                     borderRadius: BorderRadius.all(Radius.circular(2))),
+                padding: EdgeInsets.symmetric(horizontal: 4,vertical: 2),
                 child: Text(
                   data?.columnName ?? '',
                   style: TextStyle(
@@ -172,6 +174,6 @@ class DoctorPageState
   @override
   void onItemClicked(DoctorsViewMode model, itemData) {
     Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {'postId': itemData?.postId,'from':'list'},);
+        arguments: {'postId': itemData?.postId,'from':'list','type':'ACADEMIC'});
   }
 }

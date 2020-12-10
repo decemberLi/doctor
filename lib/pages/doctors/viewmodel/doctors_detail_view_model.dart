@@ -1,10 +1,7 @@
-import 'dart:convert';
 
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/provider/view_state_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:path/path.dart';
 
 import '../model/doctor_article_detail_entity.dart';
 
@@ -24,7 +21,11 @@ class DoctorsDetailViewMode extends ViewStateModel {
   void like(int postId) async {
     await dtp.post('/like/post-or-comment',
         params: {'postId': postId}, showLoading: false);
+    if (_detailEntity == null) {
+      return;
+    }
     _detailEntity.likeFlag = true;
+    _detailEntity.likeNum++;
     notifyListeners();
   }
 
@@ -45,7 +46,7 @@ class DoctorsDetailViewMode extends ViewStateModel {
     notifyListeners();
   }
 
-  void postComment(postId, commentId, commentContent) async {
+  postComment(postId, commentId, commentContent) async {
     await dtp.post('/comment/add-comment',
         params: {
           'postId': postId,
@@ -59,4 +60,5 @@ class DoctorsDetailViewMode extends ViewStateModel {
     }
   }
 
+  bool isAcademic() => _detailEntity?.postType == 'ACADEMIC';
 }

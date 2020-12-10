@@ -163,6 +163,6 @@ class GossipNewsPageState
   @override
   void onItemClicked(DoctorsViewMode model, itemData) {
     Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {'postId': itemData?.postId,'from':'list'});
+        arguments: {'postId': itemData?.postId, 'from': 'list', 'type':'GOSSIP'});
   }
 }
