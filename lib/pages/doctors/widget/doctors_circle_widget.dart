@@ -82,6 +82,8 @@ class DoctorCircleItemWidget extends StatelessWidget {
             padding: EdgeInsets.only(top: 8),
             // title
             child: Text(data?.postTitle ?? '',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style:
                     TextStyle(fontSize: 16, color: ThemeColor.colorFF222222)),
           ),
