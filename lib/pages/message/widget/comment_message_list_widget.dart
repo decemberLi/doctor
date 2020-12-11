@@ -60,10 +60,26 @@ class _CommentMessagePageState extends AbstractListPageState<
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('《${data?.messageAbstract ?? ''}》',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: textStyle),
+                    Expanded(
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                                fit: FlexFit.loose,
+                                child: Text('《${data?.messageAbstract ?? ''}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: textStyle)),
+                            Text('》',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: textStyle),
+                          ],
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.only(top: 4),
                       child: Text(data?.messageTitle ?? '',
@@ -99,7 +115,7 @@ class _CommentMessagePageState extends AbstractListPageState<
   @override
   void onItemClicked(SocialMessageListViewModel model, itemData) {
     Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {'postId': itemData?.postId,'from':'msg'});
+        arguments: {'postId': itemData?.postId, 'from': 'msg'});
     model?.messageClicked(itemData.messageId);
   }
 }
