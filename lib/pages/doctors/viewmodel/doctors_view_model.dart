@@ -11,7 +11,7 @@ HttpManager dtp = HttpManager('dtp');
   /// Test case
   print(formatViewCount(0));
   print(formatViewCount(9999));
-  print(formatViewCount(10000));
+  print(formatViewCount(11100));
   print(formatViewCount(10999));
   print(formatViewCount(19999));
   print(formatViewCount(100000));
@@ -35,8 +35,8 @@ String formatViewCount(int count) {
   double w = count / 10000;
   double mainPart = w.floorToDouble();
   double pointPart = ((count % 10000) / 1000).floorToDouble();
-  var pointValue = pointPart > 0 ? '.$pointPart' : '';
-  return '$mainPart$pointValue万阅读';
+  var pointValue = pointPart.toInt() > 0 ? '.${pointPart.toInt()}' : '';
+  return '${mainPart.toInt()}$pointValue万阅读';
 }
 
 class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
