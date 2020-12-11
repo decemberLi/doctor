@@ -4,6 +4,7 @@ import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_detail_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -241,19 +242,19 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                 '点赞',
                 entity?.likeNum ?? 0),
           ),
-          onTap: () {
+          onTap: debounce(() {
             if (entity.likeFlag) {
               EasyLoading.showToast('请坚定你的立场');
               return;
             }
             _model.like(widget.postId);
-          },
+          }),
         ),
         GestureDetector(
           child: Container(
             alignment: Alignment.center,
             margin: EdgeInsets.only(left: 22),
-            child: _operatorWidget('assets/images/comment_normal.png', '评论',
+            child: _operatorWidget('assets/images/comment_normal.png', _hintText(),
                 entity?.commentNum ?? 0),
           ),
           onTap: () {
@@ -271,7 +272,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                 '收藏',
                 null),
           ),
-          onTap: () => _model.collect(widget.postId),
+          onTap: debounce(() => _model.collect(widget.postId)),
         ),
       ],
     );
@@ -348,7 +349,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
               '发表',
               style: TextStyle(color: ThemeColor.primaryColor, fontSize: 16),
             ),
-            onTap: () async {
+            onTap: debounce(() async {
               if (_commentTextEditController.text == null ||
                   _commentTextEditController.text.length == 0) {
                 EasyLoading.showToast('${_hintText()}内容不能为空');
@@ -361,9 +362,12 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
               await _model.postComment(
                   widget.postId, _commentId, _commentTextEditController.text);
               _callJs(_commonResult(bizType: aMap['updateComment']));
-              _commentTextEditController.text = '';
+              setState(() {
+                _commentTextEditController.text = '';
+                _cachedContent = null;
+              });
               Navigator.pop(context);
-            },
+            }),
           ),
         ],
       ),

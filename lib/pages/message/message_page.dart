@@ -253,27 +253,31 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
       margin: EdgeInsets.symmetric(vertical: 12),
-      padding: EdgeInsets.symmetric(horizontal: 76),
       height: 120,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          GestureDetector(
+          Spacer(),
+          Expanded(
+              child: GestureDetector(
             child: _buildMessageIcon(
                 assetPath: 'assets/images/icon_like.png',
                 label: '点赞',
                 unreadMsg: likeCount),
             onTap: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => LikeMessagePage())),
-          ),
-          GestureDetector(
+          )),
+          Spacer(),
+          Expanded(
+              child: GestureDetector(
             child: _buildMessageIcon(
                 assetPath: 'assets/images/icon_comment.png',
                 label: '评论',
                 unreadMsg: commentCount),
             onTap: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => CommentMessagePage())),
-          ),
+          )),
+          Spacer(),
         ],
       ),
     );
