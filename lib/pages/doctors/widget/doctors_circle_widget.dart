@@ -15,8 +15,8 @@ import '../model/doctor_circle_entity.dart';
 
 final _colorPanel = {
   '文献专区': ThemeColor.colorFF52C41A,
-  '案例解析': ThemeColor.colorFF107BFD,
-  '每日一讲': ThemeColor.colorFFFAAD14,
+  '病例解析': ThemeColor.colorFF107BFD,
+  '每日医讲': ThemeColor.colorFFFAAD14,
 };
 class DoctorCircleItemWidget extends StatelessWidget {
 
