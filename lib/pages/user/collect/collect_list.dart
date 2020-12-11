@@ -319,7 +319,7 @@ class _ClooectStudyCell extends StatelessWidget {
                   //设置扭转值
                   transform: Matrix4.rotationZ(-0.9),
                   //设置被旋转的容器
-                  child: typeDecoratedBox("ARTICLE")),
+                  child: typeDecoratedBox(data.resourceType)),
             ),
           ),
         ],
