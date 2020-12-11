@@ -102,6 +102,7 @@ class GossipNewsItemWidget extends StatelessWidget {
             padding: EdgeInsets.only(top: 6),
             child: Text(data?.postContent ?? '',
                 maxLines: 10,
+                overflow: TextOverflow.ellipsis,
                 style:
                     TextStyle(fontSize: 14, color: ThemeColor.colorFF222222)),
           ),
