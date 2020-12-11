@@ -66,7 +66,10 @@ class _CommentMessagePageState extends AbstractListPageState<
                         style: textStyle),
                     Padding(
                       padding: EdgeInsets.only(top: 4),
-                      child: Text(data?.messageTitle ?? '', style: textStyle),
+                      child: Text(data?.messageTitle ?? '',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: textStyle),
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 6),
