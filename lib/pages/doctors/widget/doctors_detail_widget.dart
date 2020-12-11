@@ -254,7 +254,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
           child: Container(
             alignment: Alignment.center,
             margin: EdgeInsets.only(left: 22),
-            child: _operatorWidget('assets/images/comment_normal.png', _hintText(),
+            child: _operatorWidget('assets/images/comment_normal.png', _model.isAcademic() ? '评论' : '讨论',
                 entity?.commentNum ?? 0),
           ),
           onTap: () {
@@ -322,7 +322,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
   _buildPublishArea() {
     var length = _commentContentLength ?? 0;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 12),
       height: 60,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -393,7 +393,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
             child: IntrinsicHeight(
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 22),
+                padding: EdgeInsets.only(left: 8, right: 8, top: 6),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
