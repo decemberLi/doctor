@@ -1,7 +1,9 @@
 import 'dart:ffi';
 
+import 'package:doctor/main.dart';
 import 'package:doctor/pages/doctors/tab_indicator.dart';
 import 'package:doctor/pages/message/model/message_list_entity.dart';
+import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/message/view_model/message_list_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
@@ -10,6 +12,7 @@ import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MessagePromotionList extends StatefulWidget {
@@ -19,96 +22,155 @@ class MessagePromotionList extends StatefulWidget {
   }
 }
 
-class _MessagePromotionListState extends State<MessagePromotionList> {
+class _MessagePromotionListState extends State<MessagePromotionList> with RouteAware {
   final _list = ["学习计划", "互动消息"];
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+  @override
+  void didChangeDependencies() {
+    routeObserver.subscribe(this, ModalRoute.of(context)); //订阅
+    super.didChangeDependencies();
+  }
 
   @override
-  Widget build(BuildContext context) {
+  void didPopNext() async {
+    MessageCenterViewModel model =
+    Provider.of<MessageCenterViewModel>(context, listen: false);
+    await model.initData();
+    super.didPopNext();
+  }
+
+  Widget _content(int leanPlanCount, int interactiveCount) {
     final size = MediaQuery.of(context).size;
     final width = size.width;
-    var content = Scaffold(
+    List<Widget> tabs = [];
+    for (int i = 0; i < _list.length; i++) {
+      var item = _list[i];
+      List<Widget> children = [Text(item)];
+      if ((i == 0 && leanPlanCount > 0) || (i == 1 && interactiveCount > 0)) {
+        var value = Container(
+          padding: EdgeInsets.only(top: 5),
+          alignment: Alignment.topCenter,
+          child: Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.all(
+                Radius.circular(5),
+              ),
+            ),
+          ),
+        );
+        children.add(value);
+      }
+      var widget = Row(
+        children: children,
+      );
+      tabs.add(widget);
+    }
+
+    return Scaffold(
       backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
         title: Text("学术推广"),
         elevation: 0,
       ),
       body: Container(
-          child: Column(
-        children: [
-          Container(
-            width: width,
-            height: 40,
-            child: TabBar(
-              isScrollable: true,
-              indicatorSize: TabBarIndicatorSize.label,
-              tabs: _list.map((e) => Text(e)).toList(),
-              indicator: LinearGradientTabIndicatorDecoration(
-                  borderSide: BorderSide(width: 4.0, color: Colors.white),
-                  insets: EdgeInsets.only(left: 7, right: 7)),
-              labelStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: ThemeColor.colorFF222222,
-                  fontSize: 16),
-              unselectedLabelStyle: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  color: ThemeColor.colorFF444444,
-                  fontSize: 16),
+        child: Column(
+          children: [
+            Container(
+              width: width,
+              height: 40,
+              child: TabBar(
+                isScrollable: true,
+                indicatorSize: TabBarIndicatorSize.label,
+                tabs: tabs,
+                indicator: LinearGradientTabIndicatorDecoration(
+                    borderSide: BorderSide(width: 4.0, color: Colors.white),
+                    insets: EdgeInsets.only(left: 7, right: 7)),
+                labelStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: ThemeColor.colorFF222222,
+                    fontSize: 16),
+                unselectedLabelStyle: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    color: ThemeColor.colorFF444444,
+                    fontSize: 16),
+              ),
             ),
-          ),
-          Container(
-            height: 0.5,
-            color: Color(0xffeeeeee),
-          ),
-          Expanded(
-              child: Container(
-            child: TabBarView(children: [
-              _SubCollectList(
-                  type: "LEAN_PLAN",
-                  itemBuilder: (context, item, model) {
-                    return _MessageStudyCell(
-                      item,
-                      onTap: (data) {
-                        model.mark('${data.messageId}');
-                        setState(() {
-                          item.readed = true;
-                        });
-                        if (data.params == null ||
-                            data.params['learnPlanId'] == null) {
-                          return;
-                        }
-                        Navigator.pushNamed(context, RouteManager.LEARN_DETAIL,
-                            arguments: {
-                              'learnPlanId': data.params['learnPlanId'],
-                            });
-                      },
-                    );
-                  }),
-              _SubCollectList(
-                  type: "INTERACTIVE",
-                  itemBuilder: (context, item, model) {
-                    return _InteractiveCell(
-                      item,
-                      onTap: (data) {
-                        model.mark('${data.messageId}');
-                        setState(() {
-                          item.readed = true;
-                        });
-                        Navigator.of(context).pushNamed(
-                            RouteManager.RESOURCE_DETAIL,
-                            arguments: {
-                              "resourceId": data.params['resourceId'],
-                              "learnPlanId": data.params['learnPlanId'],
-                              'from': 'MESSAGE_CENTER'
-                            });
-                      },
-                    );
-                  }),
-            ]),
-          ))
-        ],
-      )),
+            Container(
+              height: 0.5,
+              color: Color(0xffeeeeee),
+            ),
+            Expanded(
+                child: Container(
+              child: TabBarView(children: [
+                _SubCollectList(
+                    type: "LEAN_PLAN",
+                    itemBuilder: (context, item, model) {
+                      return _MessageStudyCell(
+                        item,
+                        onTap: (data) {
+                          model.mark('${data.messageId}');
+                          setState(() {
+                            item.readed = true;
+                          });
+                          if (data.params == null ||
+                              data.params['learnPlanId'] == null) {
+                            return;
+                          }
+                          Navigator.pushNamed(
+                              context, RouteManager.LEARN_DETAIL,
+                              arguments: {
+                                'learnPlanId': data.params['learnPlanId'],
+                              });
+                        },
+                      );
+                    }),
+                _SubCollectList(
+                    type: "INTERACTIVE",
+                    itemBuilder: (context, item, model) {
+                      return _InteractiveCell(
+                        item,
+                        onTap: (data) {
+                          model.mark('${data.messageId}');
+                          setState(() {
+                            item.readed = true;
+                          });
+                          Navigator.of(context).pushNamed(
+                              RouteManager.RESOURCE_DETAIL,
+                              arguments: {
+                                "resourceId": data.params['resourceId'],
+                                "learnPlanId": data.params['learnPlanId'],
+                                'from': 'MESSAGE_CENTER'
+                              });
+                        },
+                      );
+                    }),
+              ]),
+            ))
+          ],
+        ),
+      ),
     );
-    return DefaultTabController(length: _list.length, child: content);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<MessageCenterViewModel>(
+      builder: (context, model, child) {
+        var leanPlanCount = model?.data?.leanPlanCount ?? 0;
+        var interactiveCount = model?.data?.interactiveCount ?? 0;
+        return DefaultTabController(
+          length: _list.length,
+          child: _content(leanPlanCount, interactiveCount),
+        );
+      },
+    );
   }
 }
 
@@ -116,7 +178,9 @@ class _SubCollectList extends StatefulWidget {
   final Widget Function(BuildContext, MessageListEntity, MessageListModel)
       itemBuilder;
   final String type;
+
   _SubCollectList({@required this.itemBuilder, @required this.type});
+
   @override
   State<StatefulWidget> createState() {
     return _SubCollectState();
@@ -126,7 +190,7 @@ class _SubCollectList extends StatefulWidget {
 class _SubCollectState extends State<_SubCollectList>
     with AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +224,12 @@ class _SubCollectState extends State<_SubCollectList>
       controller: model.refreshController,
       header: ClassicHeader(),
       footer: ClassicFooter(),
-      onRefresh: model.refresh,
+      onRefresh: () async{
+        MessageCenterViewModel centermodel =
+        Provider.of<MessageCenterViewModel>(context, listen: false);
+        await centermodel.initData();
+        model.refresh();
+      },
       onLoading: model.loadMore,
       enablePullUp: true,
       child: child,
@@ -234,7 +303,9 @@ _icon(MessageListEntity entity) {
 class _MessageStudyCell extends StatelessWidget {
   final MessageListEntity data;
   final void Function(MessageListEntity) onTap;
+
   _MessageStudyCell(this.data, {this.onTap});
+
   Widget content() {
     bool alreadyRead = data.readed;
     return Row(
@@ -332,6 +403,7 @@ class _MessageStudyCell extends StatelessWidget {
 class _InteractiveCell extends StatelessWidget {
   final MessageListEntity data;
   final void Function(MessageListEntity) onTap;
+
   _InteractiveCell(this.data, {this.onTap});
 
   Widget content() {

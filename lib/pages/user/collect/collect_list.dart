@@ -6,6 +6,7 @@ import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../doctors/tab_indicator.dart';
 
@@ -40,7 +41,15 @@ class CollectDetailList extends StatelessWidget {
             child: TabBar(
               isScrollable: true,
               indicatorSize: TabBarIndicatorSize.label,
-              tabs: _list.map((e) => Text(e)).toList(),
+              tabs: _list
+                  .map(
+                    (e) => Row(
+                      children: [
+                        Text(e),
+                      ],
+                    ),
+                  )
+                  .toList(),
               indicator: LinearGradientTabIndicatorDecoration(
                   borderSide: BorderSide(width: 4.0, color: Colors.white),
                   insets: EdgeInsets.only(left: 7, right: 7)),
@@ -138,24 +147,37 @@ class _SubCollectList<T> extends StatefulWidget {
 
 class _SubCollectState<T> extends State<_SubCollectList>
     with AutomaticKeepAliveClientMixin {
-  RefreshController _controller = RefreshController(initialRefresh: true);
+  RefreshController _controller = RefreshController(initialRefresh: false);
   List<T> _list = [];
   @override
   bool get wantKeepAlive => true;
+  @override
+  void initState() {
+    _loadingGetData();
+    super.initState();
+  }
+
+  _loadingGetData() async {
+    EasyLoading.show();
+    _firstGetData();
+    EasyLoading.dismiss();
+  }
+
+  _firstGetData() async {
+    var array = await widget.getData(0);
+    if (array.length >= widget.pageSize) {
+      _controller.footerMode.value = LoadStatus.idle;
+    } else {
+      _controller.footerMode.value = LoadStatus.noMore;
+    }
+
+    setState(() {
+      _list = array;
+    });
+  }
 
   void onRefresh() async {
-    try {
-      var array = await widget.getData(0);
-      if (array.length >= widget.pageSize) {
-        _controller.footerMode.value = LoadStatus.idle;
-      } else {
-        _controller.footerMode.value = LoadStatus.noMore;
-      }
-
-      setState(() {
-        _list = array;
-      });
-    } catch (e) {}
+    await _firstGetData();
 
     _controller.headerMode.value = RefreshStatus.completed;
   }
