@@ -103,8 +103,11 @@ class GossipNewsItemWidget extends StatelessWidget {
             child: Text(data?.postContent ?? '',
                 maxLines: 10,
                 overflow: TextOverflow.ellipsis,
-                style:
-                    TextStyle(fontSize: 14, color: ThemeColor.colorFF222222)),
+                style: TextStyle(
+                    fontSize: 14,
+                    color: data.isClicked
+                        ? ThemeColor.colorFFC1C1C1
+                        : ThemeColor.colorFF222222)),
           ),
         ],
       ),
@@ -164,7 +167,12 @@ class GossipNewsPageState
 
   @override
   void onItemClicked(DoctorsViewMode model, itemData) {
+    model.markToNative(itemData?.postId);
     Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {'postId': itemData?.postId, 'from': 'list', 'type':'GOSSIP'});
+        arguments: {
+          'postId': itemData?.postId,
+          'from': 'list',
+          'type': 'GOSSIP'
+        });
   }
 }

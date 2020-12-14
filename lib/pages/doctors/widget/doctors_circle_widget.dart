@@ -18,6 +18,7 @@ final _colorPanel = {
   '病例解析': ThemeColor.colorFF107BFD,
   '每日医讲': ThemeColor.colorFFFAAD14,
 };
+
 class DoctorCircleItemWidget extends StatelessWidget {
 
   final DoctorCircleEntity data;
@@ -82,10 +83,12 @@ class DoctorCircleItemWidget extends StatelessWidget {
             padding: EdgeInsets.only(top: 8),
             // title
             child: Text(data?.postTitle ?? '',
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style:
-                    TextStyle(fontSize: 16, color: ThemeColor.colorFF222222)),
+                TextStyle(fontSize: 16,
+                    color: data.isClicked ? ThemeColor.colorFFC1C1C1:
+                    ThemeColor.colorFF222222)),
           ),
           Padding(
             padding: EdgeInsets.only(top: 6, bottom: 8),
@@ -93,7 +96,7 @@ class DoctorCircleItemWidget extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style:
-                    TextStyle(fontSize: 14, color: ThemeColor.colorFF999999)),
+                TextStyle(fontSize: 14, color: data.isClicked ? ThemeColor.colorFFC1C1C1:ThemeColor.colorFF999999)),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -103,7 +106,7 @@ class DoctorCircleItemWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: ThemeColor.colorFFF6F6F6,
                     borderRadius: BorderRadius.all(Radius.circular(2))),
-                padding: EdgeInsets.symmetric(horizontal: 4,vertical: 2),
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                 child: Text(
                   data?.columnName ?? '',
                   style: TextStyle(
@@ -155,13 +158,14 @@ class DoctorPageState
   }
 
   @override
-  Widget divider(BuildContext context, int index) => Divider(
+  Widget divider(BuildContext context, int index) =>
+      Divider(
         color: ThemeColor.colorFFF3F5F8,
         height: 12,
       );
 
   @override
-  DoctorsViewMode getModel() => DoctorsViewMode(type:'ACADEMIC');
+  DoctorsViewMode getModel() => DoctorsViewMode(type: 'ACADEMIC');
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) =>
@@ -175,7 +179,12 @@ class DoctorPageState
 
   @override
   void onItemClicked(DoctorsViewMode model, itemData) {
+    model.markToNative(itemData?.postId);
     Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {'postId': itemData?.postId,'from':'list','type':'ACADEMIC'});
+        arguments: {
+          'postId': itemData?.postId,
+          'from': 'list',
+          'type': 'ACADEMIC'
+        });
   }
 }

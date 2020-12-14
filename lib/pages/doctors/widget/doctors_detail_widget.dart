@@ -296,7 +296,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
             Container(
               margin: EdgeInsets.only(left: 2),
               child: Text(
-                '${number ?? ''}',
+                '${number > 99 ? '99+':number}',
                 style: TextStyle(fontSize: 10, color: ThemeColor.colorFF999999),
               ),
             )
