@@ -62,7 +62,7 @@ _buildGossipAvatar(String name) {
     width: 40,
     height: 40,
     decoration: BoxDecoration(
-        color: ThemeColor.colorFFf25CDA1,
+        color: ThemeColor.colorFF62C1FF,
         borderRadius: BorderRadius.circular(20)),
     child: Text(
       firstText,
