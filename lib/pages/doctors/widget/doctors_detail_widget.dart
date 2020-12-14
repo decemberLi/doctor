@@ -116,7 +116,10 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(title: Text('帖子详情'), elevation: 0),
+      appBar: AppBar(
+          title: Text('帖子详情',
+              style: TextStyle(fontSize: 17, color: ThemeColor.colorFF000000)),
+          elevation: 0),
       body: ProviderWidget<DoctorsDetailViewMode>(
         model: _model,
         builder: (context, model, child) {
@@ -234,7 +237,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
         GestureDetector(
           child: Container(
             alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 22),
+            margin: EdgeInsets.only(left: 24),
             child: _operatorWidget(
                 entity?.likeFlag ?? false
                     ? 'assets/images/liked_checked.png'
@@ -253,9 +256,9 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
         GestureDetector(
           child: Container(
             alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 22),
-            child: _operatorWidget('assets/images/comment_normal.png', _model.isAcademic() ? '评论' : '讨论',
-                entity?.commentNum ?? 0),
+            margin: EdgeInsets.only(left: 36),
+            child: _operatorWidget('assets/images/comment_normal.png',
+                _model.isAcademic() ? '评论' : '讨论', entity?.commentNum ?? 0),
           ),
           onTap: () {
             _callJs(_commonResult(bizType: aMap['scrollToCommentArea']));
@@ -264,7 +267,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
         GestureDetector(
           child: Container(
             alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 22),
+            margin: EdgeInsets.only(left: 36),
             child: _operatorWidget(
                 entity?.favoriteFlag ?? false
                     ? 'assets/images/collect_checked.png'
@@ -280,8 +283,9 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
 
   _operatorWidget(String asstPath, String text, int number) {
     return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
+        alignment: AlignmentDirectional.topEnd,
+        overflow: Overflow.visible,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -293,11 +297,18 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
             ],
           ),
           if (number != null)
-            Container(
-              margin: EdgeInsets.only(left: 2),
-              child: Text(
-                '${number > 99 ? '99+':number}',
-                style: TextStyle(fontSize: 10, color: ThemeColor.colorFF999999),
+            Positioned(
+              right: -20,
+              top: -1,
+              child: Container(
+                width: 18,
+                height: 14,
+                margin: EdgeInsets.only(left: 2),
+                child: Text(
+                  '${number > 99 ? '99+' : number}',
+                  style:
+                      TextStyle(fontSize: 10, color: ThemeColor.colorFF999999),
+                ),
               ),
             )
         ],
