@@ -50,7 +50,7 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
     return ListView.separated(
       controller: _controller,
       itemCount: _model.size,
-      padding: EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.only(top: 12),
       itemBuilder: (context, index) {
         var model = _model.list[index];
         return GestureDetector(
