@@ -32,7 +32,7 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
               controller: _model.refreshController,
               enablePullUp: !_model.isError,
               header: ClassicHeader(),
-              footer: ClassicFooter(),
+              footer: ClassicFooter(noDataText: noMoreDataText(),),
               onRefresh: _model.refresh,
               onLoading: _model.loadMore,
               child: bodyWidget(),
@@ -107,4 +107,6 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
   }
 
   void onItemClicked(M model, itemData) {}
+
+  String noMoreDataText() => null;
 }

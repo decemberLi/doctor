@@ -187,4 +187,7 @@ class DoctorPageState
           'type': 'ACADEMIC'
         });
   }
+
+  @override
+  String noMoreDataText() => '已显示全部帖子';
 }

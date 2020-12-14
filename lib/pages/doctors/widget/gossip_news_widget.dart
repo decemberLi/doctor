@@ -175,4 +175,7 @@ class GossipNewsPageState
           'type': 'GOSSIP'
         });
   }
+  
+  @override
+  String noMoreDataText() => '已显示全部帖子';
 }

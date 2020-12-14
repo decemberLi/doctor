@@ -366,6 +366,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                 _commentTextEditController.text = '';
                 _cachedContent = null;
               });
+              _commentContentLength = 0;
               Navigator.pop(context);
             }),
           ),
