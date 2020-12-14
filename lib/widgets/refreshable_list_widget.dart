@@ -26,8 +26,8 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
       child: Consumer<M>(
         builder: (context, value, child) {
           return Container(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             color: ThemeColor.colorFFF3F5F8,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: SmartRefresher(
               controller: _model.refreshController,
               enablePullUp: !_model.isError,
@@ -50,6 +50,7 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
     return ListView.separated(
       controller: _controller,
       itemCount: _model.size,
+      padding: EdgeInsets.symmetric(vertical: 12),
       itemBuilder: (context, index) {
         var model = _model.list[index];
         return GestureDetector(
