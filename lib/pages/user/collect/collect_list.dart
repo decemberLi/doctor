@@ -201,6 +201,7 @@ class _SubCollectState<T> extends State<_SubCollectList>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Widget child = Center(
       child: ViewStateEmptyWidget(
         message: widget.emptyMsg,
