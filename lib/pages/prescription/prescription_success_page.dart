@@ -1,4 +1,3 @@
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
@@ -10,6 +9,7 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http_manager/manager.dart';
 
 class PrescriptionSuccessPage extends StatefulWidget {
   @override
@@ -200,7 +200,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
           Navigator.popUntil(context, ModalRoute.withName(RouteManager.HOME));
         } else {
           backfocus = backfocus + 1;
-          LoginInfoModel loginInfo = SessionManager.getLoginInfo();
+          LoginInfoModel loginInfo = LoginInfoModel.shared;
           if (loginInfo.modifiedPassword != true) {
             bool go = await _showGoToModifyPasswordDialog();
             if (!go) {

@@ -1,7 +1,7 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/login_footer.dart';
+import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/pages/login/service.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -12,6 +12,8 @@ import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:http_manager/manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'common_style.dart';
 
@@ -27,6 +29,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   String _mobile, _captcha;
   int subscribeId;
   bool _agree = false;
+  String _lastPhone;
 
   Future _submit() async {
     final form = _formKey.currentState;
@@ -39,7 +42,8 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
       var response = await loginByCaptCha(
           {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
       if (response is! DioError) {
-        SessionManager.loginHandler(response);
+        LoginInfoModel.shared = LoginInfoModel.fromJson(response);
+        SessionManager.shared.session = LoginInfoModel.shared.ticket;
       }
     }
   }
@@ -97,7 +101,18 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
         }
       },
     );
+    getLastPhone();
     super.initState();
+  }
+
+  getLastPhone() async {
+    var sp = await SharedPreferences.getInstance();
+    var phone = sp.get(LAST_PHONE);
+    if (phone is String){
+      setState(() {
+        _lastPhone = phone;
+      });
+    }
   }
 
   @override
@@ -162,7 +177,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                           autofocus: false,
                           maxLength: 11,
                           initialValue:
-                              SessionManager().sp.getString(LAST_PHONE) ?? '',
+                              _lastPhone ?? '',
                           decoration: InputDecoration(
                             hintText: '请输入手机号',
                             counterText: '',

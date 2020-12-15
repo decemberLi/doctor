@@ -1,10 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:doctor/http/result_data.dart';
-import 'package:doctor/http/servers.dart';
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 
 Map<String, String> msgMap = {
   'networkError': '网络异常，请稍后再试',
@@ -20,6 +18,46 @@ List<String> authFailCodes = ['100103'];
 
 /// 鉴权错误
 List<String> authErrorCodes = ['00010001'];
+
+
+const HOST_MAP = {
+  'dev': 'https://gateway-dev.e-medclouds.com',
+  // 'dev': 'http://192.168.1.93:8860',
+  'qa': 'https://gateway-dev.e-medclouds.com',
+  'prod': 'https://gateway.e-medclouds.com',
+};
+
+const system = 'doctor';
+const client = 'mobile';
+
+final host = HOST_MAP['dev'];
+
+final servers = {
+  'server': '$host/medclouds-server/$system/$client',
+  'ucenter': '$host/medclouds-ucenter/$system/$client',
+  'foundation': '$host/medclouds-foundation/$client',
+  'foundationWeb': '$host/medclouds-foundation/web',
+  'foundationSystem': '$host/medclouds-foundation/$system/$client',
+  'foundationClient': '$host/medclouds-foundation/$client',
+  'developer': '$host/medclouds-foundation/developer/$client',
+  'dtp': '$host/medclouds-dtp/$system/$client',
+  'sso': '$host/medclouds-ucenter/$client',
+  'uCenterCommon': '$host',
+};
+
+/// 通用请求返回结果封装
+class ResultData<T> {
+  final String status;
+  final String errorCode;
+  final String errorMsg;
+  final T content;
+  ResultData(this.status, this.errorCode, this.errorMsg, this.content);
+  ResultData.fromJson(Map<String, dynamic> json)
+      : status = json['status'],
+        errorCode = json['errorCode'],
+        errorMsg = json['errorMsg'],
+        content = json['content'];
+}
 
 /// HTTP请求类
 class HttpManager {
@@ -47,7 +85,7 @@ class HttpManager {
             options.headers['_greyVersion'] = '2.0';
             Map extra = options.extra;
             if (!extra['ignoreSession']) {
-              String session = SessionManager().getSession();
+              String session = SessionManager.shared.session;
               if (session == null) {
                 // 锁定所有请求
                 // dio.lock();
@@ -72,14 +110,14 @@ class HttpManager {
                 // 会话过期，重新登录
                 if (outLoginCodes.indexOf(data.errorCode) != -1) {
                   EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-                  SessionManager.loginOutHandler();
+                  SessionManager.shared.session = null;
                   return dio.reject(response);
                 }
                 // 需更新session
                 if (authFailCodes.indexOf(data.errorCode) != -1) {
                   // TODO: 更新session
                   EasyLoading.showToast(data.errorMsg ?? msgMap['dataError']);
-                  SessionManager.loginOutHandler();
+                  SessionManager.shared.session = null;
                   return dio.reject(response);
                 }
                 // 错误

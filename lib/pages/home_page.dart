@@ -1,5 +1,4 @@
 import 'package:doctor/common/event/event_model.dart';
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
@@ -15,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:http_manager/manager.dart';
 
 import '../main.dart';
 import 'doctors/doctors_home.dart';
@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage>
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                SessionManager.loginOutHandler();
+                SessionManager.shared.session = null;
               },
             ),
             FlatButton(

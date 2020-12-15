@@ -1,6 +1,6 @@
 import 'package:common_utils/common_utils.dart';
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/login_footer.dart';
+import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/pages/login/service.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -11,6 +11,8 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:http_manager/manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'common_style.dart';
 
@@ -25,6 +27,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
   String _mobile, _password;
   bool _agree = false;
   int subscribeId;
+  String lastPhone;
 
   Future _submit() async {
     final form = _formKey.currentState;
@@ -37,7 +40,8 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
 
       var response = await loginByPassword(
           {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
-      SessionManager.loginHandler(response);
+      LoginInfoModel.shared = LoginInfoModel.fromJson(response);
+      SessionManager.shared.session = LoginInfoModel.shared.ticket;
     }
   }
 
@@ -52,9 +56,18 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
         }
       },
     );
+    getLastPhone();
     super.initState();
   }
-
+  getLastPhone() async {
+    var sp = await SharedPreferences.getInstance();
+    var phone = sp.get(LAST_PHONE);
+    if (phone is String) {
+      setState(() {
+        lastPhone = phone;
+      });
+    }
+  }
   @override
   void dispose() {
     KeyboardVisibilityNotification().removeListener(subscribeId);
@@ -102,7 +115,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                             autofocus: false,
                             maxLength: 11,
                             initialValue:
-                                SessionManager().sp.getString(LAST_PHONE) ?? '',
+                                lastPhone ?? '',
                             decoration: InputDecoration(
                               hintText: '请输入手机号',
                               counterText: '',

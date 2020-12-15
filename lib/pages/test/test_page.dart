@@ -1,8 +1,8 @@
 import 'package:doctor/http/http_manager.dart';
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
+import 'package:http_manager/session_manager.dart';
 
 class TestPage extends StatefulWidget {
   TestPage({Key key}) : super(key: key);
@@ -24,7 +24,7 @@ class _TestPageState extends State<TestPage> {
         },
         ignoreSession: true);
     print('ticket:${response['ticket']}');
-    SessionManager().setSession(response['ticket']);
+    SessionManager.shared.session = response['ticket'];
   }
 
   void getUserInfo() async {
@@ -50,7 +50,6 @@ class _TestPageState extends State<TestPage> {
 
   @override
   Widget build(BuildContext context) {
-    SessionManager();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -66,7 +65,7 @@ class _TestPageState extends State<TestPage> {
             AceButton(onPressed: login, text: '登录'),
             AceButton(
                 onPressed: () {
-                  SessionManager.loginOutHandler();
+                  SessionManager.shared.session = null;
                 },
                 text: '退出登录'),
             AceButton(onPressed: getUserInfo, text: '获取用户信息'),

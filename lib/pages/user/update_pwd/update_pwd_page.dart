@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:doctor/http/session_manager.dart';
+import 'package:http_manager/manager.dart';
 import 'dart:async';
 import 'service.dart';
 import 'common_style.dart';
@@ -31,7 +31,7 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
         changePassword({'oldPassword': oldPassword, 'newPassword': newPassword})
             .then((response) {
           if (response is! DioError) {
-            SessionManager.loginOutHandler();
+            SessionManager.shared.session = null;
             const timeout = const Duration(seconds: 1);
             Timer(timeout, () {
               EasyLoading.showToast('密码更新成功，请重新登录');

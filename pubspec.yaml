@@ -113,6 +113,10 @@ dependencies:
   path: ^1.7.0
   permission_handler: ^5.0.1+1
   event_bus: ^1.1.1
+  http_manager:
+    git:
+      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/http_manager.git
+      ref: 1.0.0
 
 dev_dependencies:
   flutter_test:
