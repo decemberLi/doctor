@@ -298,10 +298,10 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
           ),
           if (number != null)
             Positioned(
-              right: -20,
+              right: -26,
               top: -1,
               child: Container(
-                width: 18,
+                width: 25,
                 height: 14,
                 margin: EdgeInsets.only(left: 2),
                 child: Text(
