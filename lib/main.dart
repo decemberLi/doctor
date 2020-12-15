@@ -71,18 +71,19 @@ class MyApp extends StatelessWidget {
     visualDensity: VisualDensity.adaptivePlatformDensity,
     disabledColor: ThemeColor.secondaryGeryColor,
   );
-  MyApp(this.showGuide){
+
+  MyApp(this.showGuide) {
     SessionManager.shared.addListener(() {
       var context = NavigationService().navigatorKey.currentContext;
       if (SessionManager.shared.isLogin) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => HomePage()),
-              (route) => false,
+          (route) => false,
         );
       } else {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => LoginByCaptchaPage()),
-              (route) => false,
+          (route) => false,
         );
       }
     });
@@ -107,9 +108,12 @@ class MyApp extends StatelessWidget {
           const Locale('zh'),
         ],
         navigatorKey: NavigationService().navigatorKey,
-        routes: {...RouteManager.routes, "/basicHome": (context) => Home()},
-        initialRoute:
-            showGuide['showGuide'] ? RouteManager.GUIDE : "/basicHome",
+        routes: RouteManager.routes,
+        initialRoute: showGuide['showGuide']
+            ? RouteManager.GUIDE
+            : SessionManager.shared.isLogin
+                ? RouteManager.HOME
+                : RouteManager.LOGIN_CAPTCHA,
         builder: (context, child) {
           return FlutterEasyLoading(child: child);
         },
@@ -119,26 +123,5 @@ class MyApp extends StatelessWidget {
       providers: providers,
       child: content,
     );
-  }
-}
-
-class Home extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _HomeState();
-  }
-}
-
-class _HomeState extends State<Home> {
-  @override
-  initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SessionManager.shared.isLogin
-        ? HomePage()
-        : LoginByCaptchaPage();
   }
 }
