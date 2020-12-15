@@ -133,12 +133,14 @@ class _SubCollectList<T> extends StatefulWidget {
   final String emptyMsg;
   final Future<List<T>> Function(int) getData;
   final int pageSize;
+
   _SubCollectList({
     @required this.itemBuilder,
     this.emptyMsg = "还没有数据哦~",
     this.getData,
     this.pageSize = 10,
   });
+
   @override
   State<StatefulWidget> createState() {
     return _SubCollectState<T>();
@@ -149,8 +151,10 @@ class _SubCollectState<T> extends State<_SubCollectList>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller = RefreshController(initialRefresh: false);
   List<T> _list = [];
+
   @override
   bool get wantKeepAlive => true;
+
   @override
   void initState() {
     _loadingGetData();
@@ -231,7 +235,9 @@ class _SubCollectState<T> extends State<_SubCollectList>
 
 class _ClooectStudyCell extends StatelessWidget {
   final CollectResources data;
+
   _ClooectStudyCell(this.data);
+
   Widget typeDecoratedBox(String type) {
     Color rendColor = ThemeColor.color72c140;
     if (type == 'VIDEO') {
@@ -379,7 +385,9 @@ class _ClooectStudyCell extends StatelessWidget {
 
 class _DoctorTimeLineCell extends StatelessWidget {
   final CollectTimeLineResources data;
+
   _DoctorTimeLineCell(this.data);
+
   Widget typeDecoratedBox(String type) {
     Color rendColor = ThemeColor.color72c140;
     String name = MAP_RESOURCE_TYPE[type];
@@ -415,14 +423,29 @@ class _DoctorTimeLineCell extends StatelessWidget {
   Widget content() {
     String name;
     Widget head;
+    Color headColor = Color(0xFF62C1FF);
     // ACADEMIC-学术圈，GOSSIP-八卦圈
     if (data.postType == "ACADEMIC") {
       name = data.postUserName ?? "匿名";
-      head = ImageWidget(
-        url: data.postUserHeader ?? "",
-        width: 20,
-        height: 20,
-      );
+      headColor = Color(0xffB8D1E2);
+      if (data.postUserHeader == null) {
+        head = Container(
+          width: 20,
+          height: 20,
+          alignment: Alignment.center,
+          child: Image.asset(
+            "assets/images/doctorAva.png",
+            width: 18,
+            height: 18,
+          ),
+        );
+      } else {
+        head = ImageWidget(
+          url: data.postUserHeader ?? "",
+          width: 20,
+          height: 20,
+        );
+      }
     } else {
       name = data.anonymityName;
       head = Text(
@@ -450,7 +473,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
                     height: 20,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Color(0xFF62C1FF),
+                      color: headColor,
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                   ),
