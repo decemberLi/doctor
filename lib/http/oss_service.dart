@@ -3,6 +3,8 @@ import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/model/oss_policy.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/foundation.dart';
 
 /// 上传服务
 class OssService {
@@ -14,8 +16,7 @@ class OssService {
   }
 
   static Future getFile(params) async {
-    var data = _instance._foundation
-        .post('/ali-oss/tmp-url-batch', params: params, showLoading: false);
+    var data = API.shared.foundation.aliTmpURLBatch(params);
     return data;
   }
 
@@ -23,14 +24,12 @@ class OssService {
 
   Dio _dio = Dio();
 
-  HttpManager _foundation = HttpManager('foundation');
-
   OssService._internal() {
     // _querySignature();
   }
 
   _querySignature() async {
-    var result = await _foundation.post('/ali-oss/policy');
+    var result = await API.shared.foundation.aliossPolicy();
     _policy = OssPolicy.fromJson(result);
   }
 
@@ -79,7 +78,7 @@ class OssService {
   }
 
   _saveFile(Map<String, dynamic> param) async {
-    var result = await _foundation.post('/ali-oss/save', params: param);
+    var result = await API.shared.foundation.aliossSave(param);
     return OssFileEntity.fromJson(result);
   }
 }

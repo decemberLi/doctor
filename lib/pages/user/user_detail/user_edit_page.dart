@@ -2,8 +2,8 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
-
-import '../service.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/ucenter.dart';
 
 final uploadData = {
   '姓名': 'doctorName',
@@ -96,7 +96,7 @@ class _UserEditPageState extends State<UserEditPage> {
               if (widget.editWay == 'edit') editWidget(),
               AceButton(
                 onPressed: () {
-                  updateUserInfo({uploadData[widget.lable]: dataText.text})
+                  API.shared.ucenter.updateUserInfo({uploadData[widget.lable]: dataText.text})
                       .then((res) {
                     if (res['status'] == 'ERROR') {
                       EasyLoading.showToast(res['errorMsg']);

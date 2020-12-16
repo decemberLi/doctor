@@ -41,4 +41,27 @@ class UCenter extends SubAPI {
   queryDoctorVerifyInfo()async => normalPost("/personal/query-doctor-verify-info");
 
   commitDoctorVerifyInfo(params)async => normalPost("/personal/commit-doctor-verify-info",params: params);
+
+  changePassword(params) async => normalPost('/user/change-pwd',params: params);
+
+  // 获取基本信息
+  getBasicData() async{
+    return normalPost('/personal/query-doctor-detail');
+  }
+
+// 患者和收藏数量
+  getBasicNum() async{
+    return normalPost('/personal/query-favorite-and-patient-number',);
+  }
+
+  updateUserInfo(params) async{
+    return normalPost('/personal/edit-doctor-info',
+        params: params,);
+  }
+
+// 修改头像
+  updateHeadPic(params) async {
+    return normalPost('/personal/change-head-pic',
+        params: params, );
+  }
 }
