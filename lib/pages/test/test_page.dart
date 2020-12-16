@@ -1,5 +1,3 @@
-import 'package:doctor/http/http_manager.dart';
-import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/session_manager.dart';

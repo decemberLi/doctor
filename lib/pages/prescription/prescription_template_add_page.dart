@@ -1,6 +1,5 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
 import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';

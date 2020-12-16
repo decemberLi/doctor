@@ -1,4 +1,3 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/http/dtp.dart';

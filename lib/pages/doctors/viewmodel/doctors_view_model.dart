@@ -1,4 +1,3 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/provider/refreshable_view_state_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';

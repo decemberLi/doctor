@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/model/oss_policy.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';

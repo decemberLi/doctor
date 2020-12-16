@@ -1,6 +1,4 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/patient/model/patient_model.dart';
-import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:doctor/http/ucenter.dart';
