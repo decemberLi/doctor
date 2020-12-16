@@ -29,17 +29,4 @@ class AppRepository {
     return null;
   }
 
-  static Future<dynamic> queryDictionary() async {
-    Map<String, dynamic> param = {
-      'pn': 1,
-      'ps': 10,
-      'code': 'ios_app_store',
-      'type': 'doctor'
-    };
-    var result = await developer.post('/dict/list-data-dict', params: param);
-    if (result != null && result['records'] != null && result['records'].length == 1) {
-      return result['records'][0]['value'];
-    }
-    return null;
-  }
 }
