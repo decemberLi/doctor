@@ -5,26 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/doctor_circle_entity.dart';
 import '../model/doctor_article_detail_entity.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/dtp.dart';
 
-HttpManager dtp = HttpManager('dtp');
-
-/*
-  /// Test case
-  print(formatViewCount(0));
-  print(formatViewCount(9999));
-  print(formatViewCount(11100));
-  print(formatViewCount(10999));
-  print(formatViewCount(19999));
-  print(formatViewCount(100000));
-  print(formatViewCount(100100));
-  print(formatViewCount(109000));
-  print(formatViewCount(999999));
-  print(formatViewCount(1000000));
-  print(formatViewCount(1001000));
-  print(formatViewCount(1009000));
-  print(formatViewCount(10091000));
-  print(formatViewCount(1009100000));
- */
 String formatViewCount(int count) {
   if (count == null) {
     return '';
@@ -63,9 +46,8 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
 
   @override
   Future<List> loadData({int pageNum}) async {
-    var list = await dtp.post('/post/list',
-        params: {'postType': this.type, 'ps': 20, 'pn': pageNum},
-        showLoading: false);
+    var list = await API.shared.dtp.postList(
+        {'postType': this.type, 'ps': 20, 'pn': pageNum},);
     List posts = list['records']
         .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
         .toList();
@@ -100,19 +82,19 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   }
 
   Future<DoctorArticleDetailEntity> queryDetail(int postId) async {
-    var result = await dtp.post('/post/query', params: {'postId': postId});
+    var result = await API.shared.dtp.postQuery(  {'postId': postId});
     return Future.value(DoctorArticleDetailEntity.fromJson(result));
   }
 
   Future<bool> like(int postId) async {
-    await dtp.post('/like/post-or-comment',
-        params: {'postId': postId}, showLoading: false);
+    await API.shared.dtp.postLike(
+        {'postId': postId}, );
     return Future.value(true);
   }
 
   Future<bool> collect(int postId) async {
-    await dtp.post('/post/favorite',
-        params: {'postId': postId}, showLoading: false);
+    await API.shared.dtp.postFavorite(
+         {'postId': postId});
     return Future.value(true);
   }
 }

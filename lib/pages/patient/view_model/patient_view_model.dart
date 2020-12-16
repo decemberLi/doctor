@@ -1,16 +1,18 @@
 import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/patient/model/patient_model.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
-import 'package:doctor/pages/patient/service/service.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
+import 'package:doctor/http/ucenter.dart';
+import 'package:doctor/http/dtp.dart';
+import 'package:http_manager/api.dart';
 
 class PatientListViewModel extends ViewStateRefreshListModel {
   String patientName;
   PatientListViewModel(this.patientName);
   @override
   Future<List<PatientModel>> loadData({int pageNum}) async {
-    var list = await loadPatientList(
+    var list = await API.shared.ucenter.loadPatientList(
         {'ps': 10, 'pn': pageNum, 'patientName': patientName});
     return list['records']
         .map<PatientModel>((item) => PatientModel.fromJson(item))
@@ -22,7 +24,7 @@ class PatientListViewModel extends ViewStateRefreshListModel {
     int patientUserId,
   }) async {
     try {
-      var res = await bindPrescriptionService({
+      var res = await API.shared.dtp.bindPrescriptionService({
         'prescriptionNo': prescriptionNo,
         'patientUserId': patientUserId,
       });
@@ -52,13 +54,13 @@ class PatientDetailModel extends ViewStateRefreshListModel {
   }
 
   Future<PatientModel> loadPatientDetail() async {
-    var data = await loadPatientDetailService(this.patientUserId);
+    var data = await API.shared.ucenter.loadPatientDetailService(this.patientUserId);
     return PatientModel.fromJson(data);
   }
 
   @override
   Future<List<PrescriptionModel>> loadData({int pageNum}) async {
-    var list = await loadPatientPrescriptionList({
+    var list = await API.shared.dtp.loadPatientPrescriptionList({
       'patientUserId': this.patientUserId,
       'ps': 10,
       'pn': pageNum,

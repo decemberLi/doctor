@@ -18,8 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
-
-import '../service.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/foundation.dart';
 import 'comment/service.dart';
 
 class ResourceDetailPage extends StatefulWidget {
@@ -444,7 +444,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     }
     //需提交代码
     if (content != null) {
-      feedbackService({
+      API.shared.foundation.getFeedbackInfo({
         'learnPlanId': widget.learnPlanId,
         'resourceId': widget.resourceId,
         'feedback': content,
@@ -741,7 +741,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     setState(() {
       showFeedback = true;
     });
-    getFeedbackInfo({'businessArea': 'ACADEMIC_PROMOTION'}).then((res) {
+    API.shared.foundation.getFeedbackInfo({'businessArea': 'ACADEMIC_PROMOTION'}).then((res) {
       setState(() {
         _feedbackData = [
           {

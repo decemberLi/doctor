@@ -4,8 +4,8 @@ import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
-HttpManager http = HttpManager('dtp');
+import 'package:doctor/http/dtp.dart';
+import 'package:http_manager/manager.dart';
 
 class MedicationViewModel extends ViewStateRefreshListModel<DrugModel> {
   List<DrugModel> cartList = [];
@@ -35,7 +35,7 @@ class MedicationViewModel extends ViewStateRefreshListModel<DrugModel> {
     List<DrugModel> list = [];
     try {
       var data =
-          await http.post('/drug/list', params: {'ps': 10, 'pn': pageNum});
+          await API.shared.dtp.drugList({'ps': 10, 'pn': pageNum});
       list = data['records']
           .map<DrugModel>((item) => DrugModel.fromJson(item))
           .toList();
@@ -116,9 +116,8 @@ class MedicationDetailViewModel extends ViewStateModel {
 
   /// 获取处方详情
   Future<DrugModel> loadData() async {
-    var res = await http.post(
-      '/drug/query',
-      params: {
+    var res = await API.shared.dtp.drugQuery(
+      {
         'drugId': this.drugId,
       },
     );

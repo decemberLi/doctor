@@ -5,15 +5,33 @@ extension serverAPI on API {
   Server get server => Server();
 }
 
-class Server {
-  String get _host => API.shared.defaultHost;
+class Server extends SubAPI {
 
-  String get _middle =>
+  String get middle =>
       "/medclouds-server/${API.shared.defaultSystem}/${API.shared.defaultClient}";
 
-  favoriteList(int page,{int ps = 10}) async {
-    var url = _host + _middle + "/favorite/list";
-    var result = await HttpManager.shared.post(url,params: {'pn':page,'ps':ps});
-    return result;
+  favoriteList(int page, {int ps = 10}) async =>
+      await normalPost("/favorite/list", params: {'pn': page, 'ps': ps});
+
+  getPlanCount(parmas) async => await normalPost(
+        "/learn-plan/status-count",
+        params: parmas,
+      );
+
+  /// 上传反馈信息
+  feedbackService(params) {
+    return normalPost(
+      '/learn-resource/feedback',
+      params: params,
+    );
   }
+
+  /// 上传讲课视频
+  addLectureSubmit(params) {
+    return normalPost(
+      '/doctor-lecture/submit',
+      params: params,
+    );
+  }
+
 }

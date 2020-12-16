@@ -1,5 +1,4 @@
 import 'package:doctor/pages/login/model/login_info.dart';
-import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_qr_code.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -9,6 +8,7 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:doctor/http/dtp.dart';
 import 'package:http_manager/manager.dart';
 
 class PrescriptionSuccessPage extends StatefulWidget {
@@ -173,7 +173,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                   text: '发给随诊患者',
                   onPressed: () async {
                     var check =
-                        await checkPrescriptionBeforeBind(prescriptionNo);
+                        await API.shared.dtp.checkPrescriptionBeforeBind(prescriptionNo);
                     if (check) {
                       Navigator.of(context).pushNamed(
                         RouteManager.PATIENT,
