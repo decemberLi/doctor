@@ -102,4 +102,7 @@ class Server extends SubAPI {
   learnPlanList(params) async => normalPost('/learn-plan/list',params: params);
 
   learnPlanDetail(params) async => normalPost('/learn-plan/detail',params: params);
+  learnPlanUnSubmitNum(params) async => normalPost('/learn-plan/un-submit-num',params: params);
+
+  commentList(params) async => normalPost('/comment/list',params: params);
 }
