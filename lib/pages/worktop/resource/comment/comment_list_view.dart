@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:doctor/pages/worktop/resource/comment/service.dart';
 import 'package:doctor/pages/worktop/resource/model/comment_list_model.dart';
 import 'package:doctor/pages/worktop/resource/view_model/comment_view_model.dart';
 import 'package:doctor/provider/view_state_widget.dart';
@@ -12,6 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:doctor/http/server.dart';
+import 'package:http_manager/manager.dart';
 
 class ShowCommentItems extends StatefulWidget {
   final CommentListItem item;
@@ -326,7 +327,7 @@ class _CommentListPageState extends State<CommentListPage>
       EasyLoading.showToast('评论字数超过限制');
       return;
     }
-    sendComment({
+    API.shared.server.sendComment({
       'resourceId': widget.resourceId,
       'learnPlanId': widget.learnPlanId,
       'commentContent': commentContent,

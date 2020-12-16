@@ -34,4 +34,72 @@ class Server extends SubAPI {
     );
   }
 
+  resourceDetail(params) async => normalPost('/resource/detail',params: params);
+
+  favoriteDetail(params) async => normalPost('/favorite/detail',params: params);
+  // 发表评论
+  sendComment(params) async{
+    print(params);
+    return normalPost(
+      '/comment/add',
+      params: params,
+    );
+  }
+  doctorLectureDetail(params) async => normalPost('/doctor-lecture/detail',params: params);
+
+  /// 提交学习计划
+  Future learnSubmit(params) async {
+    return await normalPost('/learn-plan/submit', params: params);
+  }
+
+// 提交问卷
+  submitQuestion(params) {
+    print('调用接口$params');
+    return normalPost(
+      '/submit/question',
+      params: params,
+    );
+  }
+
+// 获取评论
+  getCommentNum(params) {
+    return normalPost(
+      '/comment/num',
+      params: params,
+    );
+  }
+
+// 收藏
+  getFavoriteStatus(params) {
+    return normalPost(
+      '/favorite/exists',
+      params: params,
+    );
+  }
+
+// 设置收藏
+  setFavoriteStatus(params) {
+    return normalPost(
+      '/favorite/add-or-cancel',
+      params: params,
+    );
+  }
+
+// 上传学习时间
+  updateLearnTime(params) {
+    print('调用接口$params');
+    return normalPost(
+      '/learn-resource/learn-time-submit',
+      params: params,
+    );
+  }
+
+// 会议签到
+  meetingSign(params) {
+    return normalPost('/meeting/sign-in', params: params);
+  }
+
+  learnPlanList(params) async => normalPost('/learn-plan/list',params: params);
+
+  learnPlanDetail(params) async => normalPost('/learn-plan/detail',params: params);
 }

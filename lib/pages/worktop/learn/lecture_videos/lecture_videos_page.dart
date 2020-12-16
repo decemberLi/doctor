@@ -86,7 +86,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       return;
     }
     try {
-      var result = await http.post('/doctor-lecture/detail', params: {
+      var result = await API.shared.server.doctorLectureDetail({
         'learnPlanId': this.learnPlanId,
         'resourceId': this.resourceId,
       });

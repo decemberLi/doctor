@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:doctor/pages/worktop/resource/comment/comment_list_view.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
-import 'package:doctor/pages/worktop/resource/service.dart';
 import 'package:doctor/pages/worktop/resource/view_model/resource_view_model.dart';
 import 'package:doctor/pages/worktop/resource/widgets/article.dart';
 import 'package:doctor/pages/worktop/resource/widgets/attachment.dart';
@@ -20,7 +19,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/foundation.dart';
-import 'comment/service.dart';
+import 'package:doctor/http/server.dart';
+import 'package:http_manager/manager.dart';
 
 class ResourceDetailPage extends StatefulWidget {
   final learnPlanId;
@@ -151,7 +151,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   //获取评论
   void _getComments(resourceId) async {
-    getCommentNum({'resourceId': resourceId}).then((res) {
+    API.shared.server.getCommentNum({'resourceId': resourceId}).then((res) {
       setState(() {
         msgCount = res;
       });
@@ -160,7 +160,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   // 获取收藏状态
   void _getCollect(resourceId) async {
-    getFavoriteStatus({'bizId': resourceId, 'bizType': 'RESOURCE'}).then((res) {
+    API.shared.server.getFavoriteStatus({'bizId': resourceId, 'bizType': 'RESOURCE'}).then((res) {
       setState(() {
         _startIcon = res['exists'];
       });
@@ -256,7 +256,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       return;
     }
 
-    sendComment({
+    API.shared.server.sendComment({
       'resourceId': widget.resourceId,
       'learnPlanId': widget.learnPlanId,
       'commentContent': commentContent,
@@ -390,7 +390,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                   child: InkWell(
                     onTap: () {
                       //收藏
-                      setFavoriteStatus({
+                      API.shared.server.setFavoriteStatus({
                         'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
                         'resourceId': widget.resourceId,
                       }).then((res) {
@@ -717,7 +717,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
               child: InkWell(
                 onTap: () {
                   //收藏
-                  setFavoriteStatus({
+                  API.shared.server.setFavoriteStatus({
                     'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
                     'resourceId': widget.resourceId,
                   }).then((res) {
