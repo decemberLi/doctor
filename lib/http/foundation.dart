@@ -1,3 +1,4 @@
+import 'package:doctor/utils/platform_utils.dart';
 import 'package:http_manager/manager.dart';
 import 'host.dart';
 
@@ -6,8 +7,7 @@ extension founAPI on API {
 }
 
 class Foundation extends SubAPI {
-  String get middle =>
-      "/medclouds-foundation/${API.shared.defaultClient}";
+  String get middle => "/medclouds-foundation/${API.shared.defaultClient}";
 
   /// 反馈信息
   getFeedbackInfo(params) {
@@ -33,4 +33,31 @@ class Foundation extends SubAPI {
       return null;
     }
   }
+
+  /// 检查更新
+  appUpgradeCheck() async => await normalPost(
+        "/app-upgrade/check",
+        params: {
+          'appType': 'DOCTOR',
+          'appVersoin': await PlatformUtils.getAppVersion(),
+          'platform': Platform.isAndroid ? 'ANDROID' : 'IOS',
+        },
+      );
+
+  /// 下拉基础信息
+  getSelectInfo(params) {
+    return normalPost('/pull-down-config/list', params: params);
+  }
+
+  aliossPolicy() async => normalPost("/ali-oss/policy",);
+
+  aliossSave(params) async => normalPost("/ali-oss/save", params: params);
+  aliTmpURLBatch(params) async => normalPost("/ali-oss/tmp-url-batch",params: params);
+
+  ocr(params) async =>
+      normalPost("/ocr/recognize-identity-card", params: params);
+
+  hospitalKeyQueryPage(params) async => normalPost("/hospital/key-query-page",params: params);
+
+  sendSMS(params) async => normalPost('/sms/send-captcha',params: params);
 }

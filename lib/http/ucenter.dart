@@ -28,6 +28,7 @@ class UCenter extends SubAPI {
     var info = await normalPost('/personal/query-doctor-detail');
     return DoctorDetailInfoEntity.fromJson(info);
   }
+  editDoctorInfo(params) async => normalPost("edit-doctor-info",params: params);
 
   /// 基础信息修改
   /// http://yapi.e-medclouds.com:3000/project/7/interface/api/5046
@@ -36,4 +37,8 @@ class UCenter extends SubAPI {
 
   Future queryDoctorRelation() async =>
       normalPost('/personal/query-dtp-represent-exist');
+
+  queryDoctorVerifyInfo()async => normalPost("/personal/query-doctor-verify-info");
+
+  commitDoctorVerifyInfo(params)async => normalPost("/personal/commit-doctor-verify-info",params: params);
 }

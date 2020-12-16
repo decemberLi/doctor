@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
-import 'package:doctor/pages/login/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/adapt.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -16,6 +15,9 @@ import 'package:http_manager/manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'common_style.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/http/Sso.dart';
 
 class LoginByCaptchaPage extends StatefulWidget {
   @override
@@ -39,7 +41,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
     }
     if (form.validate()) {
       form.save();
-      var response = await loginByCaptCha(
+      var response = await API.shared.sso.loginByCaptCha(
           {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
       if (response is! DioError) {
         LoginInfoModel.shared = LoginInfoModel.fromJson(response);
@@ -63,8 +65,11 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
       //   type = 'USER_CREATE';
       // }
       // 获取验证码
-      sendSms({'phone': _mobile, 'system': system, 'type': 'LOGIN'})
+      EasyLoading.show(status: "发送中...");
+      var params = {'phone': _mobile, 'system': system, 'type': 'LOGIN'};
+      API.shared.foundation.sendSMS(params)
           .then((response) {
+            EasyLoading.dismiss();
         if (response is! DioError) {
           setState(() {
             _maxCount = 60;

@@ -2,7 +2,6 @@ import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
-import 'package:doctor/pages/login/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
@@ -13,6 +12,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/Sso.dart';
 
 import 'common_style.dart';
 
@@ -38,7 +39,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
     if (form.validate()) {
       form.save();
 
-      var response = await loginByPassword(
+      var response = await API.shared.sso.loginByPassword(
           {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
       LoginInfoModel.shared = LoginInfoModel.fromJson(response);
       SessionManager.shared.session = LoginInfoModel.shared.ticket;

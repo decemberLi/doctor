@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/qualification/model/config_data_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
-HttpManager uCenter = HttpManager('ucenter');
-HttpManager foundation = HttpManager('foundation');
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/http/ucenter.dart';
+import 'package:http_manager/manager.dart';
 
 class DoctorQualificationViewModel {
   StreamController<DoctorQualificationModel> _controller =
@@ -45,8 +44,7 @@ class DoctorQualificationViewModel {
   }
 
   queryHospital(String hospitalName) async {
-    var result = await foundation.post('/hospital/key-query-page',
-        params: {'hospitalName': hospitalName, 'pn': 1, 'ps': 100});
+    var result = await API.shared.foundation.hospitalKeyQueryPage({'hospitalName': hospitalName, 'pn': 1, 'ps': 100});
     return result['records']
         .map<HospitalEntity>((each) => HospitalEntity.fromJson(each))
         .toList();
@@ -55,7 +53,7 @@ class DoctorQualificationViewModel {
   queryConfig(String type) async {
     Map<String, dynamic> param = {};
     param['type'] = type;
-    var result = await foundation.post('/pull-down-config/list', params: param);
+    var result = await API.shared.foundation.getSelectInfo(param);
     return result
         .map<ConfigDataEntity>((each) => ConfigDataEntity.fromJson(each))
         .toList();
@@ -64,19 +62,19 @@ class DoctorQualificationViewModel {
   /// 查询当前登录的医生信息，token 参数由 http 请求统一提供。接口地址：
   /// http://yapi.e-medclouds.com:3000/project/7/interface/api/5025
   _obtainDoctorInfo() async {
-    var doctorInfo =
-        await uCenter.post('/personal/query-doctor-detail', showLoading: false);
-    if (doctorInfo is Exception) {
+    try {
+      var doctorInfo =
+      await API.shared.ucenter.queryDoctorDetailInfo();
+      _dataModel.doctorDetailInfo = doctorInfo;
+      _controller.sink.add(_dataModel);
+    }catch(e){
       _controller.sink.add(_dataModel);
       _dataModel.doctorDetailInfo = DoctorDetailInfoEntity.create();
-    } else {
-      _dataModel.doctorDetailInfo = DoctorDetailInfoEntity.fromJson(doctorInfo);
-      _controller.sink.add(_dataModel);
     }
   }
 
   _modifyDoctorInfo(Map<String, dynamic> param) async {
-    return await uCenter.post('/personal/edit-doctor-info', params: param);
+    return await API.shared.ucenter.editDoctorInfo(param);
   }
 
   refresh() {

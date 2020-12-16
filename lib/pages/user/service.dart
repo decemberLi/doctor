@@ -1,7 +1,6 @@
 import 'package:doctor/http/http_manager.dart';
 
 HttpManager http = HttpManager('ucenter');
-HttpManager foundation = HttpManager('foundation');
 
 // 获取基本信息
 getBasicData() {
@@ -12,12 +11,6 @@ getBasicData() {
 getBasicNum() {
   return http.post('/personal/query-favorite-and-patient-number',
       showLoading: false);
-}
-
-//下拉基础信息
-getSelectInfo(params) {
-  return foundation.post('/pull-down-config/list',
-      params: params, showLoading: false);
 }
 
 updateUserInfo(params) {
