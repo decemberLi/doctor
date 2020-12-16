@@ -378,7 +378,9 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                 _cachedContent = null;
               });
               _commentContentLength = 0;
-              Navigator.pop(context);
+              if (ModalRoute.of(context).isCurrent) {
+                Navigator.pop(context);
+              }
             }),
           ),
         ],
