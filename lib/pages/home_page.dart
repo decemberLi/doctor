@@ -1,3 +1,4 @@
+import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
@@ -15,6 +16,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
+import '../main.dart';
+import 'doctors/doctors_home.dart';
+import 'doctors/model/in_screen_event_model.dart';
+
 /// 首页
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -27,11 +32,14 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  ScrollOutScreenViewModel _outScreenViewModel;
+  bool isDoctors = false;
 
   int _currentIndex = 0;
   final List<Widget> _children = [
     WorktopPage(),
     PrescriptionPage(),
+    DoctorsHome(),
     MessagePage(),
     UserPage(),
     // TestPage()
@@ -42,6 +50,14 @@ class _HomePageState extends State<HomePage>
   }
 
   void onTabTapped(int index) {
+    if (index == 2) {
+      if (isDoctors) {
+        eventBus.fire(_outScreenViewModel.event);
+      }
+      isDoctors = true;
+    } else {
+      isDoctors = false;
+    }
     if (index == _currentIndex) {
       return;
     }
@@ -53,7 +69,7 @@ class _HomePageState extends State<HomePage>
       _currentIndex = index;
       if (index == 1) {
         _showGoToQualificationDialog(preTabIndex);
-      } else if (index == 2) {
+      } else if (index == 3) {
         _refreshMessageCenterData();
       }
     });
@@ -149,7 +165,7 @@ class _HomePageState extends State<HomePage>
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     if (model.data?.authStatus == 'PASS') {
-      if(!await showToastIfNeeded()) {
+      if (!await showToastIfNeeded()) {
         onTabTapped(preTabIndex);
       }
       return;
@@ -157,7 +173,7 @@ class _HomePageState extends State<HomePage>
     // 如果没有通过认证再次查询，再次判断
     await model.queryDoctorInfo();
     if (model.data?.authStatus == 'PASS') {
-      if(!await showToastIfNeeded()) {
+      if (!await showToastIfNeeded()) {
         onTabTapped(preTabIndex);
       }
       return;
@@ -222,6 +238,8 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    _outScreenViewModel =
+        Provider.of<ScrollOutScreenViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       this.initDoctorInfo();
     });
@@ -238,67 +256,106 @@ class _HomePageState extends State<HomePage>
           // 触摸收起键盘
           FocusScope.of(context).requestFocus(FocusNode());
         },
-        child: _children[_currentIndex],
+        child: IndexedStack(
+          children: _children,
+          index: _currentIndex,
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        unselectedItemColor: Colors.black,
-        selectedFontSize: 12.0,
-        // iconSize: 24.0,
-        selectedIconTheme: IconThemeData(size: 24),
-        unselectedIconTheme: IconThemeData(size: 24),
-        onTap: onTabTapped,
-        // new
-        currentIndex: _currentIndex,
-        // new
-        type: BottomNavigationBarType.fixed,
-        items: [
-          new BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/images/work_top_uncheck.png',
-              // width: 24,
-              // height: 24,
-            ),
-            activeIcon: Image.asset(
-              'assets/images/work_top_checked.png',
-              // width: 24,
-              // height: 24,
-            ),
-            label: '工作台',
-          ),
-          new BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/images/prescribe_uncheck.png',
-              // width: 24,
-              // height: 24,
-            ),
-            activeIcon: Image.asset(
-              'assets/images/prescribe_checked.png',
-              // width: 24,
-              // height: 24,
-            ),
-            label: '开处方',
-          ),
-          new BottomNavigationBarItem(
-            icon: _messageIcon(false),
-            activeIcon: _messageIcon(true),
-            label: '消息',
-          ),
-          new BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/images/mine_uncheck.png',
-              // width: 24,
-              // height: 24,
-            ),
-            activeIcon: Image.asset(
-              'assets/images/mine_checked.png',
-              // width: 24,
-              // height: 24,
-            ),
-            label: '我的',
-          ),
-        ],
+      bottomNavigationBar: Consumer<ScrollOutScreenViewModel>(
+        builder: (BuildContext context, ScrollOutScreenViewModel value,
+            Widget child) {
+          return BottomNavigationBar(
+            backgroundColor: Colors.white,
+            unselectedItemColor: Colors.black,
+            selectedFontSize: 12.0,
+            // iconSize: 24.0,
+            selectedIconTheme: IconThemeData(size: 24),
+            unselectedIconTheme: IconThemeData(size: 24),
+            onTap: onTabTapped,
+            // new
+            currentIndex: _currentIndex,
+            // new
+            type: BottomNavigationBarType.fixed,
+            items: [
+              new BottomNavigationBarItem(
+                icon: Image.asset(
+                  'assets/images/work_top_uncheck.png',
+                  // width: 24,
+                  // height: 24,
+                ),
+                activeIcon: Image.asset(
+                  'assets/images/work_top_checked.png',
+                  // width: 24,
+                  // height: 24,
+                ),
+                label: '工作台',
+              ),
+              new BottomNavigationBarItem(
+                icon: Image.asset(
+                  'assets/images/prescribe_uncheck.png',
+                  // width: 24,
+                  // height: 24,
+                ),
+                activeIcon: Image.asset(
+                  'assets/images/prescribe_checked.png',
+                  // width: 24,
+                  // height: 24,
+                ),
+                label: '开处方',
+              ),
+              _buildDoctorsTabBarItem(value),
+              new BottomNavigationBarItem(
+                icon: _messageIcon(false),
+                activeIcon: _messageIcon(true),
+                label: '消息',
+              ),
+              new BottomNavigationBarItem(
+                icon: Image.asset(
+                  'assets/images/mine_uncheck.png',
+                  // width: 24,
+                  // height: 24,
+                ),
+                activeIcon: Image.asset(
+                  'assets/images/mine_checked.png',
+                  // width: 24,
+                  // height: 24,
+                ),
+                label: '我的',
+              ),
+            ],
+          );
+        },
       ),
+    );
+  }
+
+  BottomNavigationBarItem _buildDoctorsTabBarItem(
+      ScrollOutScreenViewModel value) {
+    var iconImg = Image.asset(
+      'assets/images/doctors_checked.png',
+      width: 24,
+      height: 24,
+    );
+    var tabText = '医生圈';
+    if (value != null &&
+        value.event != null &&
+        value.event.isOutScreen &&
+        isDoctors) {
+      iconImg = Image.asset(
+        'assets/images/doctors_to_top_icon.png',
+        width: 24,
+        height: 24,
+      );
+      tabText = '回到顶部';
+    }
+    return new BottomNavigationBarItem(
+      icon: Image.asset(
+        'assets/images/doctors_unchecked.png',
+        width: 24,
+        height: 24,
+      ),
+      activeIcon: iconImg,
+      label: tabText,
     );
   }
 

@@ -183,6 +183,13 @@ class _UserPageState extends State<UserPage> with RouteAware {
     if (numData == null) {
       return Container();
     }
+    var favoriteServerNum = 0;
+    var favoriteFoundationNum = 0;
+    try {
+      favoriteServerNum = numData['favoriteServerNum'] as int;
+      favoriteFoundationNum = numData["favoriteFoundationNum"] as int;
+    } catch (e) {}
+    var facNum = favoriteServerNum + favoriteFoundationNum;
     return CommonStack(
       body: SafeArea(
         child: Column(
@@ -344,12 +351,11 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  boxItem('assets/images/collectInfo.png',
-                      numData['favoriteNum'], '我的收藏', () {
+                  boxItem('assets/images/collectInfo.png', facNum, '我的收藏', () {
                     Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
                   }),
                   VerticalDivider(),
-                  boxItem('assets/images/patient.png', numData['patientNum'],
+                  boxItem('assets/images/patient.png', numData['patientNum']??'0',
                       '我的患者', () {
                     Navigator.pushNamed(context, RouteManager.PATIENT);
                   }),

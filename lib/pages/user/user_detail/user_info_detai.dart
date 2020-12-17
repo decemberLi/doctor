@@ -106,7 +106,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     setState(() {
       args = args;
     });
-    updateUserInfo(params).then((res) {
+    updateUserInfo(args).then((res) {
       if (res['status'] == 'ERROR') {
         EasyLoading.showToast(res['errorMsg']);
       } else {

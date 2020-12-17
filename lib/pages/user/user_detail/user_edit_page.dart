@@ -96,15 +96,10 @@ class _UserEditPageState extends State<UserEditPage> {
               if (widget.editWay == 'edit') editWidget(),
               AceButton(
                 onPressed: () {
-                  updateUserInfo({uploadData[widget.lable]: dataText.text})
-                      .then((res) {
-                    if (res['status'] == 'ERROR') {
-                      EasyLoading.showToast(res['errorMsg']);
-                    } else {
-                      widget.function(
-                          {uploadData[widget.lable]: dataText.text}, true);
-                    }
-                  });
+                  if(widget.function != null ){
+                    widget.function(
+                        {uploadData[widget.lable]: dataText.text}, true);
+                  }
                 },
                 text: '保存',
               )

@@ -49,3 +49,28 @@ Map<String, dynamic> _$CollectInfoToJson(CollectInfo instance) =>
       'duration': instance.duration,
       'summary': instance.summary,
     };
+
+CollectTimeLineResources _$CollectTimeLineResourcesFromJson(
+    Map<String, dynamic> json) {
+  return CollectTimeLineResources(
+    json['postType'],
+    json['postUserName'],
+    json['postUserHeader'],
+    json['anonymityName'],
+    json['postTitle'],
+    json['postStatus'],
+    json['postId'],
+  );
+}
+
+Map<String, dynamic> _$CollectTimeLineResourcesToJson(
+        CollectTimeLineResources instance) =>
+    <String, dynamic>{
+      'postType': instance.postType,
+      'postUserName': instance.postUserName,
+      'postUserHeader': instance.postUserHeader,
+      'anonymityName': instance.anonymityName,
+      'postTitle': instance.postTitle,
+      'postStatus': instance.postStatus,
+      'postId': instance.postId,
+    };
