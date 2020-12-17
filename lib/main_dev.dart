@@ -1,5 +1,5 @@
 import 'package:doctor/application.dart';
-import 'package:doctor/http/servers.dart';
+import 'package:doctor/http/host_provider.dart';
 
 class ApplicationEnvDevConfig with ApplicationInitializeConfigMixin {
   @override

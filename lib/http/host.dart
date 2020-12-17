@@ -1,4 +1,4 @@
-import 'package:doctor/http/servers.dart';
+import 'package:doctor/http/host_provider.dart';
 import 'package:http_manager/manager.dart';
 
 extension hostAPI on API {
