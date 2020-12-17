@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/ucenter.dart';
 
-import '../main.dart';
+import '../root_widget.dart';
 import 'doctors/doctors_home.dart';
 import 'doctors/model/in_screen_event_model.dart';
 

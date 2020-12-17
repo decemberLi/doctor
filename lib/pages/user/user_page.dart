@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:doctor/main.dart';
 import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -8,6 +7,8 @@ import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/http/ucenter.dart';
 import 'package:http_manager/manager.dart';
+
+import '../../root_widget.dart';
 
 class UserPage extends StatefulWidget {
   @override

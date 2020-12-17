@@ -1,26 +1,45 @@
-const ENV = 'prod';
+enum AppEnvironment { ENV_DEV, ENV_QA, ENV_PROD }
 
-const HOST_MAP = {
-  'dev': 'https://gateway-dev.e-medclouds.com',
-  // 'dev': 'http://192.168.1.93:8860',
-  'qa': 'https://gateway-dev.e-medclouds.com',
-  'prod': 'https://gateway.e-medclouds.com',
-};
+class ApiHost {
+  AppEnvironment _env;
 
-const system = 'doctor';
-const client = 'mobile';
+  static ApiHost _instance;
 
-final host = HOST_MAP[ENV];
+  ApiHost._internal(AppEnvironment env) {
+    if (this._env != null) {
+      throw AssertionError(
+          'App environment config info has already configuration');
+    }
+    this._env = env;
+  }
 
-final servers = {
-  'server': '$host/medclouds-server/$system/$client',
-  'ucenter': '$host/medclouds-ucenter/$system/$client',
-  'foundation': '$host/medclouds-foundation/$client',
-  'foundationWeb': '$host/medclouds-foundation/web',
-  'foundationSystem': '$host/medclouds-foundation/$system/$client',
-  'foundationClient': '$host/medclouds-foundation/$client',
-  'developer': '$host/medclouds-foundation/developer/$client',
-  'dtp': '$host/medclouds-dtp/$system/$client',
-  'sso': '$host/medclouds-ucenter/$client',
-  'uCenterCommon': '$host',
-};
+  factory ApiHost.initHostByEnvironment(AppEnvironment env) {
+    _instance = ApiHost._internal(env);
+    return _instance;
+  }
+
+  static ApiHost get instance {
+    if (_instance == null) {
+      throw AssertionError(
+          'You must be call ApiHost.initHostByEnvironment(AppEnvironment env) init host configuration');
+    }
+    return _instance;
+  }
+
+  String get apiHost {
+    if (_env == null) {
+      throw AssertionError(
+          'You must be call ApiHost.initHostByEnvironment(AppEnvironment env) init host configuration');
+    }
+    switch (_env) {
+      case AppEnvironment.ENV_DEV:
+        return 'https://gateway-dev.e-medclouds.com';
+      case AppEnvironment.ENV_QA:
+        return 'https://gateway-dev.e-medclouds.com';
+      case AppEnvironment.ENV_PROD:
+        return 'https://gateway.e-medclouds.com';
+    }
+
+    throw AssertionError('AppEnvironment config info error, env -> $_env');
+  }
+}
