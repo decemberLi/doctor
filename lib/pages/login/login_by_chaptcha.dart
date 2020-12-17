@@ -1,9 +1,8 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/login_footer.dart';
+import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
-import 'package:doctor/pages/login/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/adapt.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -12,8 +11,13 @@ import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:http_manager/manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'common_style.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/http/Sso.dart';
 
 class LoginByCaptchaPage extends StatefulWidget {
   @override
@@ -27,6 +31,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   String _mobile, _captcha;
   int subscribeId;
   bool _agree = false;
+  String _lastPhone;
 
   Future _submit() async {
     final form = _formKey.currentState;
@@ -36,10 +41,11 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
     }
     if (form.validate()) {
       form.save();
-      var response = await loginByCaptCha(
+      var response = await API.shared.sso.loginByCaptCha(
           {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
       if (response is! DioError) {
-        SessionManager.loginHandler(response);
+        LoginInfoModel.shared = LoginInfoModel.fromJson(response);
+        SessionManager.shared.session = LoginInfoModel.shared.ticket;
       }
     }
   }
@@ -59,8 +65,11 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
       //   type = 'USER_CREATE';
       // }
       // 获取验证码
-      sendSms({'phone': _mobile, 'system': system, 'type': 'LOGIN'})
+      EasyLoading.show(status: "发送中...");
+      var params = {'phone': _mobile, 'system': system, 'type': 'LOGIN'};
+      API.shared.foundation.sendSMS(params)
           .then((response) {
+            EasyLoading.dismiss();
         if (response is! DioError) {
           setState(() {
             _maxCount = 60;
@@ -97,7 +106,18 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
         }
       },
     );
+    getLastPhone();
     super.initState();
+  }
+
+  getLastPhone() async {
+    var sp = await SharedPreferences.getInstance();
+    var phone = sp.get(LAST_PHONE);
+    if (phone is String){
+      setState(() {
+        _lastPhone = phone;
+      });
+    }
   }
 
   @override
@@ -162,7 +182,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                           autofocus: false,
                           maxLength: 11,
                           initialValue:
-                              SessionManager().sp.getString(LAST_PHONE) ?? '',
+                              _lastPhone ?? '',
                           decoration: InputDecoration(
                             hintText: '请输入手机号',
                             counterText: '',

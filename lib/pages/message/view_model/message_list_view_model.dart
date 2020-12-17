@@ -1,8 +1,8 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/message/model/message_list_entity.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/foundationSystem.dart';
 
-HttpManager foundation = HttpManager('foundationSystem');
 
 class MessageListModel extends ViewStateRefreshListModel<MessageListEntity> {
   String msgType;
@@ -11,13 +11,11 @@ class MessageListModel extends ViewStateRefreshListModel<MessageListEntity> {
 
   @override
   Future<List<MessageListEntity>> loadData({int pageNum}) async {
-    var result = await foundation.post('/message/list-by-type',
-        params: {
-          'ps': 10,
-          'pn': pageNum,
-          'messageType': msgType,
-        },
-        showLoading: false);
+    var result = await API.shared.foundationSys.messageListByType({
+      'ps': 10,
+      'pn': pageNum,
+      'messageType': msgType,
+    });
 
     return result['records']
         .map<MessageListEntity>((item) => MessageListEntity.fromJson(item))
@@ -25,8 +23,8 @@ class MessageListModel extends ViewStateRefreshListModel<MessageListEntity> {
   }
 
   Future mark(String messageId) async {
-    await foundation.post('/message/update-status',params: {
+    await API.shared.foundationSys.messageUpdateStatus({
       'messageId':messageId
-    }, showLoading: false);
+    });
   }
 }

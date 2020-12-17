@@ -1,8 +1,6 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
-import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
 import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
 import 'package:doctor/pages/prescription/widgets/rp_list.dart';
@@ -15,6 +13,8 @@ import 'package:doctor/widgets/form_item.dart';
 import 'package:doctor/widgets/remove_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/dtp.dart';
 
 class PrescriptionTemplageAddPage extends StatefulWidget {
   final String action;
@@ -35,8 +35,6 @@ class _PrescriptionTemplageAddPageState
   PrescriptionTemplateModel data = PrescriptionTemplateModel();
 
   final _formKey = GlobalKey<FormState>();
-
-  HttpManager http = HttpManager('dtp');
 
   @override
   void initState() {
@@ -71,9 +69,9 @@ class _PrescriptionTemplageAddPageState
       try {
         var res;
         if (widget.isAddPrescriptionTemplate()) {
-          res = await addPrescriptionTemplate(this.data.toJson());
+          res = await API.shared.dtp.addPrescriptionTemplate(this.data.toJson());
         } else {
-          res = await modifyPrescriptionTemplate(this.data.toJson());
+          res = await API.shared.dtp.modifyPrescriptionTemplate(this.data.toJson());
         }
         if (!(res is DioError)) {
           Navigator.pop(context, true);

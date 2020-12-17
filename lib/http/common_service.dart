@@ -1,18 +1,16 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:doctor/http/http_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
-HttpManager foundation = HttpManager('foundation');
+import 'package:doctor/http/foundation.dart';
+import 'package:http_manager/manager.dart';
 
 /// 通用service
 class CommonService {
   Dio dio = Dio();
 
   static Future getFile(params) async {
-    var data = foundation.post('/ali-oss/tmp-url-batch',
-        params: params, showLoading: false);
+    var data = API.shared.foundation.aliTmpURLBatch(params);
     return data;
   }
 

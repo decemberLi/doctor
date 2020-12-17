@@ -1,10 +1,10 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:doctor/http/dtp.dart';
+import 'package:http_manager/api.dart';
 
 import '../model/doctor_article_detail_entity.dart';
 
-HttpManager dtp = HttpManager('dtp');
 
 class DoctorsDetailViewMode extends ViewStateModel {
   DoctorArticleDetailEntity _detailEntity;
@@ -12,18 +12,18 @@ class DoctorsDetailViewMode extends ViewStateModel {
   DoctorArticleDetailEntity get detailEntity => _detailEntity;
 
   void initArticleDetail(int postId) async {
-    var result = await dtp.post('/post/query', params: {'postId': postId});
+    var result = await API.shared.dtp.postQuery({'postId': postId});
     _detailEntity = DoctorArticleDetailEntity.fromJson(result);
     notifyListeners();
   }
 
   void like(int postId) async {
-    await dtp.post('/like/post-or-comment',
-        params: {
+    await API.shared.dtp.postLike(
+        {
           'postId': postId,
           'status': 'LIKE_POST',
         },
-        showLoading: false);
+        );
     if (_detailEntity == null) {
       return;
     }
@@ -36,12 +36,12 @@ class DoctorsDetailViewMode extends ViewStateModel {
     if (_detailEntity == null) {
       return;
     }
-    await dtp.post('/post/favorite',
-        params: {
+    await API.shared.dtp.postFavorite(
+        {
           'postId': postId,
           'status': _detailEntity.favoriteFlag ?? false ? 'CANCEL' : 'FAVORITE'
         },
-        showLoading: false);
+        );
     if (!_detailEntity.favoriteFlag) {
       EasyLoading.showToast('收藏成功');
     } else {
@@ -57,13 +57,13 @@ class DoctorsDetailViewMode extends ViewStateModel {
   }
 
   postComment(postId, commentId, commentContent) async {
-    await dtp.post('/comment/add-comment',
-        params: {
+    await API.shared.dtp.postComment(
+        {
           'postId': postId,
           'commentId': commentId,
           'commentContent': commentContent
         },
-        showLoading: false);
+        );
     if (_detailEntity != null) {
       _detailEntity.commentNum++;
       notifyListeners();

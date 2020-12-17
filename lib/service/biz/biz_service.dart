@@ -1,18 +1,16 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/model/biz/learn_plan_statistical_entity.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/server.dart';
 
 class BizService {
-  static HttpManager _server = HttpManager('server');
 
-
-  static HttpManager get server => _server;
 
   static Future queryLearnStatisic() async {
     Map<String, List<String>> param = {};
     param["taskTemplates"] = ['MEETING', 'SURVEY', 'VISIT'];
-    var statistical = await server.post('/learn-plan/un-submit-num',
-        params: param, showLoading: false);
+    var statistical = await API.shared.server.learnPlanUnSubmitNum(
+        param);
     if (statistical is Exception) {
       return null;
     }
@@ -24,14 +22,14 @@ class BizService {
   }
 
   static Future queryRecentLearnPlan() async {
-    var list = await server.post('/learn-plan/list',
-        params: {
+    var list = await API.shared.server.learnPlanList(
+        {
           'searchStatus': 'LEARNING',
           'taskTemplate': [],
           'ps': 10,
           'pn': 1
         },
-        showLoading: false);
+        );
 
     return list['records']
         .map<LearnListItem>((item) => LearnListItem.fromJson(item))

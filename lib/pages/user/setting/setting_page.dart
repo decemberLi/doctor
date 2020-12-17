@@ -1,4 +1,3 @@
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/user/setting/update/app_update.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -7,6 +6,7 @@ import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http_manager/manager.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -87,7 +87,7 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
       onTap: () {
-        SessionManager.loginOutHandler();
+        SessionManager.shared.session = null;
       },
     );
   }

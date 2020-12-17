@@ -1,5 +1,4 @@
 import 'package:doctor/common/event/event_model.dart';
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
@@ -9,12 +8,13 @@ import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/user/user_page.dart';
 import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/route/route_manager.dart';
-import 'package:doctor/service/ucenter/ucenter_service.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/ucenter.dart';
 
 import '../main.dart';
 import 'doctors/doctors_home.dart';
@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage>
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                SessionManager.loginOutHandler();
+                SessionManager.shared.session = null;
               },
             ),
             FlatButton(
@@ -402,7 +402,7 @@ class _HomePageState extends State<HomePage>
   }
 
   showToastIfNeeded() async {
-    if (!await UCenter.queryDoctorRelation()) {
+    if (!await API.shared.ucenter.queryDoctorRelation()) {
       EasyLoading.showToast('您没有绑定医药代表，暂不能开具处方');
       return false;
     }

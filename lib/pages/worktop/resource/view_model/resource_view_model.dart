@@ -1,8 +1,8 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/server.dart';
 
-HttpManager http = HttpManager('server');
 
 class ResourceDetailViewModel extends ViewStateModel {
   final int resourceId;
@@ -24,7 +24,7 @@ class ResourceDetailViewModel extends ViewStateModel {
   }
 
   Future<ResourceModel> loadData() async {
-    var data = await http.post('/resource/detail', params: {
+    var data = await API.shared.server.resourceDetail({
       'resourceId': this.resourceId,
       'learnPlanId': this.learnPlanId,
     });
@@ -32,7 +32,7 @@ class ResourceDetailViewModel extends ViewStateModel {
   }
 
   Future<ResourceModel> loadCollectData() async {
-    var data = await http.post('/favorite/detail', params: {
+    var data = await API.shared.server.favoriteDetail({
       'favoriteId': this.favoriteId, //传入的是favoriteId
     });
     data['attachmentOssId'] = data['resourceOssId']; //收藏详情返回的资源id处理，与学习资料详情同步

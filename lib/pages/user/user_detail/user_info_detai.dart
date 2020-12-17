@@ -15,8 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:toast/toast.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/http/ucenter.dart';
 
-import '../service.dart';
 import 'uploadImage.dart';
 
 final uploadData = {
@@ -80,7 +82,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     }
     OssFileEntity entity = await OssService.upload(image.path);
     if (entity is! DioError) {
-      updateHeadPic({'fullFacePhoto': entity}).then((res) {
+      API.shared.ucenter.updateHeadPic({'fullFacePhoto': entity}).then((res) {
         if (res is! DioError) {
           args.addAll({
             'fullFacePhoto': {'url': '$res?ossId=${entity.ossId}'}
@@ -106,7 +108,8 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     setState(() {
       args = args;
     });
-    updateUserInfo(args).then((res) {
+    API.shared.ucenter.updateUserInfo(args).then((res) {
+
       if (res['status'] == 'ERROR') {
         EasyLoading.showToast(res['errorMsg']);
       } else {
@@ -218,14 +221,14 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       },
     );
     //科室数据
-    getSelectInfo({'type': 'DEPARTMENTS'}).then((res) {
+    API.shared.foundation.getSelectInfo({'type': 'DEPARTMENTS'}).then((res) {
       departments = res;
     });
     //职称数据
-    getSelectInfo({'type': 'DOCTOR_TITLE'}).then((res) {
+    API.shared.foundation.getSelectInfo({'type': 'DOCTOR_TITLE'}).then((res) {
       doctorTitle = res;
     });
-    getSelectInfo({'type': 'DOCTOR_PRACTICE_TITLE'}).then((res) {
+    API.shared.foundation.getSelectInfo({'type': 'DOCTOR_PRACTICE_TITLE'}).then((res) {
       doctorPractice = res;
     });
   }

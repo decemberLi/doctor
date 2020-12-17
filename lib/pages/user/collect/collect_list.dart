@@ -1,4 +1,3 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/user/collect/model/collect_list_model.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -7,8 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../doctors/tab_indicator.dart';
+import 'package:doctor/http/server.dart';
+import 'package:doctor/http/dtp.dart';
 
 /// 渲染列表
 class CollectDetailList extends StatelessWidget {
@@ -72,16 +74,9 @@ class CollectDetailList extends StatelessWidget {
             child: TabBarView(children: [
               _SubCollectList<CollectResources>(
                 getData: (pageNum) async {
-                  var data = await HttpManager("server").post(
-                    "/favorite/list",
-                    params: {
-                      'ps': 10,
-                      'pn': pageNum,
-                    },
-                    showLoading: false,
-                  );
                   List<CollectResources> list = [];
                   try {
+                    var data = await API.shared.server.favoriteList(pageNum);
                     list = data['records']
                         .map<CollectResources>(
                             (item) => CollectResources.fromJson(item))
@@ -97,16 +92,9 @@ class CollectDetailList extends StatelessWidget {
               ),
               _SubCollectList<CollectTimeLineResources>(
                 getData: (pageNum) async {
-                  var data = await HttpManager("dtp").post(
-                    "/favorite/list",
-                    params: {
-                      'ps': 10,
-                      'pn': pageNum,
-                    },
-                    showLoading: false,
-                  );
                   List<CollectTimeLineResources> list = [];
                   try {
+                    var data = await API.shared.dtp.favoriteList(pageNum);
                     list = data['records']
                         .map<CollectTimeLineResources>(
                             (item) => CollectTimeLineResources.fromJson(item))
