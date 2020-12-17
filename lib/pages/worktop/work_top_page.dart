@@ -16,7 +16,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../main.dart';
+import '../../root_widget.dart';
 
 class WorktopPage extends StatefulWidget {
   @override

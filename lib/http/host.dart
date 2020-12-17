@@ -1,7 +1,8 @@
+import 'package:doctor/http/host_provider.dart';
 import 'package:http_manager/manager.dart';
 
 extension hostAPI on API {
-  String get defaultHost => "https://gateway-dev.e-medclouds.com";
+  String get defaultHost => ApiHost.instance.apiHost;
   String get defaultSystem => "doctor";
   String get defaultClient => "mobile";
 }

@@ -35,6 +35,8 @@ class UCenter extends SubAPI {
   Future modifyDoctorInfo(Map<String, dynamic> param) async =>
       await normalPost('/personal/edit-doctor-info', params: param);
 
+  /// 查询医生是否绑定了DTP代表
+  /// 返回true/false,true---已经绑定dtp代表,false---还未绑定dtp代表
   Future queryDoctorRelation() async =>
       normalPost('/personal/query-dtp-represent-exist');
 

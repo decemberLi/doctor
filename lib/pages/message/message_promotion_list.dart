@@ -1,6 +1,4 @@
-import 'dart:ffi';
 
-import 'package:doctor/main.dart';
 import 'package:doctor/pages/doctors/tab_indicator.dart';
 import 'package:doctor/pages/message/model/message_list_entity.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
@@ -14,6 +12,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import '../../root_widget.dart';
 
 class MessagePromotionList extends StatefulWidget {
   @override

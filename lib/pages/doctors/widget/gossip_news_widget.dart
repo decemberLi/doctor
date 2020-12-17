@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../main.dart';
+import '../../../root_widget.dart';
 import '../model/doctor_circle_entity.dart';
 
 final _avatarPanel = {};
