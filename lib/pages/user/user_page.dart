@@ -355,7 +355,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
                   }),
                   VerticalDivider(),
-                  boxItem('assets/images/patient.png', numData['patientNum'],
+                  boxItem('assets/images/patient.png', numData['patientNum']??'0',
                       '我的患者', () {
                     Navigator.pushNamed(context, RouteManager.PATIENT);
                   }),

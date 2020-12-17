@@ -10,6 +10,7 @@ class GuidePage extends StatefulWidget {
   static const List<String> images = <String>[
     'android1.png',
     'android2.png',
+    'android5.png',
     'android3.png',
     'android4.png',
   ];
