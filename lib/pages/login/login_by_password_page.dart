@@ -14,6 +14,7 @@ import 'package:http_manager/manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/Sso.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 import 'common_style.dart';
 
@@ -28,7 +29,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
   String _mobile, _password;
   bool _agree = false;
   int subscribeId;
-  String lastPhone;
+  var _phoneController = TextEditingController();
 
   Future _submit() async {
     final form = _formKey.currentState;
@@ -38,11 +39,14 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
     }
     if (form.validate()) {
       form.save();
-
-      var response = await API.shared.sso.loginByPassword(
-          {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
-      LoginInfoModel.shared = LoginInfoModel.fromJson(response);
-      SessionManager.shared.session = LoginInfoModel.shared.ticket;
+      EasyLoading.instance.flash(() async {
+        var response = await API.shared.sso.loginByPassword(
+            {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
+        LoginInfoModel.shared = LoginInfoModel.fromJson(response);
+        SessionManager.shared.session = LoginInfoModel.shared.ticket;
+        var sp = await SharedPreferences.getInstance();
+        sp.setString(LAST_PHONE, _mobile);
+      }, text: '登录中...');
     }
   }
 
@@ -60,15 +64,15 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
     getLastPhone();
     super.initState();
   }
+
   getLastPhone() async {
     var sp = await SharedPreferences.getInstance();
     var phone = sp.get(LAST_PHONE);
     if (phone is String) {
-      setState(() {
-        lastPhone = phone;
-      });
+      _phoneController.text = phone ?? '';
     }
   }
+
   @override
   void dispose() {
     KeyboardVisibilityNotification().removeListener(subscribeId);
@@ -113,10 +117,9 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                         Container(
                           margin: EdgeInsets.only(bottom: 30),
                           child: TextFormField(
+                            controller: _phoneController,
                             autofocus: false,
                             maxLength: 11,
-                            initialValue:
-                                lastPhone ?? '',
                             decoration: InputDecoration(
                               hintText: '请输入手机号',
                               counterText: '',

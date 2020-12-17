@@ -18,6 +18,7 @@ import 'common_style.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/foundation.dart';
 import 'package:doctor/http/Sso.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class LoginByCaptchaPage extends StatefulWidget {
   @override
@@ -31,7 +32,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   String _mobile, _captcha;
   int subscribeId;
   bool _agree = false;
-  String _lastPhone;
+  var _phoneController = TextEditingController();
 
   Future _submit() async {
     final form = _formKey.currentState;
@@ -41,12 +42,16 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
     }
     if (form.validate()) {
       form.save();
-      var response = await API.shared.sso.loginByCaptCha(
-          {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
-      if (response is! DioError) {
-        LoginInfoModel.shared = LoginInfoModel.fromJson(response);
-        SessionManager.shared.session = LoginInfoModel.shared.ticket;
-      }
+      EasyLoading.instance.flash(() async {
+        var response = await API.shared.sso.loginByCaptCha(
+            {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
+        if (response is! DioError) {
+          LoginInfoModel.shared = LoginInfoModel.fromJson(response);
+          SessionManager.shared.session = LoginInfoModel.shared.ticket;
+          var sp = await SharedPreferences.getInstance();
+          sp.setString(LAST_PHONE, _mobile);
+        }
+      }, text: '登录中...');
     }
   }
 
@@ -67,9 +72,8 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
       // 获取验证码
       EasyLoading.show(status: "发送中...");
       var params = {'phone': _mobile, 'system': system, 'type': 'LOGIN'};
-      API.shared.foundation.sendSMS(params)
-          .then((response) {
-            EasyLoading.dismiss();
+      API.shared.foundation.sendSMS(params).then((response) {
+        EasyLoading.dismiss();
         if (response is! DioError) {
           setState(() {
             _maxCount = 60;
@@ -113,10 +117,8 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   getLastPhone() async {
     var sp = await SharedPreferences.getInstance();
     var phone = sp.get(LAST_PHONE);
-    if (phone is String){
-      setState(() {
-        _lastPhone = phone;
-      });
+    if (phone is String) {
+      _phoneController.text = phone ?? '';
     }
   }
 
@@ -179,10 +181,9 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                       Container(
                         margin: EdgeInsets.only(bottom: 30),
                         child: TextFormField(
+                          controller: _phoneController,
                           autofocus: false,
                           maxLength: 11,
-                          initialValue:
-                              _lastPhone ?? '',
                           decoration: InputDecoration(
                             hintText: '请输入手机号',
                             counterText: '',
