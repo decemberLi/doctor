@@ -92,8 +92,8 @@ class RootWidget extends StatelessWidget {
         initialRoute: showGuide['showGuide']
             ? RouteManager.GUIDE
             : SessionManager.shared.isLogin
-            ? RouteManager.LOGIN_CAPTCHA
-            : RouteManager.HOME,
+            ? RouteManager.HOME
+            : RouteManager.LOGIN_CAPTCHA,
         builder: (BuildContext context, Widget child) {
           /// 确保 loading 组件能覆盖在其他组件之上.
           return FlutterEasyLoading(
