@@ -320,6 +320,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     );
     _bottomBarController.commentCount = msgCount;
     _bottomBarController.isFavorite = _startIcon;
+    _bottomBarController.hintText = '请输入您的问题或评论';
 
     return bottomBar;
   }
