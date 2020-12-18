@@ -1,9 +1,11 @@
+import 'package:doctor/http/host_provider.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:http_manager/manager.dart';
 import 'host.dart';
 
 extension founAPI on API {
   Foundation get foundation => Foundation();
+  FoundationHotFix get foundationHotFix => FoundationHotFix();
 }
 
 class Foundation extends SubAPI {
@@ -13,7 +15,7 @@ class Foundation extends SubAPI {
   getFeedbackInfo(params) {
     print('调用接口$params');
     return normalPost(
-      '/feedback-config/random-list',
+      '/feedback-config/random-feedback-list',
       params: params,
     );
   }
@@ -60,4 +62,13 @@ class Foundation extends SubAPI {
   hospitalKeyQueryPage(params) async => normalPost("/hospital/key-query-page",params: params);
 
   sendSMS(params) async => normalPost('/sms/send-captcha',params: params);
+}
+
+class FoundationHotFix extends SubAPI {
+  @override
+  String get middle => "/medclouds-foundation/${API.shared.defaultSystem}/${API.shared.defaultClient}";
+  feedbackServer(params){
+    return normalPost("/learn-resource/feedback",params: params);
+  }
+
 }

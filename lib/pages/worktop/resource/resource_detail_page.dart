@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:doctor/pages/worktop/resource/comment/comment_list_view.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
@@ -449,7 +450,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     }
     //需提交代码
     if (content != null) {
-      API.shared.foundation.getFeedbackInfo({
+      API.shared.foundationHotFix.feedbackServer({
         'learnPlanId': widget.learnPlanId,
         'resourceId': widget.resourceId,
         'feedback': content,
@@ -536,7 +537,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                               children: [
                                 Container(
                                   height: 30,
-                                  padding: EdgeInsets.only(left: 30, right: 10),
+                                  padding: EdgeInsets.only(left: 30, right: 30),
                                   margin: EdgeInsets.only(top: 26),
                                   constraints: BoxConstraints(
                                     minWidth: 100,
@@ -545,23 +546,15 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                     color: Colors.white,
                                     // borderRadius:
                                     // BorderRadius.all(Radius.circular(15)),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(18),
-                                      bottomRight: Radius.circular(15),
-                                      topRight: Radius.circular(15),
-                                      bottomLeft: Radius.circular(5),
-                                    ),
+                                    borderRadius: BorderRadius.all(Radius.circular(15)),
                                   ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                  child:  Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Container(
-                                        margin: EdgeInsets.only(right: 5),
-                                        child: Text(
-                                          item['content'],
-                                        ),
-                                      ),
+                                      Text(
+                                        item['content'],
+                                        style: TextStyle(color: Color(0xff444444),fontWeight: FontWeight.w500),
+                                      )
                                     ],
                                   ),
                                 ),
@@ -588,14 +581,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                 width: 140,
                                 height: 33,
                                 child: RaisedButton(
-                                  padding: EdgeInsets.only(left: 30),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(15),
-                                      topRight: Radius.circular(15),
-                                      bottomLeft: Radius.circular(22),
-                                    ),
+                                    borderRadius: BorderRadius.all(Radius.circular(15)),
                                   ),
                                   color: Colors.white,
                                   textColor: ThemeColor.primaryColor,
@@ -611,8 +598,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "撰写评价",
-                                        style: TextStyle(color: Colors.black),
+                                        "撰写评论",
+                                        style: TextStyle(color: Color(0xff222222),fontWeight: FontWeight.w400),
                                       ),
                                       Icon(
                                         _addFeedback
@@ -623,15 +610,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                       ),
                                     ],
                                   ),
-                                ),
-                              ),
-                              Positioned(
-                                left: -6,
-                                top: 24,
-                                child: Icon(
-                                  MyIcons.icon_pinglun,
-                                  size: 35,
-                                  color: Color(0xFF51BEFF),
                                 ),
                               ),
                             ],
@@ -750,26 +728,12 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     API.shared.foundation
         .getFeedbackInfo({'businessArea': 'ACADEMIC_PROMOTION'}).then((res) {
       setState(() {
-        _feedbackData = [
-          {
-            'content': res['perfects'][0]['content'],
-            'level': res['perfects'][0]['level'],
-            'icon': MyIcons.icon_dianzan,
-            'index': 0
-          },
-          {
-            'content': res['goods'][0]['content'],
-            'level': res['goods'][0]['level'],
-            'icon': MyIcons.icon_xiaolian,
-            'index': 1
-          },
-          {
-            'content': res['middles'][0]['content'],
-            'level': res['middles'][0]['level'],
-            'icon': MyIcons.icon_kulian,
-            'index': 2
-          }
-        ];
+        var list = res as List<dynamic>;
+        _feedbackData = list.asMap().entries.map((enty) {
+          var value = enty.value;
+          value['index'] = enty.key;
+          return value;
+        }).toList();
       });
     });
   }
