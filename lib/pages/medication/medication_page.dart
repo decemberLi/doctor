@@ -101,7 +101,7 @@ class _MedicationPageState extends State<MedicationPage>
       vsync: this,
     );
     var cur = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
-    _animation = Tween(begin: 0.0, end: 400.0).animate(cur)
+    _animation = Tween(begin: 60.0, end: 400.0).animate(cur)
       ..addListener(
         () {
           setState(() {});
@@ -123,14 +123,55 @@ class _MedicationPageState extends State<MedicationPage>
         },
       );
     _alphaAnimation = Tween(begin: 0.0, end: 0.33).animate(cur);
-
   }
 
   /// 显示已添加列表
   Widget _sheet(int count) {
     var content = Consumer<MedicationViewModel>(
       builder: (context, model, child) {
-        // print(model.cartList);
+        var list = ListView.separated(
+          itemBuilder: (context, index) {
+            DrugModel item = model.cartList[index];
+            return MedicationListItem(
+              item,
+              showEdit: true,
+              showExtra: true,
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return Divider(
+              color: Color(0xff222222).withOpacity(0.1),
+              height: 1,
+            );
+          },
+          itemCount: model.cartList.length,
+        );
+        ViewStateEmptyWidget();
+        var empty = Container(
+          color: Colors.white,
+          child: Column(
+            children: [
+              Spacer(),
+              Expanded(
+                child: Image.asset("assets/images/empty.png"),
+              ),
+              Container(
+                height: 5,
+              ),
+              Expanded(
+                child: Text(
+                  "暂无药品添加信息",
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Color(0xff888888).withOpacity(0.7),
+                  ),
+                ),
+              ),
+              Spacer(),
+              // Text("222"),
+            ],
+          ),
+        );
         return Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -140,7 +181,7 @@ class _MedicationPageState extends State<MedicationPage>
             ),
           ),
           padding: EdgeInsets.only(left: 26, right: 26),
-          height: _animation.value,//
+          height: _animation.value, //
           child: Column(
             children: [
               Container(
@@ -148,6 +189,7 @@ class _MedicationPageState extends State<MedicationPage>
                 child: Text(
                   "添加列表",
                   style: TextStyle(
+                    fontWeight: FontWeight.bold,
                     fontSize: 16,
                     color: Color(0xff222222),
                   ),
@@ -158,25 +200,7 @@ class _MedicationPageState extends State<MedicationPage>
                 color: Color(0xff222222).withOpacity(0.1),
                 height: 1,
               ),
-              Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    DrugModel item = model.cartList[index];
-                    return MedicationListItem(
-                      item,
-                      showEdit: true,
-                      showExtra: true,
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return Divider(
-                      color: Color(0xff222222).withOpacity(0.1),
-                      height: 1,
-                    );
-                  },
-                  itemCount: model.cartList.length,
-                ),
-              ),
+              Expanded(child: count == 0 ? empty : list),
             ],
           ),
         );
