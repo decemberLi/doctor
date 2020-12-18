@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
+import 'package:doctor/pages/worktop/resource/comment/bottom_bar.dart';
 import 'package:doctor/pages/worktop/resource/comment/comment_list_view.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/pages/worktop/resource/view_model/resource_view_model.dart';
@@ -281,140 +282,161 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       });
     });
   }
-
+  var _bottomBarController = BottomBarController();
   //下方评论
   Widget commentBottom(data) {
     if (data.resourceType == 'QUESTIONNAIRE' ||
         widget.taskTemplate == 'DOCTOR_LECTURE') {
       return Container();
     }
-    return Container(
+    var bottomBar = Container(
       color: Colors.white,
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
       constraints: BoxConstraints(
         minHeight: 40,
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              minLines: 1,
-              maxLines: 10,
-              maxLength: 150,
-              controller: commentTextEdit,
-              focusNode: commentFocusNode,
-              // enableInteractiveSelection: false,
-              onTap: () {
-                FocusScope.of(context).requestFocus(commentFocusNode);
-                setState(() {
-                  logo = false;
-                });
-              },
-              onChanged: (text) {
-                setState(() {
-                  commentContent = text;
-                });
-              },
-              decoration: InputDecoration(
-                counterText: "",
-                fillColor: Color(0XFFEDEDED),
-                filled: true,
-                contentPadding: EdgeInsets.all(10.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                  borderSide: BorderSide(color: Colors.white),
+      child: BottomBarWidget(
+        isShowLikeBtn: false,
+        hintText: '评论',
+        text: '',
+        controller: _bottomBarController,
+        commentCallback: (){
+          _showCommentWidget();
+        },
+        inputCallback: (){
+
+        },
+        collectCallback: (){
+          API.shared.server.setFavoriteStatus({
+            'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
+            'resourceId': widget.resourceId,
+          }).then((res) {
+            EasyLoading.showToast(_startIcon ? '取消收藏成功' : '收藏成功');
+            setState(() {
+              _startIcon = !_startIcon;
+            });
+          });
+        },
+      ),
+    );
+    _bottomBarController.commentCount = msgCount;
+    _bottomBarController.isFavorite = _startIcon;
+
+    return bottomBar;
+  }
+
+  Row _oldBottomBar() {
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            minLines: 1,
+            maxLines: 10,
+            maxLength: 150,
+            controller: commentTextEdit,
+            focusNode: commentFocusNode,
+            // enableInteractiveSelection: false,
+            onTap: () {
+              FocusScope.of(context).requestFocus(commentFocusNode);
+              setState(() {
+                logo = false;
+              });
+            },
+            onChanged: (text) {
+              setState(() {
+                commentContent = text;
+              });
+            },
+            decoration: InputDecoration(
+              counterText: "",
+              fillColor: Color(0XFFEDEDED),
+              filled: true,
+              contentPadding: EdgeInsets.all(10.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              enabledBorder: OutlineInputBorder(
+                //未选中时候的颜色
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: BorderSide(
+                  color: Colors.white,
                 ),
-                enabledBorder: OutlineInputBorder(
-                  //未选中时候的颜色
-                  borderRadius: BorderRadius.circular(25.0),
-                  borderSide: BorderSide(
-                    color: Colors.white,
-                  ),
-                ),
-                hintText: '请输入您的问题或评论',
-                suffix: GestureDetector(
-                  onTap: () {
-                    sendCommentInfo();
-                  },
-                  child: Text(
-                    logo ? '' : '发表',
-                    style:
-                        TextStyle(color: ThemeColor.primaryColor, fontSize: 14),
-                  ),
+              ),
+              hintText: '请输入您的问题或评论',
+              suffix: GestureDetector(
+                onTap: () {
+                  sendCommentInfo();
+                },
+                child: Text(
+                  logo ? '' : '发表',
+                  style:
+                      TextStyle(color: ThemeColor.primaryColor, fontSize: 14),
                 ),
               ),
             ),
           ),
-          logo
-              ? Container(
-                  margin: EdgeInsets.only(left: 25),
-                  child: Stack(
-                    overflow: Overflow.visible,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          commentTextEdit.clear();
-                          // CommonModal 点击评论数弹出评论区
-                          _showCommentWidget();
-                        },
-                        child: Icon(
-                          MyIcons.icon_talk,
-                          size: 28,
-                        ),
+        ),
+        logo
+            ? Container(
+                margin: EdgeInsets.only(left: 25),
+                child: Stack(
+                  overflow: Overflow.visible,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        commentTextEdit.clear();
+                        // CommonModal 点击评论数弹出评论区
+                        _showCommentWidget();
+                      },
+                      child: Icon(
+                        MyIcons.icon_talk,
+                        size: 28,
                       ),
-                      msgCount > 0
-                          ? Positioned(
-                              left: 18,
-                              top: -10,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: ThemeColor.primaryColor,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(12))),
-                                constraints: BoxConstraints(
-                                  minWidth: 20,
-                                  minHeight: 20,
-                                ),
-                                child: Center(
-                                    child: Text(
-                                  msgCount > 99 ? '99+' : '$msgCount',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                )),
-                              ),
-                            )
-                          : Container(),
-                    ],
-                  ))
-              : Container(),
-          logo
-              ? Container(
-                  color: Colors.white,
-                  margin: EdgeInsets.only(left: 20),
-                  child: InkWell(
-                    onTap: () {
-                      //收藏
-                      API.shared.server.setFavoriteStatus({
-                        'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
-                        'resourceId': widget.resourceId,
-                      }).then((res) {
-                        EasyLoading.showToast(_startIcon ? '取消收藏成功' : '收藏成功');
-                        setState(() {
-                          _startIcon = !_startIcon;
-                        });
-                      });
-                    },
-                    child: Icon(
-                      _startIcon ? MyIcons.icon_star_fill : MyIcons.icon_star,
-                      size: 28,
                     ),
+                    msgCount > 0
+                        ? Positioned(
+                            left: 18,
+                            top: -10,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: ThemeColor.primaryColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              constraints: BoxConstraints(
+                                minWidth: 20,
+                                minHeight: 20,
+                              ),
+                              child: Center(
+                                  child: Text(
+                                msgCount > 99 ? '99+' : '$msgCount',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              )),
+                            ),
+                          )
+                        : Container(),
+                  ],
+                ))
+            : Container(),
+        logo
+            ? Container(
+                color: Colors.white,
+                margin: EdgeInsets.only(left: 20),
+                child: InkWell(
+                  onTap: () {
+                    //收藏
+
+                  },
+                  child: Icon(
+                    _startIcon ? MyIcons.icon_star_fill : MyIcons.icon_star,
+                    size: 28,
                   ),
-                )
-              : Container()
-        ],
-      ),
+                ),
+              )
+            : Container()
+      ],
     );
   }
 
