@@ -5,7 +5,6 @@ import 'host.dart';
 
 extension founAPI on API {
   Foundation get foundation => Foundation();
-  FoundationHotFix get foundationHotFix => FoundationHotFix();
 }
 
 class Foundation extends SubAPI {
@@ -64,11 +63,3 @@ class Foundation extends SubAPI {
   sendSMS(params) async => normalPost('/sms/send-captcha',params: params);
 }
 
-class FoundationHotFix extends SubAPI {
-  @override
-  String get middle => "/medclouds-foundation/${API.shared.defaultSystem}/${API.shared.defaultClient}";
-  feedbackServer(params){
-    return normalPost("/learn-resource/feedback",params: params);
-  }
-
-}

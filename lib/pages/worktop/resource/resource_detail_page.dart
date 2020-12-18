@@ -450,7 +450,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     }
     //需提交代码
     if (content != null) {
-      API.shared.foundationHotFix.feedbackServer({
+      API.shared.server.feedbackService({
         'learnPlanId': widget.learnPlanId,
         'resourceId': widget.resourceId,
         'feedback': content,
