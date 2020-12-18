@@ -31,6 +31,7 @@ class ResourceDetailPage extends StatefulWidget {
   final meetingEndTime;
   final taskDetailId;
   final from;
+
   ResourceDetailPage(
       this.learnPlanId,
       this.resourceId,
@@ -40,6 +41,7 @@ class ResourceDetailPage extends StatefulWidget {
       this.meetingEndTime,
       this.taskDetailId,
       this.from);
+
   @override
   _ResourceDetailPageState createState() => _ResourceDetailPageState();
 }
@@ -64,6 +66,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   bool isKeyboardActived = false; //当前键盘是否激活
   int backfocus = 0; //点击返回按钮状态，第二次点击直接返回
   int subscribeId;
+
   Widget resourceRender(ResourceModel data) {
     void openTimer() {
       //需要记录浏览时间
@@ -160,7 +163,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   // 获取收藏状态
   void _getCollect(resourceId) async {
-    API.shared.server.getFavoriteStatus({'bizId': resourceId, 'bizType': 'RESOURCE'}).then((res) {
+    API.shared.server.getFavoriteStatus(
+        {'bizId': resourceId, 'bizType': 'RESOURCE'}).then((res) {
       setState(() {
         _startIcon = res['exists'];
       });
@@ -208,7 +212,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       return Container();
     }
     int learnedTime = data.learnTime ?? 0;
-    String tips = data.resourceType == 'VIDEO' ? '已观看' : '已浏览';
     //文章阅读进入页面直接触发定时器
     if (_timer == null && needReport && data.contentType == 'RICH_TEXT') {
       startCountTimer();
@@ -216,6 +219,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     //视频观看需点击视频观看按钮触发定时器
     return Positioned(
       top: 24,
+      right: 0,
       child: Container(
         padding: EdgeInsets.all(5),
         alignment: Alignment.center,
@@ -223,22 +227,23 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
         decoration: BoxDecoration(
           color: ThemeColor.primaryColor,
           borderRadius: BorderRadius.only(
-              topRight: Radius.circular(15), bottomRight: Radius.circular(15)),
+              topLeft: Radius.circular(15), bottomLeft: Radius.circular(15)),
         ),
         child: Row(
           children: [
             //阅读时间大于需学习时间显示
-            if (learnedTime + _learnTime > data.needLearnTime)
-              Icon(
-                Icons.done,
-                size: 20,
-                color: Colors.white,
-              ),
-            // 定时器时间变化 文章为已浏览 视频为已观看
-            Text(
-              '$tips${learnedTime + (_learnTime ?? 0)}s',
-              style: TextStyle(color: Colors.white),
-            ),
+            learnedTime + _learnTime > data.needLearnTime
+                ? Icon(
+                    Icons.done,
+                    size: 20,
+                    color: Colors.white,
+                  )
+                :
+                // 定时器时间变化 文章为已浏览 视频为已观看
+                Text(
+                    '${learnedTime + (_learnTime ?? 0)}s',
+                    style: TextStyle(color: Colors.white),
+                  )
           ],
         ),
       ),
@@ -421,7 +426,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   }
 
   //发送反馈
-  void sendFeedback(content, {String level='其他'}) {
+  void sendFeedback(content, {String level = '其他'}) {
     //上传反馈 测试使用
     // setState(() {
     //   successFeedback = true;
@@ -448,7 +453,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
         'learnPlanId': widget.learnPlanId,
         'resourceId': widget.resourceId,
         'feedback': content,
-        'level':level
+        'level': level
       }).then((res) {
         setState(() {
           successFeedback = true;
@@ -523,7 +528,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                         ..._feedbackData.map((item) {
                           return GestureDetector(
                             onTap: () {
-                              sendFeedback(item['content'],level: item['level']);
+                              sendFeedback(item['content'],
+                                  level: item['level']);
                             },
                             child: Stack(
                               overflow: Overflow.visible,
@@ -741,7 +747,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     setState(() {
       showFeedback = true;
     });
-    API.shared.foundation.getFeedbackInfo({'businessArea': 'ACADEMIC_PROMOTION'}).then((res) {
+    API.shared.foundation
+        .getFeedbackInfo({'businessArea': 'ACADEMIC_PROMOTION'}).then((res) {
       setState(() {
         _feedbackData = [
           {
