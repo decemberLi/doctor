@@ -6,6 +6,7 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_file_preview/flutter_file_preview.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class Attacement extends StatelessWidget {
   final ResourceModel data;
@@ -23,11 +24,16 @@ class Attacement extends StatelessWidget {
     }
     //计时器
     openTimer();
+    EasyLoading.show();
     await FlutterFilePreview.openFile(
       files[0]['tmpUrl'],
       title: data.title ?? data.resourceName,
       context: context,
+      onLoadFinished: (){
+        EasyLoading.dismiss();
+      }
     );
+
     closeTimer();
   }
 
