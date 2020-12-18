@@ -185,6 +185,10 @@ class _WorktopPageState extends State<WorktopPage>
       );
     }
     // 医生个人信息部分
+    var doctorName = doctorInfoEntity?.doctorName ?? '';
+    if(doctorInfoEntity?.basicInfoAuthStatus == 'NOT_COMPLETE'){
+      doctorName = '待完善';
+    }
     return GestureDetector(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -225,7 +229,7 @@ class _WorktopPageState extends State<WorktopPage>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      doctorInfoEntity?.doctorName ?? '',
+                      doctorName,
                       style: TextStyle(
                           fontSize: 22,
                           color: ThemeColor.colorFF222222,
