@@ -13,22 +13,18 @@ class Sso extends SubAPI {
 
 
   loginByPassword(params) async{
-    EasyLoading.show(status: "登录中...");
     var result = await normalPost(
       '/user/login-by-pwd',
       params: params,
     );
-    EasyLoading.dismiss();
     return result;
   }
 
   loginByCaptCha(params) async{
-    EasyLoading.show(status: "登录中...");
     var result = await normalPost(
       '/user/login-after-register',
       params: params,
     );
-    EasyLoading.dismiss();
     return result;
   }
 

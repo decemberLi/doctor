@@ -124,7 +124,11 @@ class RouteManager {
     PATIENT: (context) => PatientListPage(),
     PATIENT_DETAIL: (context) => PatientDetailPage(),
     COLLECT_DETAIL: (context) => CollectDetailList(),
-    USERINFO_DETAIL: (context) => DoctorUserInfo(),
+    USERINFO_DETAIL: (context) {
+      dynamic data = ModalRoute.of(context).settings.arguments as Map;
+      return DoctorUserInfo(data['doctorData'], data['openType'] ?? 'VIEW',
+          data['qualification'] ?? false);
+    },
     SETTING: (context) => SettingPage(),
     MODIFY_PWD: (context) => UpdatePwdPage(),
     QUALIFICATION_AUTH_STATUS: (context) {

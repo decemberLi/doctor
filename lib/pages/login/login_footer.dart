@@ -1,5 +1,6 @@
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_preview/flutter_file_preview.dart';
@@ -7,8 +8,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String AGREE_KEY = 'AGREE_KEY';
 
+var enableInputBorder = UnderlineInputBorder(
+  borderSide: BorderSide(width: 1, color: ThemeColor.colorFF999999),
+);
+var focusableInputBorder = UnderlineInputBorder(
+  borderSide: BorderSide(width: 1,color: ThemeColor.primaryColor),
+);
+
 class LoginFooter extends StatefulWidget {
   final ValueChanged<bool> onChange;
+
   LoginFooter({this.onChange});
 
   @override
@@ -60,71 +69,76 @@ class _LoginFooterState extends State<LoginFooter> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.centerLeft,
+      width: double.infinity,
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          IconButton(
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-            constraints: BoxConstraints(
-              minWidth: 16,
-              minHeight: 16,
-            ),
-            icon: Icon(
-              Icons.check_circle,
-              color: _agree
-                  ? ThemeColor.primaryColor
-                  : ThemeColor.secondaryGeryColor,
-              size: 16,
-            ),
-            onPressed: saveAgree,
-          ),
-          Expanded(
+          GestureDetector(
             child: Container(
-              padding: EdgeInsets.only(top: 2),
-              width: 260,
-              child: Text.rich(
-                TextSpan(children: [
-                  TextSpan(
-                    text: "登录代表你已阅读并同意 ",
-                    style: MyStyles.greyTextStyle_12,
-                  ),
-                  TextSpan(
-                    text: "《易学术服务协议》",
-                    style: MyStyles.primaryTextStyle_12,
-                    recognizer: _tap1
-                      ..onTap = () {
-                        FlutterFilePreview.openFile(
-                          'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.pdf',
-                          title: '易学术服务协议',
-                          context: context,
-                        );
-                      },
-                  ),
-                  TextSpan(
-                    text: "及 ",
-                    style: MyStyles.greyTextStyle_12,
-                  ),
-                  TextSpan(
-                    text: "《易学术隐私协议》",
-                    style: MyStyles.primaryTextStyle_12,
-                    recognizer: _tap2
-                      ..onTap = () {
-                        FlutterFilePreview.openFile(
-                          'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.pdf',
-                          title: '易学术隐私协议',
-                          context: context,
-                        );
-                      },
-                  ),
-                ]),
-                textAlign: TextAlign.center,
+              child: Icon(
+                Icons.check_circle,
+                color: _agree
+                    ? ThemeColor.primaryColor
+                    : ThemeColor.secondaryGeryColor,
+                size: 15,
+                textDirection: TextDirection.ltr,
               ),
             ),
+            onTap: saveAgree,
           ),
+          Flexible(
+            fit: FlexFit.loose,
+            child: Container(
+              alignment: Alignment.centerLeft,
+              child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "登录代表你已阅读并同意 ",
+                        style: _testStyle(ThemeColor.secondaryGeryColor),
+                      ),
+                      TextSpan(
+                        text: "《易学术服务协议》",
+                        style: _testStyle(ThemeColor.primaryColor),
+                        recognizer: _tap1
+                          ..onTap = () {
+                            FlutterFilePreview.openFile(
+                              'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.pdf',
+                              title: '易学术服务协议',
+                              context: context,
+                            );
+                          },
+                      ),
+                      TextSpan(
+                          text: "及 ",
+                          style: _testStyle(ThemeColor.secondaryGeryColor)),
+                      TextSpan(
+                        text: "《易学术隐私协议》",
+                        style: _testStyle(ThemeColor.primaryColor),
+                        recognizer: _tap2
+                          ..onTap = () {
+                            FlutterFilePreview.openFile(
+                              'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.pdf',
+                              title: '易学术隐私协议',
+                              context: context,
+                            );
+                          },
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                  textWidthBasis: TextWidthBasis.parent),
+            ),
+          )
         ],
       ),
     );
+  }
+
+  _testStyle(Color color) {
+    return TextStyle(
+        color: color, fontSize: 10, textBaseline: TextBaseline.ideographic);
   }
 }
