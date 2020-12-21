@@ -1,3 +1,4 @@
+import 'package:doctor/root_widget.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/debounce.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,15 @@ class BottomBarController extends ChangeNotifier {
   bool _isFavorite = false;
   String _text;
   String _hintText;
+
+  BottomBarController() {
+    eventBus.on().listen((event) {
+      if (event == 'cleanHintText') {
+        _text = '';
+        notifyListeners();
+      }
+    });
+  }
 
   String get hintText => _hintText;
 

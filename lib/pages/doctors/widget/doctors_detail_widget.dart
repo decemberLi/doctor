@@ -131,7 +131,8 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                 child: WebView(
                   javascriptMode: JavascriptMode.unrestricted,
                   initialUrl:
-                      'https://m.e-medclouds.com/mpost/#/detail?id=${widget.postId}&from=${widget.from}',
+                      // 'https://m.e-medclouds.com/mpost/#/detail?id=${widget.postId}&from=${widget.from}',
+                  'https://m-dev.e-medclouds.com/mpost/#/detail?id=${widget.postId}&from=${widget.from}',
                   onWebViewCreated: (controller) => _controller = controller,
                   onPageFinished: (url) {
                     print(url);

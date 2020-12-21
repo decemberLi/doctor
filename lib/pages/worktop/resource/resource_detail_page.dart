@@ -1,14 +1,15 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:io';
+
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/worktop/resource/comment/bottom_bar.dart';
 import 'package:doctor/pages/worktop/resource/comment/comment_list_view.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/pages/worktop/resource/view_model/resource_view_model.dart';
 import 'package:doctor/pages/worktop/resource/widgets/article.dart';
 import 'package:doctor/pages/worktop/resource/widgets/attachment.dart';
-import 'package:doctor/pages/worktop/resource/widgets/video.dart';
 import 'package:doctor/pages/worktop/resource/widgets/questionPage.dart';
+import 'package:doctor/pages/worktop/resource/widgets/video.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/theme/myIcons.dart';
@@ -18,11 +19,10 @@ import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
-import 'package:http_manager/manager.dart';
-import 'package:doctor/http/foundation.dart';
-import 'package:doctor/http/server.dart';
-import 'package:http_manager/manager.dart';
+
+import 'comment/input_bar.dart';
 
 class ResourceDetailPage extends StatefulWidget {
   final learnPlanId;
@@ -282,7 +282,11 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       });
     });
   }
+
   var _bottomBarController = BottomBarController();
+
+  String text = '';
+
   //下方评论
   Widget commentBottom(data) {
     if (data.resourceType == 'QUESTIONNAIRE' ||
@@ -296,16 +300,25 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       ),
       child: BottomBarWidget(
         isShowLikeBtn: false,
-        hintText: '评论',
-        text: '',
+        hintText: '请输入您的问题或评论',
+        text: text,
         controller: _bottomBarController,
-        commentCallback: (){
+        commentCallback: () {
           _showCommentWidget();
         },
-        inputCallback: (){
-
+        inputCallback: () async {
+          String cacheContent = await InputBarHelper.showInputBar(
+              context, '请输入您的问题或评论', null, null, null, (msg) {
+            commentContent = msg;
+            sendCommentInfo();
+            InputBarHelper.reset();
+            return true;
+          });
+          setState(() {
+            _bottomBarController.text = cacheContent;
+          });
         },
-        collectCallback: (){
+        collectCallback: () {
           API.shared.server.setFavoriteStatus({
             'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
             'resourceId': widget.resourceId,
@@ -453,14 +466,17 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                     color: Colors.white,
                                     // borderRadius:
                                     // BorderRadius.all(Radius.circular(15)),
-                                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
                                   ),
-                                  child:  Column(
+                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         item['content'],
-                                        style: TextStyle(color: Color(0xff444444),fontWeight: FontWeight.w500),
+                                        style: TextStyle(
+                                            color: Color(0xff444444),
+                                            fontWeight: FontWeight.w500),
                                       )
                                     ],
                                   ),
@@ -489,7 +505,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                 height: 33,
                                 child: RaisedButton(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
                                   ),
                                   color: Colors.white,
                                   textColor: ThemeColor.primaryColor,
@@ -506,7 +523,9 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                     children: [
                                       Text(
                                         "撰写评论",
-                                        style: TextStyle(color: Color(0xff222222),fontWeight: FontWeight.w400),
+                                        style: TextStyle(
+                                            color: Color(0xff222222),
+                                            fontWeight: FontWeight.w400),
                                       ),
                                       Icon(
                                         _addFeedback

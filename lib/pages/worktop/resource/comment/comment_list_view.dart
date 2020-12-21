@@ -1,31 +1,37 @@
 import 'dart:async';
 
+import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/worktop/resource/model/comment_list_model.dart';
 import 'package:doctor/pages/worktop/resource/view_model/comment_view_model.dart';
 import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/root_widget.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/time_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:doctor/theme/theme.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:doctor/http/server.dart';
-import 'package:http_manager/manager.dart';
+
+import 'input_bar.dart';
 
 class ShowCommentItems extends StatefulWidget {
   final CommentListItem item;
   final onCommentClick;
   final controller;
   final index;
+
   ShowCommentItems(this.item, this.onCommentClick, this.controller, this.index);
+
   @override
   _ShowCommentItemsState createState() => _ShowCommentItemsState();
 }
 
 class _ShowCommentItemsState extends State<ShowCommentItems> {
   bool showAllReply = false;
+
   //姓名和角色
   Widget repplyItem(String name, String roleType) {
     return Container(
@@ -72,6 +78,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
           data.id,
           data.parentId,
           data.commentUserName,
+          data.commentContent,
           data.commentUserType,
         );
       },
@@ -164,6 +171,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
               widget.item.id,
               widget.item.id,
               widget.item.commentUserName,
+              widget.item.commentContent,
               widget.item.commentUserType,
             );
           },
@@ -304,11 +312,21 @@ class _CommentListPageState extends State<CommentListPage>
     super.dispose();
   }
 
-  onCommentClick(sonId, parent, String name, String type) {
+  onCommentClick(
+      sonId, parent, String name, String commentContent, String type) {
     if (sonId != commentId) {
       commentTextEdit.clear();
     }
-    commentFocusNode.requestFocus(); //设置焦点
+
+    eventBus.fire('cleanHintText');
+    InputBarHelper.showInputBar(
+        context, '请输入您的问题或评论', name, '$sonId', commentContent, (msg) {
+      this.commentContent = msg;
+      sendCommentInfo();
+      InputBarHelper.reset();
+      return true;
+    });
+
     String tips = '正在回复$name ${type == 'DOCTOR' ? '医生' : ''}';
     setState(() {
       parentId = parent;
@@ -350,93 +368,49 @@ class _CommentListPageState extends State<CommentListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Stack(
-      children: [
-        GestureDetector(
-          onDoubleTap: () {
-            //双击初始化弹窗
-            commentTextEdit.clear();
-            commentFocusNode.unfocus();
-            setState(() {
-              parentId = 0;
-              commentId = 0;
-              placeholder = '请输入您的问题或评论';
-              commentContent = '';
-            });
-          },
-          child: ChangeNotifierProvider<CommentListViewModel>.value(
-            value: model,
-            child: Consumer<CommentListViewModel>(
-              builder: (context, model, child) {
-                if (model.isError || model.isEmpty) {
-                  return ViewStateEmptyWidget(onPressed: model.initData);
-                }
-                if (model.isEmpty) {
-                  return ViewStateEmptyWidget(onPressed: model.initData);
-                }
-                return SmartRefresher(
-                  controller: model.refreshController,
-                  header: ClassicHeader(),
-                  footer: ClassicFooter(),
-                  onRefresh: model.refresh,
-                  onLoading: model.loadMore,
-                  enablePullUp: true,
-                  child: ListView.builder(
-                    scrollDirection: scrollDirection,
-                    controller: controller,
-                    itemCount: model.list.length,
-                    itemBuilder: (context, index) {
-                      CommentListItem item = model.list[index];
-                      return ShowCommentItems(
-                          item, onCommentClick, controller, index);
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: MediaQuery.of(context).viewInsets.bottom > 0
-              ? MediaQuery.of(context).viewInsets.bottom
-              : 10,
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            color: Colors.white,
-            child: TextField(
-              onChanged: (text) {
-                setState(() {
-                  commentContent = text;
-                });
-              },
-              controller: commentTextEdit,
-              focusNode: commentFocusNode,
-              minLines: 1,
-              maxLines: 10,
-              autofocus: false,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(10.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                hintText: placeholder,
-                suffix: GestureDetector(
-                  onTap: () {
-                    sendCommentInfo();
-                  },
-                  child: Text(
-                    '发表',
-                    style:
-                        TextStyle(color: ThemeColor.primaryColor, fontSize: 14),
-                  ),
-                ),
+    return GestureDetector(
+      onDoubleTap: () {
+        //双击初始化弹窗
+        commentTextEdit.clear();
+        commentFocusNode.unfocus();
+        setState(() {
+          parentId = 0;
+          commentId = 0;
+          placeholder = '请输入您的问题或评论';
+          commentContent = '';
+        });
+      },
+      child: ChangeNotifierProvider<CommentListViewModel>.value(
+        value: model,
+        child: Consumer<CommentListViewModel>(
+          builder: (context, model, child) {
+            if (model.isError || model.isEmpty) {
+              return ViewStateEmptyWidget(onPressed: model.initData);
+            }
+            if (model.isEmpty) {
+              return ViewStateEmptyWidget(onPressed: model.initData);
+            }
+            return SmartRefresher(
+              controller: model.refreshController,
+              header: ClassicHeader(),
+              footer: ClassicFooter(),
+              onRefresh: model.refresh,
+              onLoading: model.loadMore,
+              enablePullUp: true,
+              child: ListView.builder(
+                scrollDirection: scrollDirection,
+                controller: controller,
+                itemCount: model.list.length,
+                itemBuilder: (context, index) {
+                  CommentListItem item = model.list[index];
+                  return ShowCommentItems(
+                      item, onCommentClick, controller, index);
+                },
               ),
-            ),
-          ),
+            );
+          },
         ),
-      ],
+      ),
     );
   }
 }
