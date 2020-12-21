@@ -127,8 +127,11 @@ class _WorktopPageState extends State<WorktopPage>
       if (entity == null ||
           entity.learnPlanList == null ||
           entity.learnPlanList.length == 0) {
-        return ViewStateEmptyWidget(
-          message: '暂无学习计划',
+        return Container(
+          padding: EdgeInsets.only(top: 60),
+          child: ViewStateEmptyWidget(
+            message: '暂无学习计划',
+          ),
         );
       } else {
         return Container();
