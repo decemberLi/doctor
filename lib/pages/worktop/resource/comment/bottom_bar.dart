@@ -78,15 +78,19 @@ class BottomBarWidget extends StatefulWidget {
   final Callback inputCallback;
   final BottomBarController controller;
   final bool isShowLikeBtn;
+  final bool isShowCommentBtn;
+  final bool isShowCollectBtn;
 
   BottomBarWidget({
     @required String hintText,
     @required String text,
-    @required Callback commentCallback,
-    @required Callback collectCallback,
+    Callback commentCallback,
+    Callback collectCallback,
     @required Callback inputCallback,
     @required BottomBarController controller,
     bool isShowLikeBtn = true,
+    bool isShowCommentBtn = true,
+    bool isShowCollectBtn = true,
     Callback likeCallback,
   })  : this.isShowLikeBtn = isShowLikeBtn,
         this.hintText = hintText,
@@ -95,7 +99,9 @@ class BottomBarWidget extends StatefulWidget {
         this.commentCallback = commentCallback,
         this.collectCallback = collectCallback,
         this.controller = controller,
-        this.inputCallback = inputCallback;
+        this.inputCallback = inputCallback,
+        this.isShowCommentBtn = isShowCommentBtn,
+        this.isShowCollectBtn = isShowCollectBtn;
 
   @override
   State<StatefulWidget> createState() => BottomBarWidgetState();
@@ -151,7 +157,7 @@ class BottomBarWidgetState extends State<BottomBarWidget> {
                             Text(
                               widget.controller.text == null ||
                                       widget.controller.text.length == 0
-                                  ? widget.controller._commentHint
+                                  ? widget.hintText
                                   : widget.controller.text,
                               maxLines: 1,
                               overflow: TextOverflow.clip,
@@ -180,30 +186,40 @@ class BottomBarWidgetState extends State<BottomBarWidget> {
                       ),
                       onTap: debounce(widget.likeCallback),
                     ),
-                  GestureDetector(
-                    child: Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(left: 36),
-                      child: _operatorWidget(
-                          'assets/images/comment_normal.png',
-                          widget.controller.commentHint,
-                          widget.controller.commentCount),
+                  if (widget.isShowCollectBtn)
+                    GestureDetector(
+                      child: Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(left: 36),
+                        child: _operatorWidget(
+                            'assets/images/comment_normal.png',
+                            widget.controller.commentHint,
+                            widget.controller.commentCount),
+                      ),
+                      onTap: debounce(() {
+                        if (widget.commentCallback != null) {
+                          widget.commentCallback();
+                        }
+                      }),
                     ),
-                    onTap: debounce(widget.commentCallback),
-                  ),
-                  GestureDetector(
-                    child: Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(left: 36),
-                      child: _operatorWidget(
-                          widget.controller.isFavorite
-                              ? 'assets/images/collect_checked.png'
-                              : 'assets/images/collect_normal.png',
-                          '收藏',
-                          null),
+                  if (widget.isShowCollectBtn)
+                    GestureDetector(
+                      child: Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(left: 36),
+                        child: _operatorWidget(
+                            widget.controller.isFavorite
+                                ? 'assets/images/collect_checked.png'
+                                : 'assets/images/collect_normal.png',
+                            '收藏',
+                            null),
+                      ),
+                      onTap: debounce(() {
+                        if (widget.collectCallback != null) {
+                          widget.collectCallback();
+                        }
+                      }),
                     ),
-                    onTap: debounce(widget.collectCallback),
-                  ),
                 ],
               );
             }));

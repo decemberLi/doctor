@@ -341,9 +341,11 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   Future _showCommentWidget() {
     return CommonModal.showBottomSheet(context,
         title: '评论区',
+        contentPadding: EdgeInsets.all(0),
         height: Adapt.screenH() * 0.8,
         enableDrag: false,
-        child: CommentListPage(widget.resourceId, widget.learnPlanId));
+        child: CommentListPage(
+            widget.resourceId, widget.learnPlanId, _bottomBarController));
   }
 
   //发送反馈

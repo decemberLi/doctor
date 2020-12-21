@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
+import 'bottom_bar.dart';
 import 'input_bar.dart';
 
 class ShowCommentItems extends StatefulWidget {
@@ -33,7 +34,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
   bool showAllReply = false;
 
   //姓名和角色
-  Widget repplyItem(String name, String roleType) {
+  Widget replyItem(String name, String roleType) {
     return Container(
       margin: EdgeInsets.all(5),
       child: Row(
@@ -67,7 +68,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
   }
 
 // 子回复
-  Widget commentRepplyItem(CommentSecond data) {
+  Widget commentReplyItem(CommentSecond data) {
     print(
       data.commentUserType,
     );
@@ -107,18 +108,35 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      repplyItem(data.commentUserName, data.commentUserType),
-                      Text('回复'),
-                      repplyItem(data.respondent, data.respondentUserType),
+                      replyItem(data.commentUserName, data.commentUserType),
+                      // if (data.respondentContent == null ||
+                      //     data.respondentContent == '')
+                      //   Text('回复'),
+                      // if (data.respondentContent == null ||
+                      //     data.respondentContent == '')
+                      //   replyItem(data.respondent, data.respondentUserType),
                     ],
                   ),
+                  if (data.respondentContent != null &&
+                      data.respondentContent != '')
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        color: Color(0xFFF6F6F6),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 7),
+                      margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
+                      child: Text(
+                        '回复 ${data.respondent}：${data.respondentContent}',
+                        style: TextStyle(
+                            fontSize: 12, color: ThemeColor.colorFF999999),
+                      ),
+                    ),
                   Container(
                     margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
                     child: Text(
                       data.deleted ? '该评论已删除' : data.commentContent,
-                      style: TextStyle(
-                        color: Color(0xff0b0b0b),
-                      ),
+                      style: TextStyle(color: Color(0xff0b0b0b)),
                     ),
                   ),
                   Container(
@@ -149,12 +167,12 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
       if (secondLength > 2 && !showAllReply) {
         return secondItem
             .getRange(0, 2)
-            .map((e) => commentRepplyItem(e))
+            .map((e) => commentReplyItem(e))
             .toList();
       } else {
         return secondLength == 0
             ? [Container()]
-            : secondItem.map((e) => commentRepplyItem(e)).toList();
+            : secondItem.map((e) => commentReplyItem(e)).toList();
       }
     }
 
@@ -198,7 +216,7 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        repplyItem(widget.item.commentUserName,
+                        replyItem(widget.item.commentUserName,
                             widget.item.commentUserType),
                         Container(
                           margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
@@ -260,8 +278,9 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
 class CommentListPage extends StatefulWidget {
   final int resourceId;
   final int learnPlanId;
+  final BottomBarController bottomBarController;
 
-  CommentListPage(this.resourceId, this.learnPlanId);
+  CommentListPage(this.resourceId, this.learnPlanId, this.bottomBarController);
 
   @override
   _CommentListPageState createState() => _CommentListPageState();
@@ -274,6 +293,7 @@ class _CommentListPageState extends State<CommentListPage>
   int subscribeId;
   AutoScrollController controller;
   CommentListViewModel model;
+  var text = '';
 
   @override
   bool get wantKeepAlive => true;
@@ -368,49 +388,84 @@ class _CommentListPageState extends State<CommentListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return GestureDetector(
-      onDoubleTap: () {
-        //双击初始化弹窗
-        commentTextEdit.clear();
-        commentFocusNode.unfocus();
-        setState(() {
-          parentId = 0;
-          commentId = 0;
-          placeholder = '请输入您的问题或评论';
-          commentContent = '';
-        });
-      },
-      child: ChangeNotifierProvider<CommentListViewModel>.value(
-        value: model,
-        child: Consumer<CommentListViewModel>(
-          builder: (context, model, child) {
-            if (model.isError || model.isEmpty) {
-              return ViewStateEmptyWidget(onPressed: model.initData);
-            }
-            if (model.isEmpty) {
-              return ViewStateEmptyWidget(onPressed: model.initData);
-            }
-            return SmartRefresher(
-              controller: model.refreshController,
-              header: ClassicHeader(),
-              footer: ClassicFooter(),
-              onRefresh: model.refresh,
-              onLoading: model.loadMore,
-              enablePullUp: true,
-              child: ListView.builder(
-                scrollDirection: scrollDirection,
-                controller: controller,
-                itemCount: model.list.length,
-                itemBuilder: (context, index) {
-                  CommentListItem item = model.list[index];
-                  return ShowCommentItems(
-                      item, onCommentClick, controller, index);
+    return Stack(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 26, right: 26, bottom: 50),
+          child: GestureDetector(
+            onDoubleTap: () {
+              //双击初始化弹窗
+              commentTextEdit.clear();
+              commentFocusNode.unfocus();
+              setState(() {
+                parentId = 0;
+                commentId = 0;
+                placeholder = '请输入您的问题或评论';
+                commentContent = '';
+              });
+            },
+            child: ChangeNotifierProvider<CommentListViewModel>.value(
+              value: model,
+              child: Consumer<CommentListViewModel>(
+                builder: (context, model, child) {
+                  if (model.isError || model.isEmpty) {
+                    return ViewStateEmptyWidget(onPressed: model.initData);
+                  }
+                  if (model.isEmpty) {
+                    return ViewStateEmptyWidget(onPressed: model.initData);
+                  }
+                  return SmartRefresher(
+                    controller: model.refreshController,
+                    header: ClassicHeader(),
+                    footer: ClassicFooter(),
+                    onRefresh: model.refresh,
+                    onLoading: model.loadMore,
+                    enablePullUp: true,
+                    child: ListView.builder(
+                      scrollDirection: scrollDirection,
+                      controller: controller,
+                      itemCount: model.list.length,
+                      itemBuilder: (context, index) {
+                        CommentListItem item = model.list[index];
+                        return ShowCommentItems(
+                          item,
+                          onCommentClick,
+                          controller,
+                          index,
+                        );
+                      },
+                    ),
+                  );
                 },
               ),
-            );
-          },
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          left: 0,
+          bottom: 0,
+          child: BottomBarWidget(
+            isShowLikeBtn: false,
+            isShowCommentBtn: false,
+            isShowCollectBtn: false,
+            hintText: '请输入您的问题或评论',
+            text: text,
+            controller: widget.bottomBarController,
+            inputCallback: () async {
+              String cacheContent = await InputBarHelper.showInputBar(
+                  context, '请输入您的问题或评论', null, null, null, (msg) {
+                commentContent = msg;
+                sendCommentInfo();
+                InputBarHelper.reset();
+                return true;
+              });
+              setState(() {
+                widget.bottomBarController.text = cacheContent;
+              });
+            },
+          ),
+        )
+      ],
     );
   }
 }
