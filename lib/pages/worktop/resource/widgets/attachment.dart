@@ -29,7 +29,7 @@ class Attacement extends StatelessWidget {
       files[0]['tmpUrl'],
       title: data.title ?? data.resourceName,
       context: context,
-        loadFinished: (){
+        onLoadFinished: (){
         EasyLoading.dismiss();
       }
     );
