@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String AGREE_KEY = 'AGREE_KEY';
 
 var enableInputBorder = UnderlineInputBorder(
-  borderSide: BorderSide(width: 1, color: ThemeColor.colorFF999999),
+  borderSide: BorderSide(width: 1, color: ThemeColor.colorFFE5E5E5),
 );
 var focusableInputBorder = UnderlineInputBorder(
   borderSide: BorderSide(width: 1,color: ThemeColor.primaryColor),

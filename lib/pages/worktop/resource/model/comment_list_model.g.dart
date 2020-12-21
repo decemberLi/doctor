@@ -19,6 +19,7 @@ CommentSecond _$CommentSecondFromJson(Map<String, dynamic> json) {
     json['parentId'] as int,
     json['respondent'] as String,
     json['respondentUserType'] as String,
+    json['respondentContent'] as String,
   );
 }
 
@@ -35,6 +36,7 @@ Map<String, dynamic> _$CommentSecondToJson(CommentSecond instance) =>
       'parentId': instance.parentId,
       'respondent': instance.respondent,
       'respondentUserType': instance.respondentUserType,
+      'respondentContent': instance.respondentContent,
     };
 
 CommentListItem _$CommentListItemFromJson(Map<String, dynamic> json) {
@@ -55,6 +57,7 @@ CommentListItem _$CommentListItemFromJson(Map<String, dynamic> json) {
             ? null
             : CommentSecond.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    json['respondentContent'] as String,
   );
 }
 
@@ -71,6 +74,7 @@ Map<String, dynamic> _$CommentListItemToJson(CommentListItem instance) =>
       'parentId': instance.parentId,
       'respondent': instance.respondent,
       'respondentUserType': instance.respondentUserType,
+      'respondentContent': instance.respondentContent,
       'secondLevelCommentList':
           instance.secondLevelCommentList?.map((e) => e?.toJson())?.toList(),
     };
