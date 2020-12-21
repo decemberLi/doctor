@@ -12,7 +12,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http_manager/manager.dart';
 import 'package:doctor/http/Sso.dart';
 import 'package:doctor/widgets/YYYEasyLoading.dart';
 
@@ -39,14 +38,19 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
     }
     if (form.validate()) {
       form.save();
-      EasyLoading.instance.flash(() async {
-        var response = await API.shared.sso.loginByPassword(
-            {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
-        LoginInfoModel.shared = LoginInfoModel.fromJson(response);
-        SessionManager.shared.session = LoginInfoModel.shared.ticket;
-        var sp = await SharedPreferences.getInstance();
-        sp.setString(LAST_PHONE, _mobile);
-      }, text: '登录中...');
+      try{
+        EasyLoading.instance.flash(() async {
+          var response = await API.shared.sso.loginByPassword(
+              {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
+          LoginInfoModel.shared = LoginInfoModel.fromJson(response);
+          SessionManager.shared.session = LoginInfoModel.shared.ticket;
+          var sp = await SharedPreferences.getInstance();
+          sp.setString(LAST_PHONE, _mobile);
+        }, text: '登录中...');
+      }on NetError catch (e){
+        EasyLoading.showToast(e.msg);
+      }
+
     }
   }
 
