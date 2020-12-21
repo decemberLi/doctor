@@ -33,6 +33,7 @@ class Attacement extends StatelessWidget {
         EasyLoading.dismiss();
       }
     );
+    EasyLoading.dismiss();
 
     closeTimer();
   }
