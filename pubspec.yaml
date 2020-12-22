@@ -116,7 +116,7 @@ dependencies:
   http_manager:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/http_manager.git
-      ref: 1.0.0
+      ref: 1.0.1
 dependency_overrides:
   camera: 0.5.8+1
 dev_dependencies:

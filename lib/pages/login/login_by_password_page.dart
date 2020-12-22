@@ -1,4 +1,5 @@
 import 'package:common_utils/common_utils.dart';
+import 'package:dio/dio.dart';
 import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
@@ -39,7 +40,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
     if (form.validate()) {
       form.save();
       try{
-        EasyLoading.instance.flash(() async {
+        await EasyLoading.instance.flash(() async {
           var response = await API.shared.sso.loginByPassword(
               {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
           LoginInfoModel.shared = LoginInfoModel.fromJson(response);
@@ -47,8 +48,8 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
           var sp = await SharedPreferences.getInstance();
           sp.setString(LAST_PHONE, _mobile);
         }, text: '登录中...');
-      }on NetError catch (e){
-        EasyLoading.showToast(e.msg);
+      }on DioError catch (e){
+        EasyLoading.showToast(e.message);
       }
 
     }
