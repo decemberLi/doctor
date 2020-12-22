@@ -1,20 +1,18 @@
-enum AppEnvironment { ENV_DEV, ENV_QA, ENV_PROD }
+import 'package:doctor/common/env/environment.dart';
 
 class ApiHost {
-  AppEnvironment _env;
-
   static ApiHost _instance;
+  Environment _environment;
 
-  ApiHost._internal(AppEnvironment env) {
-    if (this._env != null) {
-      throw AssertionError(
-          'App environment config info has already configuration');
+  ApiHost._internal(Environment environment) {
+    if (Environment.instance.env == null) {
+      throw AssertionError('App environment config not config');
     }
-    this._env = env;
+    _environment = environment;
   }
 
-  factory ApiHost.initHostByEnvironment(AppEnvironment env) {
-    _instance = ApiHost._internal(env);
+  factory ApiHost.initHostByEnvironment(Environment environment) {
+    _instance = ApiHost._internal(environment);
     return _instance;
   }
 
@@ -27,11 +25,7 @@ class ApiHost {
   }
 
   String get apiHost {
-    if (_env == null) {
-      throw AssertionError(
-          'You must be call ApiHost.initHostByEnvironment(AppEnvironment env) init host configuration');
-    }
-    switch (_env) {
+    switch (_environment.env) {
       case AppEnvironment.ENV_DEV:
         return 'https://gateway-dev.e-medclouds.com';
       case AppEnvironment.ENV_QA:
@@ -40,6 +34,6 @@ class ApiHost {
         return 'https://gateway.e-medclouds.com';
     }
 
-    throw AssertionError('AppEnvironment config info error, env -> $_env');
+    throw AssertionError('AppEnvironment config info error, env -> ${_environment.env}');
   }
 }
