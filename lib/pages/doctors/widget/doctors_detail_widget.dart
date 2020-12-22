@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:doctor/common/env/environment.dart';
+import 'package:doctor/common/env/url_provider.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_detail_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/theme/theme.dart';
@@ -131,8 +133,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                 child: WebView(
                   javascriptMode: JavascriptMode.unrestricted,
                   initialUrl:
-                      // 'https://m.e-medclouds.com/mpost/#/detail?id=${widget.postId}&from=${widget.from}',
-                  'https://m-dev.e-medclouds.com/mpost/#/detail?id=${widget.postId}&from=${widget.from}',
+                      '${UrlProvider.doctorsCircleUrl(Environment.instance)}?id=${widget.postId}&from=${widget.from}',
                   onWebViewCreated: (controller) => _controller = controller,
                   onPageFinished: (url) {
                     print(url);
