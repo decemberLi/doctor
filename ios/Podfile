@@ -32,6 +32,9 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  
+  
+  pod 'WechatOpenSDK'
 end
 
 post_install do |installer|
@@ -41,4 +44,6 @@ post_install do |installer|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
     end
   end
+  
+  
 end
