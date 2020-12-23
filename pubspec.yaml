@@ -66,7 +66,9 @@ dependencies:
 
   open_file: ^3.0.1
 
-  webview_flutter: ^1.0.7
+  webview_flutter:
+    git:
+      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/webview_flutter.git
 
   # 视频播放
   video_player: ^0.11.0
@@ -105,6 +107,7 @@ dependencies:
   flutter_file_preview:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_file_preview.git
+      ref: 1.0.1
   # 图片压缩
   flutter_image_compress:
     git:
