@@ -35,6 +35,7 @@ target 'Runner' do
   
   
   pod 'WechatOpenSDK'
+  pod 'SnapKit'
 end
 
 post_install do |installer|

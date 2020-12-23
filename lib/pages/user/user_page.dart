@@ -6,6 +6,7 @@ import 'package:doctor/utils/adapt.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/http/ucenter.dart';
+import 'package:flutter/services.dart';
 import 'package:http_manager/manager.dart';
 
 import '../../root_widget.dart';
@@ -398,6 +399,10 @@ class _UserPageState extends State<UserPage> with RouteAware {
                   }),
                   messageItem('关于我们', 'assets/images/aboutus.png', () {
                     Navigator.pushNamed(context, RouteManager.ABOUT_US);
+                  }),
+                  messageItem('分享', 'assets/images/aboutus.png', () {
+                    var channel = MethodChannel("share");
+                    channel.invokeMethod("show");
                   }),
                 ],
               ),
