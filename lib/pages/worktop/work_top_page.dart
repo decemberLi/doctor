@@ -16,7 +16,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../main.dart';
+import '../../root_widget.dart';
 
 class WorktopPage extends StatefulWidget {
   @override
@@ -127,8 +127,11 @@ class _WorktopPageState extends State<WorktopPage>
       if (entity == null ||
           entity.learnPlanList == null ||
           entity.learnPlanList.length == 0) {
-        return ViewStateEmptyWidget(
-          message: '暂无学习计划',
+        return Container(
+          padding: EdgeInsets.only(top: 60),
+          child: ViewStateEmptyWidget(
+            message: '暂无学习计划',
+          ),
         );
       } else {
         return Container();
@@ -185,6 +188,10 @@ class _WorktopPageState extends State<WorktopPage>
       );
     }
     // 医生个人信息部分
+    var doctorName = doctorInfoEntity?.doctorName ?? '';
+    if(doctorInfoEntity?.basicInfoAuthStatus == 'NOT_COMPLETE'){
+      doctorName = '待完善';
+    }
     return GestureDetector(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -225,7 +232,7 @@ class _WorktopPageState extends State<WorktopPage>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      doctorInfoEntity?.doctorName ?? '',
+                      doctorName,
                       style: TextStyle(
                           fontSize: 22,
                           color: ThemeColor.colorFF222222,

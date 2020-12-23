@@ -1,7 +1,9 @@
+import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/pages/medication/view_model/medication_view_model.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -25,6 +27,9 @@ List<SingleChildWidget> independentServices = [
   ),
   ChangeNotifierProvider<MessageCenterViewModel>(
     create: (context) => MessageCenterViewModel(),
+  ),
+  ChangeNotifierProvider<ScrollOutScreenViewModel>(
+    create: (context) => ScrollOutScreenViewModel(),
   ),
 ];
 

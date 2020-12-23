@@ -39,6 +39,8 @@ class LoginInfoModel {
   /// 登录用户详细信息
   LoginUser loginUser;
 
+  static LoginInfoModel shared;
+
   LoginInfoModel({
     this.ticket,
     this.wechatAccounts,

@@ -98,6 +98,7 @@ class PrescriptionModel {
   num weight;
 
   String doctorSignatureUrl;
+  bool exitPatient;
 
   PrescriptionModel({
     this.id,
@@ -116,6 +117,7 @@ class PrescriptionModel {
     this.attachments,
     this.weight,
     this.doctorSignatureUrl,
+    this.exitPatient
   });
   factory PrescriptionModel.fromJson(Map<String, dynamic> json) =>
       _$PrescriptionModelFromJson(json);

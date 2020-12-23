@@ -4,8 +4,9 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'dart:async';
-import 'service.dart';
 import 'common_style.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/ucenter.dart';
 
 class SetNewPwdPage extends StatefulWidget {
   SetNewPwdPage({Key key}) : super(key: key);
@@ -28,7 +29,7 @@ class _SetNewPwdState extends State<SetNewPwdPage> {
       if (newPassword != confirmPassword) {
         EasyLoading.showToast('两次新密码不一致，请重新输入');
       } else {
-        changePassword({'newPassword': newPassword}).then((response) {
+        API.shared.ucenter.changePassword({'newPassword': newPassword}).then((response) {
           if (response is! DioError) {
             const timeout = const Duration(seconds: 1);
             Timer(timeout, () {

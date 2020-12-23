@@ -20,10 +20,15 @@ class MedicationPage extends StatefulWidget {
 }
 
 class _MedicationPageState extends State<MedicationPage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   // 保持不被销毁
   @override
   bool get wantKeepAlive => true;
+  bool _showSheet = false;
+  bool _canChangeSheet = true;
+  Animation<double> _animation;
+  AnimationController _controller;
+  Animation<double> _alphaAnimation;
 
   // MedicationViewModel _model = MedicationViewModel();
 
@@ -37,9 +42,7 @@ class _MedicationPageState extends State<MedicationPage>
       _model.initCart(obj);
       _model.initData();
     });
-    // MedicationViewModel _model =
-    //     Provider.of<MedicationViewModel>(context, listen: false);
-    // _model.initData();
+    _initSheetAnimation();
     super.initState();
   }
 
@@ -49,123 +52,208 @@ class _MedicationPageState extends State<MedicationPage>
     super.dispose();
   }
 
-  // 显示已添加列表
-  Future<void> _showCartSheet() {
-    return CommonModal.showBottomSheet(
-      context,
-      title: '添加列表',
-      child: Consumer<MedicationViewModel>(
-        builder: (context, model, child) {
-          // print(model.cartList);
-          return Container(
-            child: ListView.separated(
-              itemBuilder: (context, index) {
-                DrugModel item = model.cartList[index];
-                return MedicationListItem(
+  Widget _body() {
+    return Consumer<MedicationViewModel>(
+      builder: (context, model, child) {
+        if (model.isError) {
+          return ViewStateErrorWidget(
+              error: model.viewStateError, onPressed: model.initData);
+        }
+        if (model.isEmpty) {
+          return ViewStateEmptyWidget(onPressed: model.initData);
+        }
+        return SmartRefresher(
+          controller: model.refreshController,
+          header: ClassicHeader(),
+          footer: ClassicFooter(),
+          onRefresh: model.refresh,
+          onLoading: model.loadMore,
+          enablePullUp: true,
+          child: ListView.separated(
+            itemBuilder: (context, index) {
+              DrugModel item = model.list[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    RouteManager.MEDICATION_DETAIL,
+                    arguments: item.drugId,
+                  );
+                },
+                child: MedicationListItem(
                   item,
-                  showEdit: true,
-                  showExtra: true,
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider();
-              },
-              itemCount: model.cartList.length,
-            ),
-          );
-        },
-      ),
+                ),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return Divider();
+            },
+            itemCount: model.list.length,
+            padding: EdgeInsets.all(16),
+          ),
+        );
+      },
     );
+  }
+
+  _initSheetAnimation() {
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 200),
+      vsync: this,
+    );
+    var cur = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _animation = Tween(begin: 60.0, end: 400.0).animate(cur)
+      ..addListener(
+        () {
+          setState(() {});
+        },
+      )
+      ..addStatusListener(
+        (status) {
+          if (status == AnimationStatus.dismissed) {
+            setState(() {
+              _showSheet = false;
+            });
+          }
+          if (status == AnimationStatus.forward ||
+              status == AnimationStatus.reverse) {
+            _canChangeSheet = false;
+          } else {
+            _canChangeSheet = true;
+          }
+        },
+      );
+    _alphaAnimation = Tween(begin: 0.0, end: 0.33).animate(cur);
+  }
+
+  /// 显示已添加列表
+  Widget _sheet(int count) {
+    var content = Consumer<MedicationViewModel>(
+      builder: (context, model, child) {
+        var list = ListView.separated(
+          itemBuilder: (context, index) {
+            DrugModel item = model.cartList[index];
+            return MedicationListItem(
+              item,
+              showEdit: true,
+              showExtra: true,
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return Divider(
+              color: Color(0xff222222).withOpacity(0.1),
+              height: 1,
+            );
+          },
+          itemCount: model.cartList.length,
+        );
+        ViewStateEmptyWidget();
+        var empty = Container(
+          color: Colors.white,
+          child: Column(
+            children: [
+              Spacer(),
+              Expanded(
+                child: Image.asset("assets/images/empty.png"),
+              ),
+              Container(
+                height: 5,
+              ),
+              Expanded(
+                child: Text(
+                  "暂无药品添加信息",
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Color(0xff888888).withOpacity(0.7),
+                  ),
+                ),
+              ),
+              Spacer(),
+              // Text("222"),
+            ],
+          ),
+        );
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            ),
+          ),
+          padding: EdgeInsets.only(left: 26, right: 26),
+          height: _animation.value, //
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  "添加列表",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Color(0xff222222),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Divider(
+                color: Color(0xff222222).withOpacity(0.1),
+                height: 1,
+              ),
+              Expanded(child: count == 0 ? empty : list),
+            ],
+          ),
+        );
+      },
+    );
+    return Stack(
+      children: [
+        Opacity(
+          opacity: _alphaAnimation.value,
+          child: GestureDetector(
+            onTap: () {
+              _showOrHiddenSheet(count);
+            },
+            child: Container(
+              color: Color(0xff000000),
+            ),
+          ),
+        ),
+        Container(
+          alignment: Alignment.bottomCenter,
+          child: content,
+        )
+      ],
+    );
+  }
+
+  _showOrHiddenSheet(int count) {
+    if (!_canChangeSheet) return;
+    if (!_showSheet) {
+      _showSheet = !_showSheet;
+      _controller.forward();
+    } else {
+      _controller.animateBack(0.0);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    // return ChangeNotifierProvider<MedicationViewModel>.value(
-    //   value: _model,
-    //   child:
-    // );
+    var model = Provider.of<MedicationViewModel>(context);
+    var count = model.cartList.length ?? 0;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('云药房'),
-        elevation: 1,
-      ),
-      // body: Selector<MedicationViewModel, List>(
-      //   selector: (BuildContext _, MedicationViewModel model) => model.list,
-      //   builder: (BuildContext _, List list, Widget __) {
-      //     if (_model.isError) {
-      //       return ViewStateErrorWidget(
-      //           error: _model.viewStateError, onPressed: _model.initData);
-      //     }
-      //     if (_model.isEmpty) {
-      //       return ViewStateEmptyWidget(onPressed: _model.initData);
-      //     }
-      //     return SmartRefresher(
-      //       controller: _model.refreshController,
-      //       header: ClassicHeader(),
-      //       footer: ClassicFooter(),
-      //       onRefresh: _model.refresh,
-      //       onLoading: _model.loadMore,
-      //       enablePullUp: true,
-      //       child: ListView.separated(
-      //         itemBuilder: (context, index) {
-      //           return Selector<MedicationViewModel, DrugModel>(
-      //             selector: (BuildContext _, MedicationViewModel model) =>
-      //                 model.list[index],
-      //             builder: (BuildContext _, dynamic data, Widget __) {
-      //               DrugModel item = data;
-      //               return MedicationListItem(item);
-      //             },
-      //           );
-      //         },
-      //         separatorBuilder: (BuildContext context, int index) {
-      //           return Divider();
-      //         },
-      //         itemCount: _model.list.length,
-      //         padding: EdgeInsets.all(16),
-      //       ),
-      //     );
-      //   },
-      // ),
-      body: Consumer<MedicationViewModel>(
-        builder: (context, model, child) {
-          if (model.isError) {
-            return ViewStateErrorWidget(
-                error: model.viewStateError, onPressed: model.initData);
-          }
-          if (model.isEmpty) {
-            return ViewStateEmptyWidget(onPressed: model.initData);
-          }
-          return SmartRefresher(
-            controller: model.refreshController,
-            header: ClassicHeader(),
-            footer: ClassicFooter(),
-            onRefresh: model.refresh,
-            onLoading: model.loadMore,
-            enablePullUp: true,
-            child: ListView.separated(
-              itemBuilder: (context, index) {
-                DrugModel item = model.list[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(
-                      RouteManager.MEDICATION_DETAIL,
-                      arguments: item.drugId,
-                    );
-                  },
-                  child: MedicationListItem(
-                    item,
-                  ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider();
-              },
-              itemCount: model.list.length,
-              padding: EdgeInsets.all(16),
-            ),
-          );
+      appBar: CoverAppBar(
+        _alphaAnimation.value,
+        () {
+          _showOrHiddenSheet(count);
         },
+      ),
+      body: Stack(
+        children: [
+          _body(),
+          if (_showSheet) _sheet(count),
+        ],
       ),
       bottomNavigationBar: Consumer<MedicationViewModel>(
         builder: (context, model, child) {
@@ -198,12 +286,13 @@ class _MedicationPageState extends State<MedicationPage>
                         height: 30,
                         text: '完成添加',
                         onPressed: () {
-                          if(model?.cartList?.length != null && model.cartList.length >5){
+                          if (model?.cartList?.length != null &&
+                              model.cartList.length > 5) {
                             EasyLoading.showToast('最多只能选择5种药品');
                             return;
                           }
                           List resultList = [];
-                          for(var each in model.cartList){
+                          for (var each in model.cartList) {
                             resultList.add(DrugModel.fromJson(each.toJson()));
                           }
                           Navigator.pop(context, resultList);
@@ -233,7 +322,7 @@ class _MedicationPageState extends State<MedicationPage>
               ),
             ),
             onPressed: () {
-              _showCartSheet();
+              _showOrHiddenSheet(count);
             },
           ),
           Positioned(
@@ -247,15 +336,16 @@ class _MedicationPageState extends State<MedicationPage>
                 shape: BoxShape.circle,
               ),
               child: Consumer<MedicationViewModel>(
-                  builder: (context, model, child) {
-                return Text(
-                  '${model.cartList.length ?? ''}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                );
-              }),
+                builder: (context, model, child) {
+                  return Text(
+                    '${model.cartList.length ?? ''}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -263,4 +353,38 @@ class _MedicationPageState extends State<MedicationPage>
       floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
     );
   }
+}
+
+class CoverAppBar extends StatelessWidget with PreferredSizeWidget {
+  final double opacity;
+  final Function() dismiss;
+
+  CoverAppBar(this.opacity, this.dismiss);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        AppBar(
+          title: Text('云药房'),
+          elevation: 1,
+        ),
+        if (opacity > 0)
+          Opacity(
+            opacity: opacity,
+            child: GestureDetector(
+              onTap: () {
+                this.dismiss();
+              },
+              child: Container(
+                color: Color(0xff000000),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }

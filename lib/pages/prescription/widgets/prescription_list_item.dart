@@ -10,6 +10,20 @@ class PrescriptionListLitem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget mark = Container();
+    if (!data.exitPatient){
+      mark = Container();
+    }else{
+      mark =  Positioned(
+        right: 30,
+        top: 0,
+        child: Image.asset(
+          'assets/images/${data.orderStatusImage}',
+          width: 90,
+          fit: BoxFit.fitWidth,
+        ),
+      );
+    }
     return Card(
       child: Stack(
         children: [
@@ -75,15 +89,7 @@ class PrescriptionListLitem extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            right: 30,
-            top: 0,
-            child: Image.asset(
-              'assets/images/${data.orderStatusImage}',
-              width: 90,
-              fit: BoxFit.fitWidth,
-            ),
-          ),
+         mark,
         ],
       ),
     );

@@ -1,16 +1,17 @@
 import 'dart:ui';
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/adapt.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:http_manager/manager.dart';
 
 class GuidePage extends StatefulWidget {
   static const List<String> images = <String>[
-    'android1.png',
-    'android2.png',
-    'android3.png',
+    'android1.jpg',
+    'android2.jpg',
+    'android5.png',
+    'android3.jpg',
     'android4.png',
   ];
 
@@ -58,7 +59,7 @@ class _GuidePageState extends State<GuidePage> {
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
-                  String session = SessionManager().getSession();
+                  String session = SessionManager.shared.session;
                   String nextRoute = RouteManager.HOME;
                   if (session == null) {
                     nextRoute = RouteManager.LOGIN_CAPTCHA;

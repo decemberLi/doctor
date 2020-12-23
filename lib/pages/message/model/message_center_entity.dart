@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'message_center_entity.g.dart';
@@ -10,10 +9,17 @@ class MessageCenterEntity {
   int leanPlanCount;
   int interactiveCount;
   int total;
+  int likeCount;
+  int commentCount;
 
-
-  MessageCenterEntity(this.systemCount, this.prescriptionCount,
-      this.leanPlanCount, this.interactiveCount,this.total);
+  MessageCenterEntity(
+      this.systemCount,
+      this.prescriptionCount,
+      this.leanPlanCount,
+      this.interactiveCount,
+      this.total,
+      this.likeCount,
+      this.commentCount);
 
   factory MessageCenterEntity.create() =>
       _$MessageCenterEntityFromJson(Map<String, dynamic>());

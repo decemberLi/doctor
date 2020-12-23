@@ -83,7 +83,11 @@ class LearnListItemWiget extends StatelessWidget {
   Widget circleRender() {
     double percent = 0;
     String text = '开始学习';
-    if (this.item.learnProgress > 0) {
+    if (this.item.learnProgress >= 100) {
+      percent = 1;
+      text = '立即提交';
+    }
+    else if (this.item.learnProgress > 0) {
       percent = this.item.learnProgress / 100;
       text = '继续学习';
     }

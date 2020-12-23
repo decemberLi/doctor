@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
-import 'package:doctor/main.dart';
 import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
-import 'package:doctor/pages/user/service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/material.dart';
+import 'package:doctor/http/ucenter.dart';
+import 'package:http_manager/manager.dart';
+
+import '../../root_widget.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -33,13 +35,13 @@ class _UserPageState extends State<UserPage> with RouteAware {
   //authStatus:认证状态(WAIT_VERIFY-待认证、VERIFYING-认证中、FAIL-认证失败、PASS-认证通过）
   _doctorInfo() async {
     try {
-      var basicData = await getBasicData();
+      var basicData = await API.shared.ucenter.getBasicData();
       if (basicData is! DioError) {
         setState(() {
           doctorData = basicData;
         });
       }
-      var basicNumData = await getBasicNum();
+      var basicNumData = await API.shared.ucenter.getBasicNum();
       if (basicNumData is! DioError) {
         setState(() {
           numData = basicNumData;
@@ -183,6 +185,13 @@ class _UserPageState extends State<UserPage> with RouteAware {
     if (numData == null) {
       return Container();
     }
+    var favoriteServerNum = 0;
+    var favoriteFoundationNum = 0;
+    try {
+      favoriteServerNum = numData['favoriteServerNum'] as int;
+      favoriteFoundationNum = numData["favoriteFoundationNum"] as int;
+    } catch (e) {}
+    var facNum = favoriteServerNum + favoriteFoundationNum;
     return CommonStack(
       body: SafeArea(
         child: Column(
@@ -344,12 +353,11 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  boxItem('assets/images/collectInfo.png',
-                      numData['favoriteNum'], '我的收藏', () {
+                  boxItem('assets/images/collectInfo.png', facNum, '我的收藏', () {
                     Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
                   }),
                   VerticalDivider(),
-                  boxItem('assets/images/patient.png', numData['patientNum'],
+                  boxItem('assets/images/patient.png', numData['patientNum']??'0',
                       '我的患者', () {
                     Navigator.pushNamed(context, RouteManager.PATIENT);
                   }),

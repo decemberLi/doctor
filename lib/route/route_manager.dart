@@ -1,3 +1,4 @@
+import 'package:doctor/pages/doctors/widget/doctors_detail_widget.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/find_password.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
@@ -31,6 +32,7 @@ import 'package:doctor/pages/worktop/learn/lecture_videos/look_lecture_video_pag
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class RouteManager {
   static const String HOME = '/home';
@@ -66,6 +68,7 @@ class RouteManager {
   static const String SETTING = '/setting';
   static const String MODIFY_PWD = '/modify_pwd';
   static const String QUALIFICATION_AUTH_STATUS = '/qualification_auth_status';
+  static const String DOCTORS_ARTICLE_DETAIL = '/doctors_detail';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
@@ -121,7 +124,11 @@ class RouteManager {
     PATIENT: (context) => PatientListPage(),
     PATIENT_DETAIL: (context) => PatientDetailPage(),
     COLLECT_DETAIL: (context) => CollectDetailList(),
-    USERINFO_DETAIL: (context) => DoctorUserInfo(),
+    USERINFO_DETAIL: (context) {
+      dynamic data = ModalRoute.of(context).settings.arguments as Map;
+      return DoctorUserInfo(data['doctorData'], data['openType'] ?? 'VIEW',
+          data['qualification'] ?? false);
+    },
     SETTING: (context) => SettingPage(),
     MODIFY_PWD: (context) => UpdatePwdPage(),
     QUALIFICATION_AUTH_STATUS: (context) {
@@ -132,6 +139,14 @@ class RouteManager {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return UserEditPage(
           obj['lable'], obj['value'], obj['editWay'], obj['function']);
-    }
+    },
+    DOCTORS_ARTICLE_DETAIL: (context) {
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return DoctorsDetailPage(
+        postId: obj['postId'],
+        type: obj['type'],
+        from: obj['from'],
+      );
+    },
   };
 }
