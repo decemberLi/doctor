@@ -39,19 +39,20 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
     }
     if (form.validate()) {
       form.save();
-      try{
+      try {
         await EasyLoading.instance.flash(() async {
           var response = await API.shared.sso.loginByPassword(
               {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
-          LoginInfoModel.shared = LoginInfoModel.fromJson(response);
-          SessionManager.shared.session = LoginInfoModel.shared.ticket;
+          LoginInfoModel infoModel = LoginInfoModel.fromJson(response);
+          SessionManager.shared.session = infoModel.ticket;
           var sp = await SharedPreferences.getInstance();
+          sp.setBool(
+              KEY_DOCTOR_ID_MODIFIED_PWD, infoModel?.modifiedPassword ?? false);
           sp.setString(LAST_PHONE, _mobile);
         }, text: '登录中...');
-      }on DioError catch (e){
+      } on DioError catch (e) {
         EasyLoading.showToast(e.message);
       }
-
     }
   }
 
@@ -175,7 +176,8 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                           ),
                         ),
                         Container(
-                          margin: const EdgeInsets.only(top: 20,left: 11,right: 11),
+                          margin: const EdgeInsets.only(
+                              top: 20, left: 11, right: 11),
                           alignment: Alignment.topLeft,
                           width: 310,
                           child: Row(
