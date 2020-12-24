@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -8,18 +10,28 @@ extension falshEx on EasyLoading {
       await load();
       EasyLoading.dismiss();
     }on DioError catch (e) {
-      EasyLoading.showToast(e.message);
+      if (e.error is SocketException){
+        EasyLoading.showToast("网络错误");
+      }else{
+        EasyLoading.showToast(e.message);
+      }
       rethrow;
     } catch (e){
       EasyLoading.dismiss();
     }
   }
 
-  toastError(Future Function() load, ) async{
+  toastError(Future Function() load ) async{
     try {
       await load();
     }on DioError catch (e) {
-      EasyLoading.showToast(e.message);
+      if (e.error is SocketException){
+        EasyLoading.showToast("网络错误");
+      }else{
+        EasyLoading.showToast(e.message);
+      }
+      rethrow;
+    }catch(e){
       rethrow;
     }
   }
