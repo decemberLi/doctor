@@ -57,6 +57,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   Timer _timer;
   String commentContent = '';
   FocusNode commentFocusNode = FocusNode();
+  FocusNode feedbackFocusNode = FocusNode();
   TextEditingController commentTextEdit = TextEditingController();
   int _learnTime = 0;
   bool showFeedback = false; //是否展示遮罩层
@@ -178,6 +179,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     super.dispose();
     KeyboardVisibilityNotification().removeListener(subscribeId);
     commentFocusNode.dispose();
+    feedbackFocusNode.dispose();
     WidgetsBinding.instance.removeObserver(this); //卸载观察者
     if (_timer != null) {
       _timer.cancel();
@@ -410,7 +412,13 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     return Positioned.fill(
       child: GestureDetector(
         onTap: () {
-          Navigator.pop(context, params); //点击屏幕不反馈直接返回
+          if(feedbackFocusNode.hasFocus){
+            feedbackFocusNode.unfocus();
+          }else{
+            Navigator.pop(context, params);
+          }
+          //
+          //点击屏幕不反馈直接返回
         },
         child: Container(
           child: Stack(
@@ -559,6 +567,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                   child: Column(
                     children: [
                       TextField(
+                        focusNode: feedbackFocusNode,
                         keyboardType: TextInputType.text,
                         minLines: 3,
                         maxLines: 10,
