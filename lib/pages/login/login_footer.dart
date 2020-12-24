@@ -1,5 +1,6 @@
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/common_webview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -72,11 +73,12 @@ class _LoginFooterState extends State<LoginFooter> {
       alignment: Alignment.centerLeft,
       width: double.infinity,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
             child: Container(
+              padding: EdgeInsets.only(top: 1,right: 3),
               child: Icon(
                 Icons.check_circle,
                 color: _agree
@@ -98,17 +100,18 @@ class _LoginFooterState extends State<LoginFooter> {
                       TextSpan(
                         text: "登录代表你已阅读并同意 ",
                         style: _testStyle(ThemeColor.secondaryGeryColor),
+                        recognizer: TapGestureRecognizer()..onTap = (){
+                          saveAgree();
+                        }
                       ),
                       TextSpan(
                         text: "《易学术服务协议》",
                         style: _testStyle(ThemeColor.primaryColor),
                         recognizer: _tap1
                           ..onTap = () {
-                            FlutterFilePreview.openFile(
-                              'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.pdf',
-                              title: '易学术服务协议',
-                              context: context,
-                            );
+                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return CommonWebView('https://static.e-medclouds.com/web/other/protocols/doctor_license_app.html','易学术服务协议');
+                          }));
                           },
                       ),
                       TextSpan(
@@ -119,11 +122,9 @@ class _LoginFooterState extends State<LoginFooter> {
                         style: _testStyle(ThemeColor.primaryColor),
                         recognizer: _tap2
                           ..onTap = () {
-                            FlutterFilePreview.openFile(
-                              'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.pdf',
-                              title: '易学术隐私协议',
-                              context: context,
-                            );
+                            Navigator.push(context, MaterialPageRoute(builder: (context){
+                              return CommonWebView('https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.html','易学术隐私协议');
+                            }));
                           },
                       ),
                     ],

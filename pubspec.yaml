@@ -66,7 +66,9 @@ dependencies:
 
   open_file: ^3.0.1
 
-  webview_flutter: ^1.0.7
+  webview_flutter:
+    git:
+      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/webview_flutter.git
 
   # 视频播放
   video_player: ^0.11.0
