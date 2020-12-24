@@ -102,7 +102,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
             FocusScope.of(context).requestFocus(FocusNode());
           },
           child: Container(
-            padding: EdgeInsets.only(left: 36, right: 28),
+            padding: EdgeInsets.only(left: 33, right: 33),
             child: Form(
                 key: _formKey,
                 child: Stack(
@@ -175,7 +175,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                           ),
                         ),
                         Container(
-                          margin: const EdgeInsets.only(top: 20),
+                          margin: const EdgeInsets.only(top: 20,left: 11,right: 11),
                           alignment: Alignment.topLeft,
                           width: 310,
                           child: Row(
