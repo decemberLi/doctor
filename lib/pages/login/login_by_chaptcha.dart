@@ -147,7 +147,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
             FocusScope.of(context).requestFocus(FocusNode());
           },
           child: Container(
-            padding: EdgeInsets.only(left: 36, right: 28),
+            padding: EdgeInsets.only(left: 33, right: 33),
             child: Form(
               key: _formKey,
               child: Column(
@@ -252,6 +252,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                     ),
                   ),
                   Container(
+                    margin: EdgeInsets.only(left: 11,right: 11),
                     alignment: Alignment.topLeft,
                     width: 310,
                     child: GestureDetector(
