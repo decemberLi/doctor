@@ -169,8 +169,11 @@ class _HomePageState extends State<HomePage>
   }
 
   _checkDoctorBindRelation(String authStatus) async {
+    if(authStatus != 'PASS'){
+      return Future.value(true);
+    }
     // 已认证，未绑定代表
-    if (authStatus != 'PASS' &&
+    if (authStatus == 'PASS' &&
         !await API.shared.ucenter.queryDoctorRelation()) {
       EasyLoading.showToast('您没有绑定医药代表，暂不能开具处方');
       return Future.value(false);
