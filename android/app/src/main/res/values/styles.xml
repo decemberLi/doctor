@@ -15,4 +15,10 @@
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">@android:color/white</item>
     </style>
+
+    <style name="NoTitleTranslucentTheme" parent="Theme.AppCompat.Light.NoActionBar.FullScreen">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/color_transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>

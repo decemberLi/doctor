@@ -42,8 +42,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.emedclouds.doctor.model.ArticleDetailImageActivity"
+            android:name=".pages.ShareActivity"
+            android:theme="@style/NoTitleTranslucentTheme"
             android:screenOrientation="portrait" />
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

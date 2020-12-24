@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">易学术</string>
+    <string name="wx_app_id">WeChatAppId</string>
 </resources>
