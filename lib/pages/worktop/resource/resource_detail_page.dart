@@ -525,7 +525,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "撰写评论",
+                                        "撰写评价",
                                         style: TextStyle(
                                             color: Color(0xff222222),
                                             fontWeight: FontWeight.w400),
@@ -555,7 +555,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                   right: 20,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
                       ? MediaQuery.of(context).viewInsets.bottom
-                      : Adapt.screenH() * 0.30,
+                      : Adapt.screenH() * 0.27,
                   child: Column(
                     children: [
                       TextField(
@@ -588,7 +588,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                 Positioned(
                   left: 20,
                   right: 20,
-                  bottom: Adapt.screenH() * 0.25,
+                  bottom: Adapt.screenH() * 0.22,
                   child: FloatingActionButton.extended(
                     backgroundColor: ThemeColor.primaryColor,
                     onPressed: () {
@@ -596,7 +596,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                       sendFeedback(_feedbackContent);
                     },
                     label: Text(
-                      '发送评价',
+                      '发表评价',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
