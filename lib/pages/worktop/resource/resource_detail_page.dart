@@ -669,91 +669,98 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('资料详情'),
-            elevation: 0,
-          ),
-          resizeToAvoidBottomInset: false,
-          body: ProviderWidget<ResourceDetailViewModel>(
-            model: ResourceDetailViewModel(
-                widget.resourceId, widget.learnPlanId, widget.favoriteId),
-            onModelReady: (model) => model.initData(),
-            builder: (context, model, child) {
-              if (model.isBusy) {
-                return Container();
-              }
-              if (model.isError || model.isEmpty) {
-                return ViewStateEmptyWidget(onPressed: model.initData);
-              }
-              var data = model.data;
-              //根据状态决定是否需要反馈
-              needFeedback = data.learnPlanStatus != 'SUBMIT_LEARN' &&
-                  data.learnPlanStatus != 'ACCEPTED' &&
-                  data.resourceType != 'QUESTIONNAIRE' &&
-                  widget.taskTemplate != 'DOCTOR_LECTURE' &&
-                  widget.learnPlanId != null &&
-                  data.learnTime + _learnTime > 0 &&
-                  data.feedback == null;
-
-              return Container(
-                  // color: ThemeColor.colorFFF3F5F8,
-                  color: data.resourceType == 'VIDEO'
-                      ? Color.fromRGBO(0, 0, 0, 1)
-                      : ThemeColor.colorFFF3F5F8,
-                  child: Stack(
-                    // overflow: Overflow.visible,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          commentFocusNode.unfocus();
-                          isKeyboardActived = false;
-                          setState(() {
-                            logo = true;
-                          });
-                        },
-                        child: resourceRender(data),
-                      ),
-
-                      // 评论
-                      if (data != null) comContent(data),
-                      // 计时器
-                      if (widget.learnPlanId != null) timerContent(data),
-                      //反馈
-                      if (needFeedback && showFeedback) feedbackWidget(data),
-                    ],
-                  ));
-            },
-          ),
+    var content = WillPopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('资料详情'),
+          elevation: 0,
         ),
-        onWillPop: () {
-          dynamic params;
-          if (_learnTime > 0 && widget.learnPlanId != null) {
-            //上传时间
-            //time传当前学习了多少s 后台做累加用
-            params = {
-              'resourceId': widget.resourceId,
-              'learnPlanId': widget.learnPlanId,
-              'time': _learnTime
-            };
-          }
-          if (backfocus == 1) {
-            //第二次点击返回直接退出页面
-            Navigator.pop(context, params);
-          } else {
-            backfocus = backfocus + 1;
-          }
-          if (_timer != null) {
-            _timer.cancel();
-          }
-          if (needFeedback && !showFeedback) {
-            setFeedback();
-          }
-          if (!needFeedback) {
-            Navigator.pop(context, params);
-          }
-          return;
-        });
+        resizeToAvoidBottomInset: false,
+        body: ProviderWidget<ResourceDetailViewModel>(
+          model: ResourceDetailViewModel(
+              widget.resourceId, widget.learnPlanId, widget.favoriteId),
+          onModelReady: (model) => model.initData(),
+          builder: (context, model, child) {
+            if (model.isBusy) {
+              return Container();
+            }
+            if (model.isError || model.isEmpty) {
+              return ViewStateEmptyWidget(onPressed: model.initData);
+            }
+            var data = model.data;
+            //根据状态决定是否需要反馈
+            needFeedback = data.learnPlanStatus != 'SUBMIT_LEARN' &&
+                data.learnPlanStatus != 'ACCEPTED' &&
+                data.resourceType != 'QUESTIONNAIRE' &&
+                widget.taskTemplate != 'DOCTOR_LECTURE' &&
+                widget.learnPlanId != null &&
+                data.learnTime + _learnTime > 0 &&
+                data.feedback == null;
+
+            return Container(
+                // color: ThemeColor.colorFFF3F5F8,
+                color: data.resourceType == 'VIDEO'
+                    ? Color.fromRGBO(0, 0, 0, 1)
+                    : ThemeColor.colorFFF3F5F8,
+                child: Stack(
+                  // overflow: Overflow.visible,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        commentFocusNode.unfocus();
+                        isKeyboardActived = false;
+                        setState(() {
+                          logo = true;
+                        });
+                      },
+                      child: resourceRender(data),
+                    ),
+
+                    // 评论
+                    if (data != null) comContent(data),
+                    // 计时器
+                    if (widget.learnPlanId != null) timerContent(data),
+                    //反馈
+                    if (needFeedback && showFeedback) feedbackWidget(data),
+                  ],
+                ));
+          },
+        ),
+      ),
+      onWillPop: () {
+        dynamic params;
+        if (_learnTime > 0 && widget.learnPlanId != null) {
+          //上传时间
+          //time传当前学习了多少s 后台做累加用
+          params = {
+            'resourceId': widget.resourceId,
+            'learnPlanId': widget.learnPlanId,
+            'time': _learnTime
+          };
+        }
+        if (backfocus == 1) {
+          //第二次点击返回直接退出页面
+          Navigator.pop(context, params);
+        } else {
+          backfocus = backfocus + 1;
+        }
+        if (_timer != null) {
+          _timer.cancel();
+        }
+        if (needFeedback && !showFeedback) {
+          setFeedback();
+        }
+        if (!needFeedback) {
+          Navigator.pop(context, params);
+        }
+        return;
+      },
+    );
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: content,
+      ),
+    );
   }
 }

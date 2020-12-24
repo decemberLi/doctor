@@ -388,7 +388,7 @@ class _CommentListPageState extends State<CommentListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Stack(
+    var content = Stack(
       children: [
         Padding(
           padding: EdgeInsets.only(left: 26, right: 26, bottom: 50),
@@ -466,6 +466,12 @@ class _CommentListPageState extends State<CommentListPage>
           ),
         )
       ],
+    );
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: content,
+      ),
     );
   }
 }
