@@ -15,7 +15,7 @@ import 'package:toast/toast.dart';
 import 'package:doctor/http/foundation.dart';
 import 'package:doctor/http/ucenter.dart';
 import 'package:http_manager/manager.dart';
-
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class DoctorPhysicianQualificationViewModel {
   StreamController<DoctorQualificationModel> _controller =
@@ -50,8 +50,7 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   _recognizeIdCard(Map<String, dynamic> param) async {
-    var result =
-        await API.shared.foundation.ocr(param);
+    var result = await API.shared.foundation.ocr(param);
     return RecognizeEntity.fromJson(result);
   }
 
@@ -296,7 +295,10 @@ class DoctorPhysicianQualificationViewModel {
       return false;
     }
 
-    await API.shared.ucenter.commitDoctorVerifyInfo(_model.physicianInfoEntity.toJson());
+    EasyLoading.instance.flash(() async {
+      await API.shared.ucenter
+          .commitDoctorVerifyInfo(_model.physicianInfoEntity.toJson());
+    },text: '正在提交');
 
     Toast.show('提交成功', context,
         duration: Toast.LENGTH_LONG,

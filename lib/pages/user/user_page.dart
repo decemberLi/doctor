@@ -3,6 +3,7 @@ import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/http/ucenter.dart';
@@ -53,6 +54,11 @@ class _UserPageState extends State<UserPage> with RouteAware {
   @override
   void initState() {
     _doctorInfo();
+    eventBus.on().listen((event) {
+      if (event == KEY_UPDATE_USER_INFO) {
+        _doctorInfo();
+      }
+    });
     super.initState();
   }
 
@@ -357,8 +363,8 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
                   }),
                   VerticalDivider(),
-                  boxItem('assets/images/patient.png', numData['patientNum']??'0',
-                      '我的患者', () {
+                  boxItem('assets/images/patient.png',
+                      numData['patientNum'] ?? '0', '我的患者', () {
                     Navigator.pushNamed(context, RouteManager.PATIENT);
                   }),
                 ],
