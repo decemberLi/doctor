@@ -223,6 +223,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       top: 24,
       right: 0,
       child: Container(
+        width: 50,
         padding: EdgeInsets.all(5),
         alignment: Alignment.center,
         height: 35,
