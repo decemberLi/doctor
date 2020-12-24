@@ -45,12 +45,10 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
       EasyLoading.instance.flash(() async {
         var response = await API.shared.sso.loginByCaptCha(
             {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
-        if (response is! DioError) {
-          LoginInfoModel.shared = LoginInfoModel.fromJson(response);
-          SessionManager.shared.session = LoginInfoModel.shared.ticket;
-          var sp = await SharedPreferences.getInstance();
-          sp.setString(LAST_PHONE, _mobile);
-        }
+        LoginInfoModel.shared = LoginInfoModel.fromJson(response);
+        SessionManager.shared.session = LoginInfoModel.shared.ticket;
+        var sp = await SharedPreferences.getInstance();
+        sp.setString(LAST_PHONE, _mobile);
       }, text: '登录中...');
     }
   }

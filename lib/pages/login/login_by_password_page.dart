@@ -39,18 +39,14 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
     }
     if (form.validate()) {
       form.save();
-      try{
-        await EasyLoading.instance.flash(() async {
-          var response = await API.shared.sso.loginByPassword(
-              {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
-          LoginInfoModel.shared = LoginInfoModel.fromJson(response);
-          SessionManager.shared.session = LoginInfoModel.shared.ticket;
-          var sp = await SharedPreferences.getInstance();
-          sp.setString(LAST_PHONE, _mobile);
-        }, text: '登录中...');
-      }on DioError catch (e){
-        EasyLoading.showToast(e.message);
-      }
+      EasyLoading.instance.flash(() async {
+        var response = await API.shared.sso.loginByPassword(
+            {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
+        LoginInfoModel.shared = LoginInfoModel.fromJson(response);
+        SessionManager.shared.session = LoginInfoModel.shared.ticket;
+        var sp = await SharedPreferences.getInstance();
+        sp.setString(LAST_PHONE, _mobile);
+      }, text: '登录中...');
 
     }
   }
