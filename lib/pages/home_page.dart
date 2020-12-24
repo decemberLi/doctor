@@ -9,6 +9,7 @@ import 'package:doctor/pages/user/user_page.dart';
 import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -60,6 +61,9 @@ class _HomePageState extends State<HomePage>
     }
     if (index == _currentIndex) {
       return;
+    }
+    if(index == 4){
+      eventBus.fire(KEY_UPDATE_USER_INFO);
     }
     if (index == 0) {
       this.updateDoctorInfo();
@@ -169,8 +173,11 @@ class _HomePageState extends State<HomePage>
   }
 
   _checkDoctorBindRelation(String authStatus) async {
+    if(authStatus != 'PASS'){
+      return Future.value(true);
+    }
     // 已认证，未绑定代表
-    if (authStatus != 'PASS' &&
+    if (authStatus == 'PASS' &&
         !await API.shared.ucenter.queryDoctorRelation()) {
       EasyLoading.showToast('您没有绑定医药代表，暂不能开具处方');
       return Future.value(false);

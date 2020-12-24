@@ -119,6 +119,12 @@ class _LearnListPageState extends State<LearnListPage>
               if (widget.learnStatus == 'LEARNING') {
                 model.refreshController.requestRefresh(needMove: false);
               }
+              model.taskTemplate = TASK_TYPE_MAP[_currentTabIndex]['taskTemplate'];
+              model.initData();
+              if (widget.onTaskTypeChange != null) {
+                widget.onTaskTypeChange(
+                    TASK_TYPE_MAP[_currentTabIndex]['taskTemplate']);
+              }
             },
             child: LearnListItemWiget(item, widget.learnStatus),
           );

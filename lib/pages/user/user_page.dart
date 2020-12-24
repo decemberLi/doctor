@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/http/ucenter.dart';
@@ -17,7 +19,7 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> with RouteAware {
-  var doctorData;
+  DoctorDetailInfoEntity doctorData;
   var numData;
   dynamic doctorStatus = {
     'WAIT_VERIFY': '未认证',
@@ -39,7 +41,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
       var basicData = await API.shared.ucenter.getBasicData();
       if (basicData is! DioError) {
         setState(() {
-          doctorData = basicData;
+          doctorData = DoctorDetailInfoEntity.fromJson(basicData);
         });
       }
       var basicNumData = await API.shared.ucenter.getBasicNum();
@@ -54,6 +56,11 @@ class _UserPageState extends State<UserPage> with RouteAware {
   @override
   void initState() {
     _doctorInfo();
+    eventBus.on().listen((event) {
+      if (event == KEY_UPDATE_USER_INFO) {
+        _doctorInfo();
+      }
+    });
     super.initState();
   }
 
@@ -107,7 +114,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                   margin: EdgeInsets.only(left: 5),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: doctorColor[doctorData['authStatus']],
+                    color: doctorColor[doctorData?.authStatus],
                     borderRadius: BorderRadius.all(
                       Radius.circular(28),
                     ),
@@ -116,7 +123,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     minWidth: 70,
                   ),
                   child: Text(
-                    doctorStatus[doctorData['authStatus']],
+                    doctorStatus[doctorData?.authStatus],
                     style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ),
@@ -183,9 +190,6 @@ class _UserPageState extends State<UserPage> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    if (numData == null) {
-      return Container();
-    }
     var favoriteServerNum = 0;
     var favoriteFoundationNum = 0;
     try {
@@ -201,7 +205,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
             GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
-                    arguments: {'doctorData': doctorData});
+                    arguments: {'doctorData': doctorData.toJson()});
               },
               child: Container(
                 padding: EdgeInsets.only(top: 60, left: 16),
@@ -225,27 +229,15 @@ class _UserPageState extends State<UserPage> with RouteAware {
                         image: DecorationImage(
                           // fit: BoxFit.fill,
                           fit: BoxFit.fitWidth,
-                          image: doctorData['fullFacePhoto'] == null
+                          image: doctorData?.fullFacePhoto == null
                               ? AssetImage(
                                   "assets/images/doctorAva.png",
                                 )
                               : NetworkImage(
-                                  doctorData['fullFacePhoto']['url'] +
-                                      '?status=${doctorData['fullFacePhoto']['ossId']}',
+                            '${doctorData?.fullFacePhoto?.url}?status=${doctorData?.fullFacePhoto?.ossId}'
                                 ),
                         ),
                       ),
-                      // child: doctorData['fullFacePhoto'] == null
-                      //     ? Image.asset(
-                      //         "assets/images/avatar.png",
-                      //         width: 80,
-                      //         fit: BoxFit.fitWidth,
-                      //       )
-                      //     : Image.network(
-                      //         doctorData['fullFacePhoto']['url'],
-                      //         width: 80,
-                      //         fit: BoxFit.fitWidth,
-                      //       ),
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 23),
@@ -257,7 +249,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                             child: Row(
                               children: [
                                 Text(
-                                  doctorData['doctorName'],
+                                  doctorData?.doctorName,
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20,
@@ -269,7 +261,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                   margin: EdgeInsets.only(left: 5),
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: doctorData['authStatus'] == 'PASS'
+                                    color: doctorData?.authStatus == 'PASS'
                                         ? Color(0xFFFAAD14)
                                         : Color(0xFFB9B9B9),
                                     borderRadius: BorderRadius.only(
@@ -282,7 +274,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                     textAlign: TextAlign.center,
                                     text: TextSpan(
                                       children: [
-                                        if (doctorData['authStatus'] == 'PASS')
+                                        if (doctorData?.authStatus == 'PASS')
                                           WidgetSpan(
                                             child: Image.asset(
                                               "assets/images/rz.png",
@@ -296,7 +288,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                             color: Colors.white,
                                           ),
                                           text:
-                                              doctorData['authStatus'] == 'PASS'
+                                          doctorData?.authStatus == 'PASS'
                                                   ? '资质认证'
                                                   : '尚未认证',
                                         ),
@@ -311,7 +303,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                             width: Adapt.screenW() * 0.6,
                             padding: EdgeInsets.only(top: 8, bottom: 8),
                             child: Text(
-                              doctorData['hospitalName'],
+                              doctorData?.hospitalName,
                               softWrap: true,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -322,7 +314,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                           ),
                           Container(
                             child: Text(
-                              '${doctorData['departmentsName']} ${doctorData['jobGradeName']}',
+                              '${doctorData?.departmentsName} ${doctorData?.jobGradeName}',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 12),
                             ),
@@ -358,8 +350,8 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
                   }),
                   VerticalDivider(),
-                  boxItem('assets/images/patient.png', numData['patientNum']??'0',
-                      '我的患者', () {
+                  boxItem('assets/images/patient.png',
+                      numData == null ?0:numData['patientNum'] ?? 0, '我的患者', () {
                     Navigator.pushNamed(context, RouteManager.PATIENT);
                   }),
                 ],
@@ -376,20 +368,20 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   messageItem('资质认证', 'assets/images/zzrz.png', () {
-                    if (doctorData['authStatus'] == 'VERIFYING' ||
-                        doctorData['authStatus'] == 'PASS') {
+                    if (doctorData?.authStatus == 'VERIFYING' ||
+                        doctorData?.authStatus == 'PASS') {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => DoctorPhysicianStatusPage(
-                                  doctorData['authStatus'])));
+                                  doctorData?.authStatus)));
                       return;
                     }
                     Navigator.pushNamed(
                       context,
                       RouteManager.USERINFO_DETAIL,
                       arguments: {
-                        'doctorData': doctorData,
+                        'doctorData': doctorData.toJson(),
                         'qualification': true,
                       },
                     );

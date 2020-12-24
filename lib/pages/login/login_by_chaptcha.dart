@@ -45,12 +45,12 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
       EasyLoading.instance.flash(() async {
         var response = await API.shared.sso.loginByCaptCha(
             {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
-        if (response is! DioError) {
-          LoginInfoModel.shared = LoginInfoModel.fromJson(response);
-          SessionManager.shared.session = LoginInfoModel.shared.ticket;
-          var sp = await SharedPreferences.getInstance();
-          sp.setString(LAST_PHONE, _mobile);
-        }
+        LoginInfoModel infoModel = LoginInfoModel.fromJson(response);
+        SessionManager.shared.session = infoModel.ticket;
+        var sp = await SharedPreferences.getInstance();
+        sp.setString(LAST_PHONE, _mobile);
+        sp.setBool(
+        KEY_DOCTOR_ID_MODIFIED_PWD, infoModel.modifiedPassword ?? false);
       }, text: '登录中...');
     }
   }
@@ -147,7 +147,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
             FocusScope.of(context).requestFocus(FocusNode());
           },
           child: Container(
-            padding: EdgeInsets.only(left: 36, right: 28),
+            padding: EdgeInsets.only(left: 33, right: 33),
             child: Form(
               key: _formKey,
               child: Column(
@@ -252,6 +252,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                     ),
                   ),
                   Container(
+                    margin: EdgeInsets.only(left: 11, right: 11),
                     alignment: Alignment.topLeft,
                     width: 310,
                     child: GestureDetector(

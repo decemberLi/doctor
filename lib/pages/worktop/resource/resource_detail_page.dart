@@ -57,6 +57,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   Timer _timer;
   String commentContent = '';
   FocusNode commentFocusNode = FocusNode();
+  FocusNode feedbackFocusNode = FocusNode();
   TextEditingController commentTextEdit = TextEditingController();
   int _learnTime = 0;
   bool showFeedback = false; //是否展示遮罩层
@@ -178,6 +179,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     super.dispose();
     KeyboardVisibilityNotification().removeListener(subscribeId);
     commentFocusNode.dispose();
+    feedbackFocusNode.dispose();
     WidgetsBinding.instance.removeObserver(this); //卸载观察者
     if (_timer != null) {
       _timer.cancel();
@@ -223,6 +225,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       top: 24,
       right: 0,
       child: Container(
+        width: 50,
         padding: EdgeInsets.all(5),
         alignment: Alignment.center,
         height: 35,
@@ -409,7 +412,13 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     return Positioned.fill(
       child: GestureDetector(
         onTap: () {
-          Navigator.pop(context, params); //点击屏幕不反馈直接返回
+          if(feedbackFocusNode.hasFocus){
+            feedbackFocusNode.unfocus();
+          }else{
+            Navigator.pop(context, params);
+          }
+          //
+          //点击屏幕不反馈直接返回
         },
         child: Container(
           child: Stack(
@@ -524,7 +533,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "撰写评论",
+                                        "撰写评价",
                                         style: TextStyle(
                                             color: Color(0xff222222),
                                             fontWeight: FontWeight.w400),
@@ -554,10 +563,11 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                   right: 20,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
                       ? MediaQuery.of(context).viewInsets.bottom
-                      : Adapt.screenH() * 0.30,
+                      : Adapt.screenH() * 0.27,
                   child: Column(
                     children: [
                       TextField(
+                        focusNode: feedbackFocusNode,
                         keyboardType: TextInputType.text,
                         minLines: 3,
                         maxLines: 10,
@@ -587,7 +597,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                 Positioned(
                   left: 20,
                   right: 20,
-                  bottom: Adapt.screenH() * 0.25,
+                  bottom: Adapt.screenH() * 0.22,
                   child: FloatingActionButton.extended(
                     backgroundColor: ThemeColor.primaryColor,
                     onPressed: () {
@@ -595,7 +605,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                       sendFeedback(_feedbackContent);
                     },
                     label: Text(
-                      '发送评价',
+                      '发表评价',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -668,91 +678,98 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('资料详情'),
-            elevation: 0,
-          ),
-          resizeToAvoidBottomInset: false,
-          body: ProviderWidget<ResourceDetailViewModel>(
-            model: ResourceDetailViewModel(
-                widget.resourceId, widget.learnPlanId, widget.favoriteId),
-            onModelReady: (model) => model.initData(),
-            builder: (context, model, child) {
-              if (model.isBusy) {
-                return Container();
-              }
-              if (model.isError || model.isEmpty) {
-                return ViewStateEmptyWidget(onPressed: model.initData);
-              }
-              var data = model.data;
-              //根据状态决定是否需要反馈
-              needFeedback = data.learnPlanStatus != 'SUBMIT_LEARN' &&
-                  data.learnPlanStatus != 'ACCEPTED' &&
-                  data.resourceType != 'QUESTIONNAIRE' &&
-                  widget.taskTemplate != 'DOCTOR_LECTURE' &&
-                  widget.learnPlanId != null &&
-                  data.learnTime + _learnTime > 0 &&
-                  data.feedback == null;
-
-              return Container(
-                  // color: ThemeColor.colorFFF3F5F8,
-                  color: data.resourceType == 'VIDEO'
-                      ? Color.fromRGBO(0, 0, 0, 1)
-                      : ThemeColor.colorFFF3F5F8,
-                  child: Stack(
-                    // overflow: Overflow.visible,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          commentFocusNode.unfocus();
-                          isKeyboardActived = false;
-                          setState(() {
-                            logo = true;
-                          });
-                        },
-                        child: resourceRender(data),
-                      ),
-
-                      // 评论
-                      if (data != null) comContent(data),
-                      // 计时器
-                      if (widget.learnPlanId != null) timerContent(data),
-                      //反馈
-                      if (needFeedback && showFeedback) feedbackWidget(data),
-                    ],
-                  ));
-            },
-          ),
+    var content = WillPopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('资料详情'),
+          elevation: 0,
         ),
-        onWillPop: () {
-          dynamic params;
-          if (_learnTime > 0 && widget.learnPlanId != null) {
-            //上传时间
-            //time传当前学习了多少s 后台做累加用
-            params = {
-              'resourceId': widget.resourceId,
-              'learnPlanId': widget.learnPlanId,
-              'time': _learnTime
-            };
-          }
-          if (backfocus == 1) {
-            //第二次点击返回直接退出页面
-            Navigator.pop(context, params);
-          } else {
-            backfocus = backfocus + 1;
-          }
-          if (_timer != null) {
-            _timer.cancel();
-          }
-          if (needFeedback && !showFeedback) {
-            setFeedback();
-          }
-          if (!needFeedback) {
-            Navigator.pop(context, params);
-          }
-          return;
-        });
+        resizeToAvoidBottomInset: false,
+        body: ProviderWidget<ResourceDetailViewModel>(
+          model: ResourceDetailViewModel(
+              widget.resourceId, widget.learnPlanId, widget.favoriteId),
+          onModelReady: (model) => model.initData(),
+          builder: (context, model, child) {
+            if (model.isBusy) {
+              return Container();
+            }
+            if (model.isError || model.isEmpty) {
+              return ViewStateEmptyWidget(onPressed: model.initData);
+            }
+            var data = model.data;
+            //根据状态决定是否需要反馈
+            needFeedback = data.learnPlanStatus != 'SUBMIT_LEARN' &&
+                data.learnPlanStatus != 'ACCEPTED' &&
+                data.resourceType != 'QUESTIONNAIRE' &&
+                widget.taskTemplate != 'DOCTOR_LECTURE' &&
+                widget.learnPlanId != null &&
+                data.learnTime + _learnTime > 0 &&
+                data.feedback == null;
+
+            return Container(
+                // color: ThemeColor.colorFFF3F5F8,
+                color: data.resourceType == 'VIDEO'
+                    ? Color.fromRGBO(0, 0, 0, 1)
+                    : ThemeColor.colorFFF3F5F8,
+                child: Stack(
+                  // overflow: Overflow.visible,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        commentFocusNode.unfocus();
+                        isKeyboardActived = false;
+                        setState(() {
+                          logo = true;
+                        });
+                      },
+                      child: resourceRender(data),
+                    ),
+
+                    // 评论
+                    if (data != null) comContent(data),
+                    // 计时器
+                    if (widget.learnPlanId != null) timerContent(data),
+                    //反馈
+                    if (needFeedback && showFeedback) feedbackWidget(data),
+                  ],
+                ));
+          },
+        ),
+      ),
+      onWillPop: () {
+        dynamic params;
+        if (_learnTime > 0 && widget.learnPlanId != null) {
+          //上传时间
+          //time传当前学习了多少s 后台做累加用
+          params = {
+            'resourceId': widget.resourceId,
+            'learnPlanId': widget.learnPlanId,
+            'time': _learnTime
+          };
+        }
+        if (backfocus == 1) {
+          //第二次点击返回直接退出页面
+          Navigator.pop(context, params);
+        } else {
+          backfocus = backfocus + 1;
+        }
+        if (_timer != null) {
+          _timer.cancel();
+        }
+        if (needFeedback && !showFeedback) {
+          setFeedback();
+        }
+        if (!needFeedback) {
+          Navigator.pop(context, params);
+        }
+        return;
+      },
+    );
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: content,
+      ),
+    );
   }
 }
