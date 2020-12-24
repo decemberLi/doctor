@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 extension falshEx on EasyLoading {
@@ -5,10 +6,22 @@ extension falshEx on EasyLoading {
     EasyLoading.show(status: text);
     try {
       await load();
-    } catch (e) {
+      EasyLoading.dismiss();
+    }on DioError catch (e) {
+      EasyLoading.showToast(e.message);
       rethrow;
-    } finally {
+    } catch (e){
       EasyLoading.dismiss();
     }
   }
+
+  toastError(Future Function() load, ) async{
+    try {
+      await load();
+    }on DioError catch (e) {
+      EasyLoading.showToast(e.message);
+      rethrow;
+    }
+  }
+
 }
