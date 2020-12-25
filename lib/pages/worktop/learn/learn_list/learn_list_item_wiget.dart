@@ -68,8 +68,9 @@ class ResourceTypeListWiget extends StatelessWidget {
 class LearnListItemWiget extends StatelessWidget {
   final LearnListItem item;
   final String listStatus;
+  final Function onSubmit;
 
-  LearnListItemWiget(this.item, this.listStatus);
+  LearnListItemWiget(this.item, this.listStatus,this.onSubmit);
 
   String timeRender() {
     if (this.item.taskTemplate == 'SALON' ||
@@ -127,6 +128,9 @@ class LearnListItemWiget extends StatelessWidget {
                   'learnPlanId': item.learnPlanId,
                 },
               );
+              if(this.onSubmit != null){
+                this.onSubmit();
+              }
               EasyLoading.showToast('提交成功');
             },
           );

@@ -27,6 +27,10 @@ class LearnListViewModel extends ViewStateRefreshListModel {
         .map<LearnListItem>((item) => LearnListItem.fromJson(item))
         .toList();
   }
+  removeItem(item){
+    list.remove(item);
+    notifyListeners();
+  }
 }
 
 class LearnDetailViewModel extends ViewStateModel {

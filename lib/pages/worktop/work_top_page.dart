@@ -117,7 +117,7 @@ class _WorktopPageState extends State<WorktopPage>
               // 从详情页回来后刷新数据
               _model.initData();
             },
-            child: LearnListItemWiget(item, 'LEARNING'),
+            child: LearnListItemWiget(item, 'LEARNING',(){},),
           ),
         );
       }, childCount: entity?.learnPlanList?.length ?? 0);
