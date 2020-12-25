@@ -5,11 +5,16 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/api.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:doctor/http/server.dart';
 
 /// 渲染资源列表
 class ResourceTypeListWiget extends StatelessWidget {
   final List<ResourceTypeResult> resourceTypeList;
+
   ResourceTypeListWiget(this.resourceTypeList);
 
   Widget renderResourceType(ResourceTypeResult resource) {
@@ -63,6 +68,7 @@ class ResourceTypeListWiget extends StatelessWidget {
 class LearnListItemWiget extends StatelessWidget {
   final LearnListItem item;
   final String listStatus;
+
   LearnListItemWiget(this.item, this.listStatus);
 
   String timeRender() {
@@ -83,11 +89,11 @@ class LearnListItemWiget extends StatelessWidget {
   Widget circleRender() {
     double percent = 0;
     String text = '开始学习';
-    if (this.item.learnProgress >= 100) {
+    if (this.item.learnProgress >= 100 &&
+        this.item.taskTemplate != "DOCTOR_LECTURE") {
       percent = 1;
       text = '立即提交';
-    }
-    else if (this.item.learnProgress > 0) {
+    } else if (this.item.learnProgress > 0) {
       percent = this.item.learnProgress / 100;
       text = '继续学习';
     }
@@ -102,6 +108,30 @@ class LearnListItemWiget extends StatelessWidget {
         Icons.done,
         size: 40,
         color: ThemeColor.primaryColor,
+      );
+    }
+    Widget learn = Text(
+      text,
+      style: TextStyle(
+          color: ThemeColor.primaryColor,
+          fontSize: 14,
+          fontWeight: FontWeight.bold),
+    );
+    if (text == "立即提交") {
+      learn = FlatButton(
+        onPressed: () {
+          EasyLoading.instance.flash(
+            () async {
+              await API.shared.server.learnSubmit(
+                {
+                  'learnPlanId': item.learnPlanId,
+                },
+              );
+              EasyLoading.showToast('提交成功');
+            },
+          );
+        },
+        child: learn,
       );
     }
     return Column(
@@ -122,13 +152,7 @@ class LearnListItemWiget extends StatelessWidget {
             progressColor: ThemeColor.primaryColor,
           ),
         ),
-        Text(
-          text,
-          style: TextStyle(
-              color: ThemeColor.primaryColor,
-              fontSize: 14,
-              fontWeight: FontWeight.bold),
-        ),
+        learn,
       ],
     );
   }
