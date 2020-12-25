@@ -235,6 +235,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
               topLeft: Radius.circular(15), bottomLeft: Radius.circular(15)),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //阅读时间大于需学习时间显示
             learnedTime + _learnTime > data.needLearnTime
@@ -427,7 +428,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: Adapt.screenH() * 0.45,
+                top: 50,
+                // bottom: 0,
                 child: Container(
                   child: Column(
                     // mainAxisSize: MainAxisSize.min,
@@ -563,7 +565,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                   right: 20,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
                       ? MediaQuery.of(context).viewInsets.bottom
-                      : Adapt.screenH() * 0.27,
+                      : Adapt.screenH() * 0.1,
                   child: Column(
                     children: [
                       TextField(
@@ -597,7 +599,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                 Positioned(
                   left: 20,
                   right: 20,
-                  bottom: Adapt.screenH() * 0.22,
+                  bottom: Adapt.screenH() * 0.05,
                   child: FloatingActionButton.extended(
                     backgroundColor: ThemeColor.primaryColor,
                     onPressed: () {
