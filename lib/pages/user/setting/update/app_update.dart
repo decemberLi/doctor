@@ -233,14 +233,22 @@ class AppUpdateHelper {
   }
 
   static void _goAppStore() async {
-    var url = await API.shared.developer.dictList();
-    if (url == null) {
-      return;
+    try {
+      var data = await API.shared.developer.dictList();
+      var records = data["records"] as List;
+      var item = records[0];
+      var url = item["value"];
+      if (url == null) {
+        return;
+      }
+
+      if (await canLaunch(url)) {
+        await launch(url);
+      }
+    }catch (e){
+      EasyLoading.showToast("升级失败");
     }
 
-    if (await canLaunch(url)) {
-      await launch(url);
-    }
   }
 
   static needCheckUpdate() async {
@@ -351,6 +359,7 @@ class AppUpdateDialog extends StatelessWidget {
                         onPressed: _doUpdate ??
                             () {
                               print('立即升级');
+
                             },
                       ),
                     )
