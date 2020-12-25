@@ -8,7 +8,7 @@ class LearnTextIcon extends StatelessWidget {
   final EdgeInsetsGeometry margin;
   LearnTextIcon({
     this.text = '新',
-    this.color = Colors.red,
+    this.color = ThemeColor.primaryColor,
     this.margin = const EdgeInsets.only(bottom: 10, left: 10),
   });
   @override

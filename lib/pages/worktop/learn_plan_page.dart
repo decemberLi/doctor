@@ -82,7 +82,7 @@ class _LearnPlanPageState extends State<LearnPlanPage>
                             top: -8,
                             child: LearnTextIcon(
                               text: '$_waitLearnCount',
-                              color: ThemeColor.primaryColor,
+                              color: Colors.red,
                             ),
                           ),
                       ],
