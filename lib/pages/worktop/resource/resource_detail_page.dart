@@ -428,8 +428,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
               Positioned(
                 left: 0,
                 right: 0,
-                top: 50,
-                // bottom: 0,
+                bottom: Adapt.screenH() * 0.4,
                 child: Container(
                   child: Column(
                     // mainAxisSize: MainAxisSize.min,
@@ -565,7 +564,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                   right: 20,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
                       ? MediaQuery.of(context).viewInsets.bottom
-                      : Adapt.screenH() * 0.1,
+                      : Adapt.screenH() * 0.25,
                   child: Column(
                     children: [
                       TextField(
@@ -599,7 +598,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                 Positioned(
                   left: 20,
                   right: 20,
-                  bottom: Adapt.screenH() * 0.05,
+                  bottom: Adapt.screenH() * 0.20,
                   child: FloatingActionButton.extended(
                     backgroundColor: ThemeColor.primaryColor,
                     onPressed: () {
