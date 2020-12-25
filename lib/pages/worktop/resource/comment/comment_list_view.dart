@@ -72,6 +72,9 @@ class _ShowCommentItemsState extends State<ShowCommentItems> {
     print(
       data.commentUserType,
     );
+    if(data.deleted??true){
+      return Container();
+    }
     return GestureDetector(
       onTap: () {
         // Navigator.pushNamed(context, RouteManager.FIND_PWD);
