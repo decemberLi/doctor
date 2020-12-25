@@ -176,6 +176,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   @override
   void dispose() {
+    InputBarHelper.reset();
     super.dispose();
     KeyboardVisibilityNotification().removeListener(subscribeId);
     commentFocusNode.dispose();
