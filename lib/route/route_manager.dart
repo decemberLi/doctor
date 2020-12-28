@@ -31,6 +31,7 @@ import 'package:doctor/pages/worktop/learn/lecture_videos/lecture_videos_page.da
 import 'package:doctor/pages/worktop/learn/lecture_videos/look_lecture_video_page.dart';
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
+import 'package:doctor/widgets/common_webview.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
@@ -69,6 +70,7 @@ class RouteManager {
   static const String MODIFY_PWD = '/modify_pwd';
   static const String QUALIFICATION_AUTH_STATUS = '/qualification_auth_status';
   static const String DOCTORS_ARTICLE_DETAIL = '/doctors_detail';
+  static const String COMMON_WEB = '/commonWeb';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
@@ -147,6 +149,10 @@ class RouteManager {
         type: obj['type'],
         from: obj['from'],
       );
+    },
+    COMMON_WEB: (context) {
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return CommonWebView(obj['url'],obj['title']);
     },
   };
 }

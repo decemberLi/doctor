@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">易学术</string>
-    <string name="wx_app_id">WeChatAppId</string>
+    <string name="wx_app_id">wxe4e9693e772d44fd</string>
     <string name="share_wechat">微信好友</string>
     <string name="share_wemoment">朋友圈</string>
     <string name="share_save_img">复制链接</string>
     <string name="share_copy_link">保存图片</string>
     <string name="cancel">取消</string>
+    <string name="app_scheme">yyy</string>
 </resources>

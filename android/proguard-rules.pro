@@ -21,3 +21,14 @@
 -keep class com.bumptech.glide.load.data.ParcelFileDescriptorRewinder$InternalRewinder {
   *** rewind();
 }
+
+# 微信 open sdk
+-keep class com.tencent.mm.opensdk.** {
+    *;
+}
+-keep class com.tencent.wxop.** {
+    *;
+}
+-keep class com.tencent.mm.sdk.** {
+    *;
+}
