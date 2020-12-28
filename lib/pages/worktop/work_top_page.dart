@@ -204,7 +204,19 @@ class _WorktopPageState extends State<WorktopPage>
             alignment: Alignment.center,
             child: doctorInfoEntity?.fullFacePhoto == null
                 ? Image.asset("assets/images/doctorHeader.png",width: 60,height: 60,)
-                : Image.network('${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}'),
+                :Container(
+              width: 68,
+              height: 68,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.fitWidth,
+                  image: NetworkImage(
+                      '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}'),
+                ),
+              ),
+            ),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [

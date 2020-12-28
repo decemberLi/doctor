@@ -216,8 +216,24 @@ class _UserPageState extends State<UserPage> with RouteAware {
                       width: 62,
                       height: 62,
                       child: doctorData?.fullFacePhoto == null
-                          ? Image.asset("assets/images/doctorHeader.png",width: 50,height: 50,)
-                          : Image.network('${doctorData?.fullFacePhoto?.url}?status=${doctorData?.fullFacePhoto?.ossId}'),
+                          ? Image.asset(
+                              "assets/images/doctorHeader.png",
+                              width: 50,
+                              height: 50,
+                            )
+                          : Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.fitWidth,
+                                  image: NetworkImage(
+                                      '${doctorData?.fullFacePhoto?.url}?status=${doctorData?.fullFacePhoto?.ossId}'),
+                                ),
+                              ),
+                            ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         boxShadow: [
@@ -278,10 +294,9 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                             fontSize: 12,
                                             color: Colors.white,
                                           ),
-                                          text:
-                                          doctorData?.authStatus == 'PASS'
-                                                  ? '资质认证'
-                                                  : '尚未认证',
+                                          text: doctorData?.authStatus == 'PASS'
+                                              ? '资质认证'
+                                              : '尚未认证',
                                         ),
                                       ],
                                     ),
@@ -341,8 +356,10 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
                   }),
                   VerticalDivider(),
-                  boxItem('assets/images/patient.png',
-                      numData == null ?0:numData['patientNum'] ?? 0, '我的患者', () {
+                  boxItem(
+                      'assets/images/patient.png',
+                      numData == null ? 0 : numData['patientNum'] ?? 0,
+                      '我的患者', () {
                     Navigator.pushNamed(context, RouteManager.PATIENT);
                   }),
                 ],
