@@ -537,8 +537,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                       Text(
                                         "撰写评价",
                                         style: TextStyle(
-                                            color: Color(0xff222222),
-                                            fontWeight: FontWeight.w400),
+                                            color: Color(0xff444444),
+                                            fontWeight: FontWeight.w500),
                                       ),
                                       Icon(
                                         _addFeedback
