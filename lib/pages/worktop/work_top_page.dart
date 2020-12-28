@@ -201,7 +201,10 @@ class _WorktopPageState extends State<WorktopPage>
           Container(
             width: 70,
             height: 70,
-            padding: EdgeInsets.all(100),
+            alignment: Alignment.center,
+            child: doctorInfoEntity?.fullFacePhoto == null
+                ? Image.asset("assets/images/doctorHeader.png",width: 60,height: 60,)
+                : Image.network('${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}'),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -212,17 +215,6 @@ class _WorktopPageState extends State<WorktopPage>
                 ),
               ],
               shape: BoxShape.circle,
-              image: DecorationImage(
-                // fit: BoxFit.fill,
-                fit: BoxFit.fitWidth,
-                image: doctorInfoEntity?.fullFacePhoto == null
-                    ? AssetImage(
-                        "assets/images/doctorAva.png",
-                      )
-                    : NetworkImage(
-                        '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}',
-                      ),
-              ),
             ),
           ),
           Container(

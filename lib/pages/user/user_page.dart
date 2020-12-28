@@ -215,6 +215,9 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     Container(
                       width: 62,
                       height: 62,
+                      child: doctorData?.fullFacePhoto == null
+                          ? Image.asset("assets/images/doctorHeader.png",width: 50,height: 50,)
+                          : Image.network('${doctorData?.fullFacePhoto?.url}?status=${doctorData?.fullFacePhoto?.ossId}'),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         boxShadow: [
@@ -225,17 +228,6 @@ class _UserPageState extends State<UserPage> with RouteAware {
                           ),
                         ],
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                          // fit: BoxFit.fill,
-                          fit: BoxFit.fitWidth,
-                          image: doctorData?.fullFacePhoto == null
-                              ? AssetImage(
-                                  "assets/images/doctorAva.png",
-                                )
-                              : NetworkImage(
-                            '${doctorData?.fullFacePhoto?.url}?status=${doctorData?.fullFacePhoto?.ossId}'
-                                ),
-                        ),
                       ),
                     ),
                     Container(
