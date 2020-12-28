@@ -31,12 +31,15 @@ final uploadData = {
   '擅长疾病': 'speciality',
   '医院': 'hospitalCode',
 };
+
 class DoctorUserInfo extends StatefulWidget {
   dynamic args;
-  String openType ;
+  String openType;
+
   bool qualification;
 
-  DoctorUserInfo(this.args,this.openType,this.qualification );
+  DoctorUserInfo(this.args, this.openType, this.qualification);
+
   @override
   _DoctorUserInfoState createState() => _DoctorUserInfoState();
 }
@@ -48,8 +51,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   bool isGenderModified = false;
   String cacheUserBasicInfoGenderKey = '';
   dynamic args;
-  String _openType ;
+  String _openType;
+
   bool _qualification;
+
   // view || sure
   List departments = [];
   List doctorTitle = [];
@@ -63,7 +68,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     }
     await Future.delayed(Duration(milliseconds: 500)); // Add this line
     final pickedFile =
-    await ImageHelper.pickSingleImage(context, source: index);
+        await ImageHelper.pickSingleImage(context, source: index);
     if (pickedFile != null) {
       cropImage(pickedFile);
     }
@@ -146,27 +151,45 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       child: ListTile(
         title: lable == '头像'
             ? Container(
-          width: 40,
-          height: 40,
-          alignment: Alignment.centerRight,
-          child: CircleAvatar(
-            backgroundColor: Colors.black45,
-            backgroundImage: value == null
-                ? AssetImage(
-              "assets/images/doctorAva.png",
-            )
-                : NetworkImage(
-              value['url'] + '?status=${value['ossId']}',
-            ),
-          ),
-        )
+                width: 40,
+                height: 40,
+                alignment: Alignment.centerRight,
+                child: value == null
+                    ? Container(
+                        width: 40,
+                        height: 40,
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          "assets/images/doctorHeader.png",
+                          width: 20,
+                          height: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x2f000000),
+                              offset: Offset(0, 2),
+                              blurRadius: 10,
+                            ),
+                          ],
+                          shape: BoxShape.circle,
+                        ),
+                      )
+                    : CircleAvatar(
+                        backgroundColor: Colors.white,
+                        backgroundImage: NetworkImage(
+                          value['url'] + '?status=${value['ossId']}',
+                        ),
+                      ),
+              )
             : Text(
-          value ?? '',
-          textAlign: TextAlign.end,
-          softWrap: true,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 14),
-        ),
+                value ?? '',
+                textAlign: TextAlign.end,
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 14),
+              ),
         leading: Text(
           lable,
           style: TextStyle(
@@ -272,15 +295,14 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     if (lable == '职称') {
       listData = [
         ...doctorTitle
-            .map((e) =>
-        new PickerItem(
-            text: Text(e['name'], textAlign: TextAlign.center),
-            value: '${e['code']}'))
+            .map((e) => new PickerItem(
+                text: Text(e['name'], textAlign: TextAlign.center),
+                value: '${e['code']}'))
             .toList()
       ];
       if (defaultCode != null && defaultCode is! int) {
         int index =
-        doctorTitle.indexWhere((element) => element['code'] == defaultCode);
+            doctorTitle.indexWhere((element) => element['code'] == defaultCode);
         defaultCode = index;
       }
       defaultSelect = defaultCode == null ? [0] : [defaultCode];
@@ -292,7 +314,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       departments.forEach((element) {
         List child = element['children'];
         List filterData =
-        child.where((element) => element['code'] == defaultCode).toList();
+            child.where((element) => element['code'] == defaultCode).toList();
         if (filterData.length > 0) {
           parent = element['code'];
           sonIndex =
@@ -301,21 +323,20 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         }
       });
       int parentIndex =
-      departments.indexWhere((element) => element['code'] == parent);
+          departments.indexWhere((element) => element['code'] == parent);
       defaultSelect = defaultCode == null ? [0, 0] : [parentIndex, sonIndex];
       listData = [
         ...departments.map((e) {
           final children = e['children'];
           List<PickerItem<String>> childList = [
             ...children
-                .map((e) =>
-            new PickerItem(
-              text: Text(
-                e['name'],
-                textAlign: TextAlign.center,
-              ),
-              value: '${e['code']}',
-            ))
+                .map((e) => new PickerItem(
+                      text: Text(
+                        e['name'],
+                        textAlign: TextAlign.center,
+                      ),
+                      value: '${e['code']}',
+                    ))
                 .toList()
           ];
           return new PickerItem(
@@ -335,7 +356,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       doctorPractice.forEach((element) {
         List child = element['children'];
         List filterData =
-        child.where((element) => element['code'] == defaultCode).toList();
+            child.where((element) => element['code'] == defaultCode).toList();
         if (filterData.length > 0) {
           parent = element['code'];
           sonIndex =
@@ -344,21 +365,20 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         }
       });
       int parentIndex =
-      doctorPractice.indexWhere((element) => element['code'] == parent);
+          doctorPractice.indexWhere((element) => element['code'] == parent);
       defaultSelect = defaultCode == null ? [0, 0] : [parentIndex, sonIndex];
       listData = [
         ...doctorPractice.map((e) {
           final children = e['children'];
           List<PickerItem<String>> childList = [
             ...children
-                .map((e) =>
-            new PickerItem(
-              text: Text(
-                e['name'],
-                textAlign: TextAlign.center,
-              ),
-              value: '${e['code']}',
-            ))
+                .map((e) => new PickerItem(
+                      text: Text(
+                        e['name'],
+                        textAlign: TextAlign.center,
+                      ),
+                      value: '${e['code']}',
+                    ))
                 .toList()
           ];
           return new PickerItem(
@@ -385,9 +405,9 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         cancelText: '取消',
         confirmText: '确认',
         cancelTextStyle:
-        TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
+            TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
         confirmTextStyle:
-        TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
+            TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
         onConfirm: (Picker picker, List value) async {
           //保存
           List pickerData = picker.getSelectedValues();
@@ -464,11 +484,12 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
 
   @override
   Widget build(BuildContext context) {
-    bool doctorStatus =
-        widget.args['authStatus'] == 'WAIT_VERIFY' || widget.args['authStatus'] == 'FAIL';
+    bool doctorStatus = widget.args['authStatus'] == 'WAIT_VERIFY' ||
+        widget.args['authStatus'] == 'FAIL';
     noCompleteBasicInfo = widget.args['basicInfoAuthStatus'] == 'NOT_COMPLETE';
     var doctorName = widget.args['doctorName'] ?? '';
-    if (noCompleteBasicInfo && widget.args['doctorName'] == widget.args['doctorMobile']) {
+    if (noCompleteBasicInfo &&
+        widget.args['doctorName'] == widget.args['doctorMobile']) {
       doctorName = '';
     }
     return Scaffold(
@@ -494,17 +515,13 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                 children: [
                   widget.openType == 'VIEW' && !widget.qualification
                       ? infoItem('头像', args['fullFacePhoto'], doctorStatus,
-                      'photo', null)
+                          'photo', null)
                       : Container(),
                   !_qualification ? _divider : Container(),
                   infoItem('姓名', doctorName, doctorStatus, 'edit', null),
                   _divider,
-                  infoItem(
-                      '性别',
-                      _genderInfo(noCompleteBasicInfo),
-                      doctorStatus,
-                      'picker',
-                      args['sex']),
+                  infoItem('性别', _genderInfo(noCompleteBasicInfo), doctorStatus,
+                      'picker', args['sex']),
                   _divider,
                   infoItem('医院', args['hospitalName'], doctorStatus, 'hospital',
                       null),
@@ -523,32 +540,32 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                   _qualification ? _divider : Container(),
                   _qualification
                       ? infoItem(
-                      '易学术执业科室',
-                      args['practiceDepartmentName'],
-                      doctorStatus,
-                      'picker',
-                      args['practiceDepartmentCode'])
+                          '易学术执业科室',
+                          args['practiceDepartmentName'],
+                          doctorStatus,
+                          'picker',
+                          args['practiceDepartmentCode'])
                       : Container(),
                 ],
               ),
             ),
             _openType == 'VIEW' && !_qualification
                 ? Card(
-              elevation: 1,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              margin: EdgeInsets.only(left: 16, right: 16, top: 12),
-              child: Column(
-                children: [
-                  infoItem('个人简介', args['briefIntroduction'], true,
-                      'edit', null),
-                  _divider,
-                  infoItem(
-                      '擅长疾病', args['speciality'], true, 'edit', null),
-                ],
-              ),
-            )
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    margin: EdgeInsets.only(left: 16, right: 16, top: 12),
+                    child: Column(
+                      children: [
+                        infoItem('个人简介', args['briefIntroduction'], true,
+                            'edit', null),
+                        _divider,
+                        infoItem(
+                            '擅长疾病', args['speciality'], true, 'edit', null),
+                      ],
+                    ),
+                  )
                 : Container(),
             _buildNextBtnIfNeeded(),
           ],
@@ -557,24 +574,24 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     );
   }
 
-  obtainIsGenderModifiedValue() async{
-    if(args == null){
-      return ;
+  obtainIsGenderModifiedValue() async {
+    if (args == null) {
+      return;
     }
     cacheUserBasicInfoGenderKey = 'gender_key_${args['doctorMobile']}';
     SharedPreferences _refs = await SharedPreferences.getInstance();
     setState(() {
-      isGenderModified = _refs.getBool(cacheUserBasicInfoGenderKey)??false;
+      isGenderModified = _refs.getBool(cacheUserBasicInfoGenderKey) ?? false;
     });
   }
 
   _genderInfo(bool noCompleteBasicInfo) {
     // 基础信息已完成
-    if(!noCompleteBasicInfo){
+    if (!noCompleteBasicInfo) {
       return args['sex'] == 0 ? '女' : '男';
     }
     // 未完成 修改过性别
-    if(isGenderModified){
+    if (isGenderModified) {
       return args['sex'] == 0 ? '女' : '男';
     }
 
@@ -618,7 +635,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
     if (_qualification) {
       // 确认基本信息提示
       TextStyle style =
-      const TextStyle(color: ThemeColor.colorFF222222, fontSize: 12);
+          const TextStyle(color: ThemeColor.colorFF222222, fontSize: 12);
       return Container(
         width: double.infinity,
         margin: EdgeInsets.only(left: 26, top: 10, right: 16),
@@ -655,7 +672,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                         color: ThemeColor.primaryColor, fontSize: 12)),
                 Text(args['rejectReson'] ?? '',
                     style:
-                    TextStyle(color: ThemeColor.primaryColor, fontSize: 12))
+                        TextStyle(color: ThemeColor.primaryColor, fontSize: 12))
               ],
             ),
           ),
@@ -670,16 +687,18 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       return false;
     }
     var entity = DoctorDetailInfoEntity.fromJson(args);
-    if (entity.doctorName == null || entity.doctorName.isEmpty || entity.doctorName == entity.doctorMobile) {
+    if (entity.doctorName == null ||
+        entity.doctorName.isEmpty ||
+        entity.doctorName == entity.doctorMobile) {
       EasyLoading.showToast('请填写姓名');
       return false;
     }
     // 基础信息未完成 & 未修改过基础信息
-    if(noCompleteBasicInfo && !isGenderModified){
+    if (noCompleteBasicInfo && !isGenderModified) {
       EasyLoading.showToast('请选择性别');
       return false;
     }
-    if (entity.sex == null ) {
+    if (entity.sex == null) {
       EasyLoading.showToast('请选择性别');
       return false;
     }
