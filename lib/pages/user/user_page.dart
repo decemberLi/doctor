@@ -393,7 +393,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     Navigator.pushNamed(context, RouteManager.ABOUT_US);
                   }),
                   messageItem('分享', 'assets/images/aboutus.png', () {
-                    var channel = MethodChannel("share");
+                    var channel = MethodChannel('com.e-medclouds-channel');
                     channel.invokeMethod("show");
                   }),
                 ],
