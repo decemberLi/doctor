@@ -272,7 +272,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         await VideoCompress.deleteAllCache();
       }
 
-      await API.shared.server.addLectureSubmit({
+       await API.shared.server.addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
         'videoTitle': this.data.videoTitle,
@@ -285,7 +285,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
           Navigator.of(context).pop(true);
         });
         if(upFinished != null){
-          upFinished("123");
+          print("the value is  ------ ${res["lectureId"]}");
+          upFinished(res["lectureId"]);
         }
       }).catchError((error) {
         EasyLoading.showToast(error.errorMsg);

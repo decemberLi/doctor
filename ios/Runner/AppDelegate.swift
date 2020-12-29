@@ -27,7 +27,7 @@ import Flutter
         let option = launchOptions?[UIApplication.LaunchOptionsKey.url]
         self.naviChannel?.invokeMethod("commonWeb", arguments: option)
     }
-    WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://m-dev.e-medclouds.com/app/");
+    WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
     
     GeneratedPluginRegistrant.register(with: self)
     
@@ -35,7 +35,7 @@ import Flutter
   }
     
     override func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
-        if url.scheme == "com.emedclouds.doctor" {
+        if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com") {
             self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
             return true
         }
@@ -43,7 +43,7 @@ import Flutter
     }
     
     override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        if url.scheme == "com.emedclouds.doctor" {
+        if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com") {
             self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
             return true
         }

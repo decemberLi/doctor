@@ -29,13 +29,15 @@ class ShareVC: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         let names = ["微信","朋友圈","复制链接","保存图片"]
-        for name in names {
+        for (index,name) in names.enumerated() {
             let bg = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 60))
             bg.snp.makeConstraints { (maker) in
                 maker.width.equalTo(50)
             }
             let content = UIView()
             let btn = UIButton()
+            btn.tag = index
+            btn.addTarget(self, action: #selector(onBTN(sender:)), for: .touchUpInside)
             btn.setImage(UIImage(named: name), for: .normal)
             content.addSubview(btn)
             let lbl = UILabel()
@@ -92,6 +94,18 @@ class ShareVC: UIViewController {
         }
     }
     
+    @objc func onBTN(sender : UIButton){
+        if sender.tag == 0{
+            shareToWx()
+        }else if sender.tag == 1 {
+            shareToPYQ()
+        }else if sender.tag == 2 {
+            copyToPasboard()
+        }else if sender.tag == 3 {
+            download()
+        }
+    }
+    
     func shareToWx(){
         guard let path = data["path"] as? String else {return}
         let url = URL(fileURLWithPath: path)
@@ -106,7 +120,11 @@ class ShareVC: UIViewController {
         req.bText = false
         req.message = message
         WXApi.send(req) { (result) in
-            
+            if result {
+                MBProgressHUD.toast(msg: "分享成功")
+            }else{
+                MBProgressHUD.toast(msg: "分享失败")
+            }
         }
         onDismiss()
     }
@@ -126,7 +144,11 @@ class ShareVC: UIViewController {
         req.bText = false
         req.message = message
         WXApi.send(req) { (result) in
-            
+            if result {
+                MBProgressHUD.toast(msg: "分享成功")
+            }else{
+                MBProgressHUD.toast(msg: "分享失败")
+            }
         }
         onDismiss()
     }
