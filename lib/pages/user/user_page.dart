@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/adapt.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/common_stack.dart';
@@ -393,8 +396,8 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     Navigator.pushNamed(context, RouteManager.ABOUT_US);
                   }),
                   messageItem('分享', 'assets/images/aboutus.png', () {
-                    var channel = MethodChannel('com.e-medclouds-channel');
-                    channel.invokeMethod("show");
+                    var map = {"path":"123","url":"http://www.baidu.com"};
+                    MedcloudsNativeApi.instance().share(json.encode(map).toString());
                   }),
                 ],
               ),

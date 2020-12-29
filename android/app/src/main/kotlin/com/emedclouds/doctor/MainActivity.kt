@@ -23,6 +23,7 @@ class MainActivity : FlutterActivity() {
                         return@run
                     }
                     Log.d(tag, String.format("Open share page, args [%s]", call.arguments))
+
                     val jsonObject = JSONObject(call.arguments as String)
                     ShareActivity.openShare(this@MainActivity, jsonObject.getString("path"), jsonObject.getString("url"))
                 }

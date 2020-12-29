@@ -70,7 +70,6 @@ class ShareActivity : ComponentActivity() {
                     .setShareType(WeChatParams.SHARE_IMAGE)
                     .build()
             WeChat(this@ShareActivity).share(shareParam)
-            CustomToast.show(this@ShareActivity, R.string.share_success)
         }
 
         findViewById<LinearLayout>(R.id.share_to_moment).setOnClickListener {
@@ -80,7 +79,6 @@ class ShareActivity : ComponentActivity() {
                     .setShareType(WeChatParams.SHARE_IMAGE)
                     .build()
             WeChat(this@ShareActivity).share(shareParam)
-            CustomToast.show(this@ShareActivity, R.string.share_success)
         }
 
         findViewById<LinearLayout>(R.id.share_copylink).setOnClickListener {
@@ -88,6 +86,7 @@ class ShareActivity : ComponentActivity() {
             val plainText = ClipData.newPlainText(null, url)
             manager.setPrimaryClip(plainText)
             CustomToast.show(this@ShareActivity, R.string.copy_success)
+            finish()
         }
 
         findViewById<LinearLayout>(R.id.share_save_img).setOnClickListener {
@@ -99,6 +98,9 @@ class ShareActivity : ComponentActivity() {
                             saveImage(resource)
                         }
                     })
+        }
+        findViewById<View>(R.id.share_cancel).setOnClickListener {
+            finish()
         }
     }
 
@@ -120,6 +122,7 @@ class ShareActivity : ComponentActivity() {
             resource.compress(Bitmap.CompressFormat.JPEG, 100, fs)
             notifyGallery(imageFile.absolutePath)
             CustomToast.show(this@ShareActivity, R.string.download_success)
+            finish()
         } catch (e: Exception) {
             e.printStackTrace()
             return

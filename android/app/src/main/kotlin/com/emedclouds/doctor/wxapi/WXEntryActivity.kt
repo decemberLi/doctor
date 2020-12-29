@@ -4,12 +4,15 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.emedclouds.doctor.MainActivity
+import com.emedclouds.doctor.R
 import com.emedclouds.doctor.common.constants.keyLaunchParam
 import com.emedclouds.doctor.share.InnerShareListener
 import com.emedclouds.doctor.share.ShareManager
 import com.emedclouds.doctor.share.ShareUtils
+import com.emedclouds.doctor.toast.CustomToast
 import com.tencent.mm.opensdk.constants.ConstantsAPI
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp
@@ -55,10 +58,13 @@ class WXEntryActivity : ComponentActivity(), IWXAPIEventHandler {
             BaseResp.ErrCode.ERR_OK -> {
                 Log.d(tag, "ERR_OK")
                 listener.onComplete(null)
+                CustomToast.show(this@WXEntryActivity, R.string.share_success)
+                finish()
             }
             BaseResp.ErrCode.ERR_USER_CANCEL -> {
                 // 取消（微信现在已不再返回取消，取消一律按ok返回）
                 Log.d(tag, "ERR_USER_CANCEL")
+                Toast.makeText(this@WXEntryActivity, "分享已取消", Toast.LENGTH_SHORT).show()
                 listener.onCancel(null)
             }
             BaseResp.ErrCode.ERR_AUTH_DENIED -> {
