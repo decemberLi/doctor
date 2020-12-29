@@ -52,36 +52,31 @@ class WXEntryActivity : ComponentActivity(), IWXAPIEventHandler {
         if (resp == null) {
             return
         }
-        val listener: InnerShareListener = ShareManager.getInstance().innerShareListener;
-        listener.onComplete(null)
         when (resp.errCode) {
             BaseResp.ErrCode.ERR_OK -> {
                 Log.d(tag, "ERR_OK")
-                listener.onComplete(null)
                 CustomToast.show(this@WXEntryActivity, R.string.share_success)
-                finish()
             }
             BaseResp.ErrCode.ERR_USER_CANCEL -> {
                 // 取消（微信现在已不再返回取消，取消一律按ok返回）
                 Log.d(tag, "ERR_USER_CANCEL")
-                Toast.makeText(this@WXEntryActivity, "分享已取消", Toast.LENGTH_SHORT).show()
-                listener.onCancel(null)
+//                Toast.makeText(this@WXEntryActivity, "分享已取消", Toast.LENGTH_SHORT).show()
             }
-            BaseResp.ErrCode.ERR_AUTH_DENIED -> {
-                // 认证被否决
-            }
-            BaseResp.ErrCode.ERR_SENT_FAILED -> {
-                // 发送失败
-            }
-            BaseResp.ErrCode.ERR_UNSUPPORT -> {
-                // 不支持的错误
-            }
-            BaseResp.ErrCode.ERR_COMM -> {
-                // 一般错误
-            }
+//            BaseResp.ErrCode.ERR_AUTH_DENIED -> {
+//                // 认证被否决
+//            }
+//            BaseResp.ErrCode.ERR_SENT_FAILED -> {
+//                // 发送失败
+//            }
+//            BaseResp.ErrCode.ERR_UNSUPPORT -> {
+//                // 不支持的错误
+//            }
+//            BaseResp.ErrCode.ERR_COMM -> {
+//                // 一般错误
+//            }
             else -> {
+//                Toast.makeText(this@WXEntryActivity, "分享失败", Toast.LENGTH_SHORT).show()
                 Log.d(tag, "errCode: ${resp.errCode}")
-                listener.onError(null, Throwable(resp.errStr))
             }
         }
     }
