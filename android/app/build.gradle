@@ -83,4 +83,7 @@ dependencies {
 
     // WeChat share
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.6'
+
+    // apache io package
+    compile 'commons-io:commons-io:2.8.0'
 }
