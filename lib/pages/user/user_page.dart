@@ -404,10 +404,6 @@ class _UserPageState extends State<UserPage> with RouteAware {
                   messageItem('关于我们', 'assets/images/aboutus.png', () {
                     Navigator.pushNamed(context, RouteManager.ABOUT_US);
                   }),
-                  messageItem('分享', 'assets/images/aboutus.png', () {
-                    var map = {"path":"123","url":"http://www.baidu.com"};
-                    MedcloudsNativeApi.instance().share(json.encode(map).toString());
-                  }),
                 ],
               ),
             ),
