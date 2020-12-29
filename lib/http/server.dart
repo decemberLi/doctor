@@ -105,4 +105,6 @@ class Server extends SubAPI {
   learnPlanUnSubmitNum(params) async => normalPost('/learn-plan/un-submit-num',params: params);
 
   commentList(params) async => normalPost('/comment/list',params: params);
+
+  doctorLectureSharePic(lectureId) => normalPost('/doctor-lecture/share-pic',params:{'lectureId':lectureId});
 }

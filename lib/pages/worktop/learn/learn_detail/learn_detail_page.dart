@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
@@ -5,15 +8,21 @@ import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
+import 'package:http_manager/api.dart';
 import 'package:provider/provider.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:doctor/http/server.dart';
+import 'package:path_provider/path_provider.dart';
 
 // * @Desc: 计划详情页  */
 /// 科室会议
@@ -484,6 +493,24 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                             '',
                                                     'taskName': data.taskName,
                                                     'from': arguments['from'],
+                                                    'upFinished': (lectureID)  {
+                                                      EasyLoading.instance
+                                                          .flash(() async {
+                                                            print("-------------");
+                                                            print("the lectureID == ${lectureID}");
+                                                        var result = await API
+                                                            .shared.server
+                                                            .doctorLectureSharePic(
+                                                            "$lectureID");
+                                                        var appDocDir = await getApplicationDocumentsDirectory();
+                                                        String picPath = appDocDir.path + "/sharePic";
+                                                        await Dio().download(result["url"], picPath);
+                                                        var obj = {"path":picPath,"url":result["codeStr"]};
+                                                        var share = json.encode(obj).toString();
+                                                        MedcloudsNativeApi.instance().share(share);
+                                                        print(result);
+                                                      });
+                                                    }
                                                   },
                                                 );
                                                 if (result == true) {
