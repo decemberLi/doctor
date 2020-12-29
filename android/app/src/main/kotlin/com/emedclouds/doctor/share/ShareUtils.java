@@ -32,7 +32,6 @@ public class ShareUtils {
         return WXAPIFactory.createWXAPI(activity.getApplicationContext(), weChatAppId);
     }
 
-
     private static Handler sMainHandler;
     private static final Object sMainHandlerLock = new Object();
 
