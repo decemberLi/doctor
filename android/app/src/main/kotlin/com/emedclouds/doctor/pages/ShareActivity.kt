@@ -11,12 +11,10 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.view.Gravity
-import android.view.LayoutInflater
+import android.os.FileUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.bumptech.glide.Glide
@@ -28,7 +26,9 @@ import com.emedclouds.doctor.share.platform.WeChat
 import com.emedclouds.doctor.toast.CustomToast
 import com.emedclouds.doctor.utils.FileUtil
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX
+import org.apache.commons.io.IOUtils
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 
 
@@ -70,7 +70,7 @@ class ShareActivity : ComponentActivity() {
                     .setShareType(WeChatParams.SHARE_IMAGE)
                     .build()
             WeChat(this@ShareActivity).share(shareParam)
-            CustomToast.show(this@ShareActivity, R.string.share_success)
+            finish()
         }
 
         findViewById<LinearLayout>(R.id.share_to_moment).setOnClickListener {
@@ -80,7 +80,7 @@ class ShareActivity : ComponentActivity() {
                     .setShareType(WeChatParams.SHARE_IMAGE)
                     .build()
             WeChat(this@ShareActivity).share(shareParam)
-            CustomToast.show(this@ShareActivity, R.string.share_success)
+            finish()
         }
 
         findViewById<LinearLayout>(R.id.share_copylink).setOnClickListener {
@@ -88,22 +88,19 @@ class ShareActivity : ComponentActivity() {
             val plainText = ClipData.newPlainText(null, url)
             manager.setPrimaryClip(plainText)
             CustomToast.show(this@ShareActivity, R.string.copy_success)
+            finish()
         }
 
         findViewById<LinearLayout>(R.id.share_save_img).setOnClickListener {
-            Glide.with(application)
-                    .asBitmap()
-                    .load(url)
-                    .into(object : SimpleTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            saveImage(resource)
-                        }
-                    })
+            saveImage(path)
+        }
+        findViewById<View>(R.id.share_cancel).setOnClickListener {
+            finish()
         }
     }
 
-    private fun saveImage(resource: Bitmap?) {
-        if (resource == null) {
+    private fun saveImage(path: String?) {
+        if (path == null) {
             Toast.makeText(applicationContext, "图片下载失败", Toast.LENGTH_SHORT).show()
             return
         }
@@ -113,18 +110,24 @@ class ShareActivity : ComponentActivity() {
             Toast.makeText(applicationContext, "创建文件失败", Toast.LENGTH_SHORT).show()
             return
         }
-        val imageFile = File(cacheDirectory, imageFileName)
-        var fs: FileOutputStream? = null
+        val destFile = File(cacheDirectory, imageFileName)
+
+        var inStream: FileInputStream? = null;
+        var outStream: FileOutputStream? = null
+        val srcFile = File(path);
         try {
-            fs = FileOutputStream(imageFile)
-            resource.compress(Bitmap.CompressFormat.JPEG, 100, fs)
-            notifyGallery(imageFile.absolutePath)
+            inStream = FileInputStream(srcFile)
+            outStream = FileOutputStream(destFile)
+            IOUtils.copy(inStream, outStream)
+            notifyGallery(destFile.absolutePath)
             CustomToast.show(this@ShareActivity, R.string.download_success)
+            finish()
         } catch (e: Exception) {
             e.printStackTrace()
             return
         } finally {
-            FileUtil.close(fs)
+            IOUtils.close(outStream)
+            IOUtils.close(inStream)
         }
     }
 

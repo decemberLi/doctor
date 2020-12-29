@@ -4,12 +4,15 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.emedclouds.doctor.MainActivity
+import com.emedclouds.doctor.R
 import com.emedclouds.doctor.common.constants.keyLaunchParam
 import com.emedclouds.doctor.share.InnerShareListener
 import com.emedclouds.doctor.share.ShareManager
 import com.emedclouds.doctor.share.ShareUtils
+import com.emedclouds.doctor.toast.CustomToast
 import com.tencent.mm.opensdk.constants.ConstantsAPI
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp
@@ -49,33 +52,31 @@ class WXEntryActivity : ComponentActivity(), IWXAPIEventHandler {
         if (resp == null) {
             return
         }
-        val listener: InnerShareListener = ShareManager.getInstance().innerShareListener;
-        listener.onComplete(null)
         when (resp.errCode) {
             BaseResp.ErrCode.ERR_OK -> {
                 Log.d(tag, "ERR_OK")
-                listener.onComplete(null)
+                CustomToast.show(this@WXEntryActivity, R.string.share_success)
             }
             BaseResp.ErrCode.ERR_USER_CANCEL -> {
                 // 取消（微信现在已不再返回取消，取消一律按ok返回）
                 Log.d(tag, "ERR_USER_CANCEL")
-                listener.onCancel(null)
+//                Toast.makeText(this@WXEntryActivity, "分享已取消", Toast.LENGTH_SHORT).show()
             }
-            BaseResp.ErrCode.ERR_AUTH_DENIED -> {
-                // 认证被否决
-            }
-            BaseResp.ErrCode.ERR_SENT_FAILED -> {
-                // 发送失败
-            }
-            BaseResp.ErrCode.ERR_UNSUPPORT -> {
-                // 不支持的错误
-            }
-            BaseResp.ErrCode.ERR_COMM -> {
-                // 一般错误
-            }
+//            BaseResp.ErrCode.ERR_AUTH_DENIED -> {
+//                // 认证被否决
+//            }
+//            BaseResp.ErrCode.ERR_SENT_FAILED -> {
+//                // 发送失败
+//            }
+//            BaseResp.ErrCode.ERR_UNSUPPORT -> {
+//                // 不支持的错误
+//            }
+//            BaseResp.ErrCode.ERR_COMM -> {
+//                // 一般错误
+//            }
             else -> {
+//                Toast.makeText(this@WXEntryActivity, "分享失败", Toast.LENGTH_SHORT).show()
                 Log.d(tag, "errCode: ${resp.errCode}")
-                listener.onError(null, Throwable(resp.errStr))
             }
         }
     }
