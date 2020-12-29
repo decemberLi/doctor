@@ -1,13 +1,19 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:doctor/http/http_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'view_state.dart';
 
 export 'view_state.dart';
+
+Map<String, String> msgMap = {
+  'networkError': '网络异常，请稍后再试',
+  'httpError': '请求错误',
+  'dataError': '请求错误'
+};
+
 
 class ViewStateModel with ChangeNotifier {
   /// 防止页面销毁后,异步任务才完成,导致报错

@@ -1,5 +1,4 @@
 import 'package:doctor/common/event/event_model.dart';
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
@@ -9,14 +8,16 @@ import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/user/user_page.dart';
 import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/route/route_manager.dart';
-import 'package:doctor/service/ucenter/ucenter_service.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/ucenter.dart';
 
-import '../main.dart';
+import '../root_widget.dart';
 import 'doctors/doctors_home.dart';
 import 'doctors/model/in_screen_event_model.dart';
 
@@ -49,7 +50,7 @@ class _HomePageState extends State<HomePage>
     await AppUpdateHelper.checkUpdate(context);
   }
 
-  void onTabTapped(int index) {
+  void onTabTapped(int index) async {
     if (index == 2) {
       if (isDoctors) {
         eventBus.fire(_outScreenViewModel.event);
@@ -61,15 +62,26 @@ class _HomePageState extends State<HomePage>
     if (index == _currentIndex) {
       return;
     }
-    int preTabIndex = _currentIndex;
+    if(index == 4){
+      eventBus.fire(KEY_UPDATE_USER_INFO);
+    }
     if (index == 0) {
       this.updateDoctorInfo();
     }
+    if (index == 1) {
+      UserInfoViewModel model =
+          Provider.of<UserInfoViewModel>(context, listen: false);
+      if (!await _checkDoctorBindRelation(model.data?.authStatus)) {
+        return;
+      }
+      if (model.data?.authStatus != 'PASS') {
+        _showAuthenticationDialog(model);
+        return;
+      }
+    }
     setState(() {
       _currentIndex = index;
-      if (index == 1) {
-        _showGoToQualificationDialog(preTabIndex);
-      } else if (index == 3) {
+      if (index == 3) {
         _refreshMessageCenterData();
       }
     });
@@ -129,7 +141,7 @@ class _HomePageState extends State<HomePage>
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                SessionManager.loginOutHandler();
+                SessionManager.shared.session = null;
               },
             ),
             FlatButton(
@@ -160,26 +172,22 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  /// 显示去认证弹窗
-  _showGoToQualificationDialog(int preTabIndex) async {
-    UserInfoViewModel model =
-        Provider.of<UserInfoViewModel>(context, listen: false);
-    if (model.data?.authStatus == 'PASS') {
-      if (!await showToastIfNeeded()) {
-        onTabTapped(preTabIndex);
-      }
-      return;
+  _checkDoctorBindRelation(String authStatus) async {
+    if(authStatus != 'PASS'){
+      return Future.value(true);
     }
-    // 如果没有通过认证再次查询，再次判断
-    await model.queryDoctorInfo();
-    if (model.data?.authStatus == 'PASS') {
-      if (!await showToastIfNeeded()) {
-        onTabTapped(preTabIndex);
-      }
-      return;
+    // 已认证，未绑定代表
+    if (authStatus == 'PASS' &&
+        !await API.shared.ucenter.queryDoctorRelation()) {
+      EasyLoading.showToast('您没有绑定医药代表，暂不能开具处方');
+      return Future.value(false);
     }
+    // 未认证状态
+    return Future.value(true);
+  }
 
-    return showCupertinoDialog<bool>(
+  _showAuthenticationDialog(UserInfoViewModel model) {
+    showCupertinoDialog<bool>(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
@@ -196,8 +204,7 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               onPressed: () {
-                Navigator.of(context).pop();
-                onTabTapped(preTabIndex);
+                Navigator.of(context).maybePop(false);
               },
             ),
             FlatButton(
@@ -225,7 +232,7 @@ class _HomePageState extends State<HomePage>
                 );
                 await model.queryDoctorInfo();
                 if (model.data?.authStatus == 'PASS') {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).maybePop(false);
                 }
               },
             ),
@@ -399,14 +406,5 @@ class _HomePageState extends State<HomePage>
         ],
       );
     });
-  }
-
-  showToastIfNeeded() async {
-    if (!await UCenter.queryDoctorRelation()) {
-      EasyLoading.showToast('您没有绑定医药代表，暂不能开具处方');
-      return false;
-    }
-
-    return true;
   }
 }

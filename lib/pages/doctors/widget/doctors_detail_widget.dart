@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:doctor/http/session_manager.dart';
+import 'package:doctor/common/env/environment.dart';
+import 'package:doctor/common/env/url_provider.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_detail_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/theme/theme.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:http_manager/manager.dart';
 
 import '../model/doctor_article_detail_entity.dart';
 
@@ -81,7 +83,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
       'ticket': (jsonMsg, bizType) {
         debugPrint('comment -> param: [$jsonMsg], callJsType: [$bizType] ');
         _callJs(_commonResult(
-            bizType: bizType, content: SessionManager.getLoginInfo().ticket));
+            bizType: bizType, content: SessionManager.shared.session));
       },
       'addNewBizType': (jsonParam, bizType) {
         aMap.putIfAbsent(jsonParam['key'], () => bizType);
@@ -131,7 +133,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                 child: WebView(
                   javascriptMode: JavascriptMode.unrestricted,
                   initialUrl:
-                      'https://m.e-medclouds.com/mpost/#/detail?id=${widget.postId}&from=${widget.from}',
+                      '${UrlProvider.doctorsCircleUrl(Environment.instance)}?id=${widget.postId}&from=${widget.from}',
                   onWebViewCreated: (controller) => _controller = controller,
                   onPageFinished: (url) {
                     print(url);

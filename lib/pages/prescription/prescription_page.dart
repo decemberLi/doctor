@@ -24,7 +24,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../main.dart';
+import '../../root_widget.dart';
 
 /// 开处方主页面
 class PrescriptionPage extends StatefulWidget {

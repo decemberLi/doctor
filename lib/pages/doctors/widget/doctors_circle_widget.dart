@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
@@ -9,9 +8,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../main.dart';
-import '../viewmodel/doctors_view_model.dart';
+import '../../../root_widget.dart';
 import '../model/doctor_circle_entity.dart';
+import '../viewmodel/doctors_view_model.dart';
 
 final _colorPanel = {
   '文献专区': ThemeColor.colorFF52C41A,

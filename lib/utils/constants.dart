@@ -4,10 +4,12 @@ const APP_NAME = '易学术';
 
 const SESSION_KEY = '$NAME-ticket';
 const LAST_PHONE = '$NAME-last-phone';
+const KEY_DOCTOR_ID_MODIFIED_PWD = '$NAME-key_doctor_id_modified_pwd';
 
 const LOGIN_INFO = '$NAME-login-info';
 
 const ONLY_WIFI = 'only_wifi';
+const KEY_UPDATE_USER_INFO = 'update_user_info';
 
 /// 任务类型
 const Map<String, String> TASK_TEMPLATE = {

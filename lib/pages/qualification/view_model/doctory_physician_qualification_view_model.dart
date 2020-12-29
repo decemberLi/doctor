@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/model/face_photo.dart';
 import 'package:doctor/model/recognize_entity.dart';
 import 'package:doctor/model/oss_policy.dart';
@@ -13,10 +12,10 @@ import 'package:doctor/utils/upload_file_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:toast/toast.dart';
-
-HttpManager uCenter = HttpManager('ucenter');
-HttpManager uCenterCommon = HttpManager('uCenterCommon');
-HttpManager foundation = HttpManager('foundation');
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/http/ucenter.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class DoctorPhysicianQualificationViewModel {
   StreamController<DoctorQualificationModel> _controller =
@@ -41,23 +40,22 @@ class DoctorPhysicianQualificationViewModel {
   }
 
   _querySignature() async {
-    var result = await foundation.post('/ali-oss/policy');
+    var result = await API.shared.foundation.aliossPolicy();
     return OssPolicy.fromJson(result);
   }
 
   _saveImage(Map<String, dynamic> param) async {
-    var result = await foundation.post('/ali-oss/save', params: param);
+    var result = await API.shared.foundation.aliossSave(param);
     return UploadFileEntity.fromJson(result);
   }
 
   _recognizeIdCard(Map<String, dynamic> param) async {
-    var result =
-        await foundation.post('/ocr/recognize-identity-card', params: param);
+    var result = await API.shared.foundation.ocr(param);
     return RecognizeEntity.fromJson(result);
   }
 
   _queryPhysician() async {
-    var result = await uCenter.post('/personal/query-doctor-verify-info');
+    var result = await API.shared.ucenter.queryDoctorVerifyInfo();
     if (result is DioError) {
       return;
     }
@@ -297,8 +295,10 @@ class DoctorPhysicianQualificationViewModel {
       return false;
     }
 
-    await uCenter.post('/personal/commit-doctor-verify-info',
-        params: _model.physicianInfoEntity.toJson());
+    EasyLoading.instance.flash(() async {
+      await API.shared.ucenter
+          .commitDoctorVerifyInfo(_model.physicianInfoEntity.toJson());
+    },text: '正在提交');
 
     Toast.show('提交成功', context,
         duration: Toast.LENGTH_LONG,

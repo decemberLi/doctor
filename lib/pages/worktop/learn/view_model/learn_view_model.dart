@@ -1,12 +1,12 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
-import 'package:doctor/pages/worktop/resource/service.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/server.dart';
 
-HttpManager http = HttpManager('server');
+
 
 class LearnListViewModel extends ViewStateRefreshListModel {
   String learnStatus = 'learning';
@@ -15,9 +15,8 @@ class LearnListViewModel extends ViewStateRefreshListModel {
 
   @override
   Future<List<LearnListItem>> loadData({int pageNum}) async {
-    var list = await http.post(
-      '/learn-plan/list',
-      params: {
+    var list = await API.shared.server.learnPlanList(
+      {
         'searchStatus': this.learnStatus,
         'taskTemplate': this.taskTemplate,
         'ps': 10,
@@ -27,6 +26,10 @@ class LearnListViewModel extends ViewStateRefreshListModel {
     return list['records']
         .map<LearnListItem>((item) => LearnListItem.fromJson(item))
         .toList();
+  }
+  removeItem(item){
+    list.remove(item);
+    notifyListeners();
   }
 }
 
@@ -57,7 +60,7 @@ class LearnDetailViewModel extends ViewStateModel {
   }
 
   Future<LearnDetailItem> loadData() async {
-    var data = await http.post('/learn-plan/detail', params: {
+    var data = await API.shared.server.learnPlanDetail({
       'learnPlanId': this.learnPlanId,
     });
     return LearnDetailItem.fromJson(data);
@@ -67,7 +70,7 @@ class LearnDetailViewModel extends ViewStateModel {
     int learnPlanId,
   }) async {
     try {
-      await learnSubmit({
+      await API.shared.server.learnSubmit({
         'learnPlanId': learnPlanId,
       });
       return true;
@@ -101,7 +104,7 @@ class LearnRecordingModel extends ViewStateModel {
 
   Future<LearnRecordingItem> loadData() async {
     try {
-      var data = await http.post('/doctor-lecture/detail', params: {
+      var data = await API.shared.server.doctorLectureDetail({
         'learnPlanId': this.learnPlanId,
         'resourceId': this.resourceId,
       });

@@ -1,15 +1,17 @@
-import 'package:doctor/http/session_manager.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
-import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_qr_code.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:doctor/http/dtp.dart';
+import 'package:http_manager/manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PrescriptionSuccessPage extends StatefulWidget {
   @override
@@ -173,7 +175,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                   text: '发给随诊患者',
                   onPressed: () async {
                     var check =
-                        await checkPrescriptionBeforeBind(prescriptionNo);
+                        await API.shared.dtp.checkPrescriptionBeforeBind(prescriptionNo);
                     if (check) {
                       Navigator.of(context).pushNamed(
                         RouteManager.PATIENT,
@@ -200,18 +202,18 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
           Navigator.popUntil(context, ModalRoute.withName(RouteManager.HOME));
         } else {
           backfocus = backfocus + 1;
-          LoginInfoModel loginInfo = SessionManager.getLoginInfo();
-          if (loginInfo.modifiedPassword != true) {
+          var sp = await SharedPreferences.getInstance();
+          bool isModifiedPwd = sp.getBool(KEY_DOCTOR_ID_MODIFIED_PWD) ?? false;
+          if (!isModifiedPwd) {
             bool go = await _showGoToModifyPasswordDialog();
             if (!go) {
               // Navigator.pop(context);
               model.resetData();
-              Navigator.popUntil(
-                  context, ModalRoute.withName(RouteManager.HOME));
+              Navigator.of(context).popUntil((route) => route.isFirst);
             }
           } else {
             model.resetData();
-            Navigator.popUntil(context, ModalRoute.withName(RouteManager.HOME));
+            Navigator.of(context).popUntil((route) => route.isFirst);
           }
         }
 

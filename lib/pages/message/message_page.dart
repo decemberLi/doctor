@@ -1,4 +1,3 @@
-import 'package:doctor/main.dart';
 import 'package:doctor/pages/message/message_promotion_list.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/message/widget/like_message_list_widget.dart';
@@ -6,6 +5,7 @@ import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../root_widget.dart';
 import 'common_style.dart';
 import 'message_list_page.dart';
 import 'widget/comment_message_list_widget.dart';

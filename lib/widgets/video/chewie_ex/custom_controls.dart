@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/video/chewie/src/chewie_player.dart';
 import 'package:doctor/widgets/video/chewie/src/chewie_progress_colors.dart';

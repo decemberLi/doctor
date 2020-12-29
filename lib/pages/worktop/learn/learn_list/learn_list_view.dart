@@ -3,6 +3,7 @@ import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/root_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
@@ -43,6 +44,11 @@ class _LearnListPageState extends State<LearnListPage>
       TASK_TYPE_MAP[_currentTabIndex]['taskTemplate'],
     );
     model.initData();
+    eventBus.on().listen((event) {
+      if (event == "studyHistoryRefresh" && widget.learnStatus == "HISTORY"){
+        model.refresh();
+      }
+    });
   }
 
   @override
@@ -119,8 +125,17 @@ class _LearnListPageState extends State<LearnListPage>
               if (widget.learnStatus == 'LEARNING') {
                 model.refreshController.requestRefresh(needMove: false);
               }
+              model.taskTemplate = TASK_TYPE_MAP[_currentTabIndex]['taskTemplate'];
+              model.initData();
+              if (widget.onTaskTypeChange != null) {
+                widget.onTaskTypeChange(
+                    TASK_TYPE_MAP[_currentTabIndex]['taskTemplate']);
+              }
             },
-            child: LearnListItemWiget(item, widget.learnStatus),
+            child: LearnListItemWiget(item, widget.learnStatus,(){
+              model.removeItem(item);
+              eventBus.fire("studyHistoryRefresh");
+            }),
           );
         },
       ),

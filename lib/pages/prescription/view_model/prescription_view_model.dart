@@ -2,12 +2,14 @@ import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
-import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:doctor/utils/app_regex_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/dtp.dart';
 
 /// 开处方主页面viewModel
 class PrescriptionViewModel extends ViewStateModel {
@@ -24,7 +26,7 @@ class PrescriptionViewModel extends ViewStateModel {
   PrescriptionViewModel();
 
   Future<String> get prescriptionQRCode async {
-    String qrCodeUrl = await loadBindQRCode(data.prescriptionNo);
+    String qrCodeUrl = await API.shared.foundation.loadBindQRCode(data.prescriptionNo);
     return qrCodeUrl;
   }
 
@@ -144,7 +146,7 @@ class PrescriptionViewModel extends ViewStateModel {
   }
 
   getDataByPatient(patientUserId) async {
-    var res = await loadPrescriptionByPatient({'patientUserId': patientUserId});
+    var res = await API.shared.dtp.loadPrescriptionByPatient({'patientUserId': patientUserId});
 
     PrescriptionModel data = PrescriptionModel.fromJson(res);
     this.setData(data, isNew: true);
@@ -209,7 +211,7 @@ class PrescriptionViewModel extends ViewStateModel {
     }
     this.data.prescriptionNo = null;
     var params = this.data.toJson();
-    var res = await addPrescription(params);
+    var res = await API.shared.dtp.addPrescription(params);
     String prescriptionNo = res['prescriptionNo'];
     if (callBack != null) {
       callBack(prescriptionNo);
@@ -222,7 +224,7 @@ class PrescriptionViewModel extends ViewStateModel {
     }
     try {
       var params = this.data.toJson();
-      await updatePrescriptionServive(params);
+      await API.shared.dtp.updatePrescriptionServive(params);
       this.data = new PrescriptionModel();
       notifyListeners();
       EasyLoading.showToast('修改成功');
@@ -247,7 +249,7 @@ class PrescriptionListViewModel extends ViewStateRefreshListModel {
 
   @override
   Future<List<PrescriptionModel>> loadData({int pageNum}) async {
-    var list = await loadPrescriptionList(
+    var list = await API.shared.dtp.loadPrescriptionList(
         {'ps': 10, 'pn': pageNum, 'queryKey': _queryKey});
     return list['records']
         .map<PrescriptionModel>((item) => PrescriptionModel.fromJson(item))
@@ -274,7 +276,7 @@ class PrescriptionDetailModel extends ViewStateModel {
 
   /// 获取处方详情
   Future<PrescriptionModel> loadData() async {
-    var res = await loadPrescriptionDetail({
+    var res = await API.shared.dtp.loadPrescriptionDetail({
       'prescriptionNo': this.prescriptionNo,
     });
     PrescriptionModel data = PrescriptionModel.fromJson(res);

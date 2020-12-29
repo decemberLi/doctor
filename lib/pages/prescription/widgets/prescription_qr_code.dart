@@ -1,6 +1,7 @@
-import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:http_manager/manager.dart';
 
 /// 加载处方二维码
 class PrescriptionQRCode extends StatelessWidget {
@@ -9,7 +10,7 @@ class PrescriptionQRCode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: loadBindQRCode(prescriptionNo),
+      future: API.shared.foundation.loadBindQRCode(prescriptionNo),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.data != null) {

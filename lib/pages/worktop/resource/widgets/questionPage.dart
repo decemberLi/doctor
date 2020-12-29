@@ -1,5 +1,4 @@
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
-import 'package:doctor/pages/worktop/resource/service.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +7,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/server.dart';
 
 class QuestionPage extends StatefulWidget {
   final ResourceModel data;
@@ -186,7 +187,7 @@ class _QuestionPageState extends State<QuestionPage> {
     if (!showError) {
       bool bindConfirm = await confirmDialog();
       if (bindConfirm) {
-        String success = await submitQuestion({
+        String success = await API.shared.server.submitQuestion({
           'learnPlanId': widget.data.learnPlanId,
           'resourceId': widget.data.resourceId,
           'questions': questionsAll

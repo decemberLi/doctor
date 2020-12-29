@@ -16,6 +16,21 @@ import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.
 import 'package:provider/provider.dart';
 
 // * @Desc: 计划详情页  */
+/// 科室会议
+const String TYPE_DEPART = 'DEPART';
+
+/// 沙龙会议
+const String TYPE_SALON = 'SALON';
+
+/// 拜访
+const String TYPE_VISIT = 'VISIT';
+
+/// 调研
+const String TYPE_SURVEY = 'SURVEY';
+
+/// 讲课类型
+const String TYPE_DOCTOR_LECTURE = 'DOCTOR_LECTURE';
+
 class LearnDetailPage extends StatefulWidget {
   LearnDetailPage({Key key}) : super(key: key);
 
@@ -25,10 +40,18 @@ class LearnDetailPage extends StatefulWidget {
 
 class _LearnDetailPageState extends State<LearnDetailPage> {
   DoctorDetailInfoEntity userInfo;
+  LearnDetailViewModel _model;
+
   @override
   void initState() {
     super.initState();
     updateDoctorInfo();
+  }
+
+  @override
+  void dispose() {
+    _model?.dispose();
+    super.dispose();
   }
 
   updateDoctorInfo() {
@@ -236,17 +259,40 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     return Text('');
   }
 
+  String _obtainTitleByType(String type) {
+    switch (type) {
+      case TYPE_DEPART:
+      case TYPE_SALON:
+        return '会议详情';
+      case TYPE_VISIT:
+        return '拜访详情';
+      case TYPE_SURVEY:
+        return '调研详情';
+      case TYPE_DOCTOR_LECTURE:
+        return '讲课邀请详情';
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
-
+    _model = LearnDetailViewModel(arguments['learnPlanId']);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('学习计划详情'),
+        title: ChangeNotifierProvider<LearnDetailViewModel>.value(
+          value: _model,
+          child: Consumer<LearnDetailViewModel>(
+            builder: (context, model, child) {
+              return Text(_obtainTitleByType(model?.data?.taskTemplate ?? ''));
+            },
+          ),
+        ),
       ),
       body: ProviderWidget<LearnDetailViewModel>(
-        model: LearnDetailViewModel(arguments['learnPlanId']),
+        model: _model,
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           if (model.isBusy) {
@@ -450,26 +496,21 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                       '当前学习计划尚未学习，请在学习后提交';
                                                   EasyLoading.showToast(_text);
                                                 } else {
-                                                  bool bindConfirm =
-                                                      await confirmDialog(
-                                                          data.learnProgress);
-                                                  if (bindConfirm) {
-                                                    bool success = await model
-                                                        .bindLearnPlan(
-                                                      learnPlanId:
-                                                          data.learnPlanId,
-                                                    );
-                                                    if (success) {
-                                                      EasyLoading.showToast(
-                                                          '提交成功');
-                                                      // 延时1s执行返回
-                                                      Future.delayed(
-                                                          Duration(seconds: 1),
-                                                          () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      });
-                                                    }
+                                                  bool success = await model
+                                                      .bindLearnPlan(
+                                                    learnPlanId:
+                                                    data.learnPlanId,
+                                                  );
+                                                  if (success) {
+                                                    EasyLoading.showToast(
+                                                        '提交成功');
+                                                    // 延时1s执行返回
+                                                    Future.delayed(
+                                                        Duration(seconds: 1),
+                                                            () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        });
                                                   }
                                                 }
                                               }

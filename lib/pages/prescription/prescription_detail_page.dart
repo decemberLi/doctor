@@ -1,6 +1,5 @@
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
-import 'package:doctor/pages/prescription/service/service.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_detail.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_qr_code.dart';
@@ -14,7 +13,8 @@ import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:doctor/http/dtp.dart';
+import 'package:http_manager/manager.dart';
 /// 处方详情页面
 class PrescriptionDetailPage extends StatefulWidget {
   @override
@@ -66,7 +66,7 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
                 width: 120,
                 height: 36,
                 onPressed: () async {
-                  var check = await checkPrescriptionBeforeBind(prescriptionNo);
+                  var check = await API.shared.dtp.checkPrescriptionBeforeBind(prescriptionNo);
                   if (check) {
                     var res = await Navigator.of(context).pushNamed(
                       RouteManager.PATIENT,
