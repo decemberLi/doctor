@@ -493,7 +493,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                             '',
                                                     'taskName': data.taskName,
                                                     'from': arguments['from'],
-                                                    'upFinished': (lectureID) async {
+                                                    'upFinished': (lectureID)  {
                                                       EasyLoading.instance
                                                           .flash(() async {
                                                             print("-------------");
@@ -501,7 +501,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                         var result = await API
                                                             .shared.server
                                                             .doctorLectureSharePic(
-                                                            lectureID);
+                                                            "$lectureID");
                                                         var appDocDir = await getApplicationDocumentsDirectory();
                                                         String picPath = appDocDir.path + "/sharePic";
                                                         await Dio().download(result["url"], picPath);

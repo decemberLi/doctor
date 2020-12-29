@@ -42,7 +42,7 @@ class LectureVideosPage extends StatefulWidget {
 
 class _LearnDetailPageState extends State<LectureVideosPage> {
   final _formKey = GlobalKey<FormState>();
-  Function(String) upFinished;
+  Function(dynamic) upFinished;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController presenterController = TextEditingController();
@@ -283,13 +283,16 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         // 延时1s执行返回
         Future.delayed(Duration(seconds: 1), () {
           Navigator.of(context).pop(true);
+          if(upFinished != null){
+            print("the value is  ------ ${res["lectureId"]}");
+            upFinished(res["lectureId"]);
+            print("the value is  ------ end");
+          }
         });
-        if(upFinished != null){
-          print("the value is  ------ ${res["lectureId"]}");
-          upFinished(res["lectureId"]);
-        }
+
+
       }).catchError((error) {
-        EasyLoading.showToast(error.errorMsg);
+        EasyLoading.showToast("上传失败");
       });
     }
   }
