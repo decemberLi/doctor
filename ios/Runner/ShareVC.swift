@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import MBProgressHUD
 
 class ShareVC: UIViewController {
     @IBOutlet var bgView : UIView!
@@ -14,6 +15,7 @@ class ShareVC: UIViewController {
     @IBOutlet var sheetBG : UIView!
     @IBOutlet var sheetCorner : UIView!
     @IBOutlet var buttonBG : UIStackView!
+    var data : [String:Any] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,7 +90,9 @@ class ShareVC: UIViewController {
     }
     
     func shareToWx(){
-        guard let img = UIImage(named: "LaunchImage")?.pngData() else {
+        guard let path = data["path"] as? String else {return}
+        let url = URL(fileURLWithPath: path)
+        guard let img = try? Data(contentsOf: url) else {
             return
         }
         let imgObj = WXImageObject()
@@ -105,7 +109,9 @@ class ShareVC: UIViewController {
     }
     
     func shareToPYQ(){
-        guard let img = UIImage(named: "LaunchImage")?.pngData() else {
+        guard let path = data["path"] as? String else {return}
+        let url = URL(fileURLWithPath: path)
+        guard let img = try? Data(contentsOf: url) else {
             return
         }
         let imgObj = WXImageObject()
@@ -123,16 +129,18 @@ class ShareVC: UIViewController {
     }
     
     func copyToPasboard(){
-        UIPasteboard.general.string = "12311"
-        onDismiss()
+        let value = data["url"] as? String
+        UIPasteboard.general.string = value
+        MBProgressHUD.toast(msg: "复制成功")
     }
     
     func download(){
-        let img : UIImage? = nil
+        guard let path = data["path"] as? String else {return}
+        let img = UIImage(contentsOfFile: path)
         guard let save = img else{
             return
         }
         UIImageWriteToSavedPhotosAlbum(save, nil, nil, nil)
-        onDismiss()
+        MBProgressHUD.toast(msg: "保存成功")
     }
 }

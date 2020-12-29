@@ -6,6 +6,7 @@ import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -490,20 +491,20 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                             '',
                                                     'taskName': data.taskName,
                                                     'from': arguments['from'],
-                                                    'upFinished': () async {
+                                                    'upFinished': (lectureID) async {
                                                       EasyLoading.instance
                                                           .flash(() async {
+                                                            print("-------------");
+                                                            print("the lectureID == ${lectureID}");
                                                         var result = await API
                                                             .shared.server
                                                             .doctorLectureSharePic(
-                                                                _model.data.resources[0].resourceId);
+                                                            lectureID);
                                                         var appDocDir = await getApplicationDocumentsDirectory();
                                                         String picPath = appDocDir.path + "/sharePic";
                                                         await Dio().download(result["url"], picPath);
-                                                        var channel = MethodChannel("share");
-                                                        channel.invokeMethod("show",{"path":picPath,"url":result["codeStr"]});
-                                                        print("------");
-
+                                                        var obj = {"path":picPath,"url":result["codeStr"]};
+                                                        MedcloudsNativeApi.instance().share(obj.toString());
                                                         print(result);
                                                       });
                                                     }

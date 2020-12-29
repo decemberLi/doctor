@@ -4,6 +4,7 @@ import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -105,82 +106,83 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
       _doctorName = obj['doctorName'];
     }
 
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Text('资料详情'),
-        ),
-        body: ProviderWidget<LearnRecordingModel>(
-            model: LearnRecordingModel(learnPlanId, resourceId, true),
-            onModelReady: (model) => model.initData(),
-            builder: (context, model, child) {
-              if (model.isBusy) {
-                return Container();
-              }
-              if (model.isError || model.isEmpty) {
-                return ViewStateEmptyWidget(onPressed: model.initData);
-              }
-              var data = model.data;
-              return Container(
-                alignment: Alignment.topCenter,
-                // color: ThemeColor.colorFFF3F5F8,
-                color: Color.fromRGBO(0, 0, 0, 1),
-                // padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                child: Column(
-                  children: [
-                    Container(child: UploadVideoDetail(data, _controller)),
-                    Expanded(child: _renderVideoInfo(data, _doctorName)),
-                  ],
-                ),
-              );
-            },),
-      floatingActionButton: Container(
-        width: 44,
-        height: 44,
-        child: FloatingActionButton(
-          backgroundColor: Color(0xff107bfd),
-          onPressed: () {
-            EasyLoading.instance.flash(() async {
-              var result =
-              await API.shared.server.doctorLectureSharePic(resourceId);
-              var appDocDir = await getApplicationDocumentsDirectory();
-              String picPath = appDocDir.path + "/sharePic";
-              await Dio().download(result["url"], picPath);
-              var channel = MethodChannel("share");
-              channel.invokeMethod("show",{"path":picPath,"url":result["codeStr"]});
-              print("------");
-              print(result);
-            });
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                "assets/images/share.png",
-                width: 20,
-                height: 17,
-              ),
-              Container(
-                height: 3,
-              ),
-              Text(
-                "分享",
-                style: TextStyle(fontSize: 10),
-              ),
-            ],
+    return ProviderWidget<LearnRecordingModel>(
+      model: LearnRecordingModel(learnPlanId, resourceId, true),
+      onModelReady: (model) => model.initData(),
+      builder: (context, model, child) {
+        if (model.isBusy) {
+          return Container();
+        }
+        if (model.isError || model.isEmpty) {
+          return ViewStateEmptyWidget(onPressed: model.initData);
+        }
+        var data = model.data;
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            title: Text('资料详情'),
           ),
-        ),
-      ),
-      floatingActionButtonLocation: _FloatingButtonLocation(
-        FloatingActionButtonLocation.endFloat,
-        -10,
-        -60,
-      ),
-      floatingActionButtonAnimator: _NoScalingAnimation(),
+          body: Container(
+            alignment: Alignment.topCenter,
+            // color: ThemeColor.colorFFF3F5F8,
+            color: Color.fromRGBO(0, 0, 0, 1),
+            // padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+            child: Column(
+              children: [
+                Container(child: UploadVideoDetail(data, _controller)),
+                Expanded(child: _renderVideoInfo(data, _doctorName)),
+              ],
+            ),
+          ),
+          floatingActionButton: Container(
+            width: 44,
+            height: 44,
+            child: FloatingActionButton(
+              backgroundColor: Color(0xff107bfd),
+              onPressed: () {
+                EasyLoading.instance.flash(() async {
+                  var result =
+                      await API.shared.server.doctorLectureSharePic(model.data.lectureId);
+                  var appDocDir = await getApplicationDocumentsDirectory();
+                  String picPath = appDocDir.path + "/sharePic";
+                  await Dio().download(result["url"], picPath);
+                  var obj = {"path": picPath, "url": result["codeStr"]};
+                  print(obj.toString());
+                  MedcloudsNativeApi.instance().share(obj.toString());
+                  print("------");
+                  print(result);
+                });
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/share.png",
+                    width: 20,
+                    height: 17,
+                  ),
+                  Container(
+                    height: 3,
+                  ),
+                  Text(
+                    "分享",
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          floatingActionButtonLocation: _FloatingButtonLocation(
+            FloatingActionButtonLocation.endFloat,
+            -10,
+            -60,
+          ),
+          floatingActionButtonAnimator: _NoScalingAnimation(),
+        );
+      },
     );
   }
 }
-
 
 class _FloatingButtonLocation extends FloatingActionButtonLocation {
   FloatingActionButtonLocation location;
@@ -194,6 +196,7 @@ class _FloatingButtonLocation extends FloatingActionButtonLocation {
     return Offset(offset.dx + offsetX, offset.dy + offsetY);
   }
 }
+
 class _NoScalingAnimation extends FloatingActionButtonAnimator {
   @override
   Offset getOffset({Offset begin, Offset end, double progress}) {

@@ -3,30 +3,32 @@ import Flutter
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
+    static var shared : AppDelegate?
     var naviChannel : FlutterMethodChannel!
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    AppDelegate.shared = self
     let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
     window = UIWindow()
     window.rootViewController = vc
     window.makeKeyAndVisible()
     naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
+    naviChannel.setMethodCallHandler { (call, result) in
+        if call.method == "share" {
+            print("the string == \(call.arguments)")
+            guard let value = call.arguments as? String else {return}
+            guard let data = value.data(using: .utf8) else {return}
+            guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
+            self.share(map: obj)
+        }
+    }
     vc.setFlutterViewDidRenderCallback {
         let option = launchOptions?[UIApplication.LaunchOptionsKey.url]
         self.naviChannel?.invokeMethod("commonWeb", arguments: option)
     }
     WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://m-dev.e-medclouds.com/app/");
-    if let controlelr = window.rootViewController as? FlutterViewController {
-        let channel = FlutterMethodChannel(name: "share", binaryMessenger: controlelr.binaryMessenger);
-        channel.setMethodCallHandler { (call, result) in
-            if call.method == "show"{
-                self.share();
-            }
-            result("done");
-        }
-    }
     
     GeneratedPluginRegistrant.register(with: self)
     
@@ -63,8 +65,9 @@ extension AppDelegate : WXApiDelegate {
     func onResp(_ resp: BaseResp) {
         
     }
-    func share(){
+    func share(map : [String:Any]){
         let sharevc = ShareVC()
+        sharevc.data = map
         sharevc.modalPresentationStyle = .overFullScreen
         window.rootViewController?.present(sharevc, animated: false, completion: nil)
     }

@@ -42,7 +42,7 @@ class LectureVideosPage extends StatefulWidget {
 
 class _LearnDetailPageState extends State<LectureVideosPage> {
   final _formKey = GlobalKey<FormState>();
-  Function upFinished;
+  Function(String) upFinished;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController presenterController = TextEditingController();
@@ -285,7 +285,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
           Navigator.of(context).pop(true);
         });
         if(upFinished != null){
-          upFinished();
+          upFinished("123");
         }
       }).catchError((error) {
         EasyLoading.showToast(error.errorMsg);
