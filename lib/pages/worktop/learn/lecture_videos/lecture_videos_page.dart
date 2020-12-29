@@ -34,6 +34,7 @@ import 'dart:async';
 /// * @Author: duanruilong  * @Date: 2020-10-30 14:49:43  * @Desc: 上传讲课视频  */ lecture_videos
 
 class LectureVideosPage extends StatefulWidget {
+
   LectureVideosPage({Key key}) : super(key: key);
   @override
   _LearnDetailPageState createState() => _LearnDetailPageState();
@@ -41,6 +42,7 @@ class LectureVideosPage extends StatefulWidget {
 
 class _LearnDetailPageState extends State<LectureVideosPage> {
   final _formKey = GlobalKey<FormState>();
+  Function upFinished;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController presenterController = TextEditingController();
@@ -79,6 +81,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       learnPlanId = obj["learnPlanId"].toString();
       resourceId = obj['resourceId'].toString();
       reLearn = obj['reLearn'];
+      upFinished = obj['upFinished'];
+
     }
     if (!reLearn) {
       titleController.text = obj['taskName'];
@@ -280,6 +284,9 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         Future.delayed(Duration(seconds: 1), () {
           Navigator.of(context).pop(true);
         });
+        if(upFinished != null){
+          upFinished();
+        }
       }).catchError((error) {
         EasyLoading.showToast(error.errorMsg);
       });

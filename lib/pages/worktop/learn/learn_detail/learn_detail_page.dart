@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
@@ -10,20 +11,29 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
+import 'package:http_manager/api.dart';
 import 'package:provider/provider.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:doctor/http/server.dart';
+import 'package:path_provider/path_provider.dart';
 
 // * @Desc: 计划详情页  */
 /// 科室会议
 const String TYPE_DEPART = 'DEPART';
+
 /// 沙龙会议
 const String TYPE_SALON = 'SALON';
+
 /// 拜访
 const String TYPE_VISIT = 'VISIT';
+
 /// 调研
 const String TYPE_SURVEY = 'SURVEY';
+
 /// 讲课类型
 const String TYPE_DOCTOR_LECTURE = 'DOCTOR_LECTURE';
 
@@ -37,12 +47,12 @@ class LearnDetailPage extends StatefulWidget {
 class _LearnDetailPageState extends State<LearnDetailPage> {
   DoctorDetailInfoEntity userInfo;
   LearnDetailViewModel _model;
+
   @override
   void initState() {
     super.initState();
     updateDoctorInfo();
   }
-
 
   @override
   void dispose() {
@@ -255,18 +265,18 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     return Text('');
   }
 
-  String _obtainTitleByType(String type){
-    switch(type){
-      case  TYPE_DEPART:
-      case  TYPE_SALON:
+  String _obtainTitleByType(String type) {
+    switch (type) {
+      case TYPE_DEPART:
+      case TYPE_SALON:
         return '会议详情';
-      case  TYPE_VISIT:
+      case TYPE_VISIT:
         return '拜访详情';
-      case  TYPE_SURVEY:
+      case TYPE_SURVEY:
         return '调研详情';
-      case  TYPE_DOCTOR_LECTURE:
+      case TYPE_DOCTOR_LECTURE:
         return '讲课邀请详情';
-      default :
+      default:
         return '';
     }
   }
@@ -280,9 +290,11 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         elevation: 0,
         title: ChangeNotifierProvider<LearnDetailViewModel>.value(
           value: _model,
-          child: Consumer<LearnDetailViewModel>(builder: (context, model, child){
-            return Text(_obtainTitleByType(model?.data?.taskTemplate??''));
-          },),
+          child: Consumer<LearnDetailViewModel>(
+            builder: (context, model, child) {
+              return Text(_obtainTitleByType(model?.data?.taskTemplate ?? ''));
+            },
+          ),
         ),
       ),
       body: ProviderWidget<LearnDetailViewModel>(
@@ -478,6 +490,23 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                             '',
                                                     'taskName': data.taskName,
                                                     'from': arguments['from'],
+                                                    'upFinished': () async {
+                                                      EasyLoading.instance
+                                                          .flash(() async {
+                                                        var result = await API
+                                                            .shared.server
+                                                            .doctorLectureSharePic(
+                                                                _model.data.resources[0].resourceId);
+                                                        var appDocDir = await getApplicationDocumentsDirectory();
+                                                        String picPath = appDocDir.path + "/sharePic";
+                                                        await Dio().download(result["url"], picPath);
+                                                        var channel = MethodChannel("share");
+                                                        channel.invokeMethod("show",{"path":picPath,"url":result["codeStr"]});
+                                                        print("------");
+
+                                                        print(result);
+                                                      });
+                                                    }
                                                   },
                                                 );
                                                 if (result == true) {

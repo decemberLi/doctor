@@ -737,44 +737,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                 ));
           },
         ),
-        floatingActionButton: Container(
-          width: 44,
-          height: 44,
-          child: FloatingActionButton(
-            backgroundColor: Color(0xff107bfd),
-            onPressed: () {
-              EasyLoading.instance.flash(() async {
-                var result =
-                API.shared.server.doctorLectureSharePic(widget.resourceId);
-                print("------");
-                print(result);
-              });
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/images/share.png",
-                  width: 20,
-                  height: 17,
-                ),
-                Container(
-                  height: 3,
-                ),
-                Text(
-                  "分享",
-                  style: TextStyle(fontSize: 10),
-                ),
-              ],
-            ),
-          ),
-        ),
-        floatingActionButtonLocation: _FloatingButtonLocation(
-          FloatingActionButtonLocation.endFloat,
-          -10,
-          -60,
-        ),
-        floatingActionButtonAnimator: _NoScalingAnimation(),
       ),
       onWillPop: () {
         dynamic params;
@@ -811,34 +773,5 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
         child: content,
       ),
     );
-  }
-}
-
-class _FloatingButtonLocation extends FloatingActionButtonLocation {
-  FloatingActionButtonLocation location;
-  double offsetX; // X方向的偏移量
-  double offsetY; // Y方向的偏移量
-  _FloatingButtonLocation(this.location, this.offsetX, this.offsetY);
-
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    Offset offset = location.getOffset(scaffoldGeometry);
-    return Offset(offset.dx + offsetX, offset.dy + offsetY);
-  }
-}
-class _NoScalingAnimation extends FloatingActionButtonAnimator {
-  @override
-  Offset getOffset({Offset begin, Offset end, double progress}) {
-    return end;
-  }
-
-  @override
-  Animation<double> getRotationAnimation({Animation<double> parent}) {
-    return Tween<double>(begin: 1.0, end: 1.0).animate(parent);
-  }
-
-  @override
-  Animation<double> getScaleAnimation({Animation<double> parent}) {
-    return Tween<double>(begin: 1.0, end: 1.0).animate(parent);
   }
 }
