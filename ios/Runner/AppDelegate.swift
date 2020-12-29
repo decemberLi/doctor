@@ -24,8 +24,9 @@ import Flutter
         }
     }
     vc.setFlutterViewDidRenderCallback {
-        let option = launchOptions?[UIApplication.LaunchOptionsKey.url]
-        self.naviChannel?.invokeMethod("commonWeb", arguments: option)
+        if let option = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
+            self.naviChannel?.invokeMethod("commonWeb", arguments: option.absoluteString)
+        }
     }
     WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
     
@@ -35,7 +36,8 @@ import Flutter
   }
     
     override func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
-        if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com") {
+        if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
+            || url.scheme == "com.emedclouds.doctor" {
             self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
             return true
         }
@@ -43,7 +45,8 @@ import Flutter
     }
     
     override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com") {
+        if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com") ||
+            url.scheme == "com.emedclouds.doctor"{
             self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
             return true
         }
