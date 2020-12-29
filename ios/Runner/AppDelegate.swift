@@ -17,7 +17,6 @@ import Flutter
     naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
     naviChannel.setMethodCallHandler { (call, result) in
         if call.method == "share" {
-            print("the string == \(call.arguments)")
             guard let value = call.arguments as? String else {return}
             guard let data = value.data(using: .utf8) else {return}
             guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}

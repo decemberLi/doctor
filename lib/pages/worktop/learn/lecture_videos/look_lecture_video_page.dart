@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:doctor/pages/worktop/learn/lecture_videos/upload_video.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
@@ -147,8 +149,8 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                   String picPath = appDocDir.path + "/sharePic";
                   await Dio().download(result["url"], picPath);
                   var obj = {"path": picPath, "url": result["codeStr"]};
-                  print(obj.toString());
-                  MedcloudsNativeApi.instance().share(obj.toString());
+                  var share = json.encode(obj).toString();
+                  MedcloudsNativeApi.instance().share(share);
                   print("------");
                   print(result);
                 });

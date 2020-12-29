@@ -21,6 +21,9 @@ class ShareVC: UIViewController {
         super.viewDidLoad()
         sheetCorner.clipsToBounds = true
         sheetCorner.layer.cornerRadius = 24
+        guard let path = data["path"] as? String else {return}
+        let img = UIImage(contentsOfFile: path)
+        imgContent.image = img
     }
     
     override func viewDidAppear(_ animated: Bool) {

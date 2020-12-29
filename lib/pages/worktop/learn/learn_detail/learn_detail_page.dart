@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
@@ -504,7 +506,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                         String picPath = appDocDir.path + "/sharePic";
                                                         await Dio().download(result["url"], picPath);
                                                         var obj = {"path":picPath,"url":result["codeStr"]};
-                                                        MedcloudsNativeApi.instance().share(obj.toString());
+                                                        var share = json.encode(obj).toString();
+                                                        MedcloudsNativeApi.instance().share(share);
                                                         print(result);
                                                       });
                                                     }
