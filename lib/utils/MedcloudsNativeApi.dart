@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 
 typedef OnNativeProcessor = Future Function(String args);
