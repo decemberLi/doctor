@@ -9,6 +9,7 @@ import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
+import 'package:doctor/utils/platform_utils.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -503,7 +504,10 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                             .doctorLectureSharePic(
                                                             "$lectureID");
                                                         var appDocDir = await getApplicationDocumentsDirectory();
-                                                        String picPath = appDocDir.path + "/sharePic";
+                                                        if(Platform.isAndroid){
+                                                          appDocDir = await getExternalStorageDirectory();
+                                                        }
+                                                        String picPath = appDocDir.path + "/sharePic${DateTime.now().millisecond}.jpg";
                                                         await Dio().download(result["url"], picPath);
                                                         var obj = {"path":picPath,"url":result["codeStr"]};
                                                         var share = json.encode(obj).toString();
