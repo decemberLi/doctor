@@ -105,7 +105,7 @@ class _LoginFooterState extends State<LoginFooter> {
                         }
                       ),
                       TextSpan(
-                        text: "《易学术服务协议》",
+                        text: "《用户协议》",
                         style: _testStyle(ThemeColor.primaryColor),
                         recognizer: _tap1
                           ..onTap = () {
@@ -118,7 +118,7 @@ class _LoginFooterState extends State<LoginFooter> {
                           text: "及 ",
                           style: _testStyle(ThemeColor.secondaryGeryColor)),
                       TextSpan(
-                        text: "《易学术隐私协议》",
+                        text: "《隐私提示条款》",
                         style: _testStyle(ThemeColor.primaryColor),
                         recognizer: _tap2
                           ..onTap = () {
