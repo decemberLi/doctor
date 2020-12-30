@@ -126,6 +126,7 @@ class ShareVC: UIViewController {
                 MBProgressHUD.toast(msg: "分享失败")
             }
         }
+        MBProgressHUD.toast(msg: "分享成功")
         onDismiss()
     }
     
@@ -150,6 +151,7 @@ class ShareVC: UIViewController {
                 MBProgressHUD.toast(msg: "分享失败")
             }
         }
+        MBProgressHUD.toast(msg: "分享成功")
         onDismiss()
     }
     
