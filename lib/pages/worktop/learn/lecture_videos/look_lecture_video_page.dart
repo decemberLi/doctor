@@ -124,7 +124,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
         return Scaffold(
           appBar: AppBar(
             elevation: 0,
-            title: Text('资料详情'),
+            title: Text('讲课视频'),
           ),
           body: Container(
             alignment: Alignment.topCenter,
