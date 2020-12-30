@@ -1,5 +1,6 @@
 package com.emedclouds.doctor
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.emedclouds.doctor.common.constants.keyLaunchParam
@@ -30,23 +31,31 @@ class MainActivity : FlutterActivity() {
                 result.success("OK")
             }
         }
-        flutterEngine?.renderer?.addIsDisplayingFlutterUiListener(object : FlutterUiDisplayListener {
-            override fun onFlutterUiDisplayed() {
-                if (intent == null) {
-                    return
-                }
-                val ext = intent.getStringExtra(keyLaunchParam)
-                if (intent.getStringExtra(keyLaunchParam) != null) {
-                    methodChannel.invokeMethod("commonWeb", ext)
-                }
-                if (intent.dataString != null) {
-                    methodChannel.invokeMethod("commonWeb", intent.dataString)
-                }
-            }
+        flutterEngine?.renderer?.addIsDisplayingFlutterUiListener(listener);
+    }
 
-            override fun onFlutterUiNoLongerDisplayed() {
-            }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        flutterEngine?.renderer?.addIsDisplayingFlutterUiListener(listener)
+    }
 
-        })
+    val listener = object : FlutterUiDisplayListener {
+        override fun onFlutterUiDisplayed() {
+            if (intent == null) {
+                return
+            }
+            val ext = intent.getStringExtra(keyLaunchParam)
+            if (intent.getStringExtra(keyLaunchParam) != null) {
+                methodChannel.invokeMethod("commonWeb", ext)
+            }
+            if (intent.dataString != null) {
+                methodChannel.invokeMethod("commonWeb", intent.dataString)
+            }
+            flutterEngine?.renderer?.removeIsDisplayingFlutterUiListener(this)
+        }
+
+        override fun onFlutterUiNoLongerDisplayed() {
+        }
+
     }
 }

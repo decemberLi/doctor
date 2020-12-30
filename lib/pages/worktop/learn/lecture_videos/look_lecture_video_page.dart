@@ -138,46 +138,59 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
               ],
             ),
           ),
-          floatingActionButton: Container(
-            width: 44,
-            height: 44,
-            child: FloatingActionButton(
-              backgroundColor: Color(0xff107bfd),
-              onPressed: () {
-                EasyLoading.instance.flash(() async {
-                  var result =
-                      await API.shared.server.doctorLectureSharePic(model.data.lectureId);
-                  var appDocDir = await getApplicationDocumentsDirectory();
-                  if(Platform.isAndroid){
-                    appDocDir = await getExternalStorageDirectory();
-                  }
-                  String picPath = appDocDir.path + "/sharePic";
-                  await Dio().download(result["url"], picPath);
-                  var obj = {"path": picPath, "url": result["codeStr"]};
-                  var share = json.encode(obj).toString();
-                  MedcloudsNativeApi.instance().share(share);
-                  print("------");
-                  print(result);
-                });
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/images/share.png",
-                    width: 20,
-                    height: 17,
-                  ),
-                  Container(
-                    height: 3,
-                  ),
-                  Text(
-                    "分享",
-                    style: TextStyle(fontSize: 10),
+          floatingActionButton: GestureDetector(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Color(0xff107bfd),
+                borderRadius: BorderRadius.all(Radius.circular(22)),
+                boxShadow: [
+                  BoxShadow(
+                      blurRadius: 4,
+                      spreadRadius: 1,
+                      color: Color(0x33107BFD),
+                      offset: Offset(1.2, 3),
                   ),
                 ],
               ),
+              width: 44,
+              height: 44,
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/share.png",
+                      width: 20,
+                      height: 17,
+                    ),
+                    Container(
+                      height: 3,
+                    ),
+                    Text(
+                      "分享",
+                      style: TextStyle(fontSize: 10, color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
             ),
+            onTap: (){
+              EasyLoading.instance.flash(() async {
+                var result =
+                await API.shared.server.doctorLectureSharePic(model.data.lectureId);
+                var appDocDir = await getApplicationDocumentsDirectory();
+                if(Platform.isAndroid){
+                  appDocDir = await getExternalStorageDirectory();
+                }
+                String picPath = appDocDir.path + "/sharePic";
+                await Dio().download(result["url"], picPath);
+                var obj = {"path": picPath, "url": result["codeStr"]};
+                var share = json.encode(obj).toString();
+                MedcloudsNativeApi.instance().share(share);
+                print("------");
+                print(result);
+              });
+            },
           ),
           floatingActionButtonLocation: _FloatingButtonLocation(
             FloatingActionButtonLocation.endFloat,
