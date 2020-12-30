@@ -24,8 +24,14 @@ import Flutter
         }
     }
     vc.setFlutterViewDidRenderCallback {
-        if let option = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
-            self.naviChannel?.invokeMethod("commonWeb", arguments: option.absoluteString)
+        if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
+            if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
+                || url.scheme == "com.emedclouds.doctor" {
+                self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
+            }else{
+                WXApi.handleOpen(url, delegate: self)
+            }
+            
         }
     }
     WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
@@ -59,19 +65,26 @@ import Flutter
     
 }
 
-extension AppDelegate : WXApiDelegate {
-    func onReq(_ req: BaseReq) {
-        
-    }
-    
-    func onResp(_ resp: BaseResp) {
-        
-    }
+extension AppDelegate {
     func share(map : [String:Any]){
         let sharevc = ShareVC()
         sharevc.data = map
         sharevc.modalPresentationStyle = .overFullScreen
         window.rootViewController?.present(sharevc, animated: false, completion: nil)
     }
+}
+
+extension AppDelegate : WXApiDelegate {
+    func onReq(_ req: BaseReq) {
+        print("\(req)");
+        if let real = req as? LaunchFromWXReq {
+            let msg = real.message.messageExt
+            naviChannel.invokeMethod("commonWeb", arguments: msg)
+            
+        }
+    }
     
+    func onResp(_ resp: BaseResp) {
+        print("\(resp)");
+    }
 }
