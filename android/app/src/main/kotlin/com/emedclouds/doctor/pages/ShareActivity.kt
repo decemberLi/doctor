@@ -3,13 +3,15 @@
 package com.emedclouds.doctor.pages
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
+import android.content.pm.PackageManager
+import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -33,6 +35,7 @@ import java.io.FileOutputStream
 class ShareActivity : ComponentActivity() {
 
     companion object {
+        const val tag = "ShareActivity"
         const val PATH = "keyPath"
         const val URL = "keyUrl"
         fun openShare(activity: Activity, path: String, url: String) {
@@ -42,6 +45,7 @@ class ShareActivity : ComponentActivity() {
             activity.startActivity(intent)
         }
     }
+    lateinit var path: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +53,7 @@ class ShareActivity : ComponentActivity() {
             finish()
             return
         }
-        val path = intent.getStringExtra(PATH)
+        path = intent.getStringExtra(PATH)
         val url = intent.getStringExtra(URL)
         if (path == null || url == null) {
             finish()
@@ -90,10 +94,30 @@ class ShareActivity : ComponentActivity() {
         }
 
         findViewById<LinearLayout>(R.id.share_save_img).setOnClickListener {
-            saveImage(path)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(arrayOf(
+                        "android.permission.READ_EXTERNAL_STORAGE",
+                        "android.permission.WRITE_EXTERNAL_STORAGE"
+                ), 10)
+            } else {
+                saveImage(path)
+            }
         }
         findViewById<View>(R.id.share_cancel).setOnClickListener {
             finish()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isNotEmpty()) {
+            grantResults.forEach {
+                if (it != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this@ShareActivity, "权限拒绝", Toast.LENGTH_SHORT).show()
+                    return
+                }
+            }
+            saveImage(path)
         }
     }
 
@@ -102,7 +126,7 @@ class ShareActivity : ComponentActivity() {
             Toast.makeText(applicationContext, "图片下载失败", Toast.LENGTH_SHORT).show()
             return
         }
-        val imageFileName = String.format("%s.jpg", System.currentTimeMillis())
+        val imageFileName = String.format("%s.png", System.currentTimeMillis())
         val cacheDirectory = FileUtil.getCacheDirectory(applicationContext, Environment.DIRECTORY_PICTURES)
         if (cacheDirectory == null) {
             Toast.makeText(applicationContext, "创建文件失败", Toast.LENGTH_SHORT).show()
@@ -129,10 +153,15 @@ class ShareActivity : ComponentActivity() {
     }
 
     private fun notifyGallery(imagePath: String) {
-        val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-        val contentUri: Uri = Uri.fromFile(File(imagePath))
-        mediaScanIntent.data = contentUri
-        sendBroadcast(mediaScanIntent)
+        val file = File(imagePath)
+        MediaStore.Images.Media.insertImage(this.contentResolver, file.absolutePath, file.name, null)
+        MediaScannerConnection.scanFile(this, arrayOf(imagePath), null,
+                object : MediaScannerConnection.OnScanCompletedListener {
+                    override fun onScanCompleted(path: String?, uri: Uri?) {
+                        Log.w(tag, "path -> $path; uri -> $uri")
+                    }
+
+                })
     }
 
 }
