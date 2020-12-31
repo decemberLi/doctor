@@ -64,6 +64,9 @@
             android:taskAffinity="com.emedclouds.doctor"
             android:launchMode="singleTask">
         </activity>
+        <activity android:name=".pages.CommonWebActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:screenOrientation="portrait"/>
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

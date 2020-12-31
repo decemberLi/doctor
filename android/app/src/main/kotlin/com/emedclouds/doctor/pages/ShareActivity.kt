@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.emedclouds.doctor.R
 import com.emedclouds.doctor.share.params.WeChatParams
 import com.emedclouds.doctor.share.platform.WeChat
@@ -58,6 +59,8 @@ class ShareActivity : ComponentActivity() {
         val imageView = findViewById<ImageView>(R.id.share_pic)
         Glide.with(this)
                 .load(Uri.fromFile(File(path)))
+                .skipMemoryCache(false)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(imageView)
         findViewById<LinearLayout>(R.id.share_to_wechat).setOnClickListener {
             val shareParam = WeChatParams.Builder()

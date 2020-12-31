@@ -118,7 +118,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(bottom: 37),
+                          margin: EdgeInsets.only(bottom: 30),
                           child: TextFormField(
                             controller: _phoneController,
                             autofocus: false,
