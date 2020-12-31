@@ -6,6 +6,7 @@ import Flutter
     static var shared : AppDelegate?
     var naviChannel : FlutterMethodChannel!
     var gotoURL : String?
+    var isLoaded  = false
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -26,6 +27,7 @@ import Flutter
         }
     }
     vc.setFlutterViewDidRenderCallback {
+        self.isLoaded = true
         if let url = self.gotoURL {
             self.naviChannel?.invokeMethod("commonWeb", arguments: url)
             self.gotoURL = nil
@@ -89,12 +91,10 @@ extension AppDelegate : WXApiDelegate {
         print("\(req)");
         if let real = req as? LaunchFromWXReq {
             let msg = real.message.messageExt
-            if let vc = window.rootViewController as? FlutterViewController {
-                if vc.isDisplayingFlutterUI {
-                    naviChannel.invokeMethod("commonWeb", arguments: msg)
-                }else{
-                    gotoURL = msg
-                }
+            if isLoaded {
+                naviChannel.invokeMethod("commonWeb", arguments: msg)
+            }else{
+                gotoURL = msg
             }
         }
         
