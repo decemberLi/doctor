@@ -5,10 +5,12 @@ import Flutter
 @objc class AppDelegate: FlutterAppDelegate {
     static var shared : AppDelegate?
     var naviChannel : FlutterMethodChannel!
+    var gotoURL : String?
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
     AppDelegate.shared = self
     let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
     window = UIWindow()
@@ -24,17 +26,25 @@ import Flutter
         }
     }
     vc.setFlutterViewDidRenderCallback {
-        if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
+        if let url = self.gotoURL {
+            self.naviChannel?.invokeMethod("commonWeb", arguments: url)
+            self.gotoURL = nil
+        }else if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
             if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
                 || url.scheme == "com.emedclouds.doctor" {
                 self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
-            }else{
-                WXApi.handleOpen(url, delegate: self)
             }
-            
         }
     }
-    WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
+    if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
+        if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
+            || url.scheme == "com.emedclouds.doctor" {
+            
+        }else{
+            WXApi.handleOpen(url, delegate: self)
+        }
+        
+    }
     
     GeneratedPluginRegistrant.register(with: self)
     
@@ -79,9 +89,15 @@ extension AppDelegate : WXApiDelegate {
         print("\(req)");
         if let real = req as? LaunchFromWXReq {
             let msg = real.message.messageExt
-            naviChannel.invokeMethod("commonWeb", arguments: msg)
-            
+            if let vc = window.rootViewController as? FlutterViewController {
+                if vc.isDisplayingFlutterUI {
+                    naviChannel.invokeMethod("commonWeb", arguments: msg)
+                }else{
+                    gotoURL = msg
+                }
+            }
         }
+        
     }
     
     func onResp(_ resp: BaseResp) {
