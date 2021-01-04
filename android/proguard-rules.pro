@@ -32,3 +32,5 @@
 -keep class com.tencent.mm.sdk.** {
     *;
 }
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
