@@ -82,7 +82,7 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
                           }
                         }
                       }
-                  )
+                  );
                 },
                 fontSize: 14,
               ),
