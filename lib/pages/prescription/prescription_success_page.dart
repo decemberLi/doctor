@@ -8,10 +8,12 @@ import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:doctor/http/dtp.dart';
 import 'package:http_manager/manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class PrescriptionSuccessPage extends StatefulWidget {
   @override
@@ -174,14 +176,17 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                 AceButton(
                   text: '发给随诊患者',
                   onPressed: () async {
-                    var check =
-                        await API.shared.dtp.checkPrescriptionBeforeBind(prescriptionNo);
-                    if (check) {
-                      Navigator.of(context).pushNamed(
-                        RouteManager.PATIENT,
-                        arguments: prescriptionNo,
-                      );
-                    }
+                    EasyLoading.instance.flash(() async{
+                      var check =
+                          await API.shared.dtp.checkPrescriptionBeforeBind(prescriptionNo);
+                      if (check) {
+                        Navigator.of(context).pushNamed(
+                          RouteManager.PATIENT,
+                          arguments: prescriptionNo,
+                        );
+                      }
+                    });
+
                   },
                 ),
                 SizedBox(

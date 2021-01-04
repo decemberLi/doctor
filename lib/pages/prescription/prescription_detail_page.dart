@@ -12,9 +12,12 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:doctor/http/dtp.dart';
 import 'package:http_manager/manager.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
+
 /// 处方详情页面
 class PrescriptionDetailPage extends StatefulWidget {
   @override
@@ -66,16 +69,20 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
                 width: 120,
                 height: 36,
                 onPressed: () async {
-                  var check = await API.shared.dtp.checkPrescriptionBeforeBind(prescriptionNo);
-                  if (check) {
-                    var res = await Navigator.of(context).pushNamed(
-                      RouteManager.PATIENT,
-                      arguments: prescriptionNo,
-                    );
-                    if (res != null) {
-                      Navigator.of(context).pop();
-                    }
-                  }
+                  EasyLoading.instance.flash(
+                      () async{
+                        var check = await API.shared.dtp.checkPrescriptionBeforeBind(prescriptionNo);
+                        if (check) {
+                          var res = await Navigator.of(context).pushNamed(
+                            RouteManager.PATIENT,
+                            arguments: prescriptionNo,
+                          );
+                          if (res != null) {
+                            Navigator.of(context).pop();
+                          }
+                        }
+                      }
+                  )
                 },
                 fontSize: 14,
               ),
