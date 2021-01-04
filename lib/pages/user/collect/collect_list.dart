@@ -129,15 +129,29 @@ class _SubCollectState<T> extends State<_SubCollectList>
 
   void onRefresh() async {
     try {
-      int page = _list.length ~/ widget.pageSize;
-      _list = await widget.getData(page);
+      _list = await widget.getData(0);
     } catch (e) {}
 
     setState(() {});
     _controller.headerMode.value = RefreshStatus.completed;
   }
 
-  void onLoading() async {}
+  void onLoading() async {
+    try {
+      int page = _list.length ~/ widget.pageSize;
+      var array = await widget.getData(page);
+      _list += array;
+      if (array.length >= widget.pageSize) {
+        _controller.footerMode.value = LoadStatus.idle;
+      } else {
+        _controller.footerMode.value = LoadStatus.noMore;
+      }
+
+      setState(() {});
+    } catch (e) {
+      _controller.footerMode.value = LoadStatus.failed;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
