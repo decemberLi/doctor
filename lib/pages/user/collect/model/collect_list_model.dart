@@ -49,7 +49,7 @@ class CollectTimeLineResources {
   String anonymityName;
   String postTitle;
   String postStatus;
-  String postId;
+  int postId;
   CollectTimeLineResources(
       this.postType,
       this.postUserName,

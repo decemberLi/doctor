@@ -1,23 +1,25 @@
-import 'dart:math';
 
 import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../main.dart';
-import '../viewmodel/doctors_view_model.dart';
+import '../../../root_widget.dart';
 import '../model/doctor_circle_entity.dart';
+import '../viewmodel/doctors_view_model.dart';
+
+final _colorPanel = {
+  '文献专区': ThemeColor.colorFF52C41A,
+  '病例解析': ThemeColor.colorFF107BFD,
+  '每日医讲': ThemeColor.colorFFFAAD14,
+};
 
 class DoctorCircleItemWidget extends StatelessWidget {
-  final _colorPanel = {
-    '文献专区': ThemeColor.colorFF52C41A,
-    '案例解析': ThemeColor.colorFF107BFD,
-    '每日一讲': ThemeColor.colorFFFAAD14,
-  };
+
   final DoctorCircleEntity data;
 
   DoctorCircleItemWidget(this.data);
@@ -27,10 +29,11 @@ class DoctorCircleItemWidget extends StatelessWidget {
     if (color != null) {
       return color;
     }
-    var batch = _colorPanel.entries.toList();
-    var hitColor = batch[Random().nextInt(batch.length)].value;
-    _colorPanel[category] = hitColor;
-    return hitColor;
+    return ThemeColor.colorFF107BFD;
+    // var batch = _colorPanel.entries.toList();
+    // var hitColor = batch[Random().nextInt(batch.length)].value;
+    // _colorPanel.putIfAbsent(category, () => hitColor);
+    // return hitColor;
   }
 
   @override
@@ -79,8 +82,12 @@ class DoctorCircleItemWidget extends StatelessWidget {
             padding: EdgeInsets.only(top: 8),
             // title
             child: Text(data?.postTitle ?? '',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style:
-                    TextStyle(fontSize: 16, color: ThemeColor.colorFF222222)),
+                TextStyle(fontSize: 16,
+                    color: data.isClicked ? ThemeColor.colorFFC1C1C1:
+                    ThemeColor.colorFF222222)),
           ),
           Padding(
             padding: EdgeInsets.only(top: 6, bottom: 8),
@@ -88,7 +95,7 @@ class DoctorCircleItemWidget extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style:
-                    TextStyle(fontSize: 14, color: ThemeColor.colorFF999999)),
+                TextStyle(fontSize: 14, color: data.isClicked ? ThemeColor.colorFFC1C1C1:ThemeColor.colorFF999999)),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -98,6 +105,7 @@ class DoctorCircleItemWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: ThemeColor.colorFFF6F6F6,
                     borderRadius: BorderRadius.all(Radius.circular(2))),
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                 child: Text(
                   data?.columnName ?? '',
                   style: TextStyle(
@@ -149,13 +157,14 @@ class DoctorPageState
   }
 
   @override
-  Widget divider(BuildContext context, int index) => Divider(
+  Widget divider(BuildContext context, int index) =>
+      Divider(
         color: ThemeColor.colorFFF3F5F8,
         height: 12,
       );
 
   @override
-  DoctorsViewMode getModel() => DoctorsViewMode('GOSSIP');
+  DoctorsViewMode getModel() => DoctorsViewMode(type: 'ACADEMIC');
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) =>
@@ -166,4 +175,18 @@ class DoctorPageState
     _currentIsOutScreen = outScreen;
     _inScreenViewModel.updateState(PAGE_DOCTOR, _currentIsOutScreen);
   }
+
+  @override
+  void onItemClicked(DoctorsViewMode model, itemData) {
+    model.markToNative(itemData?.postId);
+    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+        arguments: {
+          'postId': itemData?.postId,
+          'from': 'list',
+          'type': 'ACADEMIC'
+        });
+  }
+
+  @override
+  String noMoreDataText() => '已显示全部帖子';
 }

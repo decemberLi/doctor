@@ -6,12 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 abstract class AbstractListPageState<M extends RefreshableViewStateModel,
-    T extends StatefulWidget> extends State<T> {
-  RefreshableViewStateModel _model;
-  final ScrollController _controller = ScrollController();
+        T extends StatefulWidget> extends State<T>
+    with AutomaticKeepAliveClientMixin {
+  M _model;
+  ScrollController _controller;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var height = MediaQuery.of(context).size.height;
     _controller.addListener(() {
       scrollOutOfScreen(_controller.offset > height);
@@ -21,13 +26,13 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
       child: Consumer<M>(
         builder: (context, value, child) {
           return Container(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             color: ThemeColor.colorFFF3F5F8,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: SmartRefresher(
               controller: _model.refreshController,
               enablePullUp: !_model.isError,
               header: ClassicHeader(),
-              footer: ClassicFooter(),
+              footer: ClassicFooter(noDataText: noMoreDataText(),),
               onRefresh: _model.refresh,
               onLoading: _model.loadMore,
               child: bodyWidget(),
@@ -45,8 +50,15 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
     return ListView.separated(
       controller: _controller,
       itemCount: _model.size,
+      padding: EdgeInsets.only(top: 12),
       itemBuilder: (context, index) {
-        return itemWidget(context, index, _model.list[index]);
+        var model = _model.list[index];
+        return GestureDetector(
+          child: itemWidget(context, index, _model.list[index]),
+          onTap: () {
+            onItemClicked(_model, model);
+          },
+        );
       },
       separatorBuilder: (BuildContext context, int index) {
         return divider(context, index);
@@ -57,7 +69,9 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
   @override
   void initState() {
     super.initState();
+    _controller = ScrollController();
     _model = getModel();
+    _model.refresh(init: false);
   }
 
   @override
@@ -66,11 +80,8 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
     _model.dispose();
   }
 
-  Widget emptyWidget(String msg) => Center(
-        child: ViewStateEmptyWidget(
-          message: msg ?? '',
-        ),
-      );
+  Widget emptyWidget(String msg) =>
+      Center(child: ViewStateEmptyWidget(message: msg ?? ''));
 
   M getModel();
 
@@ -95,4 +106,8 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
     _model.refreshController
         .requestRefresh(duration: Duration(milliseconds: 100));
   }
+
+  void onItemClicked(M model, itemData) {}
+
+  String noMoreDataText() => null;
 }

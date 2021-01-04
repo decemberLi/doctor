@@ -38,7 +38,6 @@ class _DoctorsHomeState extends State<DoctorsHome>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _inScreenViewModel.clean();
   }
@@ -51,27 +50,36 @@ class _DoctorsHomeState extends State<DoctorsHome>
         elevation: 0,
         toolbarHeight: 46,
         flexibleSpace: SafeArea(
-          child: Container(
-            color: Colors.white,
-            child: Padding(
-              padding:
-                  EdgeInsets.only(left: 100, right: 100, top: 11, bottom: 5),
-              child: TabBar(
-                  indicator: LinearGradientTabIndicatorDecoration(),
-                  labelPadding: EdgeInsets.zero,
-                  indicatorWeight: 0,
-                  controller: _tabController,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  labelStyle: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: ThemeColor.colorFF000000),
-                  unselectedLabelStyle: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.normal,
-                      color: ThemeColor.colorFF999999),
-                  tabs: _titleWidget()),
-            ),
+          child: Row(
+            children: [
+              Spacer(),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding:
+                        EdgeInsets.only(left: 0, right: 0, top: 11, bottom: 5),
+                    child: TabBar(
+                        indicator: LinearGradientTabIndicatorDecoration(),
+                        labelPadding: EdgeInsets.zero,
+                        indicatorWeight: 0,
+                        controller: _tabController,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        labelStyle: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: ThemeColor.colorFF000000),
+                        unselectedLabelStyle: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.normal,
+                            color: ThemeColor.colorFF999999),
+                        tabs: _titleWidget()),
+                  ),
+                ),
+              ),
+              Spacer()
+            ],
           ),
         ),
       ),

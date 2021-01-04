@@ -1,9 +1,10 @@
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
-import 'package:doctor/pages/worktop/service.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:doctor/http/server.dart';
+import 'package:http_manager/manager.dart';
 
 class LearnPlanPage extends StatefulWidget {
   final int index;
@@ -39,7 +40,7 @@ class _LearnPlanPageState extends State<LearnPlanPage>
   }
 
   void getLearnCount(List taskTemplate) async {
-    var res = await getPlanCount({
+    var res = await API.shared.server.getPlanCount({
       'taskTemplate': taskTemplate,
     });
     setState(() {
@@ -81,9 +82,7 @@ class _LearnPlanPageState extends State<LearnPlanPage>
                             top: -8,
                             child: LearnTextIcon(
                               text: '$_waitLearnCount',
-                              color: _currentTabIndex == 0
-                                  ? ThemeColor.primaryColor
-                                  : ThemeColor.secondaryGeryColor,
+                              color: Colors.red,
                             ),
                           ),
                       ],

@@ -16,7 +16,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../main.dart';
+import '../../root_widget.dart';
 
 class WorktopPage extends StatefulWidget {
   @override
@@ -117,7 +117,9 @@ class _WorktopPageState extends State<WorktopPage>
               // 从详情页回来后刷新数据
               _model.initData();
             },
-            child: LearnListItemWiget(item, 'LEARNING'),
+            child: LearnListItemWiget(item, 'LEARNING',(){
+              _model.initData();
+            },),
           ),
         );
       }, childCount: entity?.learnPlanList?.length ?? 0);
@@ -127,8 +129,11 @@ class _WorktopPageState extends State<WorktopPage>
       if (entity == null ||
           entity.learnPlanList == null ||
           entity.learnPlanList.length == 0) {
-        return ViewStateEmptyWidget(
-          message: '暂无学习计划',
+        return Container(
+          padding: EdgeInsets.only(top: 60),
+          child: ViewStateEmptyWidget(
+            message: '暂无学习计划',
+          ),
         );
       } else {
         return Container();
@@ -185,6 +190,10 @@ class _WorktopPageState extends State<WorktopPage>
       );
     }
     // 医生个人信息部分
+    var doctorName = doctorInfoEntity?.doctorName ?? '';
+    if(doctorInfoEntity?.basicInfoAuthStatus == 'NOT_COMPLETE'){
+      doctorName = '待完善';
+    }
     return GestureDetector(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -192,7 +201,22 @@ class _WorktopPageState extends State<WorktopPage>
           Container(
             width: 70,
             height: 70,
-            padding: EdgeInsets.all(100),
+            alignment: Alignment.center,
+            child: doctorInfoEntity?.fullFacePhoto == null
+                ? Image.asset("assets/images/doctorHeader.png",width: 60,height: 60,)
+                :Container(
+              width: 68,
+              height: 68,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.fitWidth,
+                  image: NetworkImage(
+                      '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}'),
+                ),
+              ),
+            ),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -203,17 +227,6 @@ class _WorktopPageState extends State<WorktopPage>
                 ),
               ],
               shape: BoxShape.circle,
-              image: DecorationImage(
-                // fit: BoxFit.fill,
-                fit: BoxFit.fitWidth,
-                image: doctorInfoEntity?.fullFacePhoto == null
-                    ? AssetImage(
-                        "assets/images/doctorAva.png",
-                      )
-                    : NetworkImage(
-                        '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}',
-                      ),
-              ),
             ),
           ),
           Container(
@@ -225,7 +238,7 @@ class _WorktopPageState extends State<WorktopPage>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      doctorInfoEntity?.doctorName ?? '',
+                      doctorName,
                       style: TextStyle(
                           fontSize: 22,
                           color: ThemeColor.colorFF222222,

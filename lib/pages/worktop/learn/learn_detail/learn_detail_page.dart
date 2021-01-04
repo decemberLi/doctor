@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
@@ -5,17 +8,39 @@ import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
+import 'package:doctor/utils/platform_utils.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
+import 'package:http_manager/api.dart';
 import 'package:provider/provider.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:doctor/http/server.dart';
+import 'package:path_provider/path_provider.dart';
 
 // * @Desc: 计划详情页  */
+/// 科室会议
+const String TYPE_DEPART = 'DEPART';
+
+/// 沙龙会议
+const String TYPE_SALON = 'SALON';
+
+/// 拜访
+const String TYPE_VISIT = 'VISIT';
+
+/// 调研
+const String TYPE_SURVEY = 'SURVEY';
+
+/// 讲课类型
+const String TYPE_DOCTOR_LECTURE = 'DOCTOR_LECTURE';
+
 class LearnDetailPage extends StatefulWidget {
   LearnDetailPage({Key key}) : super(key: key);
 
@@ -25,10 +50,18 @@ class LearnDetailPage extends StatefulWidget {
 
 class _LearnDetailPageState extends State<LearnDetailPage> {
   DoctorDetailInfoEntity userInfo;
+  LearnDetailViewModel _model;
+
   @override
   void initState() {
     super.initState();
     updateDoctorInfo();
+  }
+
+  @override
+  void dispose() {
+    _model?.dispose();
+    super.dispose();
   }
 
   updateDoctorInfo() {
@@ -236,17 +269,40 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     return Text('');
   }
 
+  String _obtainTitleByType(String type) {
+    switch (type) {
+      case TYPE_DEPART:
+      case TYPE_SALON:
+        return '会议详情';
+      case TYPE_VISIT:
+        return '拜访详情';
+      case TYPE_SURVEY:
+        return '调研详情';
+      case TYPE_DOCTOR_LECTURE:
+        return '讲课邀请详情';
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
-
+    _model = LearnDetailViewModel(arguments['learnPlanId']);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('学习计划详情'),
+        title: ChangeNotifierProvider<LearnDetailViewModel>.value(
+          value: _model,
+          child: Consumer<LearnDetailViewModel>(
+            builder: (context, model, child) {
+              return Text(_obtainTitleByType(model?.data?.taskTemplate ?? ''));
+            },
+          ),
+        ),
       ),
       body: ProviderWidget<LearnDetailViewModel>(
-        model: LearnDetailViewModel(arguments['learnPlanId']),
+        model: _model,
         onModelReady: (model) => model.initData(),
         builder: (context, model, child) {
           if (model.isBusy) {
@@ -438,6 +494,27 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                             '',
                                                     'taskName': data.taskName,
                                                     'from': arguments['from'],
+                                                    'upFinished': (lectureID)  {
+                                                      EasyLoading.instance
+                                                          .flash(() async {
+                                                            print("-------------");
+                                                            print("the lectureID == ${lectureID}");
+                                                        var result = await API
+                                                            .shared.server
+                                                            .doctorLectureSharePic(
+                                                            "$lectureID");
+                                                        var appDocDir = await getApplicationDocumentsDirectory();
+                                                        if(Platform.isAndroid){
+                                                          appDocDir = await getExternalStorageDirectory();
+                                                        }
+                                                        String picPath = appDocDir.path + "/sharePic${DateTime.now().millisecond}.jpg";
+                                                        await Dio().download(result["url"], picPath);
+                                                        var obj = {"path":picPath,"url":result["codeStr"]};
+                                                        var share = json.encode(obj).toString();
+                                                        MedcloudsNativeApi.instance().share(share);
+                                                        print(result);
+                                                      });
+                                                    }
                                                   },
                                                 );
                                                 if (result == true) {
@@ -450,26 +527,21 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                                       '当前学习计划尚未学习，请在学习后提交';
                                                   EasyLoading.showToast(_text);
                                                 } else {
-                                                  bool bindConfirm =
-                                                      await confirmDialog(
-                                                          data.learnProgress);
-                                                  if (bindConfirm) {
-                                                    bool success = await model
-                                                        .bindLearnPlan(
-                                                      learnPlanId:
-                                                          data.learnPlanId,
-                                                    );
-                                                    if (success) {
-                                                      EasyLoading.showToast(
-                                                          '提交成功');
-                                                      // 延时1s执行返回
-                                                      Future.delayed(
-                                                          Duration(seconds: 1),
-                                                          () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      });
-                                                    }
+                                                  bool success = await model
+                                                      .bindLearnPlan(
+                                                    learnPlanId:
+                                                    data.learnPlanId,
+                                                  );
+                                                  if (success) {
+                                                    EasyLoading.showToast(
+                                                        '提交成功');
+                                                    // 延时1s执行返回
+                                                    Future.delayed(
+                                                        Duration(seconds: 1),
+                                                            () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        });
                                                   }
                                                 }
                                               }

@@ -7,7 +7,6 @@ import 'package:doctor/pages/worktop/learn/lecture_videos/upload_video.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
-import 'package:doctor/pages/worktop/service.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 
@@ -24,15 +23,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_compress/video_compress.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/rendering.dart';
+import 'package:doctor/http/server.dart';
 import 'dart:async';
 
 /// * @Author: duanruilong  * @Date: 2020-10-30 14:49:43  * @Desc: 上传讲课视频  */ lecture_videos
 
 class LectureVideosPage extends StatefulWidget {
+
   LectureVideosPage({Key key}) : super(key: key);
   @override
   _LearnDetailPageState createState() => _LearnDetailPageState();
@@ -40,6 +42,7 @@ class LectureVideosPage extends StatefulWidget {
 
 class _LearnDetailPageState extends State<LectureVideosPage> {
   final _formKey = GlobalKey<FormState>();
+  Function(dynamic) upFinished;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController presenterController = TextEditingController();
@@ -78,6 +81,8 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       learnPlanId = obj["learnPlanId"].toString();
       resourceId = obj['resourceId'].toString();
       reLearn = obj['reLearn'];
+      upFinished = obj['upFinished'];
+
     }
     if (!reLearn) {
       titleController.text = obj['taskName'];
@@ -85,7 +90,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
       return;
     }
     try {
-      var result = await http.post('/doctor-lecture/detail', params: {
+      var result = await API.shared.server.doctorLectureDetail({
         'learnPlanId': this.learnPlanId,
         'resourceId': this.resourceId,
       });
@@ -267,7 +272,7 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         await VideoCompress.deleteAllCache();
       }
 
-      await addLectureSubmit({
+       await API.shared.server.addLectureSubmit({
         'learnPlanId': learnPlanId,
         'resourceId': resourceId,
         'videoTitle': this.data.videoTitle,
@@ -278,9 +283,16 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
         // 延时1s执行返回
         Future.delayed(Duration(seconds: 1), () {
           Navigator.of(context).pop(true);
+          if(upFinished != null){
+            print("the value is  ------ ${res["lectureId"]}");
+            upFinished(res["lectureId"]);
+            print("the value is  ------ end");
+          }
         });
+
+
       }).catchError((error) {
-        EasyLoading.showToast(error.errorMsg);
+        EasyLoading.showToast("上传失败");
       });
     }
   }

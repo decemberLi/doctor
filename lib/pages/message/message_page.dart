@@ -1,4 +1,3 @@
-import 'package:doctor/main.dart';
 import 'package:doctor/pages/message/message_promotion_list.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/message/widget/like_message_list_widget.dart';
@@ -6,6 +5,7 @@ import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../root_widget.dart';
 import 'common_style.dart';
 import 'message_list_page.dart';
 import 'widget/comment_message_list_widget.dart';
@@ -131,11 +131,13 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
           var leanPlanCount = model?.data?.leanPlanCount ?? 0;
           var prescriptionCount = model?.data?.prescriptionCount ?? 0;
           var interactiveCount = model?.data?.interactiveCount ?? 0;
+          var likeCount = model?.data?.likeCount ?? 0;
+          var commentCount = model?.data?.commentCount ?? 0;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                _buildInteractionMessageWidget(),
+                _buildInteractionMessageWidget(likeCount, commentCount),
                 Container(
                   padding: EdgeInsets.only(bottom: 5),
                   decoration: BoxDecoration(
@@ -151,7 +153,7 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                         goMessageList(MessageType.TYPE_SYSTEM);
                       }, 1, dotColor: _dotColor(systemCount)),
                       messageItem('学术推广', 'assets/images/msg_learn_plan.png',
-                          leanPlanCount, () {
+                          leanPlanCount + interactiveCount, () {
                         goStudyPlane();
                       }, 2,
                           dotColor:
@@ -206,30 +208,31 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
             Container(
               child: Image.asset(assetPath, width: 40, height: 40),
             ),
-            Positioned(
-              right: -17,
-              top: -10,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                padding: EdgeInsets.all(1.5),
+            if (unreadMsg != null && unreadMsg > 0)
+              Positioned(
+                right: -17,
+                top: -10,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: _dotColor(unreadMsg),
-                      borderRadius: BorderRadius.all(Radius.circular(12))),
-                  constraints: BoxConstraints(minWidth: 29, minHeight: 16),
-                  child: Center(
-                      child: Text(
-                    unreadMsg > 99 ? '99+' : '$unreadMsg',
-                    style: TextStyle(
                       color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
-                  )),
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                  padding: EdgeInsets.all(1.5),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: _dotColor(unreadMsg),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    constraints: BoxConstraints(minWidth: 29, minHeight: 16),
+                    child: Center(
+                        child: Text(
+                      unreadMsg > 99 ? '99+' : '$unreadMsg',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    )),
+                  ),
                 ),
-              ),
-            )
+              )
           ],
         ),
         Padding(
@@ -243,34 +246,38 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
     );
   }
 
-  _buildInteractionMessageWidget() {
+  _buildInteractionMessageWidget(int likeCount, int commentCount) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
       margin: EdgeInsets.symmetric(vertical: 12),
-      padding: EdgeInsets.symmetric(horizontal: 76),
       height: 120,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          GestureDetector(
+          Spacer(),
+          Expanded(
+              child: GestureDetector(
             child: _buildMessageIcon(
                 assetPath: 'assets/images/icon_like.png',
                 label: '点赞',
-                unreadMsg: 10),
+                unreadMsg: likeCount),
             onTap: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => LikeMessagePage())),
-          ),
-          GestureDetector(
+          )),
+          Spacer(),
+          Expanded(
+              child: GestureDetector(
             child: _buildMessageIcon(
                 assetPath: 'assets/images/icon_comment.png',
                 label: '评论',
-                unreadMsg: 1000),
+                unreadMsg: commentCount),
             onTap: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => CommentMessagePage())),
-          ),
+          )),
+          Spacer(),
         ],
       ),
     );

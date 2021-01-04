@@ -16,6 +16,8 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/developer.dart';
 
 class AppUpdateHelper {
   static Future _downloadApp(
@@ -231,14 +233,22 @@ class AppUpdateHelper {
   }
 
   static void _goAppStore() async {
-    var url = await AppRepository.queryDictionary();
-    if (url == null) {
-      return;
+    try {
+      var data = await API.shared.developer.dictList();
+      var records = data["records"] as List;
+      var item = records[0];
+      var url = item["value"];
+      if (url == null) {
+        return;
+      }
+
+      if (await canLaunch(url)) {
+        await launch(url);
+      }
+    }catch (e){
+      EasyLoading.showToast("升级失败");
     }
 
-    if (await canLaunch(url)) {
-      await launch(url);
-    }
   }
 
   static needCheckUpdate() async {
@@ -349,6 +359,7 @@ class AppUpdateDialog extends StatelessWidget {
                         onPressed: _doUpdate ??
                             () {
                               print('立即升级');
+
                             },
                       ),
                     )

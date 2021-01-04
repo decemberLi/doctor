@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'comment_list_model.g.dart';
 
 /// 问卷问题
@@ -15,6 +16,8 @@ class CommentSecond {
   int parentId;
   String respondent;
   String respondentUserType;
+  String respondentContent;
+
   CommentSecond(
     this.commentContent,
     this.commentId,
@@ -27,6 +30,7 @@ class CommentSecond {
     this.parentId,
     this.respondent,
     this.respondentUserType,
+    this.respondentContent,
   );
   factory CommentSecond.fromJson(Map<String, dynamic> json) =>
       _$CommentSecondFromJson(json);
@@ -48,6 +52,7 @@ class CommentListItem {
   String respondent;
   String respondentUserType;
   List<CommentSecond> secondLevelCommentList;
+  String respondentContent;
   CommentListItem(
     this.commentContent,
     this.commentId,
@@ -61,6 +66,7 @@ class CommentListItem {
     this.respondent,
     this.respondentUserType,
     this.secondLevelCommentList,
+      this.respondentContent
   );
 
   factory CommentListItem.fromJson(Map<String, dynamic> json) =>

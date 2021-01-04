@@ -5,9 +5,8 @@ abstract class RefreshableViewStateModel<T> extends ViewStateRefreshListModel {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  List<T> _dataList = List();
 
-  int get size => _dataList.length;
+  int get size => list.length;
 
   RefreshController get refreshController => _refreshController;
 }

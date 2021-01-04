@@ -3,13 +3,14 @@ import 'dart:math';
 import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../main.dart';
+import '../../../root_widget.dart';
 import '../model/doctor_circle_entity.dart';
 
 final _avatarPanel = {};
@@ -100,8 +101,13 @@ class GossipNewsItemWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 6),
             child: Text(data?.postContent ?? '',
-                style:
-                    TextStyle(fontSize: 14, color: ThemeColor.colorFF222222)),
+                maxLines: 10,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: 14,
+                    color: data.isClicked
+                        ? ThemeColor.colorFFC1C1C1
+                        : ThemeColor.colorFF222222)),
           ),
         ],
       ),
@@ -116,7 +122,6 @@ class GossipNewsPage extends StatefulWidget {
 
 class GossipNewsPageState
     extends AbstractListPageState<DoctorsViewMode, GossipNewsPage> {
-  DoctorsViewMode mode;
   ScrollOutScreenViewModel _inScreenViewModel;
 
   bool _currentIsOutScreen = false;
@@ -143,7 +148,7 @@ class GossipNewsPageState
       );
 
   @override
-  DoctorsViewMode getModel() => DoctorsViewMode('ACADEMIC');
+  DoctorsViewMode getModel() => DoctorsViewMode(type: 'GOSSIP');
 
   @override
   Widget emptyWidget(String msg) {
@@ -159,4 +164,18 @@ class GossipNewsPageState
     _currentIsOutScreen = outScreen;
     _inScreenViewModel.updateState(PAGE_GOSSIP, _currentIsOutScreen);
   }
+
+  @override
+  void onItemClicked(DoctorsViewMode model, itemData) {
+    model.markToNative(itemData?.postId);
+    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+        arguments: {
+          'postId': itemData?.postId,
+          'from': 'list',
+          'type': 'GOSSIP'
+        });
+  }
+  
+  @override
+  String noMoreDataText() => '已显示全部帖子';
 }

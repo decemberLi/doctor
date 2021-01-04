@@ -37,7 +37,8 @@ PrescriptionModel _$PrescriptionModelFromJson(Map<String, dynamic> json) {
     ..depart = json['depart'] as String
     ..auditorId = json['auditorId'] as num
     ..auditor = json['auditor'] as String
-    ..auditTime = json['auditTime'] as num;
+    ..auditTime = json['auditTime'] as num
+    ..exitPatient = json['exitPatient'] as bool;
 }
 
 Map<String, dynamic> _$PrescriptionModelToJson(PrescriptionModel instance) =>
@@ -64,4 +65,5 @@ Map<String, dynamic> _$PrescriptionModelToJson(PrescriptionModel instance) =>
       'auditTime': instance.auditTime,
       'weight': instance.weight,
       'doctorSignatureUrl': instance.doctorSignatureUrl,
+      'exitPatient': instance.exitPatient,
     };

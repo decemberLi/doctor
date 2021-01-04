@@ -1,13 +1,15 @@
 import 'dart:async';
-import 'dart:io';
+
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/http/server.dart';
+import 'package:doctor/pages/worktop/resource/comment/bottom_bar.dart';
 import 'package:doctor/pages/worktop/resource/comment/comment_list_view.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
-import 'package:doctor/pages/worktop/resource/service.dart';
 import 'package:doctor/pages/worktop/resource/view_model/resource_view_model.dart';
 import 'package:doctor/pages/worktop/resource/widgets/article.dart';
 import 'package:doctor/pages/worktop/resource/widgets/attachment.dart';
-import 'package:doctor/pages/worktop/resource/widgets/video.dart';
 import 'package:doctor/pages/worktop/resource/widgets/questionPage.dart';
+import 'package:doctor/pages/worktop/resource/widgets/video.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/theme/myIcons.dart';
@@ -17,10 +19,11 @@ import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
-import '../service.dart';
-import 'comment/service.dart';
+import 'comment/input_bar.dart';
 
 class ResourceDetailPage extends StatefulWidget {
   final learnPlanId;
@@ -31,6 +34,7 @@ class ResourceDetailPage extends StatefulWidget {
   final meetingEndTime;
   final taskDetailId;
   final from;
+
   ResourceDetailPage(
       this.learnPlanId,
       this.resourceId,
@@ -40,6 +44,7 @@ class ResourceDetailPage extends StatefulWidget {
       this.meetingEndTime,
       this.taskDetailId,
       this.from);
+
   @override
   _ResourceDetailPageState createState() => _ResourceDetailPageState();
 }
@@ -53,6 +58,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   Timer _timer;
   String commentContent = '';
   FocusNode commentFocusNode = FocusNode();
+  FocusNode feedbackFocusNode = FocusNode();
   TextEditingController commentTextEdit = TextEditingController();
   int _learnTime = 0;
   bool showFeedback = false; //是否展示遮罩层
@@ -64,6 +70,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   bool isKeyboardActived = false; //当前键盘是否激活
   int backfocus = 0; //点击返回按钮状态，第二次点击直接返回
   int subscribeId;
+
   Widget resourceRender(ResourceModel data) {
     void openTimer() {
       //需要记录浏览时间
@@ -151,7 +158,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   //获取评论
   void _getComments(resourceId) async {
-    getCommentNum({'resourceId': resourceId}).then((res) {
+    API.shared.server.getCommentNum({'resourceId': resourceId}).then((res) {
       setState(() {
         msgCount = res;
       });
@@ -160,7 +167,8 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   // 获取收藏状态
   void _getCollect(resourceId) async {
-    getFavoriteStatus({'bizId': resourceId, 'bizType': 'RESOURCE'}).then((res) {
+    API.shared.server.getFavoriteStatus(
+        {'bizId': resourceId, 'bizType': 'RESOURCE'}).then((res) {
       setState(() {
         _startIcon = res['exists'];
       });
@@ -169,9 +177,11 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
 
   @override
   void dispose() {
+    InputBarHelper.reset();
     super.dispose();
     KeyboardVisibilityNotification().removeListener(subscribeId);
     commentFocusNode.dispose();
+    feedbackFocusNode.dispose();
     WidgetsBinding.instance.removeObserver(this); //卸载观察者
     if (_timer != null) {
       _timer.cancel();
@@ -208,7 +218,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       return Container();
     }
     int learnedTime = data.learnTime ?? 0;
-    String tips = data.resourceType == 'VIDEO' ? '已观看' : '已浏览';
     //文章阅读进入页面直接触发定时器
     if (_timer == null && needReport && data.contentType == 'RICH_TEXT') {
       startCountTimer();
@@ -216,29 +225,33 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     //视频观看需点击视频观看按钮触发定时器
     return Positioned(
       top: 24,
+      right: 0,
       child: Container(
+        width: 50,
         padding: EdgeInsets.all(5),
         alignment: Alignment.center,
         height: 35,
         decoration: BoxDecoration(
           color: ThemeColor.primaryColor,
           borderRadius: BorderRadius.only(
-              topRight: Radius.circular(15), bottomRight: Radius.circular(15)),
+              topLeft: Radius.circular(15), bottomLeft: Radius.circular(15)),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //阅读时间大于需学习时间显示
-            if (learnedTime + _learnTime > data.needLearnTime)
-              Icon(
-                Icons.done,
-                size: 20,
-                color: Colors.white,
-              ),
-            // 定时器时间变化 文章为已浏览 视频为已观看
-            Text(
-              '$tips${learnedTime + (_learnTime ?? 0)}s',
-              style: TextStyle(color: Colors.white),
-            ),
+            learnedTime + _learnTime > data.needLearnTime
+                ? Icon(
+                    Icons.done,
+                    size: 20,
+                    color: Colors.white,
+                  )
+                :
+                // 定时器时间变化 文章为已浏览 视频为已观看
+                Text(
+                    '${learnedTime + (_learnTime ?? 0)}s',
+                    style: TextStyle(color: Colors.white),
+                  )
           ],
         ),
       ),
@@ -256,7 +269,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       return;
     }
 
-    sendComment({
+    API.shared.server.sendComment({
       'resourceId': widget.resourceId,
       'learnPlanId': widget.learnPlanId,
       'commentContent': commentContent,
@@ -276,152 +289,73 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     });
   }
 
+  var _bottomBarController = BottomBarController();
+
+  String text = '';
+
   //下方评论
   Widget commentBottom(data) {
     if (data.resourceType == 'QUESTIONNAIRE' ||
         widget.taskTemplate == 'DOCTOR_LECTURE') {
       return Container();
     }
-    return Container(
+    var bottomBar = Container(
       color: Colors.white,
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
       constraints: BoxConstraints(
         minHeight: 40,
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              minLines: 1,
-              maxLines: 10,
-              maxLength: 150,
-              controller: commentTextEdit,
-              focusNode: commentFocusNode,
-              // enableInteractiveSelection: false,
-              onTap: () {
-                FocusScope.of(context).requestFocus(commentFocusNode);
-                setState(() {
-                  logo = false;
-                });
-              },
-              onChanged: (text) {
-                setState(() {
-                  commentContent = text;
-                });
-              },
-              decoration: InputDecoration(
-                counterText: "",
-                fillColor: Color(0XFFEDEDED),
-                filled: true,
-                contentPadding: EdgeInsets.all(10.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  //未选中时候的颜色
-                  borderRadius: BorderRadius.circular(25.0),
-                  borderSide: BorderSide(
-                    color: Colors.white,
-                  ),
-                ),
-                hintText: '请输入您的问题或评论',
-                suffix: GestureDetector(
-                  onTap: () {
-                    sendCommentInfo();
-                  },
-                  child: Text(
-                    logo ? '' : '发表',
-                    style:
-                        TextStyle(color: ThemeColor.primaryColor, fontSize: 14),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          logo
-              ? Container(
-                  margin: EdgeInsets.only(left: 25),
-                  child: Stack(
-                    overflow: Overflow.visible,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          commentTextEdit.clear();
-                          // CommonModal 点击评论数弹出评论区
-                          _showCommentWidget();
-                        },
-                        child: Icon(
-                          MyIcons.icon_talk,
-                          size: 28,
-                        ),
-                      ),
-                      msgCount > 0
-                          ? Positioned(
-                              left: 18,
-                              top: -10,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: ThemeColor.primaryColor,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(12))),
-                                constraints: BoxConstraints(
-                                  minWidth: 20,
-                                  minHeight: 20,
-                                ),
-                                child: Center(
-                                    child: Text(
-                                  msgCount > 99 ? '99+' : '$msgCount',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                )),
-                              ),
-                            )
-                          : Container(),
-                    ],
-                  ))
-              : Container(),
-          logo
-              ? Container(
-                  color: Colors.white,
-                  margin: EdgeInsets.only(left: 20),
-                  child: InkWell(
-                    onTap: () {
-                      //收藏
-                      setFavoriteStatus({
-                        'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
-                        'resourceId': widget.resourceId,
-                      }).then((res) {
-                        EasyLoading.showToast(_startIcon ? '取消收藏成功' : '收藏成功');
-                        setState(() {
-                          _startIcon = !_startIcon;
-                        });
-                      });
-                    },
-                    child: Icon(
-                      _startIcon ? MyIcons.icon_star_fill : MyIcons.icon_star,
-                      size: 28,
-                    ),
-                  ),
-                )
-              : Container()
-        ],
+      child: BottomBarWidget(
+        isShowLikeBtn: false,
+        hintText: '请输入您的问题或评论',
+        text: text,
+        controller: _bottomBarController,
+        commentCallback: () {
+          _showCommentWidget();
+        },
+        inputCallback: () async {
+          String cacheContent = await InputBarHelper.showInputBar(
+              context, '请输入您的问题或评论', null, null, null, (msg) {
+            commentContent = msg;
+            sendCommentInfo();
+            InputBarHelper.reset();
+            return true;
+          });
+          setState(() {
+            _bottomBarController.text = cacheContent;
+          });
+        },
+        collectCallback: () {
+          API.shared.server.setFavoriteStatus({
+            'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
+            'resourceId': widget.resourceId,
+          }).then((res) {
+            EasyLoading.showToast(_startIcon ? '取消收藏成功' : '收藏成功');
+            setState(() {
+              _startIcon = !_startIcon;
+            });
+          });
+        },
       ),
     );
+    _bottomBarController.commentCount = msgCount;
+    _bottomBarController.isFavorite = _startIcon;
+    _bottomBarController.hintText = '请输入您的问题或评论';
+
+    return bottomBar;
   }
 
   Future _showCommentWidget() {
     return CommonModal.showBottomSheet(context,
         title: '评论区',
+        contentPadding: EdgeInsets.all(0),
         height: Adapt.screenH() * 0.8,
         enableDrag: false,
-        child: CommentListPage(widget.resourceId, widget.learnPlanId));
+        child: CommentListPage(
+            widget.resourceId, widget.learnPlanId, _bottomBarController));
   }
 
   //发送反馈
-  void sendFeedback(content, {String level='其他'}) {
+  void sendFeedback(content, {String level = '其他'}) {
     //上传反馈 测试使用
     // setState(() {
     //   successFeedback = true;
@@ -444,11 +378,11 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     }
     //需提交代码
     if (content != null) {
-      feedbackService({
+      API.shared.server.feedbackService({
         'learnPlanId': widget.learnPlanId,
         'resourceId': widget.resourceId,
         'feedback': content,
-        'level':level
+        'level': level
       }).then((res) {
         setState(() {
           successFeedback = true;
@@ -481,7 +415,13 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     return Positioned.fill(
       child: GestureDetector(
         onTap: () {
-          Navigator.pop(context, params); //点击屏幕不反馈直接返回
+          if (feedbackFocusNode.hasFocus) {
+            feedbackFocusNode.unfocus();
+          } else {
+            Navigator.pop(context, params);
+          }
+          //
+          //点击屏幕不反馈直接返回
         },
         child: Container(
           child: Stack(
@@ -490,7 +430,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: Adapt.screenH() * 0.45,
+                bottom: Adapt.screenH() * 0.4,
                 child: Container(
                   child: Column(
                     // mainAxisSize: MainAxisSize.min,
@@ -523,14 +463,15 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                         ..._feedbackData.map((item) {
                           return GestureDetector(
                             onTap: () {
-                              sendFeedback(item['content'],level: item['level']);
+                              sendFeedback(item['content'],
+                                  level: item['level']);
                             },
                             child: Stack(
                               overflow: Overflow.visible,
                               children: [
                                 Container(
                                   height: 30,
-                                  padding: EdgeInsets.only(left: 30, right: 10),
+                                  padding: EdgeInsets.only(left: 30, right: 30),
                                   margin: EdgeInsets.only(top: 26),
                                   constraints: BoxConstraints(
                                     minWidth: 100,
@@ -539,23 +480,18 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                     color: Colors.white,
                                     // borderRadius:
                                     // BorderRadius.all(Radius.circular(15)),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(18),
-                                      bottomRight: Radius.circular(15),
-                                      topRight: Radius.circular(15),
-                                      bottomLeft: Radius.circular(5),
-                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
                                   ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Container(
-                                        margin: EdgeInsets.only(right: 5),
-                                        child: Text(
-                                          item['content'],
-                                        ),
-                                      ),
+                                      Text(
+                                        item['content'],
+                                        style: TextStyle(
+                                            color: Color(0xff444444),
+                                            fontWeight: FontWeight.w500),
+                                      )
                                     ],
                                   ),
                                 ),
@@ -582,14 +518,9 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                 width: 140,
                                 height: 33,
                                 child: RaisedButton(
-                                  padding: EdgeInsets.only(left: 30),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(15),
-                                      topRight: Radius.circular(15),
-                                      bottomLeft: Radius.circular(22),
-                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
                                   ),
                                   color: Colors.white,
                                   textColor: ThemeColor.primaryColor,
@@ -606,7 +537,9 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                     children: [
                                       Text(
                                         "撰写评价",
-                                        style: TextStyle(color: Colors.black),
+                                        style: TextStyle(
+                                            color: Color(0xff444444),
+                                            fontWeight: FontWeight.w500),
                                       ),
                                       Icon(
                                         _addFeedback
@@ -617,15 +550,6 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                       ),
                                     ],
                                   ),
-                                ),
-                              ),
-                              Positioned(
-                                left: -6,
-                                top: 24,
-                                child: Icon(
-                                  MyIcons.icon_pinglun,
-                                  size: 35,
-                                  color: Color(0xFF51BEFF),
                                 ),
                               ),
                             ],
@@ -642,10 +566,11 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                   right: 20,
                   bottom: MediaQuery.of(context).viewInsets.bottom > 0
                       ? MediaQuery.of(context).viewInsets.bottom
-                      : Adapt.screenH() * 0.30,
+                      : Adapt.screenH() * 0.25,
                   child: Column(
                     children: [
                       TextField(
+                        focusNode: feedbackFocusNode,
                         keyboardType: TextInputType.text,
                         minLines: 3,
                         maxLines: 10,
@@ -675,7 +600,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                 Positioned(
                   left: 20,
                   right: 20,
-                  bottom: Adapt.screenH() * 0.25,
+                  bottom: Adapt.screenH() * 0.20,
                   child: FloatingActionButton.extended(
                     backgroundColor: ThemeColor.primaryColor,
                     onPressed: () {
@@ -683,7 +608,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                       sendFeedback(_feedbackContent);
                     },
                     label: Text(
-                      '发送评价',
+                      '发表评价',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -717,7 +642,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
               child: InkWell(
                 onTap: () {
                   //收藏
-                  setFavoriteStatus({
+                  API.shared.server.setFavoriteStatus({
                     'favoriteStatus': _startIcon ? 'CANCEL' : 'ADD',
                     'resourceId': widget.resourceId,
                   }).then((res) {
@@ -741,119 +666,113 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
     setState(() {
       showFeedback = true;
     });
-    getFeedbackInfo({'businessArea': 'ACADEMIC_PROMOTION'}).then((res) {
+    API.shared.foundation
+        .getFeedbackInfo({'businessArea': 'ACADEMIC_PROMOTION'}).then((res) {
       setState(() {
-        _feedbackData = [
-          {
-            'content': res['perfects'][0]['content'],
-            'level': res['perfects'][0]['level'],
-            'icon': MyIcons.icon_dianzan,
-            'index': 0
-          },
-          {
-            'content': res['goods'][0]['content'],
-            'level': res['goods'][0]['level'],
-            'icon': MyIcons.icon_xiaolian,
-            'index': 1
-          },
-          {
-            'content': res['middles'][0]['content'],
-            'level': res['middles'][0]['level'],
-            'icon': MyIcons.icon_kulian,
-            'index': 2
-          }
-        ];
+        var list = res as List<dynamic>;
+        _feedbackData = list.asMap().entries.map((enty) {
+          var value = enty.value;
+          value['index'] = enty.key;
+          return value;
+        }).toList();
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('资料详情'),
-            elevation: 0,
-          ),
-          resizeToAvoidBottomInset: false,
-          body: ProviderWidget<ResourceDetailViewModel>(
-            model: ResourceDetailViewModel(
-                widget.resourceId, widget.learnPlanId, widget.favoriteId),
-            onModelReady: (model) => model.initData(),
-            builder: (context, model, child) {
-              if (model.isBusy) {
-                return Container();
-              }
-              if (model.isError || model.isEmpty) {
-                return ViewStateEmptyWidget(onPressed: model.initData);
-              }
-              var data = model.data;
-              //根据状态决定是否需要反馈
-              needFeedback = data.learnPlanStatus != 'SUBMIT_LEARN' &&
-                  data.learnPlanStatus != 'ACCEPTED' &&
-                  data.resourceType != 'QUESTIONNAIRE' &&
-                  widget.taskTemplate != 'DOCTOR_LECTURE' &&
-                  widget.learnPlanId != null &&
-                  data.learnTime + _learnTime > 0 &&
-                  data.feedback == null;
-
-              return Container(
-                  // color: ThemeColor.colorFFF3F5F8,
-                  color: data.resourceType == 'VIDEO'
-                      ? Color.fromRGBO(0, 0, 0, 1)
-                      : ThemeColor.colorFFF3F5F8,
-                  child: Stack(
-                    // overflow: Overflow.visible,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          commentFocusNode.unfocus();
-                          isKeyboardActived = false;
-                          setState(() {
-                            logo = true;
-                          });
-                        },
-                        child: resourceRender(data),
-                      ),
-
-                      // 评论
-                      if (data != null) comContent(data),
-                      // 计时器
-                      if (widget.learnPlanId != null) timerContent(data),
-                      //反馈
-                      if (needFeedback && showFeedback) feedbackWidget(data),
-                    ],
-                  ));
-            },
-          ),
+    var content = WillPopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('资料详情'),
+          elevation: 0,
         ),
-        onWillPop: () {
-          dynamic params;
-          if (_learnTime > 0 && widget.learnPlanId != null) {
-            //上传时间
-            //time传当前学习了多少s 后台做累加用
-            params = {
-              'resourceId': widget.resourceId,
-              'learnPlanId': widget.learnPlanId,
-              'time': _learnTime
-            };
-          }
-          if (backfocus == 1) {
-            //第二次点击返回直接退出页面
-            Navigator.pop(context, params);
-          } else {
-            backfocus = backfocus + 1;
-          }
-          if (_timer != null) {
-            _timer.cancel();
-          }
-          if (needFeedback && !showFeedback) {
-            setFeedback();
-          }
-          if (!needFeedback) {
-            Navigator.pop(context, params);
-          }
-          return;
-        });
+        resizeToAvoidBottomInset: false,
+        body: ProviderWidget<ResourceDetailViewModel>(
+          model: ResourceDetailViewModel(
+              widget.resourceId, widget.learnPlanId, widget.favoriteId),
+          onModelReady: (model) => model.initData(),
+          builder: (context, model, child) {
+            if (model.isBusy) {
+              return Container();
+            }
+            if (model.isError || model.isEmpty) {
+              return ViewStateEmptyWidget(onPressed: model.initData);
+            }
+            var data = model.data;
+            //根据状态决定是否需要反馈
+            needFeedback = data.learnPlanStatus != 'SUBMIT_LEARN' &&
+                data.learnPlanStatus != 'ACCEPTED' &&
+                data.resourceType != 'QUESTIONNAIRE' &&
+                widget.taskTemplate != 'DOCTOR_LECTURE' &&
+                widget.learnPlanId != null &&
+                data.learnTime + _learnTime > 0 &&
+                data.feedback == null;
+
+            return Container(
+                // color: ThemeColor.colorFFF3F5F8,
+                color: data.resourceType == 'VIDEO'
+                    ? Color.fromRGBO(0, 0, 0, 1)
+                    : ThemeColor.colorFFF3F5F8,
+                child: Stack(
+                  // overflow: Overflow.visible,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        commentFocusNode.unfocus();
+                        isKeyboardActived = false;
+                        setState(() {
+                          logo = true;
+                        });
+                      },
+                      child: resourceRender(data),
+                    ),
+
+                    // 评论
+                    if (data != null) comContent(data),
+                    // 计时器
+                    if (widget.learnPlanId != null) timerContent(data),
+                    //反馈
+                    if (needFeedback && showFeedback) feedbackWidget(data),
+                  ],
+                ));
+          },
+        ),
+      ),
+      onWillPop: () {
+        dynamic params;
+        if (_learnTime > 0 && widget.learnPlanId != null) {
+          //上传时间
+          //time传当前学习了多少s 后台做累加用
+          params = {
+            'resourceId': widget.resourceId,
+            'learnPlanId': widget.learnPlanId,
+            'time': _learnTime
+          };
+        }
+        if (backfocus == 1) {
+          //第二次点击返回直接退出页面
+          Navigator.pop(context, params);
+        } else {
+          backfocus = backfocus + 1;
+        }
+        if (_timer != null) {
+          _timer.cancel();
+        }
+        if (needFeedback && !showFeedback) {
+          setFeedback();
+        }
+        if (!needFeedback) {
+          Navigator.pop(context, params);
+        }
+        return;
+      },
+    );
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: content,
+      ),
+    );
   }
 }

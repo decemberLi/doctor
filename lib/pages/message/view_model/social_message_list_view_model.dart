@@ -1,9 +1,9 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/provider/refreshable_view_state_model.dart';
+import 'package:doctor/http/foundationSystem.dart';
+import 'package:http_manager/manager.dart';
 
 import '../model/social_message_entity.dart';
 
-HttpManager foundation = HttpManager('foundation');
 enum SocialMessageType {
   TYPE_LIKE,
   TYPE_COMMENT,
@@ -18,22 +18,27 @@ class SocialMessageListViewModel extends RefreshableViewStateModel<SocialMessage
   Future<List> loadData({int pageNum}) async {
     var result;
     if (type == SocialMessageType.TYPE_LIKE) {
-      result = await foundation.post('/message/like-list',
-          params: {
-            'ps': 10,
-            'pn': pageNum,
-          },
-          showLoading: false);
+      result = await API.shared.foundationSys.messageLikeList({
+        'ps': 10,
+        'pn': pageNum,
+      });
     } else {
-      result = await foundation.post('/message/comment-list',
-          params: {
-            'ps': 10,
-            'pn': pageNum,
-          },
-          showLoading: false);
+      result = await API.shared.foundationSys.messageCommentList({
+        'ps': 10,
+        'pn': pageNum,
+      });
     }
     return result['records']
         .map<SocialMessageModel>((item) => SocialMessageModel.fromJson(item))
         .toList();
   }
+
+  Future messageClicked(int messageId) async {
+    await API.shared.foundationSys.messageUpdateStatus({
+      'messageId':messageId
+    });
+    await refresh();
+    notifyListeners();
+  }
+
 }

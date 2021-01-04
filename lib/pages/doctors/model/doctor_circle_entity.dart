@@ -31,6 +31,8 @@ class DoctorCircleEntity {
   /// 发帖人头像
   String postUserHeader;
 
+  bool isClicked = false;
+
   DoctorCircleEntity();
 
   factory DoctorCircleEntity.fromJson(Map<String, dynamic> param) =>

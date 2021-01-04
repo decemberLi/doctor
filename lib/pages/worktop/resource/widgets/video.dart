@@ -7,8 +7,8 @@ import 'package:doctor/widgets/video/chewie_video.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:video_player/video_player.dart';
-
-import '../service.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/server.dart';
 
 class VideoDetail extends StatefulWidget {
   final ResourceModel data;
@@ -86,7 +86,7 @@ class _VideoDetailState extends State<VideoDetail> {
             textColor: ThemeColor.primaryColor,
             onPressed: () {
               //签到接口
-              meetingSign({'taskDetailId': widget.taskDetailId}).then((res) {
+              API.shared.server.meetingSign({'taskDetailId': widget.taskDetailId}).then((res) {
                 if (res is! DioError) {
                   EasyLoading.showToast('签到成功');
                 }

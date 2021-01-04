@@ -90,7 +90,8 @@ class LearnDetailItem {
       this.planImplementEndTime,
       this.status,
       this.reLearn,
-      this.reLearnReason);
+      this.reLearnReason,
+      );
 
   factory LearnDetailItem.fromJson(Map<String, dynamic> json) =>
       _$LearnDetailItemFromJson(json);

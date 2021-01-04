@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 class CommonModal {
   static Future showBottomSheet(
     BuildContext context, {
+    EdgeInsetsGeometry titlePadding =
+        const EdgeInsets.only(left: 26, right: 26),
+    EdgeInsetsGeometry contentPadding =
+        const EdgeInsets.only(left: 26, right: 26),
     String title,
     double height = 560,
     bool enableDrag = true,
@@ -27,41 +31,46 @@ class CommonModal {
             ),
           ),
           height: height,
-          padding: EdgeInsets.only(left: 26, right: 26, top: 0),
           child: Stack(
             children: [
               Positioned(
                 right: 0,
                 top: 16,
-                child: IconButton(
-                  color: ThemeColor.secondaryGeryColor,
-                  icon: Icon(Icons.close),
-                  iconSize: 20.0,
-                  constraints: BoxConstraints(
-                    minWidth: 20,
-                    minHeight: 20,
+                child: Padding(
+                  padding: titlePadding,
+                  child: IconButton(
+                    color: ThemeColor.secondaryGeryColor,
+                    icon: Icon(Icons.close),
+                    iconSize: 20.0,
+                    constraints: BoxConstraints(
+                      minWidth: 20,
+                      minHeight: 20,
+                    ),
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  padding: EdgeInsets.zero,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
                 ),
               ),
-              Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Text(
-                      title,
-                      style: MyStyles.inputTextStyle_16,
-                      textAlign: TextAlign.center,
+              Padding(
+                padding: contentPadding,
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        title,
+                        style: MyStyles.inputTextStyle_16,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                  Divider(
-                    height: 1,
-                  ),
-                  Expanded(child: child),
-                ],
+                    Divider(
+                      height: 1,
+                    ),
+                    Expanded(child: child),
+                  ],
+                ),
               ),
             ],
           ),

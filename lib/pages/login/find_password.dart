@@ -1,15 +1,17 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:doctor/http/session_manager.dart';
-import 'package:doctor/pages/login/service.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'common_style.dart';
+import 'package:http_manager/manager.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/http/Sso.dart';
 
 class FindPassword extends StatefulWidget {
   @override
@@ -26,6 +28,7 @@ class _FindPasswordState extends State<FindPassword> {
   int _maxCount = 0;
   String _mobile, _captcha;
   int subscribeId;
+  String lastPhone;
   Future _submit() async {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -34,7 +37,7 @@ class _FindPasswordState extends State<FindPassword> {
       if (newPassword != confirmPassword) {
         EasyLoading.showToast('两次新密码不一致，请重新输入');
       } else {
-        var response = await findPwd({
+        var response = await API.shared.sso.findPwd({
           'phone': _mobile,
           'code': _captcha,
           'newPassword': newPassword,
@@ -56,8 +59,11 @@ class _FindPasswordState extends State<FindPassword> {
     form.save();
     if (RegexUtil.isMobileSimple(_mobile)) {
       //获取验证码
-      sendSms({'phone': _mobile, 'system': 'DOCTOR', 'type': 'FORGET_PASSWORD'})
+      EasyLoading.show(status: "发送中...");
+      var params = {'phone': _mobile, 'system': 'DOCTOR', 'type': 'FORGET_PASSWORD'};
+      API.shared.foundation.sendSMS(params)
           .then((response) {
+            EasyLoading.dismiss();
         if (response is! DioError) {
           setState(() {
             _maxCount = 60;
@@ -81,7 +87,18 @@ class _FindPasswordState extends State<FindPassword> {
         }
       },
     );
+    readLastPhone();
     super.initState();
+  }
+
+  readLastPhone() async {
+    var sp = await SharedPreferences.getInstance();
+    var phone = sp.get(LAST_PHONE);
+    if (phone is String) {
+      setState(() {
+        lastPhone = phone;
+      });
+    }
   }
 
   //计时器
@@ -145,7 +162,7 @@ class _FindPasswordState extends State<FindPassword> {
                     autofocus: false,
                     maxLength: 11,
                     initialValue:
-                        SessionManager().sp.getString(LAST_PHONE) ?? '',
+                        lastPhone ?? '',
                     decoration: InputDecoration(
                       hintText: '请输入手机号',
                       counterText: '',

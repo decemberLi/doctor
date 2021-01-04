@@ -1,4 +1,3 @@
-import 'package:doctor/http/http_manager.dart';
 import 'package:doctor/pages/user/collect/model/collect_list_model.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -6,9 +5,12 @@ import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:toast/toast.dart';
 import '../../doctors/tab_indicator.dart';
+import 'package:doctor/http/server.dart';
+import 'package:doctor/http/dtp.dart';
 
 /// 渲染列表
 class CollectDetailList extends StatelessWidget {
@@ -20,6 +22,10 @@ class CollectDetailList extends StatelessWidget {
     final width = size.width;
     Widget studyCell(BuildContext context, dynamic data) {
       return _ClooectStudyCell(data);
+    }
+
+    Widget timeLineCell(BuildContext context, dynamic data) {
+      return _DoctorTimeLineCell(data);
     }
 
     var content = Scaffold(
@@ -37,7 +43,15 @@ class CollectDetailList extends StatelessWidget {
             child: TabBar(
               isScrollable: true,
               indicatorSize: TabBarIndicatorSize.label,
-              tabs: _list.map((e) => Text(e)).toList(),
+              tabs: _list
+                  .map(
+                    (e) => Row(
+                      children: [
+                        Text(e),
+                      ],
+                    ),
+                  )
+                  .toList(),
               indicator: LinearGradientTabIndicatorDecoration(
                   borderSide: BorderSide(width: 4.0, color: Colors.white),
                   insets: EdgeInsets.only(left: 7, right: 7)),
@@ -60,18 +74,17 @@ class CollectDetailList extends StatelessWidget {
             child: TabBarView(children: [
               _SubCollectList<CollectResources>(
                 getData: (pageNum) async {
-                  var data = await HttpManager("server").post(
-                    "/favorite/list",
-                    params: {
-                      'ps': 10,
-                      'pn': pageNum,
-                    },
-                    showLoading: false,
-                  );
-                  List<CollectResources> list = data['records']
-                      .map<CollectResources>(
-                          (item) => CollectResources.fromJson(item))
-                      .toList();
+                  List<CollectResources> list = [];
+                  try {
+                    var data = await API.shared.server.favoriteList(pageNum);
+                    list = data['records']
+                        .map<CollectResources>(
+                            (item) => CollectResources.fromJson(item))
+                        .toList();
+                  } catch (e) {
+                    print(e);
+                  }
+
                   return list;
                 },
                 itemBuilder: studyCell,
@@ -79,19 +92,19 @@ class CollectDetailList extends StatelessWidget {
               ),
               _SubCollectList<CollectTimeLineResources>(
                 getData: (pageNum) async {
-                  var data = await HttpManager("dtp").post(
-                    "/favorite/list",
-                    params: {
-                      'ps': 10,
-                      'pn': pageNum,
-                    },
-                    showLoading: false,
-                  );
-                  return data;
+                  List<CollectTimeLineResources> list = [];
+                  try {
+                    var data = await API.shared.dtp.favoriteList(pageNum);
+                    list = data['records']
+                        .map<CollectTimeLineResources>(
+                            (item) => CollectTimeLineResources.fromJson(item))
+                        .toList();
+                  } catch (e) {
+                    print(e);
+                  }
+                  return list;
                 },
-                itemBuilder: (context, data) {
-                  return _DoctorTimeLineCell(data);
-                },
+                itemBuilder: timeLineCell,
                 emptyMsg: "暂无收藏",
               ),
             ]),
@@ -108,12 +121,14 @@ class _SubCollectList<T> extends StatefulWidget {
   final String emptyMsg;
   final Future<List<T>> Function(int) getData;
   final int pageSize;
+
   _SubCollectList({
     @required this.itemBuilder,
     this.emptyMsg = "还没有数据哦~",
     this.getData,
     this.pageSize = 10,
   });
+
   @override
   State<StatefulWidget> createState() {
     return _SubCollectState<T>();
@@ -122,17 +137,42 @@ class _SubCollectList<T> extends StatefulWidget {
 
 class _SubCollectState<T> extends State<_SubCollectList>
     with AutomaticKeepAliveClientMixin {
-  RefreshController _controller = RefreshController(initialRefresh: true);
+  RefreshController _controller = RefreshController(initialRefresh: false);
   List<T> _list = [];
+
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    _loadingGetData();
+    super.initState();
+  }
+
+  _loadingGetData() async {
+    EasyLoading.show();
+    _firstGetData();
+    EasyLoading.dismiss();
+  }
+
+  _firstGetData() async {
+    var array = await widget.getData(0);
+    if (array.length >= widget.pageSize) {
+      _controller.footerMode.value = LoadStatus.idle;
+    } else {
+      _controller.footerMode.value = LoadStatus.noMore;
+    }
+
+    setState(() {
+      _list = array;
+    });
+  }
 
   void onRefresh() async {
     try {
       _list = await widget.getData(0);
     } catch (e) {}
 
-    setState(() {});
     _controller.headerMode.value = RefreshStatus.completed;
   }
 
@@ -155,6 +195,7 @@ class _SubCollectState<T> extends State<_SubCollectList>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Widget child = Center(
       child: ViewStateEmptyWidget(
         message: widget.emptyMsg,
@@ -184,7 +225,9 @@ class _SubCollectState<T> extends State<_SubCollectList>
 
 class _ClooectStudyCell extends StatelessWidget {
   final CollectResources data;
+
   _ClooectStudyCell(this.data);
+
   Widget typeDecoratedBox(String type) {
     Color rendColor = ThemeColor.color72c140;
     if (type == 'VIDEO') {
@@ -201,7 +244,7 @@ class _ClooectStudyCell extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 14,
+                fontSize: 12,
                 color: Colors.white,
               )),
         ));
@@ -213,33 +256,37 @@ class _ClooectStudyCell extends StatelessWidget {
       summaryShow = data.info.summary;
     }
 
+    var title = data.title ?? "资料";
+
     return Container(
-        child: Stack(
-      alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(top: 20, left: 30, right: 10),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      data.title,
-                      maxLines: 1,
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF222222),
-                        fontWeight: FontWeight.w600,
+      child: Stack(
+        alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(top: 20, left: 30, right: 10),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF222222),
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: Row(
+                  ],
+                ),
+                Container(
+                  height: 10,
+                ),
+                Row(
                   children: [
                     Expanded(
                       child: Text(
@@ -263,33 +310,40 @@ class _ClooectStudyCell extends StatelessWidget {
                         child: Stack(
                           alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
                           children: <Widget>[
-                            Image.network(data.thumbnailUrl,
-                                width: 90, height: 50, fit: BoxFit.cover),
+                            Image.network(
+                              data.thumbnailUrl,
+                              width: 90,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
                           ],
                         ),
                       ),
                   ],
                 ),
-              ),
-            ],
+                Container(
+                  height: 12,
+                ),
+              ],
+            ),
           ),
-        ),
-        Positioned(
-          left: -52,
-          top: -28,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 6),
-            child: Transform(
-                //对齐方式
-                alignment: Alignment.topRight,
-                //设置扭转值
-                transform: Matrix4.rotationZ(-0.9),
-                //设置被旋转的容器
-                child: typeDecoratedBox("ARTICLE")),
+          Positioned(
+            left: -52,
+            top: -28,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 6),
+              child: Transform(
+                  //对齐方式
+                  alignment: Alignment.topRight,
+                  //设置扭转值
+                  transform: Matrix4.rotationZ(-0.9),
+                  //设置被旋转的容器
+                  child: typeDecoratedBox(data.resourceType)),
+            ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
   }
 
   @override
@@ -298,14 +352,16 @@ class _ClooectStudyCell extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 12),
       child: FlatButton(
         onPressed: () {
-          Navigator.of(context)
-              .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
-            "resourceId": data.resourceId,
-            "favoriteId": data.favoriteId,
-          });
+          Navigator.of(context).pushNamed(
+            RouteManager.RESOURCE_DETAIL,
+            arguments: {
+              "resourceId": data.resourceId,
+              "favoriteId": data.favoriteId,
+            },
+          );
         },
         child: Container(
-          height: 107,
+          // height: 107,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -319,7 +375,9 @@ class _ClooectStudyCell extends StatelessWidget {
 
 class _DoctorTimeLineCell extends StatelessWidget {
   final CollectTimeLineResources data;
+
   _DoctorTimeLineCell(this.data);
+
   Widget typeDecoratedBox(String type) {
     Color rendColor = ThemeColor.color72c140;
     String name = MAP_RESOURCE_TYPE[type];
@@ -344,7 +402,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 14,
+            fontSize: 12,
             color: Colors.white,
           ),
         ),
@@ -355,17 +413,35 @@ class _DoctorTimeLineCell extends StatelessWidget {
   Widget content() {
     String name;
     Widget head;
-    //FF62C1FF
-    //ACADEMIC-学术圈，GOSSIP-八卦圈
+    Color headColor = Color(0xFF62C1FF);
+    // ACADEMIC-学术圈，GOSSIP-八卦圈
     if (data.postType == "ACADEMIC") {
-      name = data.postUserName;
-      head = ImageWidget(url: data.postUserHeader);
+      name = data.postUserName ?? "匿名";
+      headColor = Color(0xffB8D1E2);
+      if (data.postUserHeader == null) {
+        head = Container(
+          width: 20,
+          height: 20,
+          alignment: Alignment.center,
+          child: Image.asset(
+            "assets/images/doctorAva.png",
+            width: 18,
+            height: 18,
+          ),
+        );
+      } else {
+        head = ImageWidget(
+          url: data.postUserHeader ?? "",
+          width: 20,
+          height: 20,
+        );
+      }
     } else {
       name = data.anonymityName;
       head = Text(
-        data.anonymityName,
+        name[0],
         style: TextStyle(
-          fontSize: 8,
+          fontSize: 12,
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
@@ -376,7 +452,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
       alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(top: 20, left: 30, right: 10),
+          padding: EdgeInsets.only(top: 20, left: 30, right: 28),
           child: Column(
             children: [
               Row(
@@ -385,8 +461,9 @@ class _DoctorTimeLineCell extends StatelessWidget {
                     child: head,
                     width: 20,
                     height: 20,
+                    alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: headColor,
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
                   ),
@@ -407,23 +484,27 @@ class _DoctorTimeLineCell extends StatelessWidget {
                   )),
                 ],
               ),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: Text(
-                      data.postTitle,
-                      softWrap: true,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF444444),
-                        fontWeight: FontWeight.normal,
-                      ),
-                    )),
-                  ],
-                ),
+              Container(
+                height: 6,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                      child: Text(
+                    data.postTitle ?? "这是一条圈子",
+                    softWrap: true,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF444444),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  )),
+                ],
+              ),
+              Container(
+                height: 12,
               ),
             ],
           ),
@@ -453,15 +534,13 @@ class _DoctorTimeLineCell extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 12),
       child: FlatButton(
         onPressed: () {
-          if (data.postStatus == "SHELVES") {
-          } else if (data.postStatus == "DOWN_SHELVES") {
-            Toast.show("帖子已被删除", context);
-          } else {
-            Toast.show("未知错误", context);
-          }
+          Navigator.pushNamed(
+            context,
+            RouteManager.DOCTORS_ARTICLE_DETAIL,
+            arguments: {'postId': data.postId},
+          );
         },
         child: Container(
-          height: 107,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(8)),

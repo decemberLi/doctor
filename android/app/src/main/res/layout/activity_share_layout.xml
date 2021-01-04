@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/share_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/share_view_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_36"
+        android:layout_marginRight="@dimen/dp_36"
+        android:layout_marginBottom="@dimen/dp_26"
+        android:src="@mipmap/share_wechat"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:id="@+id/share_view_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shape_share_bg"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_22"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_22"
+            android:baselineAligned="false"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_marginStart="@dimen/dp_18"
+                android:layout_weight="1"
+                android:id="@+id/share_to_wechat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:ignore="RtlSymmetry,UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/share_wechat"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    style="@style/YYYStyleShareText"
+                    android:text="@string/share_wechat" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:id="@+id/share_to_moment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:ignore="RtlSymmetry,UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/share_wemoment"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    style="@style/YYYStyleShareText"
+                    android:text="@string/share_wemoment" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:id="@+id/share_copylink"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:ignore="RtlSymmetry,UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/share_copy_link"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    style="@style/YYYStyleShareText"
+                    android:text="@string/share_save_img" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginEnd="@dimen/dp_18"
+                android:layout_weight="1"
+                android:id="@+id/share_save_img"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/share_save_img"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    style="@style/YYYStyleShareText"
+                    android:text="@string/share_copy_link" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View style="@style/YYYStyleDivider" />
+
+        <TextView
+            android:id="@+id/share_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#FF222222"
+            android:padding="@dimen/size_14"
+            android:text="@string/cancel" />
+    </LinearLayout>
+</RelativeLayout>
