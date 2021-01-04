@@ -169,7 +169,9 @@ class _SubCollectState<T> extends State<_SubCollectList>
   }
 
   void onRefresh() async {
-    await _firstGetData();
+    try {
+      _list = await widget.getData(0);
+    } catch (e) {}
 
     _controller.headerMode.value = RefreshStatus.completed;
   }

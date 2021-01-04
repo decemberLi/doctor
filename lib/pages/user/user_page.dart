@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/adapt.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/http/ucenter.dart';
+import 'package:flutter/services.dart';
 import 'package:http_manager/manager.dart';
 
 import '../../root_widget.dart';

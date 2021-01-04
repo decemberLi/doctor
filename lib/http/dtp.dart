@@ -82,7 +82,8 @@ class Dtp extends SubAPI {
       });
       return true;
     } catch (e) {
-      return false;
+      rethrow;
     }
+    return false;
   }
 }
