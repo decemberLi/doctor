@@ -2,6 +2,7 @@
 <resources>
     <string name="wx_app_id">wxe4e9693e772d44fd</string>
     <string name="bugly_app_id">9da90892f7</string>
+    <string name="umeng_app_id">5ff2a580adb42d58269a1602</string>
     <string name="app_name">易学术</string>
     <string name="share_wechat">微信好友</string>
     <string name="share_wemoment">朋友圈</string>

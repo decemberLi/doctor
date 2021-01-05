@@ -8,6 +8,7 @@ import android.util.Log
 import com.emedclouds.doctor.common.constants.keyLaunchParam
 import com.emedclouds.doctor.pages.CommonWebActivity
 import com.emedclouds.doctor.pages.ShareActivity
+import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
@@ -61,5 +62,15 @@ class MainActivity : FlutterActivity() {
             val url = JSONObject(extValue).getString("url")
             CommonWebActivity.start(this@MainActivity, "", url)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MobclickAgent.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MobclickAgent.onPause(this)
     }
 }
