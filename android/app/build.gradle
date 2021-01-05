@@ -33,6 +33,11 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
+    packagingOptions {
+        doNotStrip '*/mips/*.so'
+        doNotStrip '*/mips64/*.so'
+    }
+
     lintOptions {
         disable 'InvalidPackage'
     }
@@ -55,8 +60,15 @@ android {
             shrinkResources false
             signingConfig signingConfigs.debug
             ndk {
-                    abiFilters "x86","x86_64","arm64-v8a"
-                }
+                abiFilters "x86","x86_64","arm64-v8a"
+            }
+
+            manifestPlaceholders = [
+                    JPUSH_PKGNAME : defaultConfig.applicationId,
+                    JPUSH_APPKEY : "a7547476f7255646ea8646fd",
+                    JPUSH_CHANNEL : "developer-default",
+            ]
+
         }
         release {
             minifyEnabled true
@@ -67,6 +79,13 @@ android {
             ndk {
                 abiFilters "armeabi-v7a"
             }
+
+            manifestPlaceholders = [
+                    JPUSH_PKGNAME : defaultConfig.applicationId,
+                    JPUSH_APPKEY : "a7547476f7255646ea8646fd",
+                    JPUSH_CHANNEL : "developer-default",
+            ]
+
         }
     }
 }
@@ -92,6 +111,9 @@ dependencies {
     implementation "com.umeng.umsdk:common:9.3.3"
     implementation "com.umeng.umsdk:asms:1.1.4"
     implementation "com.umeng.umsdk:crash:0.0.5"
+    // push
+    implementation 'cn.jiguang.sdk:jpush:3.8.6'
+    implementation 'cn.jiguang.sdk:jcore:2.6.0'
     // apache io package
     api 'commons-io:commons-io:2.8.0'
 }

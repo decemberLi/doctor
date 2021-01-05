@@ -57,3 +57,11 @@
 -keep public class com.emedclouds.doctor.R$*{
 public static final int *;
 }
+
+# 极光推送
+-dontwarn cn.jpush.**
+-keep class cn.jpush.** { *; }
+-keep class * extends cn.jpush.android.helpers.JPushMessageReceiver { *; }
+
+-dontwarn cn.jiguang.**
+-keep class cn.jiguang.** { *; }

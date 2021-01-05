@@ -68,6 +68,16 @@
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:screenOrientation="portrait"/>
 
+        <receiver
+            android:name=".common.thirdpart.push.receiver.MessagePushReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
+                <category android:name="您应用的包名" />
+            </intent-filter>
+        </receiver>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
