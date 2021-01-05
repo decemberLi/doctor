@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import UserNotificationsUI
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -11,7 +12,15 @@ import Flutter
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    UMConfigure.initWithAppkey("5ff2a5b4adb42d58269a165e", channel: "App Store")
+    Bugly.start(withAppId: "463f24e2f9")
     WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
+    let entity = JPUSHRegisterEntity()
+    entity.types = Int(UNAuthorizationOptions.alert.rawValue |
+                        UNAuthorizationOptions.badge.rawValue |
+                        UNAuthorizationOptions.sound.rawValue)
+    JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
+    JPUSHService.setup(withOption: launchOptions, appKey: "a7547476f7255646ea8646fd", channel: "App Store", apsForProduction: false)
     AppDelegate.shared = self
     let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
     window = UIWindow()
@@ -53,6 +62,15 @@ import Flutter
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
+    override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        JPUSHService.registerDeviceToken(deviceToken)
+    }
+    
+    override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        JPUSHService.handleRemoteNotification(userInfo)
+        completionHandler(.newData)
+    }
+    
     override func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
         if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
             || url.scheme == "com.emedclouds.doctor" {
@@ -73,6 +91,10 @@ import Flutter
     
     override func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         return WXApi.handleOpenUniversalLink(userActivity, delegate: self)
+    }
+    
+    override func applicationDidEnterBackground(_ application: UIApplication) {
+        application.applicationIconBadgeNumber = 0
     }
     
 }
@@ -103,4 +125,27 @@ extension AppDelegate : WXApiDelegate {
     func onResp(_ resp: BaseResp) {
         print("\(resp)");
     }
+}
+
+extension AppDelegate : JPUSHRegisterDelegate {
+    func jpushNotificationCenter(_ center: UNUserNotificationCenter!, willPresent notification: UNNotification!, withCompletionHandler completionHandler: ((Int) -> Void)!) {
+        let info = notification.request.content.userInfo
+        JPUSHService.handleRemoteNotification(info)
+        let type =  Int(UNAuthorizationOptions.alert.rawValue |
+                            UNAuthorizationOptions.badge.rawValue |
+                            UNAuthorizationOptions.sound.rawValue)
+        completionHandler(type)
+    }
+    
+    func jpushNotificationCenter(_ center: UNUserNotificationCenter!, didReceive response: UNNotificationResponse!, withCompletionHandler completionHandler: (() -> Void)!) {
+        let info = response.notification.request.content.userInfo
+        JPUSHService.handleRemoteNotification(info)
+        completionHandler()
+    }
+    
+    func jpushNotificationCenter(_ center: UNUserNotificationCenter!, openSettingsFor notification: UNNotification!) {
+        
+    }
+    
+    
 }
