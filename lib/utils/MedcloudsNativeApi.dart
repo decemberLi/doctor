@@ -43,4 +43,9 @@ class MedcloudsNativeApi {
   Future share(String args) async {
     return await _channel.invokeMapMethod("share", args);
   }
+
+  Future record(String args) async {
+    return await _channel.invokeMapMethod("record", args);
+  }
+
 }
