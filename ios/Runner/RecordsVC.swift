@@ -8,11 +8,14 @@
 import UIKit
 import AVFoundation
 import ReplayKit
+import PDFKit
 
 class RecordsVC: UIViewController {
     
     @IBOutlet var recourdBG : UIView!
     @IBOutlet var infoBG : UIView!
+    @IBOutlet var pdfView : UIView!
+    var pdfContent : PDFView!
     
     private var session : AVCaptureSession = AVCaptureSession()
     private var assetWriter:AVAssetWriter!
@@ -36,6 +39,9 @@ class RecordsVC: UIViewController {
         super.viewDidLoad()
         initCaputre()
         // Do any additional setup after loading the view.
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
+            self.showPDF()
+        }
     }
     
     
@@ -48,6 +54,16 @@ class RecordsVC: UIViewController {
      // Pass the selected object to the new view controller.
      }
      */
+    
+    private func showPDF(){
+        guard let url = Bundle.main.url(forResource: "1", withExtension: "pdf") else {return}
+        let doc = PDFDocument(url: url)
+        pdfContent = PDFView(frame: pdfView.bounds)
+        pdfView.addSubview(pdfContent)
+        pdfContent.autoScales = true
+        pdfContent.displayMode = .singlePage
+        pdfContent.document = doc
+    }
     
     func initCaputre() {
         let ds = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .front)
@@ -210,19 +226,12 @@ class RecordsVC: UIViewController {
     }
     
     @IBAction func onNext() {
-        print("on next")
-        merge {
-            self.play()
-        }
+        pdfContent.goToNextPage(nil)
         
     }
     
     @IBAction func onPre() {
-        if self.assetWriter == nil {
-            startRecord()
-        }else{
-            stopRecords()
-        }
+        pdfContent.goToPreviousPage(nil)
     }
 }
 
@@ -231,3 +240,22 @@ class RecordsVC: UIViewController {
 //        previewController.dismiss(animated: true, completion: nil)
 //    }
 //}
+
+func drawPDFfromURL(url: URL) -> UIImage? {
+    guard let document = CGPDFDocument(url as CFURL) else { return nil }
+    guard let page = document.page(at: 1) else { return nil }
+
+    let pageRect = page.getBoxRect(.mediaBox)
+    let renderer = UIGraphicsImageRenderer(size: pageRect.size)
+    let img = renderer.image { ctx in
+        UIColor.white.set()
+        ctx.fill(pageRect)
+
+        ctx.cgContext.translateBy(x: 0.0, y: pageRect.size.height)
+        ctx.cgContext.scaleBy(x: 1.0, y: -1.0)
+
+        ctx.cgContext.drawPDFPage(page)
+    }
+
+    return img
+}
