@@ -404,6 +404,9 @@ class _UserPageState extends State<UserPage> with RouteAware {
                   messageItem('关于我们', 'assets/images/aboutus.png', () {
                     Navigator.pushNamed(context, RouteManager.ABOUT_US);
                   }),
+                  messageItem('录制', 'assets/images/aboutus.png', () {
+                    MedcloudsNativeApi.instance().record("123");
+                  }),
                 ],
               ),
             ),

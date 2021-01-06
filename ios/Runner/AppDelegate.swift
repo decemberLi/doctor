@@ -33,6 +33,8 @@ import UserNotificationsUI
             guard let data = value.data(using: .utf8) else {return}
             guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
             self.share(map: obj)
+        } else if call.method == "record" {
+            self.record(map: ["ss":"123"])
         }
     }
     vc.setFlutterViewDidRenderCallback {
@@ -105,6 +107,12 @@ extension AppDelegate {
         sharevc.data = map
         sharevc.modalPresentationStyle = .overFullScreen
         window.rootViewController?.present(sharevc, animated: false, completion: nil)
+    }
+    
+    func record(map : [String:Any]) {
+        let vc = RecordsVC()
+        vc.modalPresentationStyle = .fullScreen
+        window.rootViewController?.present(vc, animated: false, completion: nil)
     }
 }
 
