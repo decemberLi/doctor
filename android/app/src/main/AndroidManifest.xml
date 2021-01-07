@@ -68,6 +68,14 @@
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".pages.learning.LessonRecordActivity"
+            android:theme="@style/LandScapeNoTitleNoStatusBar"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".common.thirdpart.push.receiver.MessagePushReceiver"
             android:enabled="true"
