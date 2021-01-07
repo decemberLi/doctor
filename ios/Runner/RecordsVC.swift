@@ -11,39 +11,56 @@ import ReplayKit
 import PDFKit
 
 class RecordsVC: UIViewController {
-    
+    @IBOutlet var firstBTN : UIButton!
+    @IBOutlet var secondBTN : UIButton!
     @IBOutlet var recourdBG : UIView!
     @IBOutlet var infoBG : UIView!
     @IBOutlet var pdfView : UIView!
     var pdfContent : PDFView!
     
     private var session : AVCaptureSession = AVCaptureSession()
-    private var assetWriter:AVAssetWriter!
+    private var assetWriter:AVAssetWriter?
     private var videoInput:AVAssetWriterInput!
     private var audioInput:AVAssetWriterInput!
     
-    private var player : AVPlayer?
+    private var playerLayer : AVCaptureVideoPreviewLayer?
     
     private var paths : [URL] = []
+    private var recordTime : Int = 0
     
     override var shouldAutorotate: Bool { true }
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        .landscapeLeft
+        .landscapeRight
     }
     
     override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
-        .landscapeLeft
+        .landscapeRight
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         initCaputre()
+        try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
+        try? AVAudioSession.sharedInstance().setActive(true)
         // Do any additional setup after loading the view.
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { (timer) in
-            self.showPDF()
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: AVAudioSession.interruptionNotification, object: nil)
+        changeToIdle()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.showPDF()
+    }
+    
+    @objc func enterBackground(){
+        print("enter background -----   ")
+        stopRecords()
+    }
     
     /*
      // MARK: - Navigation
@@ -77,10 +94,12 @@ class RecordsVC: UIViewController {
         let out = AVCapturePhotoOutput()
         session.addOutput(out)
         let layer = AVCaptureVideoPreviewLayer(session: session)
-        layer.connection?.videoOrientation = .landscapeLeft
+        layer.connection?.videoOrientation = .landscapeRight
         layer.frame = CGRect(origin: .zero, size: recourdBG.frame.size)
         recourdBG.layer.addSublayer(layer)
         session.startRunning()
+        playerLayer = layer
+        playerLayer?.isHidden = true
     }
     
     private func initRecord(){
@@ -98,7 +117,7 @@ class RecordsVC: UIViewController {
         
         videoInput  = AVAssetWriterInput (mediaType: AVMediaType.video, outputSettings: videoOutputSettings)
         videoInput.expectsMediaDataInRealTime = true
-        assetWriter.add(videoInput)
+        assetWriter?.add(videoInput)
         
         let audioSettings: [String:Any] = [AVFormatIDKey : kAudioFormatMPEG4AAC,
                                            AVNumberOfChannelsKey : 2,
@@ -108,20 +127,20 @@ class RecordsVC: UIViewController {
         
         audioInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
         audioInput.expectsMediaDataInRealTime = true
-        assetWriter.add(audioInput)
+        assetWriter?.add(audioInput)
     }
     
-    
-    private func startRecord(){
+    private func beginRecord(){
         initRecord()
         RPScreenRecorder.shared().isMicrophoneEnabled = true
         RPScreenRecorder.shared().cameraPosition = .front
         RPScreenRecorder.shared().isCameraEnabled = true
         RPScreenRecorder.shared().startCapture { (cmSampleBuffer, rpSampleBufferType, err) in
             if err != nil { return }
+            guard let writer = self.assetWriter else {return}
             
             if CMSampleBufferDataIsReady(cmSampleBuffer) {
-                
+                print("the mic is enable \(RPScreenRecorder.shared().isMicrophoneEnabled)")
                 DispatchQueue.main.async {
                     
                     switch rpSampleBufferType {
@@ -130,16 +149,16 @@ class RecordsVC: UIViewController {
                         if self.assetWriter?.status == AVAssetWriter.Status.unknown {
                             
                             print("Started writing")
-                            self.assetWriter?.startWriting()
-                            self.assetWriter?.startSession(atSourceTime: CMSampleBufferGetPresentationTimeStamp(cmSampleBuffer))
+                            writer.startWriting()
+                            writer.startSession(atSourceTime: CMSampleBufferGetPresentationTimeStamp(cmSampleBuffer))
                         }
                         
-                        if self.assetWriter.status == AVAssetWriter.Status.failed {
-                            print("StartCapture Error Occurred, Status = \(self.assetWriter.status.rawValue), \(self.assetWriter.error!.localizedDescription) \(self.assetWriter.error.debugDescription)")
+                        if writer.status == AVAssetWriter.Status.failed {
+                            print("StartCapture Error Occurred, Status = \(writer.status.rawValue), \(writer.error?.localizedDescription ?? "error")")
                             return
                         }
                         
-                        if self.assetWriter.status == AVAssetWriter.Status.writing {
+                        if writer.status == AVAssetWriter.Status.writing {
                             if self.videoInput.isReadyForMoreMediaData {
                                 if self.videoInput.append(cmSampleBuffer) == false {
                                     print("problem writing video")
@@ -161,13 +180,30 @@ class RecordsVC: UIViewController {
         }
     }
     
+    
+    private func startRecord(){
+        changeToRecording()
+        paths.removeAll()
+        beginRecord()
+    }
+    
     private func stopRecords(){
+        playerLayer?.isHidden = true
+        guard RPScreenRecorder.shared().isRecording else {
+            return
+        }
+        
         RPScreenRecorder.shared().stopCapture { (error) in
-            self.assetWriter.finishWriting {
+            guard let writer = self.assetWriter else {return}
+            writer.finishWriting {
                 print("recourd finished --- ")
                 self.assetWriter = nil
             }
         }
+    }
+    
+    private func resumRecords(){
+        beginRecord()
     }
     
     private func merge(finished:(()->Void)?){
@@ -203,26 +239,22 @@ class RecordsVC: UIViewController {
         }
     }
     
-    @IBAction func onRecord(){
-        startRecord()
+    @IBAction func onChangeRecordState(_ sender : UIButton){
+        if sender.tag == 1001 {
+            startRecord()
+        }else if sender.tag == 1002 {
+            changeToPause()
+            stopRecords()
+        }else {
+            changeToIdle()
+            stopRecords()
+        }
+        
     }
     
-    @IBAction func onStopRecord(){
-        stopRecords()
-    }
-    
-    private var playerLayer : AVPlayerLayer?
-    
-    private func play(){
-        playerLayer?.removeFromSuperlayer()
+    private func submit(){
         let path = NSHomeDirectory() + "/Documents/allRecord.mp4"
         let fileURL = URL(fileURLWithPath: path)
-        player = AVPlayer(url: fileURL)
-        let layer = AVPlayerLayer(player: player)
-        layer.frame = CGRect(origin: .zero, size: infoBG.frame.size)
-        infoBG.layer.addSublayer(layer)
-        playerLayer = layer
-        player?.play()
     }
     
     @IBAction func onNext() {
@@ -232,6 +264,28 @@ class RecordsVC: UIViewController {
     
     @IBAction func onPre() {
         pdfContent.goToPreviousPage(nil)
+    }
+    
+    //MARK: - UI
+    private func changeToIdle(){
+        firstBTN.isHidden = true
+        secondBTN.setImage(UIImage(named: "播放"), for: .normal)
+        playerLayer?.isHidden = true
+        secondBTN.tag = 1001
+    }
+    
+    private func changeToRecording() {
+        firstBTN.isHidden = true
+        secondBTN.setImage(UIImage(named: "录制中"), for: .normal)
+        playerLayer?.isHidden = false
+        secondBTN.tag = 1002
+    }
+    
+    private func changeToPause(){
+        firstBTN.isHidden = false
+        secondBTN.setImage(UIImage(named: "结束"), for: .normal)
+        playerLayer?.isHidden = true
+        secondBTN.tag = 1003
     }
 }
 
