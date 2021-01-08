@@ -25,6 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:paddingRight="15dp"
+            android:paddingEnd="15dp"
             android:gravity="center_vertical">
 
             <ImageView
@@ -47,6 +49,7 @@
         android:layout_height="match_parent">
 
         <com.emedclouds.doctor.widgets.ZoomImageView
+            android:id="@+id/pdfViewer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
@@ -61,9 +64,19 @@
                 android:id="@+id/imageDoctorAvatar"
                 android:layout_width="match_parent"
                 android:layout_height="94dp"
-                tools:src="@mipmap/bg_lesson_record" />
+                android:background="@android:color/holo_green_light"
+                tools:ignore="ContentDescription" />
+
+            <androidx.camera.view.PreviewView
+                android:id="@+id/doctorAvatarPreview"
+                android:visibility="gone"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="5dp"
+                tools:ignore="MissingConstraints" />
 
             <TextView
+                android:id="@+id/doctorName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="23dp"
@@ -72,6 +85,7 @@
                 tools:text="医生姓名" />
 
             <TextView
+                android:id="@+id/doctorHospitalName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -96,6 +110,7 @@
                     tools:ignore="RtlHardcoded" />
 
                 <TextView
+                    android:id="@+id/timerView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

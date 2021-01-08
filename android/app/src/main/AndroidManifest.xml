@@ -68,7 +68,7 @@
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".pages.learning.LessonRecordActivity"
+        <activity android:name=".pages.learningplan.LessonRecordActivity"
             android:theme="@style/LandScapeNoTitleNoStatusBar"
             android:screenOrientation="landscape">
             <intent-filter>
