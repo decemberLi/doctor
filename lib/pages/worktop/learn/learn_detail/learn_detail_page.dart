@@ -185,10 +185,10 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   // 提交按钮
-  String _aceText(type, reLearn) {
+  String _aceText(type) {
     String text = '提交学习计划';
     if (type == 'DOCTOR_LECTURE') {
-      text = reLearn ? '重传讲课视频' : '上传讲课视频';
+      text = '开始讲课';
     }
     return text;
   }
@@ -248,22 +248,56 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   // 查看视频
   Widget _renderLookRecording(data) {
     if (data.taskTemplate == 'DOCTOR_LECTURE') {
-      if (data.status == 'SUBMIT_LEARN' || data.status == 'ACCEPTED') {
+      if (data.status == 'SUBMIT_LEARN' ||
+          data.status == 'ACCEPTED' ||
+          data.reLearn) {
         return Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.fromLTRB(0, 10, 0, 40),
-            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-            child: AceButton(
-              text: '查看视频',
-              onPressed: () {
-                Navigator.of(context)
-                    .pushNamed(RouteManager.LOOK_LECTURE_VIDEOS, arguments: {
-                  "learnPlanId": data.learnPlanId,
-                  "resourceId": data.resources[0].resourceId,
-                  'doctorName': data.doctorName,
-                });
-              },
-            ));
+          alignment: Alignment.center,
+          // margin: EdgeInsets.fromLTRB(20, 10, 20, 40),
+          padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: AceButton(
+                  text: '查看讲课视频',
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(
+                        RouteManager.LOOK_LECTURE_VIDEOS,
+                        arguments: {
+                          "learnPlanId": data.learnPlanId,
+                          "resourceId": data.resources[0].resourceId,
+                          'doctorName': data.doctorName,
+                        });
+                  },
+                ),
+              ),
+              if (data.reLearn)
+                Container(
+                  width: 10,
+                ),
+              if (data.reLearn)
+                Expanded(
+                  flex: 1,
+                  child: AceButton(
+                    color: Color(0xffFECE35),
+                    shadowColor: Color(0x40FECE35),
+                    text: '重新讲课',
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(
+                        RouteManager.LOOK_LECTURE_VIDEOS,
+                        arguments: {
+                          "learnPlanId": data.learnPlanId,
+                          "resourceId": data.resources[0].resourceId,
+                          'doctorName': data.doctorName,
+                        },
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
+        );
       }
     }
     return Text('');
@@ -282,6 +316,64 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         return '讲课邀请详情';
       default:
         return '';
+    }
+  }
+
+  _uploadVideo(model, arguments, data) async {
+    if (data.taskTemplate == 'DOCTOR_LECTURE') {
+      var result = await Navigator.of(context).pushNamed(
+        RouteManager.LECTURE_VIDEOS,
+        arguments: {
+          'reLearn': data.reLearn,
+          'resourceId': data.resources[0].resourceId,
+          'learnPlanId': data.learnPlanId,
+          'doctorName': userInfo?.doctorName ?? '',
+          'taskName': data.taskName,
+          'from': arguments['from'],
+          'upFinished': (lectureID) {
+            EasyLoading.instance.flash(() async {
+              print("-------------");
+              print("the lectureID == ${lectureID}");
+              var result =
+                  await API.shared.server.doctorLectureSharePic("$lectureID");
+              var appDocDir = await getApplicationDocumentsDirectory();
+              if (Platform.isAndroid) {
+                appDocDir = await getExternalStorageDirectory();
+              }
+              String picPath =
+                  appDocDir.path + "/sharePic${DateTime.now().millisecond}.jpg";
+              await Dio().download(result["url"], picPath);
+              var obj = {"path": picPath, "url": result["codeStr"]};
+              var share = json.encode(obj).toString();
+              MedcloudsNativeApi.instance().share(share);
+              print(result);
+            });
+          }
+        },
+      );
+      if (result == true) {
+        model.initData();
+      }
+    } else {
+      // EasyLoading.showToast('暂未开放'),
+      if (data.learnProgress == 0) {
+        String _text = '当前学习计划尚未学习，请在学习后提交';
+        EasyLoading.showToast(_text);
+      } else {
+        bool success = await model.bindLearnPlan(
+          learnPlanId: data.learnPlanId,
+        );
+        if (success) {
+          EasyLoading.showToast('提交成功');
+          // 延时1s执行返回
+          Future.delayed(
+            Duration(seconds: 1),
+            () {
+              Navigator.of(context).pop();
+            },
+          );
+        }
+      }
     }
   }
 
@@ -315,25 +407,75 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           Map dataMap = data.toJson();
           List learnListFields = LEARN_LIST[data.taskTemplate];
           return Container(
-              color: ThemeColor.colorFFF3F5F8,
-              alignment: Alignment.topCenter,
-              child: Flex(direction: Axis.vertical, children: <Widget>[
+            color: ThemeColor.colorFFF3F5F8,
+            alignment: Alignment.topCenter,
+            child: Flex(
+              direction: Axis.vertical,
+              children: <Widget>[
                 Expanded(
-                    child: Column(
-                  children: <Widget>[
-                    Flexible(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            if (data.taskTemplate == 'DOCTOR_LECTURE' &&
-                                data.reLearnReason != null &&
-                                data.status != 'SUBMIT_LEARN' &&
-                                data.status != 'ACCEPTED')
+                  child: Column(
+                    children: <Widget>[
+                      Flexible(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              if (data.taskTemplate == 'DOCTOR_LECTURE' &&
+                                  data.reLearnReason != null &&
+                                  data.status != 'SUBMIT_LEARN' &&
+                                  data.status != 'ACCEPTED')
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                                  padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                                '${data.representName}推广员给您留言了：',
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 18,
+                                                  color:
+                                                      ThemeColor.colorFFfece35,
+                                                )),
+                                          ]),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              '${data.reLearnReason}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14,
+                                                color: ThemeColor.colorFFfece35,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
                               Container(
-                                alignment: Alignment.centerLeft,
-                                margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                                padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                                margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                                // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius:
@@ -341,247 +483,136 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                 ),
                                 child: Column(
                                   children: [
-                                    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text('${data.representName}推广员给您留言了：',
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 18,
-                                                color: ThemeColor.colorFFfece35,
-                                              )),
-                                        ]),
-                                    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                              child: Text(
-                                                  '${data.reLearnReason}',
-                                                  textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 14,
-                                                    color: ThemeColor
-                                                        .colorFFfece35,
-                                                  )))
-                                        ])
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                                      padding: EdgeInsets.fromLTRB(0, 14, 0, 0),
+                                      child: GestureDetector(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text('学习计划信息',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 18,
+                                                      color: ThemeColor
+                                                          .primaryColor,
+                                                    )),
+                                                // 新
+                                                if (data.taskTemplate ==
+                                                        'SALON' ||
+                                                    data.taskTemplate ==
+                                                        'DEPART')
+                                                  _meetingStatus(
+                                                      data.meetingStartTime,
+                                                      data.meetingEndTime)
+                                              ],
+                                            ),
+                                            Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    model.collapsed
+                                                        ? Icons
+                                                            .keyboard_arrow_down
+                                                        : Icons
+                                                            .keyboard_arrow_up,
+                                                    color:
+                                                        ThemeColor.primaryColor,
+                                                  ),
+                                                ]),
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          model.toggleCollapsed();
+                                        },
+                                      ),
+                                    ),
+                                    ...learnListFields.map((e) {
+                                      if (model.collapsed &&
+                                          e['notCollapse'] == null) {
+                                        return Container();
+                                      }
+                                      return _buildListItem(
+                                          label: e['label'],
+                                          value: dataMap[e['field']],
+                                          format: e['format']);
+                                    }).toList(),
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      margin:
+                                          EdgeInsets.fromLTRB(30, 10, 30, 10),
+                                      padding:
+                                          EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                      child: Column(children: [
+                                        _buildLookCourse(data),
+                                      ]),
+                                    ),
                                   ],
                                 ),
                               ),
-                            Container(
-                              margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                              // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
-                              ),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                                    padding: EdgeInsets.fromLTRB(0, 14, 0, 0),
-                                    child: GestureDetector(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text('学习计划信息',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 18,
-                                                    color:
-                                                        ThemeColor.primaryColor,
-                                                  )),
-                                              // 新
-                                              if (data.taskTemplate ==
-                                                      'SALON' ||
-                                                  data.taskTemplate == 'DEPART')
-                                                _meetingStatus(
-                                                    data.meetingStartTime,
-                                                    data.meetingEndTime)
-                                            ],
-                                          ),
-                                          Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  model.collapsed
-                                                      ? Icons
-                                                          .keyboard_arrow_down
-                                                      : Icons.keyboard_arrow_up,
-                                                  color:
-                                                      ThemeColor.primaryColor,
-                                                ),
-                                              ]),
-                                        ],
-                                      ),
-                                      onTap: () {
-                                        model.toggleCollapsed();
-                                      },
-                                    ),
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                                  padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
                                   ),
-                                  ...learnListFields.map((e) {
-                                    if (model.collapsed &&
-                                        e['notCollapse'] == null) {
-                                      return Container();
-                                    }
-                                    return _buildListItem(
-                                        label: e['label'],
-                                        value: dataMap[e['field']],
-                                        format: e['format']);
-                                  }).toList(),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
-                                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                    child: Column(children: [
-                                      _buildLookCourse(data),
-                                    ]),
-                                  ),
-                                  if (data.status != 'SUBMIT_LEARN' &&
-                                      data.status != 'ACCEPTED')
-                                    Container(
-                                      margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          AceButton(
-                                            width: 375,
-                                            // height: 54,
-                                            text: _aceText(data.taskTemplate,
-                                                data.reLearn),
-                                            onPressed: () async {
-                                              // Navigator.of(context)
-                                              //     .push(MaterialPageRoute(
-                                              //   builder:
-                                              //       (BuildContext context) =>
-                                              //           TestVideo(),
-                                              // ));
-                                              // return;
-                                              if (data.taskTemplate ==
-                                                  'DOCTOR_LECTURE') {
-                                                var result =
-                                                    await Navigator.of(context)
-                                                        .pushNamed(
-                                                  RouteManager.LECTURE_VIDEOS,
-                                                  arguments: {
-                                                    'reLearn': data.reLearn,
-                                                    'resourceId': data
-                                                        .resources[0]
-                                                        .resourceId,
-                                                    'learnPlanId':
-                                                        data.learnPlanId,
-                                                    'doctorName':
-                                                        userInfo?.doctorName ??
-                                                            '',
-                                                    'taskName': data.taskName,
-                                                    'from': arguments['from'],
-                                                    'upFinished': (lectureID)  {
-                                                      EasyLoading.instance
-                                                          .flash(() async {
-                                                            print("-------------");
-                                                            print("the lectureID == ${lectureID}");
-                                                        var result = await API
-                                                            .shared.server
-                                                            .doctorLectureSharePic(
-                                                            "$lectureID");
-                                                        var appDocDir = await getApplicationDocumentsDirectory();
-                                                        if(Platform.isAndroid){
-                                                          appDocDir = await getExternalStorageDirectory();
-                                                        }
-                                                        String picPath = appDocDir.path + "/sharePic${DateTime.now().millisecond}.jpg";
-                                                        await Dio().download(result["url"], picPath);
-                                                        var obj = {"path":picPath,"url":result["codeStr"]};
-                                                        var share = json.encode(obj).toString();
-                                                        MedcloudsNativeApi.instance().share(share);
-                                                        print(result);
-                                                      });
-                                                    }
-                                                  },
-                                                );
-                                                if (result == true) {
-                                                  model.initData();
-                                                }
-                                              } else {
-                                                // EasyLoading.showToast('暂未开放'),
-                                                if (data.learnProgress == 0) {
-                                                  String _text =
-                                                      '当前学习计划尚未学习，请在学习后提交';
-                                                  EasyLoading.showToast(_text);
-                                                } else {
-                                                  bool success = await model
-                                                      .bindLearnPlan(
-                                                    learnPlanId:
-                                                    data.learnPlanId,
-                                                  );
-                                                  if (success) {
-                                                    EasyLoading.showToast(
-                                                        '提交成功');
-                                                    // 延时1s执行返回
-                                                    Future.delayed(
-                                                        Duration(seconds: 1),
-                                                            () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        });
-                                                  }
-                                                }
-                                              }
-                                            },
-                                          ),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                ],
+                                  child: Text('资料列表',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: ThemeColor.primaryColor,
+                                      ))),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                                child: PlanDetailList(data),
                               ),
-                            ),
-                            Container(
-                                alignment: Alignment.centerLeft,
-                                margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                                padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8)),
-                                ),
-                                child: Text('资料列表',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18,
-                                      color: ThemeColor.primaryColor,
-                                    ))),
-                            Container(
-                                margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                                child: PlanDetailList(data)),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    _renderLookRecording(data)
-                  ],
-                ))
-              ]));
+                      _renderLookRecording(data),
+                      if (data.status != 'SUBMIT_LEARN' &&
+                          data.status != 'ACCEPTED' &&
+                          !data.reLearn)
+                        Container(
+                          margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AceButton(
+                                width: 375,
+                                // height: 54,
+                                text: _aceText(data.taskTemplate),
+                                onPressed: () async {
+                                  this._uploadVideo(model, arguments, data);
+                                },
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
         },
       ),
     );

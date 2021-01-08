@@ -13,6 +13,7 @@ class AceButton extends StatelessWidget {
   final Color textColor;
   final double fontSize;
   final Widget child;
+  final Color shadowColor;
 
   AceButton({
     @required this.onPressed,
@@ -24,6 +25,7 @@ class AceButton extends StatelessWidget {
     this.height = 44,
     this.fontSize = 16,
     this.child,
+    this.shadowColor,
   });
 
   @override
@@ -102,7 +104,7 @@ class AceButton extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(height / 2)),
           boxShadow: [
             BoxShadow(
-              color: Color(0x66005AA0),
+              color: this.shadowColor ?? Color(0x66005AA0),
               offset: Offset(0, 4),
               blurRadius: 10,
             ),
