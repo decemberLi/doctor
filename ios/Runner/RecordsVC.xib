@@ -93,6 +93,9 @@
                         <constraint firstAttribute="width" constant="57" id="Row-Pz-vJF"/>
                     </constraints>
                     <state key="normal" image="返回"/>
+                    <connections>
+                        <action selector="onBack" destination="-1" eventType="touchUpInside" id="yEC-tq-lOU"/>
+                    </connections>
                 </button>
                 <button opaque="NO" tag="1001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cr2-G8-4pZ">
                     <rect key="frame" x="778" y="10.5" width="44" height="44"/>
