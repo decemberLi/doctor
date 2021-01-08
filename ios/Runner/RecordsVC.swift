@@ -16,6 +16,7 @@ class RecordsVC: UIViewController {
     @IBOutlet var recourdBG : UIView!
     @IBOutlet var infoBG : UIView!
     @IBOutlet var pdfView : UIView!
+    @IBOutlet var timeLbl : UILabel!
     var pdfContent : PDFView!
     
     private var session : AVCaptureSession = AVCaptureSession()
@@ -26,7 +27,9 @@ class RecordsVC: UIViewController {
     private var playerLayer : AVCaptureVideoPreviewLayer?
     
     private var paths : [URL] = []
-    private var recordTime : Int = 0
+    private var recordTime : TimeInterval = 0
+    private var startDate : Date?
+    private var timer : Timer?
     
     override var shouldAutorotate: Bool { true }
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -38,6 +41,7 @@ class RecordsVC: UIViewController {
     }
     
     deinit {
+        print("records deinit")
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -189,6 +193,8 @@ class RecordsVC: UIViewController {
     
     private func stopRecords(){
         playerLayer?.isHidden = true
+        timer?.invalidate()
+        timer = nil
         guard RPScreenRecorder.shared().isRecording else {
             return
         }
@@ -266,12 +272,17 @@ class RecordsVC: UIViewController {
         pdfContent.goToPreviousPage(nil)
     }
     
-    //MARK: - UI
+    //MARK: - Status
     private func changeToIdle(){
         firstBTN.isHidden = true
         secondBTN.setImage(UIImage(named: "播放"), for: .normal)
         playerLayer?.isHidden = true
         secondBTN.tag = 1001
+        if let s = startDate {
+            recordTime += Date().timeIntervalSince(s)
+        }
+        startDate = nil
+        
     }
     
     private func changeToRecording() {
@@ -279,6 +290,19 @@ class RecordsVC: UIViewController {
         secondBTN.setImage(UIImage(named: "录制中"), for: .normal)
         playerLayer?.isHidden = false
         secondBTN.tag = 1002
+        startDate = Date()
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true)  {[weak self] (t) in
+            guard let weakSelf = self else {
+                t.invalidate()
+                self?.timer = nil
+                return
+            }
+            if let s = self?.startDate {
+                let second = Date().timeIntervalSince(s)
+                //"\(second/60):\(Int(second)%60)"
+                weakSelf.timeLbl.text = String(format: "%02d:%02d", Int(second/60),Int(second)%60)
+            }
+        }
     }
     
     private func changeToPause(){
@@ -286,6 +310,10 @@ class RecordsVC: UIViewController {
         secondBTN.setImage(UIImage(named: "结束"), for: .normal)
         playerLayer?.isHidden = true
         secondBTN.tag = 1003
+        if let s = startDate {
+            recordTime += Date().timeIntervalSince(s)
+        }
+        startDate = nil
     }
 }
 
