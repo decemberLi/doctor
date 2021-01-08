@@ -271,6 +271,9 @@ class RecordsVC: UIViewController {
     @IBAction func onPre() {
         pdfContent.goToPreviousPage(nil)
     }
+    @IBAction func onBack() {
+        dismiss(animated: true, completion: nil)
+    }
     
     //MARK: - Status
     private func changeToIdle(){
