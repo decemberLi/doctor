@@ -9,6 +9,7 @@ import UIKit
 import AVFoundation
 import ReplayKit
 import PDFKit
+import MBProgressHUD
 
 class RecordsVC: UIViewController {
     @IBOutlet var firstBTN : UIButton!
@@ -19,12 +20,10 @@ class RecordsVC: UIViewController {
     @IBOutlet var timeLbl : UILabel!
     var pdfContent : PDFView!
     
-    private var session : AVCaptureSession = AVCaptureSession()
     private var assetWriter:AVAssetWriter?
     private var videoInput:AVAssetWriterInput!
     private var audioInput:AVAssetWriterInput!
     
-    private var playerLayer : AVCaptureVideoPreviewLayer?
     
     private var paths : [URL] = []
     private var recordTime : TimeInterval = 0
@@ -47,7 +46,7 @@ class RecordsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        initCaputre()
+        initRecord()
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
         try? AVAudioSession.sharedInstance().setActive(true)
         // Do any additional setup after loading the view.
@@ -86,26 +85,6 @@ class RecordsVC: UIViewController {
         pdfContent.document = doc
     }
     
-    func initCaputre() {
-        let ds = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .front)
-        guard let device = ds.devices.first  else {
-            return
-        }
-        guard let cinput = try? AVCaptureDeviceInput(device: device) else {
-            return
-        }
-        session.addInput(cinput)
-        let out = AVCapturePhotoOutput()
-        session.addOutput(out)
-        let layer = AVCaptureVideoPreviewLayer(session: session)
-        layer.connection?.videoOrientation = .landscapeRight
-        layer.frame = CGRect(origin: .zero, size: recourdBG.frame.size)
-        recourdBG.layer.addSublayer(layer)
-        session.startRunning()
-        playerLayer = layer
-        playerLayer?.isHidden = true
-    }
-    
     private func initRecord(){
         let path = NSHomeDirectory() + "/Documents/record_\(paths.count).mp4"
         let fileURL = URL(fileURLWithPath: path)
@@ -135,13 +114,19 @@ class RecordsVC: UIViewController {
     }
     
     private func beginRecord(){
-        initRecord()
         RPScreenRecorder.shared().isMicrophoneEnabled = true
         RPScreenRecorder.shared().cameraPosition = .front
         RPScreenRecorder.shared().isCameraEnabled = true
-        RPScreenRecorder.shared().startCapture { (cmSampleBuffer, rpSampleBufferType, err) in
+        RPScreenRecorder.shared().startCapture {[weak self] (cmSampleBuffer, rpSampleBufferType, err) in
             if err != nil { return }
-            guard let writer = self.assetWriter else {return}
+            guard let writer = self?.assetWriter else {return}
+            guard RPScreenRecorder.shared().isMicrophoneEnabled else {
+                MBProgressHUD.toastText(msg: "请开启麦克风权限")
+                self?.recordTime = 0
+                self?.changeToIdle()
+                self?.stopRecords()
+                return
+            }
             
             if CMSampleBufferDataIsReady(cmSampleBuffer) {
                 print("the mic is enable \(RPScreenRecorder.shared().isMicrophoneEnabled)")
@@ -150,7 +135,7 @@ class RecordsVC: UIViewController {
                     switch rpSampleBufferType {
                     case .video:
                         
-                        if self.assetWriter?.status == AVAssetWriter.Status.unknown {
+                        if self?.assetWriter?.status == AVAssetWriter.Status.unknown {
                             
                             print("Started writing")
                             writer.startWriting()
@@ -163,24 +148,37 @@ class RecordsVC: UIViewController {
                         }
                         
                         if writer.status == AVAssetWriter.Status.writing {
-                            if self.videoInput.isReadyForMoreMediaData {
-                                if self.videoInput.append(cmSampleBuffer) == false {
+                            if self?.videoInput.isReadyForMoreMediaData == true {
+                                if self?.videoInput.append(cmSampleBuffer) == false {
                                     print("problem writing video")
                                 }
                             }
                         }
                         
                     case .audioMic:
-                        if self.audioInput.isReadyForMoreMediaData {
-                            self.audioInput.append(cmSampleBuffer)
+                        if self?.audioInput.isReadyForMoreMediaData == true {
+                            self?.audioInput.append(cmSampleBuffer)
                         }
                     default:
                         break
                     }
                 }
             }
-        } completionHandler: { (error) in
-            
+        } completionHandler: {[weak self] (error) in
+            if error != nil {
+                MBProgressHUD.toastText(msg: "请打开录屏权限")
+                self?.recordTime = 0
+                self?.changeToIdle()
+                self?.stopRecords()
+            }else {
+                if let one = RPScreenRecorder.shared().cameraPreviewView {
+                    self?.recourdBG.addSubview(one)
+                    one.snp.makeConstraints { (maker) in
+                        maker.edges.equalToSuperview()
+                    }
+                }
+                
+            }
         }
     }
     
@@ -192,7 +190,6 @@ class RecordsVC: UIViewController {
     }
     
     private func stopRecords(){
-        playerLayer?.isHidden = true
         timer?.invalidate()
         timer = nil
         guard RPScreenRecorder.shared().isRecording else {
@@ -272,6 +269,7 @@ class RecordsVC: UIViewController {
         pdfContent.goToPreviousPage(nil)
     }
     @IBAction func onBack() {
+        stopRecords()
         dismiss(animated: true, completion: nil)
     }
     
@@ -279,19 +277,19 @@ class RecordsVC: UIViewController {
     private func changeToIdle(){
         firstBTN.isHidden = true
         secondBTN.setImage(UIImage(named: "播放"), for: .normal)
-        playerLayer?.isHidden = true
         secondBTN.tag = 1001
         if let s = startDate {
             recordTime += Date().timeIntervalSince(s)
         }
         startDate = nil
-        
+        timer?.invalidate()
+        timer = nil
+        timeLbl.text = ""
     }
     
     private func changeToRecording() {
         firstBTN.isHidden = true
         secondBTN.setImage(UIImage(named: "录制中"), for: .normal)
-        playerLayer?.isHidden = false
         secondBTN.tag = 1002
         startDate = Date()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true)  {[weak self] (t) in
@@ -301,7 +299,7 @@ class RecordsVC: UIViewController {
                 return
             }
             if let s = self?.startDate {
-                let second = Date().timeIntervalSince(s)
+                let second = weakSelf.recordTime + Date().timeIntervalSince(s)
                 //"\(second/60):\(Int(second)%60)"
                 weakSelf.timeLbl.text = String(format: "%02d:%02d", Int(second/60),Int(second)%60)
             }
@@ -311,20 +309,16 @@ class RecordsVC: UIViewController {
     private func changeToPause(){
         firstBTN.isHidden = false
         secondBTN.setImage(UIImage(named: "结束"), for: .normal)
-        playerLayer?.isHidden = true
         secondBTN.tag = 1003
         if let s = startDate {
             recordTime += Date().timeIntervalSince(s)
         }
         startDate = nil
+        timer?.invalidate()
+        timer = nil
     }
 }
 
-//extension RecordsVC : RPPreviewViewControllerDelegate {
-//    func previewController(_ previewController: RPPreviewViewController, didFinishWithActivityTypes activityTypes: Set<String>) {
-//        previewController.dismiss(animated: true, completion: nil)
-//    }
-//}
 
 func drawPDFfromURL(url: URL) -> UIImage? {
     guard let document = CGPDFDocument(url as CFURL) else { return nil }
