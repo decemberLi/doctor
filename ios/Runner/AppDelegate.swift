@@ -38,8 +38,6 @@ import UserNotificationsUI
             guard let data = value.data(using: .utf8) else {return}
             guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
             self.record(map: obj)
-        } else if call.method == "record" {
-            NotificationCenter.default.post(name: .init("dismissRecord"), object: nil)
         }
     }
     vc.setFlutterViewDidRenderCallback {

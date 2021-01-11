@@ -21,9 +21,11 @@ class RecordsVC: UIViewController {
     @IBOutlet var pdfView : UIView!
     @IBOutlet var timeLbl : UILabel!
     @IBOutlet var alertBG : UIView!
+    @IBOutlet var alertContent : UIView!
     @IBOutlet var titleTextField : UITextField!
     @IBOutlet var introImage: UIImageView!
     @IBOutlet var introBG : UIView!
+
     
     var data : [String:Any] = [:]
     
@@ -57,13 +59,13 @@ class RecordsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(hidden), name: .init("dismissRecord"), object: nil)
         initRecord()
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
         try? AVAudioSession.sharedInstance().setActive(true)
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: AVAudioSession.interruptionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardChanged(_:)), name: UIApplication.keyboardDidChangeFrameNotification, object: nil)
         changeToIdle()
         let hasIntro = UserDefaults.standard.bool(forKey: "recordIntro")
         introBG.isHidden = hasIntro
@@ -72,8 +74,18 @@ class RecordsVC: UIViewController {
         titleTextField.placeholder = data["title"] as? String
     }
     
-    @objc func hidden(){
-        dismiss(animated: true, completion: nil)
+    @objc func keyboardChanged(_ notification:Notification){
+        guard let value = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {
+            return
+        }
+        let rect = value.cgRectValue
+        if rect.origin.y < view.frame.size.height {
+            alertContent.snp.remakeConstraints { (maker) in
+                maker.bottom.equalToSuperview().offset(-rect.origin.y)
+            }
+        }else{
+            alertContent.snp.removeConstraints()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
