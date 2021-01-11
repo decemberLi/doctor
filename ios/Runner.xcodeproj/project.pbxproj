@@ -17,6 +17,7 @@
 		6A655EB325A461F6003251FB /* RecordsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A655EB125A461F6003251FB /* RecordsVC.swift */; };
 		6A655EB425A461F6003251FB /* RecordsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A655EB225A461F6003251FB /* RecordsVC.xib */; };
 		6A84B1BD259B0E42000C1870 /* HUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A84B1BC259B0E42000C1870 /* HUD.swift */; };
+		6A8FD3DC25AC6D31009CDB7F /* jiguang.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6A8FD3DB25AC6D31009CDB7F /* jiguang.mp4 */; };
 		6AD8D0BA25A5C33B008B30D0 /* 1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 6AD8D0B925A5C33B008B30D0 /* 1.pdf */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -48,6 +49,7 @@
 		6A655EB125A461F6003251FB /* RecordsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsVC.swift; sourceTree = "<group>"; };
 		6A655EB225A461F6003251FB /* RecordsVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RecordsVC.xib; sourceTree = "<group>"; };
 		6A84B1BC259B0E42000C1870 /* HUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUD.swift; sourceTree = "<group>"; };
+		6A8FD3DB25AC6D31009CDB7F /* jiguang.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = jiguang.mp4; sourceTree = "<group>"; };
 		6AD8D0B925A5C33B008B30D0 /* 1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = 1.pdf; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				6A8FD3DB25AC6D31009CDB7F /* jiguang.mp4 */,
 				6A48EB212599C8E00086F5F2 /* RunnerApp.entitlements */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -214,6 +217,7 @@
 				6A655EB425A461F6003251FB /* RecordsVC.xib in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
+				6A8FD3DC25AC6D31009CDB7F /* jiguang.mp4 in Resources */,
 				6A0B7C762593219E0018D252 /* ShareVC.xib in Resources */,
 				6AD8D0BA25A5C33B008B30D0 /* 1.pdf in Resources */,
 			);
