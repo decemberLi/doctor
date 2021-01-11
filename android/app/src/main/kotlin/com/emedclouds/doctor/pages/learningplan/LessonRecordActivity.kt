@@ -1,15 +1,14 @@
 package com.emedclouds.doctor.pages.learningplan
 
 import android.Manifest.permission.*
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.graphics.Bitmap
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.os.Bundle
-import android.os.Environment
-import android.os.ParcelFileDescriptor
+import android.os.*
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -57,12 +56,17 @@ class LessonRecordActivity : AppCompatActivity() {
     private val mUserId = "userId"
     private lateinit var mRecordThread: Thread
 
+    private var duration = 1
+    private var mIsPause = false
+    private val mHandler = Handler()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lesson_record_layout)
         mPdfContentView = findViewById(R.id.pdfViewer)
         lessonRecordBackBtn.setOnClickListener { finish() }
         lessonRecordBtnAction.setOnClickListener {
+            lessonRecordBackBtn.visibility = View.GONE
             if (mCurrentStatus == statusFinish) {
                 mRecordThread.start()
                 mCurrentStatus = statusPlaying
@@ -174,7 +178,6 @@ class LessonRecordActivity : AppCompatActivity() {
     private fun populateUI() {
         doctorName.text = "懂医生"
         doctorHospitalName.text = "四川省成都市第二人民医院医院医院医院"
-        timerView.text = "12:00"
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -183,23 +186,28 @@ class LessonRecordActivity : AppCompatActivity() {
             if (data == null) {
                 return
             }
-            mProjection = projectionManager.getMediaProjection(resultCode, data)
-            val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
-            if (externalFilesDir.mkdirs()) {
-                return
-            }
-            mRecordHandler = MediaRecorderThread(
-                    720,
-                    480,
-                    resources.configuration.densityDpi,
-                    externalFilesDir.absolutePath,
-                    mProjection
-            )
-            mRecordThread = Thread(mRecordHandler)
-            mRecordThread.start()
-            mCurrentStatus = statusPlaying
-            updateBtnStatus()
+            doRecord(resultCode, data)
         }
+    }
+
+    private fun doRecord(resultCode: Int, data: Intent) {
+        mProjection = projectionManager.getMediaProjection(resultCode, data)
+        val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
+        if (externalFilesDir.mkdirs()) {
+            return
+        }
+        mRecordHandler = MediaRecorderThread(
+                720,
+                480,
+                resources.configuration.densityDpi,
+                externalFilesDir.absolutePath,
+                mProjection
+        )
+        mRecordThread = Thread(mRecordHandler)
+        mRecordThread.start()
+        updateTimeView(true)
+        mCurrentStatus = statusPlaying
+        updateBtnStatus()
     }
 
 
@@ -281,19 +289,21 @@ class LessonRecordActivity : AppCompatActivity() {
     private fun switchAction() {
         when (mCurrentStatus) {
             statusPlaying -> {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     mRecordHandler.pause()
                 } else {
                     mRecordHandler.release()
                 }
+                updateTimeView(false)
                 mCurrentStatus = statusPause
             }
             statusPause -> {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     mRecordHandler.resume()
                 } else {
                     mRecordThread.start()
                 }
+                updateTimeView(true)
                 mCurrentStatus = statusPlaying
             }
         }
@@ -339,6 +349,38 @@ class LessonRecordActivity : AppCompatActivity() {
             }
         }
         dialog.show()
+    }
+
+    private val myRunner: Runnable = object : Runnable {
+        @SuppressLint("SetTextI18n")
+        override fun run() {
+            if (!mIsPause) {
+                return
+            }
+            timerView.text = formatTime(duration++)
+            mHandler.postDelayed(this, 1000)
+        }
+    }
+
+    private fun formatTime(duration: Int): String {
+        val minute = duration / 60
+        val seconds = duration % 60
+        val strMinute = if (minute < 10) {
+            "0$minute"
+        } else {
+            "$minute"
+        }
+        val strSeconds = if (seconds < 10) {
+            "0$seconds"
+        } else {
+            "$seconds"
+        }
+        return "$strMinute:$strSeconds"
+    }
+
+    private fun updateTimeView(isPause: Boolean) {
+        this.mIsPause = isPause
+        mHandler.post(myRunner)
     }
 
 }
