@@ -1,6 +1,7 @@
 package com.emedclouds.doctor.pages.learningplan
 
 import android.Manifest.permission.*
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.graphics.Bitmap
@@ -12,6 +13,8 @@ import android.os.ParcelFileDescriptor
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -48,10 +51,11 @@ class LessonRecordActivity : AppCompatActivity() {
     private var count: Int = 0
     private var mCurrentPage: Int = 0
     private var mIsInitiated = false
-    private lateinit var mRecordThread: MediaRecorderThread
+    private lateinit var mRecordHandler: MediaRecorderThread
     private lateinit var mProjection: MediaProjection
     private var mCurrentStatus = 0
-    private val userId = "userId"
+    private val mUserId = "userId"
+    private lateinit var mRecordThread: Thread
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +64,9 @@ class LessonRecordActivity : AppCompatActivity() {
         lessonRecordBackBtn.setOnClickListener { finish() }
         lessonRecordBtnAction.setOnClickListener {
             if (mCurrentStatus == statusFinish) {
+                mRecordThread.start()
+                mCurrentStatus = statusPlaying
+                updateBtnStatus()
                 return@setOnClickListener
             }
             if (mIsInitiated) {
@@ -68,36 +75,44 @@ class LessonRecordActivity : AppCompatActivity() {
             }
             mIsInitiated = true
 
-            if (checkCameraPermission(applicationContext)) {
+            if (!checkCameraPermission(applicationContext)) {
                 requestCameraPermission(this@LessonRecordActivity, REQUEST_CODE_CAMERA_PERMISSION)
             } else {
                 startCamera()
+                showCameraViewIfNeeded(true)
             }
 
-            if (checkMicPermission(applicationContext)) {
-                startScreen()
-            } else {
+            if (!checkMicPermission(applicationContext)) {
                 requestMicPermission(this@LessonRecordActivity, REQUEST_CODE_MIC_PERMISSION)
+            } else {
+                startScreen()
             }
         }
         lessonRecordBtnFinish.setOnClickListener {
-            startActivity(Intent(this, LessonRecordGuidActivity::class.java))
+            mCurrentStatus = statusFinish
+            mRecordHandler.release()
+            showDialog()
         }
         populateUI()
 
         if (checkExternalPermission(applicationContext)) {
-            initPdfBoard()
-        } else {
             requestExternalStoragePermission(this, REQUEST_CODE_EXTERNAL_STORAGE_PERMISSION)
+        } else {
+            initPdfBoard()
         }
-        updateBtnStatus(mCurrentStatus)
+        mCurrentStatus = statusReady
+        updateBtnStatus()
         showGuideIfNeeded()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     private fun showGuideIfNeeded() {
         val refs = getSharedPreferences(LessonRecordGuidActivity.keyLessonRefsName, MODE_PRIVATE)
-        if (!refs.getBoolean(LessonRecordGuidActivity.getCacheKey(userId), false)) {
-            startActivity(Intent(this, LessonRecordGuidActivity::class.java))
+        if (!refs.getBoolean(LessonRecordGuidActivity.getCacheKey(mUserId), false)) {
+            LessonRecordGuidActivity.startGuide(this, mUserId)
         }
     }
 
@@ -170,15 +185,20 @@ class LessonRecordActivity : AppCompatActivity() {
             }
             mProjection = projectionManager.getMediaProjection(resultCode, data)
             val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
-            mRecordThread = MediaRecorderThread(
+            if (externalFilesDir.mkdirs()) {
+                return
+            }
+            mRecordHandler = MediaRecorderThread(
                     720,
                     480,
                     resources.configuration.densityDpi,
                     externalFilesDir.absolutePath,
                     mProjection
             )
-            Thread(mRecordThread).start()
-            switchAction()
+            mRecordThread = Thread(mRecordHandler)
+            mRecordThread.start()
+            mCurrentStatus = statusPlaying
+            updateBtnStatus()
         }
     }
 
@@ -193,7 +213,6 @@ class LessonRecordActivity : AppCompatActivity() {
                         return
                     }
                 }
-                mRecordThread?.start()
             }
             REQUEST_CODE_CAMERA_PERMISSION -> {
                 for (i in grantResults) {
@@ -261,31 +280,32 @@ class LessonRecordActivity : AppCompatActivity() {
 
     private fun switchAction() {
         when (mCurrentStatus) {
-            statusReady -> {
-                mCurrentStatus = statusPlaying
-            }
             statusPlaying -> {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    mRecordThread.pause()
+                    mRecordHandler.pause()
                 } else {
-                    mRecordThread.stop()
+                    mRecordHandler.release()
                 }
                 mCurrentStatus = statusPause
             }
             statusPause -> {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    mRecordThread.resume()
+                    mRecordHandler.resume()
                 } else {
                     mRecordThread.start()
                 }
                 mCurrentStatus = statusPlaying
             }
         }
-        updateBtnStatus(mCurrentStatus)
+        updateBtnStatus()
     }
 
-    private fun updateBtnStatus(status: Int) {
-        when (status) {
+    private fun updateBtnStatus() {
+        when (mCurrentStatus) {
+            statusFinish -> {
+                lessonRecordBtnAction.setImageResource(R.mipmap.btn_record_start)
+                lessonRecordBtnFinish.visibility = View.GONE
+            }
             statusReady -> {
                 lessonRecordBtnAction.setImageResource(R.mipmap.btn_record_start)
                 lessonRecordBtnFinish.visibility = View.GONE
@@ -300,7 +320,25 @@ class LessonRecordActivity : AppCompatActivity() {
             }
         }
     }
-    
 
+    private fun showDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_record_layout)
+        dialog.setCancelable(false)
+        dialog.findViewById<TextView>(R.id.btnReCord).setOnClickListener {
+            mCurrentStatus = statusFinish
+            updateBtnStatus()
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+        }
+        dialog.findViewById<TextView>(R.id.btnUpload).setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
 
 }

@@ -50,8 +50,9 @@ class LessonRecordGuidActivity : AppCompatActivity() {
                 nowUse.visibility = View.VISIBLE
                 nowUse.setOnClickListener {
                     val refs = getSharedPreferences(keyLessonRefsName, MODE_PRIVATE)
-                    refs.getBoolean(getCacheKey(intent?.getStringExtra(keyCacheSuffix)), true)
-                    refs.edit().apply()
+                    refs.edit()
+                            .putBoolean(getCacheKey(intent?.getStringExtra(keyCacheSuffix)), true)
+                            .apply()
                     finish()
                 }
             } else {
