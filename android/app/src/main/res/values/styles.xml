@@ -38,4 +38,9 @@
     <style name="LandScapeNoTitleNoStatusBar" parent="Theme.AppCompat.Light.NoActionBar.FullScreen">
         <item name="windowNoTitle">true</item>
     </style>
+    <style name="LandScapeNoTitleNoStatusBar.Translucent" parent="LandScapeNoTitleNoStatusBar">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:windowBackground">@color/color_transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>

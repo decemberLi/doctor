@@ -51,6 +51,7 @@ class LessonRecordActivity : AppCompatActivity() {
     private lateinit var mRecordThread: MediaRecorderThread
     private lateinit var mProjection: MediaProjection
     private var mCurrentStatus = 0
+    private val userId = "userId"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,10 +81,7 @@ class LessonRecordActivity : AppCompatActivity() {
             }
         }
         lessonRecordBtnFinish.setOnClickListener {
-            mCurrentStatus = statusFinish
-            if (mRecordThread != null) {
-                mRecordThread?.stop()
-            }
+            startActivity(Intent(this, LessonRecordGuidActivity::class.java))
         }
         populateUI()
 
@@ -93,6 +91,14 @@ class LessonRecordActivity : AppCompatActivity() {
             requestExternalStoragePermission(this, REQUEST_CODE_EXTERNAL_STORAGE_PERMISSION)
         }
         updateBtnStatus(mCurrentStatus)
+        showGuideIfNeeded()
+    }
+
+    private fun showGuideIfNeeded() {
+        val refs = getSharedPreferences(LessonRecordGuidActivity.keyLessonRefsName, MODE_PRIVATE)
+        if (!refs.getBoolean(LessonRecordGuidActivity.getCacheKey(userId), false)) {
+            startActivity(Intent(this, LessonRecordGuidActivity::class.java))
+        }
     }
 
     private fun startScreen() {
@@ -294,5 +300,7 @@ class LessonRecordActivity : AppCompatActivity() {
             }
         }
     }
+    
+
 
 }
