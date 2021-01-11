@@ -48,4 +48,8 @@ class MedcloudsNativeApi {
     return await _channel.invokeMapMethod("record", args);
   }
 
+  recordFinish(){
+    _channel.invokeMapMethod("recordFinish", null);
+  }
+
 }

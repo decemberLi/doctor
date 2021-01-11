@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:doctor/http/common_service.dart';
+import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
+import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
@@ -284,14 +287,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                     shadowColor: Color(0x40FECE35),
                     text: '重新讲课',
                     onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        RouteManager.LOOK_LECTURE_VIDEOS,
-                        arguments: {
-                          "learnPlanId": data.learnPlanId,
-                          "resourceId": data.resources[0].resourceId,
-                          'doctorName': data.doctorName,
-                        },
-                      );
+                      _gotoRecord(data);
                     },
                   ),
                 ),
@@ -375,6 +371,58 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         }
       }
     }
+  }
+
+  _gotoRecord(LearnDetailItem data) {
+    EasyLoading.instance.flash(
+      () async {
+        var appDocDir = await getApplicationDocumentsDirectory();
+        if (Platform.isAndroid) {
+          appDocDir = await getExternalStorageDirectory();
+        }
+        String picPath = appDocDir.path + "/sharePDF";
+        var pdf = data.resources[0];
+        var resourceData = await API.shared.server.resourceDetail({
+          'resourceId': pdf.resourceId,
+          'learnPlanId': data.learnPlanId,
+        });
+        var file = await CommonService.getFile({
+          'ossIds': [resourceData["attachmentOssId"]]
+        });
+        var fileURL = file[0]['tmpUrl'];
+        await Dio().download(fileURL, picPath);
+        UserInfoViewModel model =
+            Provider.of<UserInfoViewModel>(context, listen: false);
+        var map = {
+          "path": picPath,
+          "name": data.doctorName,
+          "userID": data.doctorUserId,
+          "hospital": model.data.hospitalName,
+          "title": data.taskName
+        };
+        var result = json.encode(map);
+        MedcloudsNativeApi.instance().record(result.toString());
+        MedcloudsNativeApi.instance().addProcessor(
+          "uploadLearnVideo",
+          (args) async {
+            var obj = json.decode(args);
+            var entity = await OssService.upload(
+              obj["path"],
+            );
+            var result = await API.shared.server.addLectureSubmit(
+              {
+                'learnPlanId': data.learnPlanId,
+                'resourceId': pdf.resourceId,
+                'videoTitle': "videoTitle",
+                'presenter': "presenter",
+                'videoOssId': entity.ossId,
+              },
+            );
+            MedcloudsNativeApi.instance().recordFinish();
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -598,7 +646,11 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                                 // height: 54,
                                 text: _aceText(data.taskTemplate),
                                 onPressed: () async {
-                                  this._uploadVideo(model, arguments, data);
+                                  if (data.taskTemplate == 'DOCTOR_LECTURE') {
+                                    _gotoRecord(data);
+                                  } else {
+                                    this._uploadVideo(model, arguments, data);
+                                  }
                                 },
                               ),
                               SizedBox(

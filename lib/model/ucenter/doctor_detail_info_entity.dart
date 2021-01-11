@@ -86,7 +86,6 @@ class DoctorDetailInfoEntity {
     this.headPicUrl,
     this.basicInfoAuthStatus,
   });
-
   factory DoctorDetailInfoEntity.create() =>
       DoctorDetailInfoEntity.fromJson(Map<String, dynamic>());
 

@@ -34,7 +34,12 @@ import UserNotificationsUI
             guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
             self.share(map: obj)
         } else if call.method == "record" {
-            self.record(map: ["ss":"123"])
+            guard let value = call.arguments as? String else {return}
+            guard let data = value.data(using: .utf8) else {return}
+            guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
+            self.record(map: obj)
+        } else if call.method == "record" {
+            NotificationCenter.default.post(name: .init("dismissRecord"), object: nil)
         }
     }
     vc.setFlutterViewDidRenderCallback {
@@ -111,6 +116,7 @@ extension AppDelegate {
     
     func record(map : [String:Any]) {
         let vc = RecordsVC()
+        vc.data = map
         vc.modalPresentationStyle = .fullScreen
         window.rootViewController?.present(vc, animated: false, completion: nil)
     }

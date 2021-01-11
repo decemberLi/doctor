@@ -16,6 +16,8 @@ class RecordsVC: UIViewController {
     @IBOutlet var secondBTN : UIButton!
     @IBOutlet var recourdBG : UIView!
     @IBOutlet var infoBG : UIView!
+    @IBOutlet var nameLbl : UILabel!
+    @IBOutlet var hospitalLbl : UILabel!
     @IBOutlet var pdfView : UIView!
     @IBOutlet var timeLbl : UILabel!
     @IBOutlet var alertBG : UIView!
@@ -23,8 +25,12 @@ class RecordsVC: UIViewController {
     @IBOutlet var introImage: UIImageView!
     @IBOutlet var introBG : UIView!
     
+    var data : [String:Any] = [:]
+    
     var pdfContent : PDFView!
     
+    private var playerLayer : AVCaptureVideoPreviewLayer?
+    private var session : AVCaptureSession = AVCaptureSession()
     private var assetWriter:AVAssetWriter?
     private var videoInput:AVAssetWriterInput!
     private var audioInput:AVAssetWriterInput!
@@ -51,6 +57,7 @@ class RecordsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(hidden), name: .init("dismissRecord"), object: nil)
         initRecord()
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
         try? AVAudioSession.sharedInstance().setActive(true)
@@ -60,6 +67,13 @@ class RecordsVC: UIViewController {
         changeToIdle()
         let hasIntro = UserDefaults.standard.bool(forKey: "recordIntro")
         introBG.isHidden = hasIntro
+        nameLbl.text = data["name"] as? String
+        hospitalLbl.text = data["hospital"] as? String
+        titleTextField.placeholder = data["title"] as? String
+    }
+    
+    @objc func hidden(){
+        dismiss(animated: true, completion: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -83,13 +97,41 @@ class RecordsVC: UIViewController {
      */
     
     private func showPDF(){
-        guard let url = Bundle.main.url(forResource: "1", withExtension: "pdf") else {return}
-        let doc = PDFDocument(url: url)
+        guard let path = data["path"] as? String else {
+            MBProgressHUD.toastText(msg: "文件打开失败")
+            return
+        }
+        let url = URL(fileURLWithPath: path)
+        guard let doc = PDFDocument(url: url) else {
+            MBProgressHUD.toastText(msg: "文件打开失败")
+            return
+        }
         pdfContent = PDFView(frame: pdfView.bounds)
         pdfView.addSubview(pdfContent)
         pdfContent.autoScales = true
         pdfContent.displayMode = .singlePage
         pdfContent.document = doc
+    }
+    
+    func initCaputre() {
+        let ds = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .front)
+        guard let device = ds.devices.first  else {
+            return
+        }
+        guard let cinput = try? AVCaptureDeviceInput(device: device) else {
+            return
+        }
+        guard playerLayer == nil else {return}
+        session.addInput(cinput)
+        let out = AVCapturePhotoOutput()
+        session.addOutput(out)
+        let layer = AVCaptureVideoPreviewLayer(session: session)
+        layer.connection?.videoOrientation = .landscapeRight
+        layer.frame = CGRect(origin: .zero, size: recourdBG.frame.size)
+        recourdBG.layer.addSublayer(layer)
+        session.startRunning()
+        playerLayer = layer
+        playerLayer?.isHidden = true
     }
     
     private func initRecord(){
@@ -181,13 +223,8 @@ class RecordsVC: UIViewController {
                 self?.changeToIdle()
                 self?.stopRecords()
             }else {
-                if let one = RPScreenRecorder.shared().cameraPreviewView {
-                    self?.recourdBG.addSubview(one)
-                    one.snp.makeConstraints { (maker) in
-                        maker.edges.equalToSuperview()
-                    }
-                }
-                
+                self?.initCaputre()
+                self?.playerLayer?.isHidden = false
             }
         }
     }
@@ -202,6 +239,7 @@ class RecordsVC: UIViewController {
     private func stopRecords(){
         timer?.invalidate()
         timer = nil
+        playerLayer?.isHidden = true
         guard RPScreenRecorder.shared().isRecording else {
             return
         }
@@ -287,8 +325,10 @@ class RecordsVC: UIViewController {
     }
     
     @IBAction func onSubmint(){
-//        let path = NSHomeDirectory() + "/Documents/allRecord.mp4"
-//        let fileURL = URL(fileURLWithPath: path)
+        let path = NSHomeDirectory() + "/Documents/allRecord.mp4"
+        let vc = AppDelegate.shared?.window.rootViewController
+        let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
+        naviChannel.invokeMethod("uploadLearnVideo", arguments: "{'path':\(path)}")
     }
     
     @IBAction func onPreImage() {
