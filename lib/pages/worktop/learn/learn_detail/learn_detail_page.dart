@@ -405,7 +405,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         MedcloudsNativeApi.instance().addProcessor(
           "uploadLearnVideo",
           (args) async {
+            print("call uploadLearnVideo ${args}");
             var obj = json.decode(args);
+            print("call 1111111 ${obj}");
             var entity = await OssService.upload(
               obj["path"],
             );
@@ -414,11 +416,12 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 'learnPlanId': data.learnPlanId,
                 'resourceId': pdf.resourceId,
                 'videoTitle': "videoTitle",
-                'presenter': "presenter",
+                'presenter': data.doctorName,
                 'videoOssId': entity.ossId,
               },
             );
-            MedcloudsNativeApi.instance().recordFinish();
+            return null;
+            //print("the result is ${result}");
           },
         );
       },

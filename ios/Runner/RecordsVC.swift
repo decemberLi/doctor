@@ -127,6 +127,7 @@ class RecordsVC: UIViewController {
         session.addOutput(out)
         let layer = AVCaptureVideoPreviewLayer(session: session)
         layer.connection?.videoOrientation = .landscapeRight
+        layer.videoGravity = .resizeAspectFill
         layer.frame = CGRect(origin: .zero, size: recourdBG.frame.size)
         recourdBG.layer.addSublayer(layer)
         session.startRunning()
@@ -325,10 +326,19 @@ class RecordsVC: UIViewController {
     }
     
     @IBAction func onSubmint(){
+        MBProgressHUD.showAdded(to: view, animated: true)
         let path = NSHomeDirectory() + "/Documents/allRecord.mp4"
         let vc = AppDelegate.shared?.window.rootViewController
         let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
-        naviChannel.invokeMethod("uploadLearnVideo", arguments: "{'path':\(path)}")
+        naviChannel.invokeMethod("uploadLearnVideo", arguments: "{\"path\":\"\(path)\"}") { (error) in
+            MBProgressHUD.hide(for: self.view, animated: false)
+            if error == nil {
+                self.dismiss(animated: true, completion: nil)
+            }else{
+                MBProgressHUD.toastText(msg: error as? String ?? "error")
+            }
+            
+        }
     }
     
     @IBAction func onPreImage() {

@@ -34,4 +34,11 @@ extension MBProgressHUD {
         hud.bezelView.style = .solidColor
         hud.hide(animated: true, afterDelay: 1)
     }
+    static func showWhiteAdded(to: UIView, animated: Bool){
+        let hud = showAdded(to: to, animated: animated)
+        hud.contentColor = .white
+        hud.bezelView.backgroundColor = .black
+        hud.bezelView.color = UIColor(white: 0, alpha: 0.7)
+        hud.bezelView.style = .solidColor
+    }
 }
