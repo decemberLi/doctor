@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RecordsVC" customModule="Runner" customModuleProvider="target">
             <connections>
                 <outlet property="alertBG" destination="L28-Bf-JZy" id="tXc-gO-Kbm"/>
+                <outlet property="alertContent" destination="aHh-UM-Ret" id="MyO-fU-eoK"/>
                 <outlet property="firstBTN" destination="cr2-G8-4pZ" id="vpe-U2-gBA"/>
                 <outlet property="hospitalLbl" destination="8h4-bG-OJU" id="Kfz-l0-imp"/>
                 <outlet property="infoBG" destination="OK0-zU-QAV" id="puQ-BM-2E2"/>
@@ -290,7 +291,7 @@
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="aHh-UM-Ret" firstAttribute="centerY" secondItem="L28-Bf-JZy" secondAttribute="centerY" id="EKn-jW-vPP"/>
+                        <constraint firstItem="aHh-UM-Ret" firstAttribute="centerY" secondItem="L28-Bf-JZy" secondAttribute="centerY" priority="800" id="EKn-jW-vPP"/>
                         <constraint firstAttribute="bottom" secondItem="jj9-aS-wKg" secondAttribute="bottom" id="Tkf-dv-40W"/>
                         <constraint firstItem="jj9-aS-wKg" firstAttribute="top" secondItem="L28-Bf-JZy" secondAttribute="top" id="ddp-8D-hZq"/>
                         <constraint firstItem="aHh-UM-Ret" firstAttribute="centerX" secondItem="L28-Bf-JZy" secondAttribute="centerX" id="poJ-82-fTp"/>
