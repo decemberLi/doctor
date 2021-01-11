@@ -75,6 +75,13 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity android:name=".pages.learningplan.LessonRecordGuidActivity"
+            android:theme="@style/LandScapeNoTitleNoStatusBar.Translucent"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name=".common.thirdpart.push.receiver.MessagePushReceiver"
