@@ -8,6 +8,7 @@ import android.media.projection.MediaProjection
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import java.io.File
 
 class MediaRecorderThread(
         private var mWidth: Int,
@@ -90,7 +91,33 @@ class MediaRecorderThread(
         mMediaRecorder.start()
     }
 
-    fun finish() {
-        release()
+    private fun merge() {
+        val file = File(mDstPath)
+        if (!file.exists()) {
+            return
+        }
+        val lists = file.list()
+        if (lists == null || lists.isEmpty()) {
+            return
+        }
+        val videoList = ArrayList<String>()
+        for (each in lists) {
+            videoList.add("$mDstPath/$each")
+        }
+
+        VideoCombiner(videoList, File(mDstPath, "merged").absolutePath,
+                object : VideoCombiner.VideoCombineListener {
+                    override fun onCombineStart() {
+                        Log.d(TAG, "onCombineStart: ")
+                    }
+
+                    override fun onCombineProcessing(current: Int, sum: Int) {
+                        Log.d(TAG, "onCombineProcessing: ")
+                    }
+
+                    override fun onCombineFinished(success: Boolean) {
+                        Log.d(TAG, "onCombineFinished: ")
+                    }
+                })
     }
 }
