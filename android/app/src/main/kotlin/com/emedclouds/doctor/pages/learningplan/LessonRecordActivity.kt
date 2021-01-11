@@ -48,7 +48,7 @@ class LessonRecordActivity : AppCompatActivity() {
     private var count: Int = 0
     private var mCurrentPage: Int = 0
     private var mIsInitiated = false
-    private var mRecordThread: MediaRecorderThread? = null
+    private lateinit var mRecordThread: MediaRecorderThread
     private lateinit var mProjection: MediaProjection
     private var mCurrentStatus = 0
 
@@ -163,13 +163,12 @@ class LessonRecordActivity : AppCompatActivity() {
                 return
             }
             mProjection = projectionManager.getMediaProjection(resultCode, data)
-            val externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) ?: return
-            val file = File(externalFilesDir, "${System.currentTimeMillis()}.mp4")
+            val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
             mRecordThread = MediaRecorderThread(
                     720,
                     480,
                     resources.configuration.densityDpi,
-                    file.absolutePath,
+                    externalFilesDir.absolutePath,
                     mProjection
             )
             Thread(mRecordThread).start()
@@ -261,17 +260,17 @@ class LessonRecordActivity : AppCompatActivity() {
             }
             statusPlaying -> {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    mRecordThread?.pause()
+                    mRecordThread.pause()
                 } else {
-                    mRecordThread?.stop()
+                    mRecordThread.stop()
                 }
                 mCurrentStatus = statusPause
             }
             statusPause -> {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    mRecordThread?.resume()
+                    mRecordThread.resume()
                 } else {
-                    mRecordThread?.start()
+                    mRecordThread.start()
                 }
                 mCurrentStatus = statusPlaying
             }
