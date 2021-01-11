@@ -34,4 +34,19 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@color/color_ffefefef</item>
     </style>
+    <style name="YYYStyleVerticalDivider">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">1px</item>
+        <item name="android:background">@color/color_ffefefef</item>
+    </style>
+
+
+    <style name="LandScapeNoTitleNoStatusBar" parent="Theme.AppCompat.Light.NoActionBar.FullScreen">
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="LandScapeNoTitleNoStatusBar.Translucent" parent="LandScapeNoTitleNoStatusBar">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:windowBackground">@color/color_transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>
