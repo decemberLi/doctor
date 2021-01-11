@@ -14,4 +14,5 @@
     <string name="copy_success">复制成功</string>
     <string name="download_success">保存成功</string>
     <string name="now_use">立即体验</string>
+    <string name="hint_record_video_title">请输入视频标题</string>
 </resources>

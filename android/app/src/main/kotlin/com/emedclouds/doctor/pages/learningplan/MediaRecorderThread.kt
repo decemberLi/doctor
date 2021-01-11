@@ -23,7 +23,7 @@ class MediaRecorderThread(
 
     private lateinit var mMediaRecorder: MediaRecorder
     private lateinit var mVirtualDisplay: VirtualDisplay
-    private val frameRate = 60
+    private var mFileName = 0
 
 
     override fun run() {
@@ -43,14 +43,22 @@ class MediaRecorderThread(
         }
     }
 
+    private fun deleteAllFile() {
+        val fileList = File(mDstPath).list() ?: return
+        for (each in fileList) {
+            File(each).deleteOnExit()
+        }
+    }
+
     private fun initMediaRecorder() {
+        deleteAllFile()
         mMediaRecorder = MediaRecorder()
         val profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P)
         // 设置视频来源
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        mMediaRecorder.setOutputFile(mDstPath)
+        mMediaRecorder.setOutputFile(File(mDstPath, "${mFileName++}.mp4").absolutePath)
         mMediaRecorder.setVideoSize(mWidth, mHeight)
         mMediaRecorder.setVideoFrameRate(profile.videoFrameRate)
         mMediaRecorder.setVideoEncoder(profile.videoCodec)
@@ -66,11 +74,12 @@ class MediaRecorderThread(
         mMediaRecorder.prepare()
     }
 
-    private fun release() {
+    fun release() {
         mMediaRecorder.setOnErrorListener(null)
+        mMediaRecorder.stop()
+        mediaProjection.stop()
         mMediaRecorder.reset()
         mMediaRecorder.release()
-        mediaProjection.stop()
     }
 
     fun stop() {
@@ -81,9 +90,9 @@ class MediaRecorderThread(
     fun pause() {
         mMediaRecorder.pause()
     }
-    
+
     @RequiresApi(Build.VERSION_CODES.N)
-    fun resume(){
+    fun resume() {
         mMediaRecorder.resume()
     }
 
