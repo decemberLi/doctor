@@ -59,6 +59,11 @@ class RecordsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if #available(iOS 13.0, *) {
+            overrideUserInterfaceStyle = .light
+        } else {
+            // Fallback on earlier versions
+        }
         initRecord()
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
         try? AVAudioSession.sharedInstance().setActive(true)
@@ -81,7 +86,7 @@ class RecordsVC: UIViewController {
         let rect = value.cgRectValue
         if rect.origin.y < view.frame.size.height {
             alertContent.snp.remakeConstraints { (maker) in
-                maker.bottom.equalToSuperview().offset(-rect.origin.y)
+                maker.bottom.equalToSuperview().offset(-rect.size.height)
             }
         }else{
             alertContent.snp.removeConstraints()
