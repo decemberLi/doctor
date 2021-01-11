@@ -63,14 +63,14 @@
             <ImageView
                 android:id="@+id/imageDoctorAvatar"
                 android:layout_width="match_parent"
-                android:layout_height="94dp"
+                android:layout_height="150dp"
                 android:background="@android:color/holo_green_light"
                 tools:ignore="ContentDescription" />
 
             <androidx.camera.view.PreviewView
                 android:id="@+id/doctorAvatarPreview"
                 android:visibility="gone"
-                android:layout_width="150dp"
+                android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_margin="5dp"
                 tools:ignore="MissingConstraints" />
