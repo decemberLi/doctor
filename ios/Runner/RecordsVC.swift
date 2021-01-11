@@ -18,6 +18,11 @@ class RecordsVC: UIViewController {
     @IBOutlet var infoBG : UIView!
     @IBOutlet var pdfView : UIView!
     @IBOutlet var timeLbl : UILabel!
+    @IBOutlet var alertBG : UIView!
+    @IBOutlet var titleTextField : UITextField!
+    @IBOutlet var introImage: UIImageView!
+    @IBOutlet var introBG : UIView!
+    
     var pdfContent : PDFView!
     
     private var assetWriter:AVAssetWriter?
@@ -53,6 +58,8 @@ class RecordsVC: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: AVAudioSession.interruptionNotification, object: nil)
         changeToIdle()
+        let hasIntro = UserDefaults.standard.bool(forKey: "recordIntro")
+        introBG.isHidden = hasIntro
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -86,7 +93,10 @@ class RecordsVC: UIViewController {
     }
     
     private func initRecord(){
-        let path = NSHomeDirectory() + "/Documents/record_\(paths.count).mp4"
+        let dir = NSHomeDirectory() + "/Documents/records"
+        try? FileManager.default.removeItem(atPath: dir)
+        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true, attributes: nil)
+        let path = dir + "/record_\(paths.count).mp4"
         let fileURL = URL(fileURLWithPath: path)
         paths.append(fileURL)
         try? FileManager.default.removeItem(at: fileURL)
@@ -225,8 +235,8 @@ class RecordsVC: UIViewController {
             }
             totalDuration = CMTimeAdd(totalDuration, asset.duration)
         }
-        
-        let path = NSHomeDirectory() + "/Documents/allRecord.mp4"
+        let dir = NSHomeDirectory() + "/Documents/records"
+        let path = dir + "/allRecord.mp4"
         let fileURL = URL(fileURLWithPath: path)
         try? FileManager.default.removeItem(at: fileURL)
         let export = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPreset1920x1080)
@@ -251,13 +261,9 @@ class RecordsVC: UIViewController {
         }else {
             changeToIdle()
             stopRecords()
+            alertBG.isHidden = false
         }
         
-    }
-    
-    private func submit(){
-        let path = NSHomeDirectory() + "/Documents/allRecord.mp4"
-        let fileURL = URL(fileURLWithPath: path)
     }
     
     @IBAction func onNext() {
@@ -268,9 +274,44 @@ class RecordsVC: UIViewController {
     @IBAction func onPre() {
         pdfContent.goToPreviousPage(nil)
     }
+    
     @IBAction func onBack() {
         stopRecords()
         dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func onReStart(){
+        alertBG.isHidden = true
+        changeToRecording()
+        beginRecord()
+    }
+    
+    @IBAction func onSubmint(){
+//        let path = NSHomeDirectory() + "/Documents/allRecord.mp4"
+//        let fileURL = URL(fileURLWithPath: path)
+    }
+    
+    @IBAction func onPreImage() {
+        var tag = introImage.tag - 1
+        if tag < 1 {
+            tag = 1
+        }
+        introImage.tag = tag
+        introImage.image = UIImage(named: "record_\(tag)")
+    }
+    
+    @IBAction func onNextImage(){
+        var tag = introImage.tag + 1
+        if tag > 3 {
+            tag = 3
+        }
+        introImage.tag = tag
+        introImage.image = UIImage(named: "record_\(tag)")
+    }
+    
+    @IBAction func hidenIntro(){
+        UserDefaults.standard.setValue(true, forKey: "recordIntro")
+        introBG.isHidden = true
     }
     
     //MARK: - Status
