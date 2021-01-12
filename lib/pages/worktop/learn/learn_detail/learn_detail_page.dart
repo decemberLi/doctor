@@ -400,7 +400,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               {
                 'learnPlanId': data.learnPlanId,
                 'resourceId': pdf.resourceId,
-                'videoTitle': "videoTitle",
+                'videoTitle': obj['title']??data.taskName,
+                'duration': obj['duration']??0,
                 'presenter': data.doctorName,
                 'videoOssId': entity.ossId,
               },

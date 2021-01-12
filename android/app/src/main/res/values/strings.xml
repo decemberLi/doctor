@@ -15,4 +15,6 @@
     <string name="download_success">保存成功</string>
     <string name="now_use">立即体验</string>
     <string name="hint_record_video_title">请输入视频标题</string>
+    <string name="upload_success">上传成功</string>
+    <string name="upload_failure">上传失败，请重试</string>
 </resources>

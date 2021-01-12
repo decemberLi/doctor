@@ -6,8 +6,8 @@ import android.media.CamcorderProfile
 import android.media.MediaRecorder
 import android.media.projection.MediaProjection
 import android.os.Build
+import android.os.Build.VERSION_CODES.N
 import android.util.Log
-import androidx.annotation.RequiresApi
 import java.io.File
 
 class MediaRecorderThread(
@@ -23,11 +23,12 @@ class MediaRecorderThread(
 
     private lateinit var mMediaRecorder: MediaRecorder
     private lateinit var mVirtualDisplay: VirtualDisplay
-    private var mFileName = 0
+    private var mFileSequence = 0
 
 
     override fun run() {
         try {
+            mMediaRecorder = MediaRecorder()
             initMediaRecorder()
             mediaProjection.createVirtualDisplay(
                     "screenRecorder", mWidth, mHeight, mDpi,
@@ -52,13 +53,12 @@ class MediaRecorderThread(
 
     private fun initMediaRecorder() {
         deleteAllFile()
-        mMediaRecorder = MediaRecorder()
-        val profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P)
+        val profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P)
         // 设置视频来源
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        mMediaRecorder.setOutputFile(File(mDstPath, "${mFileName++}.mp4").absolutePath)
+        mMediaRecorder.setOutputFile(File(mDstPath, "${mFileSequence++}.mp4").absolutePath)
         mMediaRecorder.setVideoSize(mWidth, mHeight)
         mMediaRecorder.setVideoFrameRate(profile.videoFrameRate)
         mMediaRecorder.setVideoEncoder(profile.videoCodec)
@@ -77,27 +77,40 @@ class MediaRecorderThread(
     fun release() {
         mMediaRecorder.setOnErrorListener(null)
         mMediaRecorder.stop()
-        mediaProjection.stop()
-        mMediaRecorder.reset()
         mMediaRecorder.release()
     }
 
-    fun stop() {
-        mMediaRecorder.stop()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun pause() {
-        mMediaRecorder.pause()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun resume() {
-        mMediaRecorder.resume()
-    }
-
-    fun start() {
+    fun reRecord() {
+        mFileSequence = 0
+        initMediaRecorder()
         mMediaRecorder.start()
+    }
+
+    fun stop() {
+        try {
+            mMediaRecorder.stop()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun pause() {
+        if (Build.VERSION.SDK_INT >= N) {
+            mMediaRecorder.pause()
+        } else {
+            release()
+        }
+    }
+
+    fun resume() {
+        if (Build.VERSION.SDK_INT >= N) {
+            mMediaRecorder.resume()
+        } else {
+            mMediaRecorder.setOutputFile(File(mDstPath, "${mFileSequence++}.mp4").absolutePath)
+            mMediaRecorder.prepare()
+            mMediaRecorder.start()
+        }
+
     }
 
     private fun merge() {
