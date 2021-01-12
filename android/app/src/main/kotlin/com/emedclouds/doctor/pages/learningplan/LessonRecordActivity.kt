@@ -288,7 +288,7 @@ class LessonRecordActivity : AppCompatActivity() {
         when (requestCode) {
             REQUEST_CODE_MIC_PERMISSION -> {
                 for (i in grantResults) {
-                    if (grantResults[i] == PERMISSION_DENIED) {
+                    if (i == PERMISSION_DENIED) {
                         Toast.makeText(this, "需授权麦克风方可开启录制，请重试", Toast.LENGTH_LONG).show()
                         return
                     }
@@ -296,7 +296,7 @@ class LessonRecordActivity : AppCompatActivity() {
             }
             REQUEST_CODE_CAMERA_PERMISSION -> {
                 for (i in grantResults) {
-                    if (grantResults[i] == PERMISSION_DENIED) {
+                    if (i == PERMISSION_DENIED) {
                         showCameraViewIfNeeded(false)
                         return
                     }
@@ -306,7 +306,7 @@ class LessonRecordActivity : AppCompatActivity() {
             }
             REQUEST_CODE_EXTERNAL_STORAGE_PERMISSION -> {
                 for (i in grantResults) {
-                    if (grantResults[i] == PERMISSION_DENIED) {
+                    if (i == PERMISSION_DENIED) {
                         return
                     }
                 }
@@ -408,6 +408,9 @@ class LessonRecordActivity : AppCompatActivity() {
             }
         }
         val editText = dialog.findViewById<EditText>(R.id.recordEditText)
+        mTitle?.let {
+            editText.setText(it)
+        }
         dialog.findViewById<TextView>(R.id.btnUpload).setOnClickListener {
             if (editText == null || editText.text.isEmpty()) {
                 Toast.makeText(this@LessonRecordActivity, "请输入视频标题", Toast.LENGTH_LONG).show()
