@@ -23,6 +23,7 @@ class RecordsVC: UIViewController {
     @IBOutlet var alertBG : UIView!
     @IBOutlet var alertContent : UIView!
     @IBOutlet var titleTextField : UITextField!
+    @IBOutlet var uploadBTN : UIButton!
     @IBOutlet var introImage: UIImageView!
     @IBOutlet var introBG : UIView!
 
@@ -337,11 +338,15 @@ class RecordsVC: UIViewController {
     }
     
     @IBAction func onSubmint(){
+        guard let title = titleTextField.text else {
+            MBProgressHUD.toastText(msg: "请输入视频标题")
+            return
+        }
         MBProgressHUD.showAdded(to: view, animated: true)
         let path = NSHomeDirectory() + "/Documents/allRecord.mp4"
         let vc = AppDelegate.shared?.window.rootViewController
         let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
-        naviChannel.invokeMethod("uploadLearnVideo", arguments: "{\"path\":\"\(path)\"}") { (error) in
+        naviChannel.invokeMethod("uploadLearnVideo", arguments: "{\"path\":\"\(path)\",\"title\":\"\(title)\",\"duration\":\"\(recordTime)\"}") { (error) in
             MBProgressHUD.hide(for: self.view, animated: false)
             if error == nil {
                 self.dismiss(animated: true, completion: nil)
@@ -380,7 +385,9 @@ class RecordsVC: UIViewController {
     }
     
     @IBAction func textFielddidChanged(_ field : UITextField){
-        guard let text = field.text else {return}
+        let text = field.text ?? ""
+        uploadBTN.isEnabled = text.count > 0
+//        field.clearButtonMode = text.count > 0 ? .always : .never
         guard text.count <= 50 else {return}
         let sub = text.prefix(50)
         field.text = String(sub)
