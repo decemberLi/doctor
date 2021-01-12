@@ -73,7 +73,7 @@ class RecordsVC: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardChanged(_:)), name: UIApplication.keyboardDidChangeFrameNotification, object: nil)
         changeToIdle()
-        let hasIntro = UserDefaults.standard.bool(forKey: "recordIntro")
+        let hasIntro = UserDefaults.standard.bool(forKey: "recordIntro_\(data["userID"] ?? "")")
         introBG.isHidden = hasIntro
         nameLbl.text = data["name"] as? String
         hospitalLbl.text = data["hospital"] as? String
@@ -102,6 +102,7 @@ class RecordsVC: UIViewController {
     
     @objc func enterBackground(){
         print("enter background -----   ")
+        changeToPause()
         stopRecords()
     }
     
@@ -117,11 +118,27 @@ class RecordsVC: UIViewController {
             MBProgressHUD.toastText(msg: "文件打开失败")
             return
         }
+        let tap = UITapGestureRecognizer(target: self, action: #selector(touchPDF(_:)))
         pdfContent = PDFView(frame: pdfView.bounds)
+        pdfContent.addGestureRecognizer(tap)
         pdfView.addSubview(pdfContent)
         pdfContent.autoScales = true
         pdfContent.displayMode = .singlePage
         pdfContent.document = doc
+        for oneTap in pdfContent.gestureRecognizers ?? [] {
+            if oneTap is UITapGestureRecognizer {
+                tap.require(toFail: oneTap)
+            }
+        }
+    }
+    
+    @objc func touchPDF(_ gesture : UITapGestureRecognizer){
+        let location = gesture.location(in: pdfContent)
+        if location.x < pdfContent.frame.size.width/2 {
+            onPre()
+        }else{
+            onNext()
+        }
     }
     
     func initCaputre() {
@@ -185,10 +202,12 @@ class RecordsVC: UIViewController {
             if err != nil { return }
             guard let writer = self?.assetWriter else {return}
             guard RPScreenRecorder.shared().isMicrophoneEnabled else {
-                MBProgressHUD.toastText(msg: "请开启麦克风权限")
-                self?.recordTime = 0
-                self?.changeToIdle()
-                self?.stopRecords()
+                DispatchQueue.main.async {
+                    MBProgressHUD.toastText(msg: "请开启麦克风权限")
+                    self?.recordTime = 0
+                    self?.changeToIdle()
+                    self?.stopRecords()
+                }
                 return
             }
             
@@ -310,8 +329,8 @@ class RecordsVC: UIViewController {
             changeToPause()
             stopRecords()
         }else {
-            changeToIdle()
-            stopRecords()
+//            changeToIdle()
+//            stopRecords()
             alertBG.isHidden = false
         }
         
@@ -338,11 +357,11 @@ class RecordsVC: UIViewController {
     }
     
     @IBAction func onSubmint(){
-        guard let title = titleTextField.text else {
+        guard let title = titleTextField.text , title.count > 0 else {
             MBProgressHUD.toastText(msg: "请输入视频标题")
             return
         }
-        MBProgressHUD.showAdded(to: view, animated: true)
+        MBProgressHUD.showWhiteAdded(to: view, animated: true)
         let path = NSHomeDirectory() + "/Documents/allRecord.mp4"
         let vc = AppDelegate.shared?.window.rootViewController
         let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
@@ -350,8 +369,9 @@ class RecordsVC: UIViewController {
             MBProgressHUD.hide(for: self.view, animated: false)
             if error == nil {
                 self.dismiss(animated: true, completion: nil)
+                MBProgressHUD.toast(msg: "上传成功")
             }else{
-                MBProgressHUD.toastText(msg: error as? String ?? "error")
+                MBProgressHUD.toast(msg: error as? String ?? "error")
             }
             
         }
@@ -376,7 +396,7 @@ class RecordsVC: UIViewController {
     }
     
     @IBAction func hidenIntro(){
-        UserDefaults.standard.setValue(true, forKey: "recordIntro")
+        UserDefaults.standard.setValue(true, forKey: "recordIntro_\(data["userID"] ?? "")")
         introBG.isHidden = true
     }
     
@@ -386,11 +406,14 @@ class RecordsVC: UIViewController {
     
     @IBAction func textFielddidChanged(_ field : UITextField){
         let text = field.text ?? ""
-        uploadBTN.isEnabled = text.count > 0
 //        field.clearButtonMode = text.count > 0 ? .always : .never
         guard text.count <= 50 else {return}
         let sub = text.prefix(50)
         field.text = String(sub)
+    }
+    
+    @IBAction func closeAlert(){
+        alertBG.isHidden = true
     }
     
     //MARK: - Status

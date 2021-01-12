@@ -368,6 +368,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           'resourceId': pdf.resourceId,
           'learnPlanId': data.learnPlanId,
         });
+        if (resourceData["attachmentOssId"] == null) {
+          throw DioError(error: "没有文件");
+        }
         var file = await CommonService.getFile({
           'ossIds': [resourceData["attachmentOssId"]]
         });
