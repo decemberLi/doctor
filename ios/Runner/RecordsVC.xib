@@ -189,7 +189,7 @@
                         <constraint firstAttribute="bottom" secondItem="9Wt-PI-jxy" secondAttribute="bottom" id="taL-eG-4FO"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L28-Bf-JZy">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L28-Bf-JZy">
                     <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JVV-Q7-hnU">
@@ -250,6 +250,9 @@
                                     <state key="normal" title="上传">
                                         <color key="titleColor" red="0.28235294117647058" green="0.61568627450980395" blue="0.99607843137254903" alpha="1" colorSpace="calibratedRGB"/>
                                     </state>
+                                    <state key="disabled">
+                                        <color key="titleColor" red="0.28235294119999998" green="0.61568627450000002" blue="0.99607843139999996" alpha="0.34999999999999998" colorSpace="calibratedRGB"/>
+                                    </state>
                                     <connections>
                                         <action selector="onSubmint" destination="-1" eventType="touchUpInside" id="hiN-3I-jFM"/>
                                     </connections>
@@ -268,6 +271,15 @@
                                         <constraint firstAttribute="width" constant="0.5" id="UbJ-XC-Dwi"/>
                                     </constraints>
                                 </view>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sne-F2-G2N">
+                                    <rect key="frame" x="250" y="0.0" width="30" height="30"/>
+                                    <state key="normal" title="X">
+                                        <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="closeAlert" destination="-1" eventType="touchUpInside" id="AKF-Ir-6bo"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
@@ -275,6 +287,8 @@
                                 <constraint firstItem="bhV-A2-ZDP" firstAttribute="centerX" secondItem="aHh-UM-Ret" secondAttribute="centerX" id="1PI-b2-kYa"/>
                                 <constraint firstItem="bhV-A2-ZDP" firstAttribute="top" secondItem="rbD-Oe-tUC" secondAttribute="bottom" constant="16" id="2IY-rI-vMO"/>
                                 <constraint firstItem="QtJ-Gc-gBJ" firstAttribute="top" secondItem="Bvc-e0-RZb" secondAttribute="bottom" id="2YP-ul-pZw"/>
+                                <constraint firstItem="Sne-F2-G2N" firstAttribute="top" secondItem="aHh-UM-Ret" secondAttribute="top" id="31T-gs-gP3"/>
+                                <constraint firstAttribute="trailing" secondItem="Sne-F2-G2N" secondAttribute="trailing" id="3H0-R3-qW5"/>
                                 <constraint firstItem="3NL-HZ-F37" firstAttribute="leading" secondItem="aHh-UM-Ret" secondAttribute="leading" constant="20" id="GDM-up-ZAJ"/>
                                 <constraint firstItem="3NL-HZ-F37" firstAttribute="top" secondItem="bhV-A2-ZDP" secondAttribute="bottom" constant="16" id="Jo2-ul-LQm"/>
                                 <constraint firstAttribute="trailing" secondItem="3NL-HZ-F37" secondAttribute="trailing" constant="20" id="Q4v-Pw-v1M"/>
@@ -361,6 +375,12 @@
                 <constraint firstItem="Jv9-es-g4M" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="sbF-Mx-CFi"/>
                 <constraint firstItem="L28-Bf-JZy" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="vBX-1z-I2H"/>
             </constraints>
+            <variation key="default">
+                <mask key="subviews">
+                    <exclude reference="uTD-gf-AbW"/>
+                    <exclude reference="KaY-PH-pfZ"/>
+                </mask>
+            </variation>
             <point key="canvasLocation" x="258.48214285714283" y="31.884057971014496"/>
         </view>
     </objects>
