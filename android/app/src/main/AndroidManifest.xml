@@ -70,18 +70,10 @@
 
         <activity android:name=".pages.learningplan.LessonRecordActivity"
             android:theme="@style/LandScapeNoTitleNoStatusBar"
-            android:screenOrientation="landscape">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="landscape"/>
         <activity android:name=".pages.learningplan.LessonRecordGuidActivity"
             android:theme="@style/LandScapeNoTitleNoStatusBar.Translucent"
-            android:screenOrientation="landscape">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="landscape"/>
 
         <receiver
             android:name=".common.thirdpart.push.receiver.MessagePushReceiver"

@@ -133,6 +133,7 @@ dependencies {
     api 'com.github.barteksc:pdfium-android:1.9.0'
     implementation("com.google.guava:guava:30.1-android")
 
+    api  'com.kaopiz:kprogresshud:1.0.2'
 
     // 注解
     implementation "com.google.dagger:dagger:2.30.1"
