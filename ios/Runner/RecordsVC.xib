@@ -24,6 +24,7 @@
                 <outlet property="secondBTN" destination="6rC-4d-JNu" id="YJY-xm-gF8"/>
                 <outlet property="timeLbl" destination="TrC-Cu-ok8" id="kcK-Lo-fVu"/>
                 <outlet property="titleTextField" destination="3NL-HZ-F37" id="Gwg-UE-uqJ"/>
+                <outlet property="uploadBTN" destination="Oo0-lk-psi" id="K1e-eS-U2V"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -188,7 +189,7 @@
                         <constraint firstAttribute="bottom" secondItem="9Wt-PI-jxy" secondAttribute="bottom" id="taL-eG-4FO"/>
                     </constraints>
                 </view>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L28-Bf-JZy">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L28-Bf-JZy">
                     <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JVV-Q7-hnU">
@@ -217,7 +218,7 @@
                                     <color key="textColor" red="0.26666666666666666" green="0.26666666666666666" blue="0.26666666666666666" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="学习计划名称" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3NL-HZ-F37">
+                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="学习计划名称" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="3NL-HZ-F37">
                                     <rect key="frame" x="20" y="96.5" width="240" height="34"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
