@@ -126,12 +126,6 @@ class LessonRecordActivity : AppCompatActivity() {
                 startCamera()
                 showCameraViewIfNeeded(true)
             }
-
-            if (!checkMicPermission(applicationContext)) {
-                requestMicPermission(this@LessonRecordActivity, REQUEST_CODE_MIC_PERMISSION)
-            } else {
-                startScreen()
-            }
         }
         lessonRecordBtnFinish.setOnClickListener {
             showDialog()
@@ -266,7 +260,7 @@ class LessonRecordActivity : AppCompatActivity() {
     private fun doRecord(resultCode: Int, data: Intent) {
         val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
         mProjection = projectionManager.getMediaProjection(resultCode, data)
-        if (externalFilesDir.mkdirs()) {
+        if(!externalFilesDir.exists() && !externalFilesDir.mkdirs()){
             return
         }
         mRecordHandler = MediaRecorderThread(
@@ -292,9 +286,15 @@ class LessonRecordActivity : AppCompatActivity() {
                         Toast.makeText(this, "需授权麦克风方可开启录制，请重试", Toast.LENGTH_LONG).show()
                         return
                     }
+                    startScreen()
                 }
             }
             REQUEST_CODE_CAMERA_PERMISSION -> {
+                if (!checkMicPermission(applicationContext)) {
+                    requestMicPermission(this@LessonRecordActivity, REQUEST_CODE_MIC_PERMISSION)
+                } else {
+                    startScreen()
+                }
                 for (i in grantResults) {
                     if (i == PERMISSION_DENIED) {
                         showCameraViewIfNeeded(false)
