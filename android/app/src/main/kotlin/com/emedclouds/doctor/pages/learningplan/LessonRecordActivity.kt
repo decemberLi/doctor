@@ -15,6 +15,7 @@ import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.Window
 import android.widget.EditText
@@ -120,11 +121,19 @@ class LessonRecordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if(checkCameraPermission(applicationContext)&& checkMicPermission(applicationContext)){
+                startCamera()
+                showCameraViewIfNeeded(true)
+                startScreen()
+                return@setOnClickListener
+            }
+
             if (!checkCameraPermission(applicationContext)) {
                 requestCameraPermission(this@LessonRecordActivity, REQUEST_CODE_CAMERA_PERMISSION)
             } else {
-                startCamera()
+                checkMicPermission()
                 showCameraViewIfNeeded(true)
+                startCamera()
             }
         }
         lessonRecordBtnFinish.setOnClickListener {
@@ -172,8 +181,9 @@ class LessonRecordActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         mHandler.removeCallbacks(myRunner)
+        mProjection.stop()
+        super.onDestroy()
     }
 
     private fun showGuideIfNeeded() {
@@ -290,11 +300,7 @@ class LessonRecordActivity : AppCompatActivity() {
                 }
             }
             REQUEST_CODE_CAMERA_PERMISSION -> {
-                if (!checkMicPermission(applicationContext)) {
-                    requestMicPermission(this@LessonRecordActivity, REQUEST_CODE_MIC_PERMISSION)
-                } else {
-                    startScreen()
-                }
+                checkMicPermission()
                 for (i in grantResults) {
                     if (i == PERMISSION_DENIED) {
                         showCameraViewIfNeeded(false)
@@ -312,6 +318,14 @@ class LessonRecordActivity : AppCompatActivity() {
                 }
                 initPdfBoard()
             }
+        }
+    }
+
+    private fun checkMicPermission() {
+        if (!checkMicPermission(applicationContext)) {
+            requestMicPermission(this@LessonRecordActivity, REQUEST_CODE_MIC_PERMISSION)
+        } else {
+            startScreen()
         }
     }
 
