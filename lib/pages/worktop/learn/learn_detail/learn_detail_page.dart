@@ -251,9 +251,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   // 查看视频
   Widget _renderLookRecording(data) {
     if (data.taskTemplate == 'DOCTOR_LECTURE') {
-      if (data.status == 'SUBMIT_LEARN' ||
-          data.status == 'ACCEPTED' ||
-          data.reLearn) {
+      if (data.status == 'SUBMIT_LEARN' || data.status == 'ACCEPTED') {
         return Container(
           alignment: Alignment.center,
           // margin: EdgeInsets.fromLTRB(20, 10, 20, 40),
@@ -275,22 +273,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                   },
                 ),
               ),
-              if (data.reLearn)
-                Container(
-                  width: 10,
-                ),
-              if (data.reLearn)
-                Expanded(
-                  flex: 1,
-                  child: AceButton(
-                    color: Color(0xffFECE35),
-                    shadowColor: Color(0x40FECE35),
-                    text: '重新讲课',
-                    onPressed: () {
-                      _gotoRecord(data);
-                    },
-                  ),
-                ),
             ],
           ),
         );
@@ -426,6 +408,73 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         );
       },
     );
+  }
+
+  Widget _renderUploadButton(
+      LearnDetailViewModel model, arguments, LearnDetailItem data) {
+    if (data.reLearn) {
+      return Container(
+        alignment: Alignment.center,
+        // margin: EdgeInsets.fromLTRB(20, 10, 20, 40),
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: AceButton(
+                text: '查看讲课视频',
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(RouteManager.LOOK_LECTURE_VIDEOS, arguments: {
+                    "learnPlanId": data.learnPlanId,
+                    "resourceId": data.resources[0].resourceId,
+                    'doctorName': data.doctorName,
+                  });
+                },
+              ),
+            ),
+            Container(
+              width: 10,
+            ),
+            Expanded(
+              flex: 1,
+              child: AceButton(
+                color: Color(0xffFECE35),
+                shadowColor: Color(0x40FECE35),
+                text: '重新讲课',
+                onPressed: () {
+                  _gotoRecord(data);
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AceButton(
+              width: 375,
+              // height: 54,
+              text: _aceText(data.taskTemplate),
+              onPressed: () async {
+                if (data.taskTemplate == 'DOCTOR_LECTURE') {
+                  _gotoRecord(data);
+                } else {
+                  this._uploadVideo(model, arguments, data);
+                }
+              },
+            ),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -637,31 +686,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                       ),
                       _renderLookRecording(data),
                       if (data.status != 'SUBMIT_LEARN' &&
-                          data.status != 'ACCEPTED' &&
-                          !data.reLearn)
-                        Container(
-                          margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              AceButton(
-                                width: 375,
-                                // height: 54,
-                                text: _aceText(data.taskTemplate),
-                                onPressed: () async {
-                                  if (data.taskTemplate == 'DOCTOR_LECTURE') {
-                                    _gotoRecord(data);
-                                  } else {
-                                    this._uploadVideo(model, arguments, data);
-                                  }
-                                },
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                            ],
-                          ),
-                        ),
+                          data.status != 'ACCEPTED')
+                        _renderUploadButton(model, arguments, data),
                     ],
                   ),
                 )
