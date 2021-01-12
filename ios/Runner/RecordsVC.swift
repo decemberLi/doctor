@@ -76,7 +76,8 @@ class RecordsVC: UIViewController {
         introBG.isHidden = hasIntro
         nameLbl.text = data["name"] as? String
         hospitalLbl.text = data["hospital"] as? String
-        titleTextField.placeholder = data["title"] as? String
+        titleTextField.text = data["title"] as? String
+        titleTextField.placeholder = "请输入视频标题"
     }
     
     @objc func keyboardChanged(_ notification:Notification){
@@ -103,15 +104,7 @@ class RecordsVC: UIViewController {
         stopRecords()
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
+    // MARK: - functions
     
     private func showPDF(){
         guard let path = data["path"] as? String else {
@@ -308,6 +301,7 @@ class RecordsVC: UIViewController {
         }
     }
     
+    //MARK:- IBAction
     @IBAction func onChangeRecordState(_ sender : UIButton){
         if sender.tag == 1001 {
             startRecord()
@@ -381,6 +375,17 @@ class RecordsVC: UIViewController {
         introBG.isHidden = true
     }
     
+    @IBAction func hidenKeyboard(){
+        view.endEditing(true)
+    }
+    
+    @IBAction func textFielddidChanged(_ field : UITextField){
+        guard let text = field.text else {return}
+        guard text.count <= 50 else {return}
+        let sub = text.prefix(50)
+        field.text = String(sub)
+    }
+    
     //MARK: - Status
     private func changeToIdle(){
         firstBTN.isHidden = true
@@ -425,24 +430,4 @@ class RecordsVC: UIViewController {
         timer?.invalidate()
         timer = nil
     }
-}
-
-
-func drawPDFfromURL(url: URL) -> UIImage? {
-    guard let document = CGPDFDocument(url as CFURL) else { return nil }
-    guard let page = document.page(at: 1) else { return nil }
-
-    let pageRect = page.getBoxRect(.mediaBox)
-    let renderer = UIGraphicsImageRenderer(size: pageRect.size)
-    let img = renderer.image { ctx in
-        UIColor.white.set()
-        ctx.fill(pageRect)
-
-        ctx.cgContext.translateBy(x: 0.0, y: pageRect.size.height)
-        ctx.cgContext.scaleBy(x: 1.0, y: -1.0)
-
-        ctx.cgContext.drawPDFPage(page)
-    }
-
-    return img
 }
