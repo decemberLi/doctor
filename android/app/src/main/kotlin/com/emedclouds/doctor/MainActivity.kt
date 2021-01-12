@@ -8,6 +8,9 @@ import android.util.Log
 import com.emedclouds.doctor.common.constants.keyLaunchParam
 import com.emedclouds.doctor.pages.CommonWebActivity
 import com.emedclouds.doctor.pages.ShareActivity
+import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
+import com.emedclouds.doctor.utils.ChannelManager
+import com.emedclouds.doctor.utils.OnFlutterCall
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
@@ -23,17 +26,38 @@ class MainActivity : FlutterActivity() {
         methodChannel.setMethodCallHandler { call, result ->
             run {
                 if ("share" == call.method) {
-                    if (call.arguments == null || call.arguments !is String) {
-                        return@run
-                    }
-                    Log.d(tag, String.format("Open share page, args [%s]", call.arguments))
 
-                    val jsonObject = JSONObject(call.arguments as String)
-                    ShareActivity.openShare(this@MainActivity, jsonObject.getString("path"), jsonObject.getString("url"))
                 }
                 result.success("OK")
             }
         }
+        ChannelManager.instance.initChannel(flutterEngine?.dartExecutor)
+        ChannelManager.instance.on("share", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel) {
+                if (arguments == null) {
+                    return
+                }
+
+                val jsonObject = JSONObject(arguments)
+                ShareActivity.openShare(this@MainActivity, jsonObject.getString("path"), jsonObject.getString("url"))
+            }
+        })
+        ChannelManager.instance.on("record", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel) {
+                if (arguments == null) {
+                    return
+                }
+                val jsonObject = JSONObject(arguments)
+                val path = jsonObject.getString("path")
+                val name = jsonObject.getString("name")
+                val userId = jsonObject.getString("userID")
+                val hospital = jsonObject.getString("hospital")
+                val title = jsonObject.getString("title")
+                LessonRecordActivity.start(this@MainActivity, path, name, userId, hospital, title)
+//                LessonRecordActivity.start(this@MainActivity, "path", "name", "userId", "hospital", "title")
+            }
+
+        })
         goWebIfNeeded(intent)
     }
 

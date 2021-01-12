@@ -1,19 +1,24 @@
 package com.emedclouds.doctor.pages.learningplan
 
 import android.Manifest.permission.*
+import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.os.Bundle
-import android.os.Environment
-import android.os.ParcelFileDescriptor
+import android.os.*
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.Window
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,12 +26,17 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.emedclouds.doctor.MainActivity
 import com.emedclouds.doctor.R
+import com.emedclouds.doctor.toast.CustomToast
 import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.widgets.ZoomImageView
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.shockwave.pdfium.PdfDocument
 import com.shockwave.pdfium.PdfiumCore
 import kotlinx.android.synthetic.main.activity_lesson_record_layout.*
+import kotlinx.android.synthetic.main.dialog_record_layout.*
+import org.json.JSONObject
 import java.io.File
 
 class LessonRecordActivity : AppCompatActivity() {
@@ -34,9 +44,15 @@ class LessonRecordActivity : AppCompatActivity() {
     private val tag = LessonRecordActivity::class.simpleName
 
     companion object {
-        private const val PDF_URL =
-//            "https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.pdf"
-                "https://static.e-medclouds.com/web/other/protocols/privacy.pdf"
+        fun start(act: MainActivity, path: String, name: String, userId: String, hospital: String, title: String) {
+            val intent = Intent(act, LessonRecordActivity::class.java)
+            intent.putExtra("path", path)
+            intent.putExtra("name", name)
+            intent.putExtra("userId", userId)
+            intent.putExtra("hospital", hospital)
+            intent.putExtra("title", title)
+            act.startActivity(intent)
+        }
     }
 
     private val statusReady = 0
@@ -54,26 +70,55 @@ class LessonRecordActivity : AppCompatActivity() {
     private lateinit var mRecordHandler: MediaRecorderThread
     private lateinit var mProjection: MediaProjection
     private var mCurrentStatus = 0
-    private val mUserId = "userId"
-    private lateinit var mRecordThread: Thread
+
+    private var mDuration = 1
+    private var mIsPause = false
+    private val mHandler = Handler()
+
+    private var mPath: String? = null
+    private var mDoctorName: String? = null
+    private var mUserId: String? = null
+    private var mHospital: String? = null
+    private var mTitle: String? = null
+
+    private var mPhoneStateListener: PhoneStateListener? = null
+    private val myRunner: Runnable = object : Runnable {
+        @SuppressLint("SetTextI18n")
+        override fun run() {
+            if (!mIsPause) {
+                return
+            }
+            timerView.text = formatTime(mDuration++)
+            mHandler.postDelayed(this, 1000)
+        }
+    }
+
+    private fun initParam() {
+        mPath = intent.getStringExtra("path")
+        mDoctorName = intent.getStringExtra("name")
+        mUserId = intent.getStringExtra("userId")
+        mHospital = intent.getStringExtra("hospital")
+        mTitle = intent.getStringExtra("title")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lesson_record_layout)
         mPdfContentView = findViewById(R.id.pdfViewer)
+        initParam()
         lessonRecordBackBtn.setOnClickListener { finish() }
         lessonRecordBtnAction.setOnClickListener {
-            if (mCurrentStatus == statusFinish) {
-                mRecordThread.start()
-                mCurrentStatus = statusPlaying
-                updateBtnStatus()
-                return@setOnClickListener
-            }
-            if (mIsInitiated) {
+            lessonRecordBackBtn.visibility = View.GONE
+//            if (mCurrentStatus == statusFinish) {
+//                mRecordHandler.reRecord()
+//                mCurrentStatus = statusPlaying
+//                updateBtnStatus()
+//                return@setOnClickListener
+//            }
+            if (mIsInitiated && mCurrentStatus != statusFinish) {
                 switchAction()
                 return@setOnClickListener
             }
-            mIsInitiated = true
 
             if (!checkCameraPermission(applicationContext)) {
                 requestCameraPermission(this@LessonRecordActivity, REQUEST_CODE_CAMERA_PERMISSION)
@@ -89,8 +134,6 @@ class LessonRecordActivity : AppCompatActivity() {
             }
         }
         lessonRecordBtnFinish.setOnClickListener {
-            mCurrentStatus = statusFinish
-            mRecordHandler.release()
             showDialog()
         }
         populateUI()
@@ -103,16 +146,46 @@ class LessonRecordActivity : AppCompatActivity() {
         mCurrentStatus = statusReady
         updateBtnStatus()
         showGuideIfNeeded()
+        pdfViewer.setBackgroundColor(Color.WHITE)
+        pdfViewer.setOnPositionClickListener(object : ZoomImageView.OnPositionClickListener {
+            override fun onLeftClick(view: View?) {
+                mCurrentPage = if (++mCurrentPage >= count - 1) {
+                    count - 1
+                } else {
+                    mCurrentPage
+                }
+                renderPage()
+            }
+
+            override fun onRightClick(view: View?) {
+                mCurrentPage = if (--mCurrentPage < 0) {
+                    0
+                } else {
+                    mCurrentPage
+                }
+                renderPage()
+            }
+
+        })
+        registerPhoneStateListener()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onPause() {
+        super.onPause()
+        if (mIsInitiated && mCurrentStatus == statusPlaying) {
+            switchAction()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mHandler.removeCallbacks(myRunner)
     }
 
     private fun showGuideIfNeeded() {
         val refs = getSharedPreferences(LessonRecordGuidActivity.keyLessonRefsName, MODE_PRIVATE)
-        if (!refs.getBoolean(LessonRecordGuidActivity.getCacheKey(mUserId), false)) {
-            LessonRecordGuidActivity.startGuide(this, mUserId)
+        if (!refs.getBoolean(LessonRecordGuidActivity.getCacheKey(mUserId), false) && mUserId != null) {
+            LessonRecordGuidActivity.startGuide(this, mUserId!!)
         }
     }
 
@@ -123,10 +196,9 @@ class LessonRecordActivity : AppCompatActivity() {
     }
 
     private fun initPdfBoard() {
-        val pdfFilePath = downloadFile()
-        if (pdfFilePath != null) {
+        if (mPath != null) {
             core = PdfiumCore(application)
-            val pfd = ParcelFileDescriptor.open(pdfFilePath, ParcelFileDescriptor.MODE_READ_ONLY)
+            val pfd = ParcelFileDescriptor.open(File(mPath), ParcelFileDescriptor.MODE_READ_ONLY)
             document = core.newDocument(pfd)
             count = core.getPageCount(document)
             renderPage()
@@ -172,34 +244,42 @@ class LessonRecordActivity : AppCompatActivity() {
     }
 
     private fun populateUI() {
-        doctorName.text = "懂医生"
-        doctorHospitalName.text = "四川省成都市第二人民医院医院医院医院"
-        timerView.text = "12:00"
+        doctorName.text = mDoctorName
+        doctorHospitalName.text = mHospital
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SCREEN_RECORD_PERMISSION && resultCode == RESULT_OK) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(this, "需开启系统录屏方可开启录制，请重试", Toast.LENGTH_LONG).show()
+                return
+            }
             if (data == null) {
                 return
             }
-            mProjection = projectionManager.getMediaProjection(resultCode, data)
-            val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
-            if (externalFilesDir.mkdirs()) {
-                return
-            }
-            mRecordHandler = MediaRecorderThread(
-                    720,
-                    480,
-                    resources.configuration.densityDpi,
-                    externalFilesDir.absolutePath,
-                    mProjection
-            )
-            mRecordThread = Thread(mRecordHandler)
-            mRecordThread.start()
-            mCurrentStatus = statusPlaying
-            updateBtnStatus()
+            mIsInitiated = true
+            doRecord(resultCode, data)
         }
+    }
+
+    private fun doRecord(resultCode: Int, data: Intent) {
+        val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
+        mProjection = projectionManager.getMediaProjection(resultCode, data)
+        if (externalFilesDir.mkdirs()) {
+            return
+        }
+        mRecordHandler = MediaRecorderThread(
+                720,
+                480,
+                resources.configuration.densityDpi,
+                externalFilesDir.absolutePath,
+                mProjection
+        )
+        mRecordHandler.run()
+        updateTimeView(true)
+        mCurrentStatus = statusPlaying
+        updateBtnStatus()
     }
 
 
@@ -209,7 +289,7 @@ class LessonRecordActivity : AppCompatActivity() {
             REQUEST_CODE_MIC_PERMISSION -> {
                 for (i in grantResults) {
                     if (grantResults[i] == PERMISSION_DENIED) {
-                        Toast.makeText(applicationContext, "无麦克风权限无法录屏", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "需授权麦克风方可开启录制，请重试", Toast.LENGTH_LONG).show()
                         return
                     }
                 }
@@ -281,19 +361,13 @@ class LessonRecordActivity : AppCompatActivity() {
     private fun switchAction() {
         when (mCurrentStatus) {
             statusPlaying -> {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    mRecordHandler.pause()
-                } else {
-                    mRecordHandler.release()
-                }
+                mRecordHandler.pause()
+                updateTimeView(false)
                 mCurrentStatus = statusPause
             }
             statusPause -> {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    mRecordHandler.resume()
-                } else {
-                    mRecordThread.start()
-                }
+                mRecordHandler.resume()
+                updateTimeView(true)
                 mCurrentStatus = statusPlaying
             }
         }
@@ -333,7 +407,55 @@ class LessonRecordActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
         }
+        val editText = dialog.findViewById<EditText>(R.id.recordEditText)
         dialog.findViewById<TextView>(R.id.btnUpload).setOnClickListener {
+            if (editText == null || editText.text.isEmpty()) {
+                Toast.makeText(this@LessonRecordActivity, "请输入视频标题", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            if (mCurrentStatus != statusFinish) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    mRecordHandler.stop()
+                } else {
+                    mRecordHandler.release()
+                }
+            }
+            mCurrentStatus = statusFinish
+            val json = JSONObject().apply {
+                if (editText.text == null || editText.text.isEmpty()) {
+                    mTitle = editText.text.toString()
+                }
+                put("title", mTitle)
+                put("duration", mDuration)
+                val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
+                put("path", File(externalFilesDir, "0.mp4"))
+            }
+            val kProgressHUD = KProgressHUD.create(this@LessonRecordActivity)
+                    .setLabel("上传中...")
+                    .setCancellable(false)
+                    .setAnimationSpeed(2)
+                    .setDimAmount(0.5f)
+                    .show()
+            ChannelManager.instance.callFlutter("uploadLearnVideo", json.toString(), object : MethodChannelResultAdapter() {
+                override fun success(result: Any?) {
+                    super.success(result)
+                    if (kProgressHUD.isShowing) {
+                        kProgressHUD.dismiss()
+                    }
+                    if (result == null) {
+                        CustomToast.showSuccessToast(applicationContext, R.string.upload_success)
+
+                        finish()
+                    } else {
+                        CustomToast.showFailureToast(applicationContext, R.string.upload_failure)
+                    }
+                }
+            })
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+        }
+        dialog.findViewById<ImageView>(R.id.btnCloseDialog).setOnClickListener {
             if (dialog.isShowing) {
                 dialog.dismiss()
             }
@@ -341,4 +463,51 @@ class LessonRecordActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun formatTime(duration: Int): String {
+        val minute = duration / 60
+        val seconds = duration % 60
+        val strMinute = if (minute < 10) {
+            "0$minute"
+        } else {
+            "$minute"
+        }
+        val strSeconds = if (seconds < 10) {
+            "0$seconds"
+        } else {
+            "$seconds"
+        }
+        return "$strMinute:$strSeconds"
+    }
+
+    private fun updateTimeView(isPause: Boolean) {
+        this.mIsPause = isPause
+        mHandler.post(myRunner)
+    }
+
+    private fun registerPhoneStateListener() {
+        mPhoneStateListener = object: PhoneStateListener() {
+            override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                super.onCallStateChanged(state, phoneNumber)
+                when (state) {
+                    TelephonyManager.CALL_STATE_RINGING -> {
+                        if(mCurrentStatus == statusPlaying){
+                            switchAction()
+                        }
+                    }
+                    TelephonyManager.CALL_STATE_IDLE -> {
+
+                    }
+                    TelephonyManager.CALL_STATE_OFFHOOK -> {
+
+                    }
+                }
+            }
+
+        }
+        val telephonyManager: TelephonyManager? = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
+        telephonyManager?.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
+    }
+
 }
+
+

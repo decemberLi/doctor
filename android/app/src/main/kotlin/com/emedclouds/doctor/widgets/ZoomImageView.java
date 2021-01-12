@@ -49,6 +49,8 @@ public class ZoomImageView extends AppCompatImageView implements ViewTreeObserve
     //单击
     private View.OnClickListener onClickListener;//单击监听
 
+    private OnPositionClickListener mPositionClickListener;
+
     public ZoomImageView(Context context) {
         this(context, null);
     }
@@ -152,6 +154,15 @@ public class ZoomImageView extends AppCompatImageView implements ViewTreeObserve
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
+                float currentX = e.getX();
+                if (mPositionClickListener != null) {
+                    if (getMeasuredWidth() / 2 > (int) currentX) {
+                        mPositionClickListener.onRightClick(ZoomImageView.this);
+                    } else {
+                        mPositionClickListener.onLeftClick(ZoomImageView.this);
+                    }
+                }
+
                 //单击事件
                 if (onClickListener != null)
                     onClickListener.onClick(ZoomImageView.this);
@@ -486,5 +497,13 @@ public class ZoomImageView extends AppCompatImageView implements ViewTreeObserve
         }
     }
 
+    public void setOnPositionClickListener(OnPositionClickListener listener){
+        this.mPositionClickListener = listener;
+    }
 
+    public interface OnPositionClickListener {
+        void onLeftClick(View view);
+
+        void onRightClick(View view);
+    }
 }
