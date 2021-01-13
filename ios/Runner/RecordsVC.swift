@@ -12,6 +12,7 @@ import PDFKit
 import MBProgressHUD
 
 class RecordsVC: UIViewController {
+    @IBOutlet var backBTN : UIButton!
     @IBOutlet var firstBTN : UIButton!
     @IBOutlet var secondBTN : UIButton!
     @IBOutlet var recourdBG : UIView!
@@ -65,7 +66,9 @@ class RecordsVC: UIViewController {
         } else {
             // Fallback on earlier versions
         }
-        initRecord()
+        let dir = NSHomeDirectory() + "/Documents/records"
+        try? FileManager.default.removeItem(atPath: dir)
+        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true, attributes: nil)
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
         try? AVAudioSession.sharedInstance().setActive(true)
         // Do any additional setup after loading the view.
@@ -165,18 +168,18 @@ class RecordsVC: UIViewController {
     
     private func initRecord(){
         let dir = NSHomeDirectory() + "/Documents/records"
-        try? FileManager.default.removeItem(atPath: dir)
-        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true, attributes: nil)
         let path = dir + "/record_\(paths.count).mp4"
         let fileURL = URL(fileURLWithPath: path)
         paths.append(fileURL)
         try? FileManager.default.removeItem(at: fileURL)
         assetWriter = try! AVAssetWriter(outputURL: fileURL, fileType:
                                             AVFileType.mp4)
+        let width = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
+        let height = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
         let videoOutputSettings: Dictionary<String, Any> = [
             AVVideoCodecKey : AVVideoCodecType.h264,
-            AVVideoWidthKey : UIScreen.main.bounds.size.width,
-            AVVideoHeightKey : UIScreen.main.bounds.size.height
+            AVVideoWidthKey : width,
+            AVVideoHeightKey : height
         ];
         
         videoInput  = AVAssetWriterInput (mediaType: AVMediaType.video, outputSettings: videoOutputSettings)
@@ -195,6 +198,8 @@ class RecordsVC: UIViewController {
     }
     
     private func beginRecord(){
+        initRecord()
+        backBTN.isHidden = true
         RPScreenRecorder.shared().isMicrophoneEnabled = true
         RPScreenRecorder.shared().cameraPosition = .front
         RPScreenRecorder.shared().isCameraEnabled = true
@@ -254,16 +259,27 @@ class RecordsVC: UIViewController {
                 self?.changeToIdle()
                 self?.stopRecords()
             }else {
-                self?.initCaputre()
-                self?.playerLayer?.isHidden = false
+//                self?.initCaputre()
+//                self?.playerLayer?.isHidden = false
+                if let one = RPScreenRecorder.shared().cameraPreviewView {
+                    let width = self?.recourdBG.bounds.size.width ?? 0
+                    let height = self?.recourdBG.bounds.size.height ?? 0
+                    one.transform = one.transform.rotated(by: -CGFloat.pi / 2)
+                    self?.recourdBG.addSubview(one)
+                    one.frame = CGRect(origin: .zero, size: CGSize(width: width, height: height))
+//                    one.snp.remakeConstraints { (maker) in
+//                        maker.edges.equalToSuperview()
+//                    }
+                }
+                
             }
         }
     }
     
     
     private func startRecord(){
-        changeToRecording()
         paths.removeAll()
+        changeToRecording()
         beginRecord()
     }
     
@@ -271,6 +287,7 @@ class RecordsVC: UIViewController {
         timer?.invalidate()
         timer = nil
         playerLayer?.isHidden = true
+        backBTN.isHidden = false
         guard RPScreenRecorder.shared().isRecording else {
             return
         }
@@ -282,10 +299,6 @@ class RecordsVC: UIViewController {
                 self.assetWriter = nil
             }
         }
-    }
-    
-    private func resumRecords(){
-        beginRecord()
     }
     
     private func merge(finished:(()->Void)?){
@@ -321,6 +334,24 @@ class RecordsVC: UIViewController {
         }
     }
     
+    private func submitFile(_ title : String){
+        MBProgressHUD.showWhiteAdded(to: view, animated: true)
+        let dir = NSHomeDirectory() + "/Documents/records"
+        let path = dir + "/allRecord.mp4"
+        let vc = AppDelegate.shared?.window.rootViewController
+        let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
+        naviChannel.invokeMethod("uploadLearnVideo", arguments: "{\"path\":\"\(path)\",\"title\":\"\(title)\",\"duration\":\"\(Int(recordTime))\"}") { (error) in
+            MBProgressHUD.hide(for: self.view, animated: false)
+            if error == nil {
+                self.dismiss(animated: true, completion: nil)
+                MBProgressHUD.toast(msg: "上传成功")
+            }else{
+                MBProgressHUD.toast(msg: error as? String ?? "error")
+            }
+            
+        }
+    }
+    
     //MARK:- IBAction
     @IBAction func onChangeRecordState(_ sender : UIButton){
         if sender.tag == 1001 {
@@ -328,6 +359,9 @@ class RecordsVC: UIViewController {
         }else if sender.tag == 1002 {
             changeToPause()
             stopRecords()
+        }else if sender.tag == 1000 {
+            changeToRecording()
+            beginRecord()
         }else {
 //            changeToIdle()
 //            stopRecords()
@@ -361,19 +395,8 @@ class RecordsVC: UIViewController {
             MBProgressHUD.toastText(msg: "请输入视频标题")
             return
         }
-        MBProgressHUD.showWhiteAdded(to: view, animated: true)
-        let path = NSHomeDirectory() + "/Documents/allRecord.mp4"
-        let vc = AppDelegate.shared?.window.rootViewController
-        let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
-        naviChannel.invokeMethod("uploadLearnVideo", arguments: "{\"path\":\"\(path)\",\"title\":\"\(title)\",\"duration\":\"\(recordTime)\"}") { (error) in
-            MBProgressHUD.hide(for: self.view, animated: false)
-            if error == nil {
-                self.dismiss(animated: true, completion: nil)
-                MBProgressHUD.toast(msg: "上传成功")
-            }else{
-                MBProgressHUD.toast(msg: error as? String ?? "error")
-            }
-            
+        merge {
+            self.submitFile(title)
         }
     }
     

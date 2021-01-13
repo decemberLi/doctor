@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="alertBG" destination="L28-Bf-JZy" id="tXc-gO-Kbm"/>
                 <outlet property="alertContent" destination="aHh-UM-Ret" id="MyO-fU-eoK"/>
+                <outlet property="backBTN" destination="eKf-cF-Rw6" id="Ifn-Ic-Czt"/>
                 <outlet property="firstBTN" destination="cr2-G8-4pZ" id="vpe-U2-gBA"/>
                 <outlet property="hospitalLbl" destination="8h4-bG-OJU" id="Kfz-l0-imp"/>
                 <outlet property="infoBG" destination="OK0-zU-QAV" id="puQ-BM-2E2"/>
@@ -106,7 +107,7 @@
                         <action selector="onBack" destination="-1" eventType="touchUpInside" id="yEC-tq-lOU"/>
                     </connections>
                 </button>
-                <button opaque="NO" tag="1001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cr2-G8-4pZ">
+                <button opaque="NO" tag="1000" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cr2-G8-4pZ">
                     <rect key="frame" x="778" y="10.5" width="44" height="44"/>
                     <state key="normal" image="播放"/>
                     <connections>

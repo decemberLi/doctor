@@ -20,8 +20,10 @@ class MedcloudsNativeApi {
           return await _map[call.method](call.arguments);
         }
       }on DioError catch (e){
+        print("----------------------${e.message}");
         return "${e.message}";
       }catch (e){
+        print("----------------------${e}");
         return "$e";
       }
 

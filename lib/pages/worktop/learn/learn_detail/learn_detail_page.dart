@@ -396,6 +396,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             var entity = await OssService.upload(
               obj["path"],
             );
+            print("call 22222 ${entity}");
+            EasyLoading.dismiss();
             var result = await API.shared.server.addLectureSubmit(
               {
                 'learnPlanId': data.learnPlanId,
@@ -406,6 +408,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 'videoOssId': entity.ossId,
               },
             );
+            _model.initData();
             return null;
             //print("the result is ${result}");
           },
