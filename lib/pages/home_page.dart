@@ -3,6 +3,7 @@ import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
+import 'package:doctor/pages/reporter_dialog.dart';
 import 'package:doctor/pages/user/setting/update/app_update.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/user/user_page.dart';
@@ -66,6 +67,7 @@ class _HomePageState extends State<HomePage>
       eventBus.fire(KEY_UPDATE_USER_INFO);
     }
     if (index == 0) {
+      showWeekIfNeededReporter(context);
       this.updateDoctorInfo();
     }
     if (index == 1) {
