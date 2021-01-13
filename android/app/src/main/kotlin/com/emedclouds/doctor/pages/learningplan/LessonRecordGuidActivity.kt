@@ -28,7 +28,7 @@ class LessonRecordGuidActivity : AppCompatActivity() {
             R.mipmap.lesson_record_guide2,
             R.mipmap.lesson_record_guide3
     )
-    private var idx = 0
+    private var idx = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +37,7 @@ class LessonRecordGuidActivity : AppCompatActivity() {
         btnPreStep.setOnClickListener {
             nowUse.visibility = View.GONE
             if (idx == 0) {
+                btnPreStep.visibility = View.GONE
                 idx = 0
             } else {
                 idx--
@@ -48,6 +49,7 @@ class LessonRecordGuidActivity : AppCompatActivity() {
             if (idx >= resArr.size - 1) {
                 idx = resArr.size - 1
                 nowUse.visibility = View.VISIBLE
+                btnNextStep.visibility = View.GONE
                 nowUse.setOnClickListener {
                     val refs = getSharedPreferences(keyLessonRefsName, MODE_PRIVATE)
                     refs.edit()
