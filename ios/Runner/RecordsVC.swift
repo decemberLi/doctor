@@ -22,6 +22,7 @@ class RecordsVC: UIViewController {
     @IBOutlet var pdfView : UIView!
     @IBOutlet var timeLbl : UILabel!
     @IBOutlet var timeBG : UIView!
+    @IBOutlet var timeDot : UIView!
     @IBOutlet var alertBG : UIView!
     @IBOutlet var alertContent : UIView!
     @IBOutlet var titleTextField : UITextField!
@@ -450,6 +451,7 @@ class RecordsVC: UIViewController {
         if let s = startDate {
             recordTime += Date().timeIntervalSince(s)
         }
+        recordTime = 0
         startDate = nil
         timer?.invalidate()
         timer = nil
@@ -475,6 +477,8 @@ class RecordsVC: UIViewController {
                 //"\(second/60):\(Int(second)%60)"
                 weakSelf.timeLbl.text = String(format: "%02d:%02d", Int(second/60),Int(second)%60)
                 weakSelf.timeBG.isHidden = false
+                weakSelf.timeDot.alpha = Int(second) % 2 == 0 ? 0.3 : 1
+//                weakSelf.timeDot.isHidden = !weakSelf.timeDot.isHidden
             }
         }
     }

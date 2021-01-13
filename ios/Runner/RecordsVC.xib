@@ -24,6 +24,7 @@
                 <outlet property="recourdBG" destination="NkQ-sF-DQk" id="R2N-Hp-7An"/>
                 <outlet property="secondBTN" destination="6rC-4d-JNu" id="YJY-xm-gF8"/>
                 <outlet property="timeBG" destination="rqK-l3-8XL" id="egK-4w-Ok5"/>
+                <outlet property="timeDot" destination="GaG-AK-7Bl" id="hUe-Z1-zWA"/>
                 <outlet property="timeLbl" destination="TrC-Cu-ok8" id="kcK-Lo-fVu"/>
                 <outlet property="titleTextField" destination="3NL-HZ-F37" id="Gwg-UE-uqJ"/>
                 <outlet property="uploadBTN" destination="Oo0-lk-psi" id="K1e-eS-U2V"/>
