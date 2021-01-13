@@ -434,7 +434,7 @@ class RecordsVC: UIViewController {
     @IBAction func textFielddidChanged(_ field : UITextField){
         let text = field.text ?? ""
 //        field.clearButtonMode = text.count > 0 ? .always : .never
-        guard text.count <= 50 else {return}
+        guard text.count > 50 else {return}
         let sub = text.prefix(50)
         field.text = String(sub)
     }
