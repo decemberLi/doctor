@@ -467,6 +467,7 @@ class LessonRecordActivity : AppCompatActivity() {
             }
         }
         dialog.findViewById<ImageView>(R.id.btnCloseDialog).setOnClickListener {
+            lessonRecordBackBtn.visibility = View.VISIBLE
             if (dialog.isShowing) {
                 dialog.dismiss()
             }
