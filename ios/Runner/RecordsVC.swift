@@ -106,8 +106,10 @@ class RecordsVC: UIViewController {
     
     @objc func enterBackground(){
         print("enter background -----   ")
-        changeToPause()
-        stopRecords()
+        if RPScreenRecorder.shared().isRecording {
+            changeToPause()
+            stopRecords()
+        }
     }
     
     // MARK: - functions
@@ -190,9 +192,9 @@ class RecordsVC: UIViewController {
         assetWriter?.add(videoInput)
         
         let audioSettings: [String:Any] = [AVFormatIDKey : kAudioFormatMPEG4AAC,
-                                           AVNumberOfChannelsKey : 2,
+                                           AVNumberOfChannelsKey : 1,
                                            AVSampleRateKey : 44100.0,
-                                           AVEncoderBitRateKey: 192000
+                                           AVEncoderBitRateKey: 64000
         ]
         
         audioInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
@@ -210,7 +212,7 @@ class RecordsVC: UIViewController {
             guard let writer = self?.assetWriter else {return}
             guard RPScreenRecorder.shared().isMicrophoneEnabled else {
                 DispatchQueue.main.async {
-                    MBProgressHUD.toastText(msg: "请开启麦克风权限")
+                    MBProgressHUD.toastText(msg: "需授权麦克风方可开启录制，请重试")
                     self?.recordTime = 0
                     self?.changeToIdle()
                     self?.stopRecords()
@@ -255,25 +257,29 @@ class RecordsVC: UIViewController {
                 }
             }
         } completionHandler: {[weak self] (error) in
-            if error != nil {
-                MBProgressHUD.toastText(msg: "请打开录屏权限")
-                self?.recordTime = 0
-                self?.changeToIdle()
-                self?.stopRecords()
-            }else {
-//                self?.initCaputre()
-//                self?.playerLayer?.isHidden = false
-                if let one = RPScreenRecorder.shared().cameraPreviewView {
-                    let width = self?.recourdBG.bounds.size.width ?? 0
-                    let height = self?.recourdBG.bounds.size.height ?? 0
-                    one.transform = one.transform.rotated(by: -CGFloat.pi / 2)
-                    self?.recourdBG.addSubview(one)
-                    one.frame = CGRect(origin: .zero, size: CGSize(width: width, height: height))
-//                    one.snp.remakeConstraints { (maker) in
-//                        maker.edges.equalToSuperview()
-//                    }
+            DispatchQueue.main.async {
+                if let err = error {
+                    MBProgressHUD.toastText(msg: "需开启系统录屏方可开启录制，请重试")
+                    self?.recordTime = 0
+                    self?.changeToIdle()
+                    self?.stopRecords()
+                }else {
+    //                self?.initCaputre()
+    //                self?.playerLayer?.isHidden = false
+                    if let one = RPScreenRecorder.shared().cameraPreviewView {
+                        let width = self?.recourdBG.bounds.size.width ?? 0
+                        let height = self?.recourdBG.bounds.size.height ?? 0
+                        one.transform = one.transform.rotated(by: -CGFloat.pi / 2)
+                        self?.recourdBG.addSubview(one)
+                        one.frame = CGRect(origin: .zero, size: CGSize(width: width, height: height))
+                        one.isHidden = false
+    //                    one.snp.remakeConstraints { (maker) in
+    //                        maker.edges.equalToSuperview()
+    //                    }
+                    }
+                    self?.changeToRecording()
+                    
                 }
-                
             }
         }
     }
@@ -281,7 +287,6 @@ class RecordsVC: UIViewController {
     
     private func startRecord(){
         paths.removeAll()
-        changeToRecording()
         beginRecord()
     }
     
@@ -361,7 +366,6 @@ class RecordsVC: UIViewController {
             changeToPause()
             stopRecords()
         }else if sender.tag == 1000 {
-            changeToRecording()
             beginRecord()
         }else {
 //            changeToIdle()
@@ -462,6 +466,7 @@ class RecordsVC: UIViewController {
         timeLbl.text = ""
         timeBG.isHidden = true
         backBTN.isHidden = false
+        RPScreenRecorder.shared().cameraPreviewView?.isHidden = true
     }
     
     private func changeToRecording() {
@@ -501,5 +506,6 @@ class RecordsVC: UIViewController {
         startDate = nil
         timer?.invalidate()
         timer = nil
+        RPScreenRecorder.shared().cameraPreviewView?.isHidden = true
     }
 }

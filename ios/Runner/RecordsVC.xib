@@ -59,10 +59,10 @@
                     <rect key="frame" x="766" y="57" width="130" height="94"/>
                     <subviews>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="recordHead" translatesAutoresizingMaskIntoConstraints="NO" id="ZHZ-gN-o2R">
-                            <rect key="frame" x="38" y="17.5" width="54" height="59"/>
+                            <rect key="frame" x="40" y="22" width="50" height="50"/>
                         </imageView>
                     </subviews>
-                    <color key="backgroundColor" red="0.8784313725490196" green="0.8784313725490196" blue="0.8784313725490196" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="ZHZ-gN-o2R" firstAttribute="centerY" secondItem="NkQ-sF-DQk" secondAttribute="centerY" id="6lL-pg-dHW"/>
                         <constraint firstAttribute="width" constant="130" id="QTB-Ve-F7i"/>
@@ -208,7 +208,7 @@
                             </connections>
                         </button>
                         <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BNV-4e-UZi">
-                            <rect key="frame" x="391" y="350" width="114" height="44"/>
+                            <rect key="frame" x="391" y="280" width="114" height="44"/>
                             <color key="backgroundColor" red="0.28235294117647058" green="0.61568627450980395" blue="0.99607843137254903" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="114" id="Fkc-x8-aMP"/>
@@ -235,11 +235,11 @@
                         <constraint firstItem="9Wt-PI-jxy" firstAttribute="leading" secondItem="bf6-sd-Lla" secondAttribute="leading" id="PBg-2n-WTD"/>
                         <constraint firstItem="9Wt-PI-jxy" firstAttribute="top" secondItem="bf6-sd-Lla" secondAttribute="top" id="QdV-d7-Osp"/>
                         <constraint firstItem="ABA-yg-Ll9" firstAttribute="leading" secondItem="bf6-sd-Lla" secondAttribute="leading" constant="60" id="W6Q-E9-iw2"/>
+                        <constraint firstAttribute="bottom" secondItem="BNV-4e-UZi" secondAttribute="bottom" constant="90" id="Xll-3H-qvE"/>
                         <constraint firstItem="uYZ-T9-d6h" firstAttribute="leading" secondItem="xdm-yQ-abx" secondAttribute="trailing" constant="90" id="YNP-b9-IQ8"/>
                         <constraint firstAttribute="trailing" secondItem="9Wt-PI-jxy" secondAttribute="trailing" id="Yqb-S8-LBF"/>
                         <constraint firstItem="xdm-yQ-abx" firstAttribute="centerY" secondItem="bf6-sd-Lla" secondAttribute="centerY" id="bwG-K8-4lW"/>
                         <constraint firstAttribute="trailing" secondItem="uYZ-T9-d6h" secondAttribute="trailing" constant="60" id="iw1-hg-Kt9"/>
-                        <constraint firstAttribute="bottom" secondItem="BNV-4e-UZi" secondAttribute="bottom" constant="20" id="n5K-KY-OmP"/>
                         <constraint firstItem="ABA-yg-Ll9" firstAttribute="centerY" secondItem="bf6-sd-Lla" secondAttribute="centerY" id="q8z-mp-Ygv"/>
                         <constraint firstAttribute="bottom" secondItem="9Wt-PI-jxy" secondAttribute="bottom" id="taL-eG-4FO"/>
                     </constraints>
@@ -439,8 +439,8 @@
         </view>
     </objects>
     <resources>
-        <image name="recordHead" width="54" height="59"/>
-        <image name="record_1" width="402" height="222"/>
+        <image name="recordHead" width="50" height="50"/>
+        <image name="record_1" width="553" height="310"/>
         <image name="recourdBg" width="667" height="375"/>
         <image name="上一页" width="18" height="30"/>
         <image name="下一页" width="17" height="30"/>
