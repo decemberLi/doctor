@@ -30,6 +30,13 @@
             android:paddingRight="15dp">
 
             <ImageView
+                android:id="@+id/lessonRecordBtnHelp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/lesson_record_help" />
+
+            <ImageView
                 android:id="@+id/lessonRecordBtnAction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
