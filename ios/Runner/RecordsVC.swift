@@ -21,6 +21,7 @@ class RecordsVC: UIViewController {
     @IBOutlet var hospitalLbl : UILabel!
     @IBOutlet var pdfView : UIView!
     @IBOutlet var timeLbl : UILabel!
+    @IBOutlet var timeBG : UIView!
     @IBOutlet var alertBG : UIView!
     @IBOutlet var alertContent : UIView!
     @IBOutlet var titleTextField : UITextField!
@@ -453,6 +454,7 @@ class RecordsVC: UIViewController {
         timer?.invalidate()
         timer = nil
         timeLbl.text = ""
+        timeBG.isHidden = true
         backBTN.isHidden = false
     }
     
@@ -472,6 +474,7 @@ class RecordsVC: UIViewController {
                 let second = weakSelf.recordTime + Date().timeIntervalSince(s)
                 //"\(second/60):\(Int(second)%60)"
                 weakSelf.timeLbl.text = String(format: "%02d:%02d", Int(second/60),Int(second)%60)
+                weakSelf.timeBG.isHidden = false
             }
         }
     }
