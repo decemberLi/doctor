@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.pdf.PdfRenderer
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.*
@@ -33,8 +34,6 @@ import com.emedclouds.doctor.toast.CustomToast
 import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.widgets.ZoomImageView
 import com.kaopiz.kprogresshud.KProgressHUD
-import com.shockwave.pdfium.PdfDocument
-import com.shockwave.pdfium.PdfiumCore
 import kotlinx.android.synthetic.main.activity_lesson_record_layout.*
 import kotlinx.android.synthetic.main.dialog_record_layout.*
 import org.json.JSONObject
@@ -62,9 +61,8 @@ class LessonRecordActivity : AppCompatActivity() {
     private val statusFinish = 3
 
     private lateinit var mPdfContentView: ZoomImageView
-    private lateinit var core: PdfiumCore
+    private lateinit var mPdfRender: PdfRenderer
     private lateinit var projectionManager: MediaProjectionManager
-    private var document: PdfDocument? = null
     private var count: Int = 0
     private var mCurrentPage: Int = 0
     private var mIsInitiated = false
@@ -120,7 +118,7 @@ class LessonRecordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if(checkCameraPermission(applicationContext)&& checkMicPermission(applicationContext)){
+            if (checkCameraPermission(applicationContext) && checkMicPermission(applicationContext)) {
                 startCamera()
                 showCameraViewIfNeeded(true)
                 startScreen()
@@ -181,8 +179,11 @@ class LessonRecordActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         mHandler.removeCallbacks(myRunner)
-        if(mProjection != null) {
+        if (mProjection != null) {
             mProjection?.stop()
+        }
+        if(mPdfRender != null){
+            mPdfRender.close()
         }
         super.onDestroy()
     }
@@ -202,40 +203,28 @@ class LessonRecordActivity : AppCompatActivity() {
 
     private fun initPdfBoard() {
         if (mPath != null) {
-            core = PdfiumCore(application)
-            val pfd = ParcelFileDescriptor.open(File(mPath), ParcelFileDescriptor.MODE_READ_ONLY)
-            document = core.newDocument(pfd)
-            count = core.getPageCount(document)
+            val pdfFileDesc = ParcelFileDescriptor.open(File(mPath), ParcelFileDescriptor.MODE_READ_ONLY)
+            mPdfRender = PdfRenderer(pdfFileDesc)
+            count = mPdfRender.pageCount
             renderPage()
         }
     }
 
     private fun renderPage() {
-        if (document == null || count < 1) {
-            return
-        }
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val dpi = displayMetrics.density
-        core.openPage(document, mCurrentPage)
+        val page = mPdfRender.openPage(mCurrentPage);
         val bitmap = Bitmap.createBitmap(
-                core.getPageWidthPoint(document, mCurrentPage) * dpi.toInt(),
-                core.getPageHeightPoint(document, mCurrentPage) * dpi.toInt(),
+                page.width * dpi.toInt(),
+                page.height * dpi.toInt(),
                 Bitmap.Config.ARGB_8888
         )
-        core.renderPageBitmap(
-                document,
-                bitmap,
-                mCurrentPage,
-                0,
-                0,
-                core.getPageWidthPoint(document, mCurrentPage) * dpi.toInt(),
-                core.getPageHeightPoint(document, mCurrentPage) * dpi.toInt(),
-                false
-        )
+        page.render(bitmap,null,null,PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
         mPdfContentView.setImageBitmap(bitmap)
         mPdfContentView.invalidate()
+        page.close()
     }
 
     private fun downloadFile(): File? {
@@ -271,10 +260,10 @@ class LessonRecordActivity : AppCompatActivity() {
     private fun doRecord(resultCode: Int, data: Intent) {
         val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
         mProjection = projectionManager.getMediaProjection(resultCode, data)
-        if(!externalFilesDir.exists() && !externalFilesDir.mkdirs()){
+        if (!externalFilesDir.exists() && !externalFilesDir.mkdirs()) {
             return
         }
-        if(mProjection == null){
+        if (mProjection == null) {
             return
         }
         mRecordHandler = MediaRecorderThread(
@@ -507,12 +496,12 @@ class LessonRecordActivity : AppCompatActivity() {
     }
 
     private fun registerPhoneStateListener() {
-        mPhoneStateListener = object: PhoneStateListener() {
+        mPhoneStateListener = object : PhoneStateListener() {
             override fun onCallStateChanged(state: Int, phoneNumber: String?) {
                 super.onCallStateChanged(state, phoneNumber)
                 when (state) {
                     TelephonyManager.CALL_STATE_RINGING -> {
-                        if(mCurrentStatus == statusPlaying){
+                        if (mCurrentStatus == statusPlaying) {
                             switchAction()
                         }
                     }

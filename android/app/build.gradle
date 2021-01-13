@@ -106,8 +106,8 @@ dependencies {
 
     implementation "androidx.annotation:annotation:$androidx_annotation_version"
     implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+//    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
 
     api "androidx.camera:camera-camera2:$camerax_version"
@@ -130,12 +130,12 @@ dependencies {
     implementation 'cn.jiguang.sdk:jcore:2.6.0'
     // apache io package
     api 'commons-io:commons-io:2.8.0'
-    api 'com.github.barteksc:pdfium-android:1.9.0'
+//    api 'com.github.barteksc:pdfium-android:1.9.0'
     implementation("com.google.guava:guava:30.1-android")
 
     api  'com.kaopiz:kprogresshud:1.0.2'
 
     // 注解
-    implementation "com.google.dagger:dagger:2.30.1"
-    kapt "com.google.dagger:dagger-compiler:2.30.1"
+//    implementation "com.google.dagger:dagger:2.30.1"
+//    kapt "com.google.dagger:dagger-compiler:2.30.1"
 }
