@@ -69,8 +69,6 @@ class RecordsVC: UIViewController {
         let dir = NSHomeDirectory() + "/Documents/records"
         try? FileManager.default.removeItem(atPath: dir)
         try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true, attributes: nil)
-        try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
-        try? AVAudioSession.sharedInstance().setActive(true)
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: AVAudioSession.interruptionNotification, object: nil)
@@ -167,6 +165,8 @@ class RecordsVC: UIViewController {
     }
     
     private func initRecord(){
+        try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
+        try? AVAudioSession.sharedInstance().setActive(true)
         let dir = NSHomeDirectory() + "/Documents/records"
         let path = dir + "/record_\(paths.count).mp4"
         let fileURL = URL(fileURLWithPath: path)
@@ -199,7 +199,6 @@ class RecordsVC: UIViewController {
     
     private func beginRecord(){
         initRecord()
-        backBTN.isHidden = true
         RPScreenRecorder.shared().isMicrophoneEnabled = true
         RPScreenRecorder.shared().cameraPosition = .front
         RPScreenRecorder.shared().isCameraEnabled = true
@@ -287,7 +286,6 @@ class RecordsVC: UIViewController {
         timer?.invalidate()
         timer = nil
         playerLayer?.isHidden = true
-        backBTN.isHidden = false
         guard RPScreenRecorder.shared().isRecording else {
             return
         }
@@ -386,8 +384,11 @@ class RecordsVC: UIViewController {
     
     @IBAction func onReStart(){
         alertBG.isHidden = true
-        changeToRecording()
-        beginRecord()
+        paths.removeAll()
+        let dir = NSHomeDirectory() + "/Documents/records"
+        try? FileManager.default.removeItem(atPath: dir)
+        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true, attributes: nil)
+        changeToIdle()
     }
     
     @IBAction func onSubmint(){
@@ -395,6 +396,7 @@ class RecordsVC: UIViewController {
             MBProgressHUD.toastText(msg: "请输入视频标题")
             return
         }
+        view.endEditing(true)
         merge {
             self.submitFile(title)
         }
@@ -451,9 +453,11 @@ class RecordsVC: UIViewController {
         timer?.invalidate()
         timer = nil
         timeLbl.text = ""
+        backBTN.isHidden = false
     }
     
     private func changeToRecording() {
+        backBTN.isHidden = true
         firstBTN.isHidden = true
         secondBTN.setImage(UIImage(named: "录制中"), for: .normal)
         secondBTN.tag = 1002
