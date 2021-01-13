@@ -409,6 +409,7 @@ class LessonRecordActivity : AppCompatActivity() {
         dialog.setContentView(R.layout.dialog_record_layout)
         dialog.setCancelable(false)
         dialog.findViewById<TextView>(R.id.btnReCord).setOnClickListener {
+            lessonRecordBackBtn.visibility = View.VISIBLE
             mCurrentStatus = statusFinish
             updateBtnStatus()
             if (dialog.isShowing) {
@@ -467,7 +468,6 @@ class LessonRecordActivity : AppCompatActivity() {
             }
         }
         dialog.findViewById<ImageView>(R.id.btnCloseDialog).setOnClickListener {
-            lessonRecordBackBtn.visibility = View.VISIBLE
             if (dialog.isShowing) {
                 dialog.dismiss()
             }
