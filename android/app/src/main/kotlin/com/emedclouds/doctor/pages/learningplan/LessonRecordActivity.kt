@@ -69,7 +69,7 @@ class LessonRecordActivity : AppCompatActivity() {
     private var mCurrentPage: Int = 0
     private var mIsInitiated = false
     private lateinit var mRecordHandler: MediaRecorderThread
-    private lateinit var mProjection: MediaProjection
+    private var mProjection: MediaProjection? = null
     private var mCurrentStatus = 0
 
     private var mDuration = 1
@@ -109,7 +109,6 @@ class LessonRecordActivity : AppCompatActivity() {
         initParam()
         lessonRecordBackBtn.setOnClickListener { finish() }
         lessonRecordBtnAction.setOnClickListener {
-            lessonRecordBackBtn.visibility = View.GONE
 //            if (mCurrentStatus == statusFinish) {
 //                mRecordHandler.reRecord()
 //                mCurrentStatus = statusPlaying
@@ -182,7 +181,9 @@ class LessonRecordActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         mHandler.removeCallbacks(myRunner)
-        mProjection.stop()
+        if(mProjection != null) {
+            mProjection?.stop()
+        }
         super.onDestroy()
     }
 
@@ -273,14 +274,18 @@ class LessonRecordActivity : AppCompatActivity() {
         if(!externalFilesDir.exists() && !externalFilesDir.mkdirs()){
             return
         }
+        if(mProjection == null){
+            return
+        }
         mRecordHandler = MediaRecorderThread(
                 720,
                 480,
                 resources.configuration.densityDpi,
                 externalFilesDir.absolutePath,
-                mProjection
+                mProjection!!
         )
         mRecordHandler.run()
+        lessonRecordBackBtn.visibility = View.GONE
         updateTimeView(true)
         mCurrentStatus = statusPlaying
         updateBtnStatus()
