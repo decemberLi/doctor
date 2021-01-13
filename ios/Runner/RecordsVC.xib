@@ -41,6 +41,17 @@
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jv9-es-g4M" userLabel="pdfView">
                     <rect key="frame" x="44" y="57" width="722" height="357"/>
+                    <subviews>
+                        <wkWebView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rJx-Am-37k">
+                            <rect key="frame" x="241" y="114" width="240" height="128"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <wkWebViewConfiguration key="configuration">
+                                <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                <wkPreferences key="preferences"/>
+                            </wkWebViewConfiguration>
+                        </wkWebView>
+                    </subviews>
                     <color key="backgroundColor" red="0.94509803921568625" green="0.94509803921568625" blue="0.94509803921568625" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NkQ-sF-DQk">
@@ -124,10 +135,10 @@
                     </connections>
                 </button>
                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rqK-l3-8XL">
-                    <rect key="frame" x="811" y="379.5" width="61" height="24.5"/>
+                    <rect key="frame" x="806" y="379.5" width="66" height="24.5"/>
                     <subviews>
                         <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GaG-AK-7Bl">
-                            <rect key="frame" x="4" y="10.5" width="4" height="4"/>
+                            <rect key="frame" x="6" y="10.5" width="4" height="4"/>
                             <color key="backgroundColor" red="0.99215686274509807" green="0.29803921568627451" blue="0.29803921568627451" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="4" id="CQa-ts-h2V"/>
@@ -140,7 +151,7 @@
                             </userDefinedRuntimeAttributes>
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="88:88" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TrC-Cu-ok8">
-                            <rect key="frame" x="10" y="2" width="47" height="20.5"/>
+                            <rect key="frame" x="12" y="2" width="48" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
@@ -150,9 +161,9 @@
                     <constraints>
                         <constraint firstItem="TrC-Cu-ok8" firstAttribute="top" secondItem="rqK-l3-8XL" secondAttribute="top" constant="2" id="2ox-Gq-nJz"/>
                         <constraint firstItem="TrC-Cu-ok8" firstAttribute="leading" secondItem="GaG-AK-7Bl" secondAttribute="trailing" constant="2" id="Bqz-wg-ng4"/>
-                        <constraint firstItem="GaG-AK-7Bl" firstAttribute="leading" secondItem="rqK-l3-8XL" secondAttribute="leading" constant="4" id="Cyh-na-IrM"/>
-                        <constraint firstAttribute="trailing" secondItem="TrC-Cu-ok8" secondAttribute="trailing" constant="4" id="NOt-e1-DXb"/>
-                        <constraint firstAttribute="width" constant="61" id="UlN-T9-6pZ"/>
+                        <constraint firstItem="GaG-AK-7Bl" firstAttribute="leading" secondItem="rqK-l3-8XL" secondAttribute="leading" constant="6" id="Cyh-na-IrM"/>
+                        <constraint firstAttribute="trailing" secondItem="TrC-Cu-ok8" secondAttribute="trailing" constant="6" id="NOt-e1-DXb"/>
+                        <constraint firstAttribute="width" constant="66" id="UlN-T9-6pZ"/>
                         <constraint firstItem="GaG-AK-7Bl" firstAttribute="centerY" secondItem="rqK-l3-8XL" secondAttribute="centerY" id="hWH-vu-X7E"/>
                         <constraint firstAttribute="bottom" secondItem="TrC-Cu-ok8" secondAttribute="bottom" constant="2" id="hbz-yF-fnn"/>
                     </constraints>

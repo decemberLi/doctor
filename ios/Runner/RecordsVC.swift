@@ -386,6 +386,7 @@ class RecordsVC: UIViewController {
     
     @IBAction func onReStart(){
         alertBG.isHidden = true
+        view.endEditing(true)
         paths.removeAll()
         let dir = NSHomeDirectory() + "/Documents/records"
         try? FileManager.default.removeItem(atPath: dir)
@@ -477,7 +478,9 @@ class RecordsVC: UIViewController {
                 //"\(second/60):\(Int(second)%60)"
                 weakSelf.timeLbl.text = String(format: "%02d:%02d", Int(second/60),Int(second)%60)
                 weakSelf.timeBG.isHidden = false
-                weakSelf.timeDot.alpha = Int(second) % 2 == 0 ? 0.3 : 1
+                UIView.animate(withDuration: 0.8) {
+                    weakSelf.timeDot.alpha = Int(second) % 2 == 0 ? 0.3 : 1
+                }
 //                weakSelf.timeDot.isHidden = !weakSelf.timeDot.isHidden
             }
         }
