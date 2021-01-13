@@ -182,7 +182,7 @@ class LessonRecordActivity : AppCompatActivity() {
         if (mProjection != null) {
             mProjection?.stop()
         }
-        if(mPdfRender != null){
+        if (mPdfRender != null) {
             mPdfRender.close()
         }
         super.onDestroy()
@@ -203,10 +203,18 @@ class LessonRecordActivity : AppCompatActivity() {
 
     private fun initPdfBoard() {
         if (mPath != null) {
-            val pdfFileDesc = ParcelFileDescriptor.open(File(mPath), ParcelFileDescriptor.MODE_READ_ONLY)
-            mPdfRender = PdfRenderer(pdfFileDesc)
-            count = mPdfRender.pageCount
-            renderPage()
+            val pdfFileDesc: ParcelFileDescriptor?
+            try {
+                pdfFileDesc = ParcelFileDescriptor.open(File(mPath), ParcelFileDescriptor.MODE_READ_ONLY)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return
+            }
+            if(pdfFileDesc != null) {
+                mPdfRender = PdfRenderer(pdfFileDesc)
+                count = mPdfRender.pageCount
+                renderPage()
+            }
         }
     }
 
@@ -220,7 +228,7 @@ class LessonRecordActivity : AppCompatActivity() {
                 page.height * dpi.toInt(),
                 Bitmap.Config.ARGB_8888
         )
-        page.render(bitmap,null,null,PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+        page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
         mPdfContentView.setImageBitmap(bitmap)
         mPdfContentView.invalidate()
@@ -409,6 +417,7 @@ class LessonRecordActivity : AppCompatActivity() {
         dialog.setContentView(R.layout.dialog_record_layout)
         dialog.setCancelable(false)
         dialog.findViewById<TextView>(R.id.btnReCord).setOnClickListener {
+            lessonRecordBackBtn.visibility = View.VISIBLE
             mCurrentStatus = statusFinish
             updateBtnStatus()
             if (dialog.isShowing) {
