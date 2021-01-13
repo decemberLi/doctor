@@ -35,19 +35,23 @@ class LessonRecordGuidActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lesson_guide_layout)
         btnPreStep.setOnClickListener {
+            btnNextStep.visibility = View.VISIBLE
             nowUse.visibility = View.GONE
-            if (idx == 0) {
+            if (--idx <= 0) {
+                btnPreStep.visibility = View.GONE
                 idx = 0
             } else {
-                idx--
+                btnPreStep.visibility = View.VISIBLE
             }
             imageContent.setImageResource(resArr[idx])
         }
         btnNextStep.setOnClickListener {
+            btnPreStep.visibility = View.VISIBLE
             nowUse.visibility = View.GONE
-            if (idx >= resArr.size - 1) {
+            if (++idx >= resArr.size - 1) {
                 idx = resArr.size - 1
                 nowUse.visibility = View.VISIBLE
+                btnNextStep.visibility = View.GONE
                 nowUse.setOnClickListener {
                     val refs = getSharedPreferences(keyLessonRefsName, MODE_PRIVATE)
                     refs.edit()
@@ -56,10 +60,11 @@ class LessonRecordGuidActivity : AppCompatActivity() {
                     finish()
                 }
             } else {
-                idx++
+                btnNextStep.visibility = View.VISIBLE
             }
             imageContent.setImageResource(resArr[idx])
         }
+        btnPreStep.visibility = View.GONE
     }
 
 }

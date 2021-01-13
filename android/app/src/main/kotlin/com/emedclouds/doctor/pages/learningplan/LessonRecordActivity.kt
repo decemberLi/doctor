@@ -115,6 +115,7 @@ class LessonRecordActivity : AppCompatActivity() {
         mPdfContentView = findViewById(R.id.pdfViewer)
         initParam()
         lessonRecordBackBtn.setOnClickListener { finish() }
+        lessonRecordBtnHelp.setOnClickListener { showGuideIfNeeded(true) }
         lessonRecordBtnAction.setOnClickListener {
             if (mIsInitiated && mCurrentStatus != statusFinish) {
                 switchAction()
@@ -148,7 +149,7 @@ class LessonRecordActivity : AppCompatActivity() {
         }
         mCurrentStatus = statusReady
         updateBtnStatus()
-        showGuideIfNeeded()
+        showGuideIfNeeded(false)
         pdfViewer.setBackgroundColor(Color.WHITE)
         pdfViewer.setOnPositionClickListener(object : ZoomImageView.OnPositionClickListener {
             override fun onLeftClick(view: View?) {
@@ -193,7 +194,11 @@ class LessonRecordActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun showGuideIfNeeded() {
+    private fun showGuideIfNeeded(force: Boolean) {
+        if(force && mUserId != null){
+            LessonRecordGuidActivity.startGuide(this, mUserId!!)
+            return
+        }
         val refs = getSharedPreferences(LessonRecordGuidActivity.keyLessonRefsName, MODE_PRIVATE)
         if (!refs.getBoolean(LessonRecordGuidActivity.getCacheKey(mUserId), false) && mUserId != null) {
             LessonRecordGuidActivity.startGuide(this, mUserId!!)
@@ -288,6 +293,7 @@ class LessonRecordActivity : AppCompatActivity() {
         )
         mRecordHandler.run()
         lessonRecordBackBtn.visibility = View.GONE
+        lessonRecordBtnHelp.visibility = View.GONE
         updateTimeView(true)
         mCurrentStatus = statusPlaying
         updateBtnStatus()
@@ -425,6 +431,7 @@ class LessonRecordActivity : AppCompatActivity() {
         dialog.setCancelable(false)
         dialog.findViewById<TextView>(R.id.btnReCord).setOnClickListener {
             lessonRecordBackBtn.visibility = View.VISIBLE
+            lessonRecordBtnHelp.visibility = View.VISIBLE
             mCurrentStatus = statusFinish
             mDuration = 0
             updateBtnStatus()

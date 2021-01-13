@@ -30,6 +30,13 @@
             android:paddingRight="15dp">
 
             <ImageView
+                android:id="@+id/lessonRecordBtnHelp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/lesson_record_help" />
+
+            <ImageView
                 android:id="@+id/lessonRecordBtnAction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,7 +73,7 @@
                 android:id="@+id/imageDoctorAvatar"
                 android:layout_width="match_parent"
                 android:layout_height="94dp"
-                android:background="#FFE0E0E0"
+                android:background="@color/white"
                 android:scaleType="center"
                 android:src="@mipmap/doctor_big_avatar"
                 tools:ignore="ContentDescription" />
