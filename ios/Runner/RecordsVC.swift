@@ -30,6 +30,8 @@ class RecordsVC: UIViewController {
     @IBOutlet var introImage: UIImageView!
     @IBOutlet var introBG : UIView!
     @IBOutlet var introBTN : UIButton!
+    @IBOutlet var introPreBTN : UIButton!
+    @IBOutlet var introNextBTN : UIButton!
 
     
     var data : [String:Any] = [:]
@@ -240,7 +242,7 @@ class RecordsVC: UIViewController {
                         }
                         
                         if writer.status == AVAssetWriter.Status.writing {
-                            if self?.videoInput.isReadyForMoreMediaData == true {
+                            if self?.videoInput.isReadyForMoreMediaData == true && self?.session.isRunning == true {
                                 if self?.videoInput.append(cmSampleBuffer) == false {
                                     print("problem writing video")
                                 }
@@ -367,6 +369,8 @@ class RecordsVC: UIViewController {
             stopRecords()
         }else if sender.tag == 1000 {
             beginRecord()
+        }else if sender.tag == 999 {
+            introBG.isHidden = false
         }else {
 //            changeToIdle()
 //            stopRecords()
@@ -418,6 +422,8 @@ class RecordsVC: UIViewController {
         introImage.tag = tag
         introImage.image = UIImage(named: "record_\(tag)")
         introBTN.isHidden = tag != 3
+        introPreBTN.isHidden = tag == 1
+        introNextBTN.isHidden = tag == 3
     }
     
     @IBAction func onNextImage(){
@@ -428,6 +434,8 @@ class RecordsVC: UIViewController {
         introImage.tag = tag
         introImage.image = UIImage(named: "record_\(tag)")
         introBTN.isHidden = tag != 3
+        introPreBTN.isHidden = tag == 1
+        introNextBTN.isHidden = tag == 3
     }
     
     @IBAction func hidenIntro(){
@@ -453,7 +461,9 @@ class RecordsVC: UIViewController {
     
     //MARK: - Status
     private func changeToIdle(){
-        firstBTN.isHidden = true
+        firstBTN.tag = 999
+        firstBTN.isHidden = false
+        firstBTN.setImage(UIImage(named: "帮助"), for: .normal)
         secondBTN.setImage(UIImage(named: "播放"), for: .normal)
         secondBTN.tag = 1001
         if let s = startDate {
@@ -498,6 +508,8 @@ class RecordsVC: UIViewController {
     
     private func changeToPause(){
         firstBTN.isHidden = false
+        firstBTN.setImage(UIImage(named: "播放"), for: .normal)
+        firstBTN.tag = 1000
         secondBTN.setImage(UIImage(named: "结束"), for: .normal)
         secondBTN.tag = 1003
         if let s = startDate {
