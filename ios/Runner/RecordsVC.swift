@@ -29,6 +29,7 @@ class RecordsVC: UIViewController {
     @IBOutlet var uploadBTN : UIButton!
     @IBOutlet var introImage: UIImageView!
     @IBOutlet var introBG : UIView!
+    @IBOutlet var introBTN : UIButton!
 
     
     var data : [String:Any] = [:]
@@ -412,6 +413,7 @@ class RecordsVC: UIViewController {
         }
         introImage.tag = tag
         introImage.image = UIImage(named: "record_\(tag)")
+        introBTN.isHidden = tag != 3
     }
     
     @IBAction func onNextImage(){
@@ -421,6 +423,7 @@ class RecordsVC: UIViewController {
         }
         introImage.tag = tag
         introImage.image = UIImage(named: "record_\(tag)")
+        introBTN.isHidden = tag != 3
     }
     
     @IBAction func hidenIntro(){
@@ -475,13 +478,15 @@ class RecordsVC: UIViewController {
             }
             if let s = self?.startDate {
                 let second = weakSelf.recordTime + Date().timeIntervalSince(s)
-                //"\(second/60):\(Int(second)%60)"
                 weakSelf.timeLbl.text = String(format: "%02d:%02d", Int(second/60),Int(second)%60)
                 weakSelf.timeBG.isHidden = false
-                UIView.animate(withDuration: 0.8) {
-                    weakSelf.timeDot.alpha = Int(second) % 2 == 0 ? 0.3 : 1
+                UIView.animate(withDuration: 0.4) {
+                    weakSelf.timeDot.alpha = 0.3
+                } completion: { (_) in
+                    UIView.animate(withDuration: 0.4) {
+                        weakSelf.timeDot.alpha = 1
+                    }
                 }
-//                weakSelf.timeDot.isHidden = !weakSelf.timeDot.isHidden
             }
         }
     }

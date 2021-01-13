@@ -18,6 +18,7 @@
                 <outlet property="hospitalLbl" destination="8h4-bG-OJU" id="Kfz-l0-imp"/>
                 <outlet property="infoBG" destination="OK0-zU-QAV" id="puQ-BM-2E2"/>
                 <outlet property="introBG" destination="bf6-sd-Lla" id="iJj-Z2-3YS"/>
+                <outlet property="introBTN" destination="BNV-4e-UZi" id="KwN-Ru-8YN"/>
                 <outlet property="introImage" destination="xdm-yQ-abx" id="9dL-o2-bxp"/>
                 <outlet property="nameLbl" destination="srM-hs-mry" id="woL-ZU-ml7"/>
                 <outlet property="pdfView" destination="Jv9-es-g4M" id="Y3O-xL-UED"/>
@@ -206,7 +207,7 @@
                                 <action selector="onNextImage" destination="-1" eventType="touchUpInside" id="Hzb-0z-TDP"/>
                             </connections>
                         </button>
-                        <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BNV-4e-UZi">
+                        <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BNV-4e-UZi">
                             <rect key="frame" x="391" y="350" width="114" height="44"/>
                             <color key="backgroundColor" red="0.28235294117647058" green="0.61568627450980395" blue="0.99607843137254903" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
