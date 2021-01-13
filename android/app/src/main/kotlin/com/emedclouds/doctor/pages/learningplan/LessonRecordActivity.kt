@@ -1,6 +1,7 @@
 package com.emedclouds.doctor.pages.learningplan
 
 import android.Manifest.permission.*
+import android.animation.ValueAnimator.REVERSE
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
@@ -16,9 +17,10 @@ import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
 import android.view.Window
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -80,13 +82,20 @@ class LessonRecordActivity : AppCompatActivity() {
     private var mHospital: String? = null
     private var mTitle: String? = null
 
+    private lateinit var mAnimation: Animation
+
     private var mPhoneStateListener: PhoneStateListener? = null
     private val myRunner: Runnable = object : Runnable {
         @SuppressLint("SetTextI18n")
         override fun run() {
             if (!mIsPause) {
+
                 return
             }
+            timerLayout.visibility = View.VISIBLE
+            mAnimation.repeatMode = REVERSE
+            mAnimation.repeatCount = 1
+            timerRedDot.startAnimation(mAnimation)
             timerView.text = formatTime(mDuration++)
             mHandler.postDelayed(this, 1000)
         }
@@ -107,12 +116,6 @@ class LessonRecordActivity : AppCompatActivity() {
         initParam()
         lessonRecordBackBtn.setOnClickListener { finish() }
         lessonRecordBtnAction.setOnClickListener {
-//            if (mCurrentStatus == statusFinish) {
-//                mRecordHandler.reRecord()
-//                mCurrentStatus = statusPlaying
-//                updateBtnStatus()
-//                return@setOnClickListener
-//            }
             if (mIsInitiated && mCurrentStatus != statusFinish) {
                 switchAction()
                 return@setOnClickListener
@@ -168,6 +171,8 @@ class LessonRecordActivity : AppCompatActivity() {
 
         })
         registerPhoneStateListener()
+        mAnimation = AnimationUtils.loadAnimation(applicationContext,
+                R.anim.alpha_record_redot_set)
     }
 
     override fun onPause() {
@@ -210,7 +215,7 @@ class LessonRecordActivity : AppCompatActivity() {
                 e.printStackTrace()
                 return
             }
-            if(pdfFileDesc != null) {
+            if (pdfFileDesc != null) {
                 mPdfRender = PdfRenderer(pdfFileDesc)
                 count = mPdfRender.pageCount
                 renderPage()
@@ -229,10 +234,10 @@ class LessonRecordActivity : AppCompatActivity() {
                 Bitmap.Config.ARGB_8888
         )
         page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+        page.close()
 
         mPdfContentView.setImageBitmap(bitmap)
         mPdfContentView.invalidate()
-        page.close()
     }
 
     private fun downloadFile(): File? {
@@ -395,10 +400,12 @@ class LessonRecordActivity : AppCompatActivity() {
             statusFinish -> {
                 lessonRecordBtnAction.setImageResource(R.mipmap.btn_record_start)
                 lessonRecordBtnFinish.visibility = View.GONE
+                timerLayout.visibility = View.GONE
             }
             statusReady -> {
                 lessonRecordBtnAction.setImageResource(R.mipmap.btn_record_start)
                 lessonRecordBtnFinish.visibility = View.GONE
+                timerLayout.visibility = View.GONE
             }
             statusPlaying -> {
                 lessonRecordBtnAction.setImageResource(R.mipmap.btn_record_pause)
@@ -419,7 +426,9 @@ class LessonRecordActivity : AppCompatActivity() {
         dialog.findViewById<TextView>(R.id.btnReCord).setOnClickListener {
             lessonRecordBackBtn.visibility = View.VISIBLE
             mCurrentStatus = statusFinish
+            mDuration = 0
             updateBtnStatus()
+            stopRecord()
             if (dialog.isShowing) {
                 dialog.dismiss()
             }
@@ -433,17 +442,16 @@ class LessonRecordActivity : AppCompatActivity() {
                 Toast.makeText(this@LessonRecordActivity, "请输入视频标题", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            if (mCurrentStatus != statusFinish) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    mRecordHandler.stop()
-                } else {
-                    mRecordHandler.release()
-                }
-            }
+            stopRecord()
             mCurrentStatus = statusFinish
             val json = JSONObject().apply {
-                if (editText.text == null || editText.text.isEmpty()) {
-                    mTitle = editText.text.toString()
+                if (editText.text != null || editText.text.isNotEmpty()) {
+                    val title: String = editText.text.toString()
+                    mTitle = if (title.length > 50) {
+                        title.substring(0, 50)
+                    } else {
+                        title
+                    }
                 }
                 put("title", mTitle)
                 put("duration", mDuration)
@@ -481,6 +489,16 @@ class LessonRecordActivity : AppCompatActivity() {
             }
         }
         dialog.show()
+    }
+
+    private fun stopRecord() {
+        if (mCurrentStatus != statusFinish) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                mRecordHandler.stop()
+            } else {
+                mRecordHandler.release()
+            }
+        }
     }
 
     private fun formatTime(duration: Int): String {
