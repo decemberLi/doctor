@@ -119,6 +119,14 @@ class _MessagePromotionListState extends State<MessagePromotionList> with RouteA
                           setState(() {
                             item.readed = true;
                           });
+                          if(data.bizType == 'DOCTOR_WORK_CONCLUSION'){
+                            Navigator.pushNamed(
+                              context,
+                              RouteManager.COMMON_WEB,
+                              arguments: {'url': data.params['viewUrl'], 'title': ''},
+                            );
+                            return;
+                          }
                           if (data.params == null ||
                               data.params['learnPlanId'] == null) {
                             return;
