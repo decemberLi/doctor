@@ -62,10 +62,6 @@ android {
             zipAlignEnabled false
             shrinkResources false
             signingConfig signingConfigs.debug
-            ndk {
-                abiFilters "x86","x86_64","arm64-v8a"
-            }
-
             manifestPlaceholders = [
                     JPUSH_PKGNAME : defaultConfig.applicationId,
                     JPUSH_APPKEY : "a7547476f7255646ea8646fd",

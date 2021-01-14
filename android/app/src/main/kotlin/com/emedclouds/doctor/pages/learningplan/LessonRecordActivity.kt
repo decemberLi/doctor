@@ -85,11 +85,11 @@ class LessonRecordActivity : AppCompatActivity() {
     private lateinit var mAnimation: Animation
 
     private var mPhoneStateListener: PhoneStateListener? = null
+    private var mIsShowTimer = false;
     private val myRunner: Runnable = object : Runnable {
         @SuppressLint("SetTextI18n")
         override fun run() {
             if (!mIsPause) {
-
                 return
             }
             mAnimation.repeatMode = REVERSE
@@ -194,7 +194,7 @@ class LessonRecordActivity : AppCompatActivity() {
     }
 
     private fun showGuideIfNeeded(force: Boolean) {
-        if(force && mUserId != null){
+        if (force && mUserId != null) {
             LessonRecordGuidActivity.startGuide(this, mUserId!!)
             return
         }
@@ -291,14 +291,17 @@ class LessonRecordActivity : AppCompatActivity() {
                 externalFilesDir.absolutePath,
                 mProjection!!
         )
-        mRecordHandler.run()
+        mRecordHandler.deleteAllFile()
+        mRecordHandler.apply {
+            prepareMediaRecord()
+            startRecord()
+        }
         lessonRecordBackBtn.visibility = View.GONE
         lessonRecordBtnHelp.visibility = View.GONE
         updateTimeView(true)
         mCurrentStatus = statusPlaying
         updateBtnStatus()
     }
-
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -422,6 +425,7 @@ class LessonRecordActivity : AppCompatActivity() {
         }
     }
 
+    var isComposed = false
     private fun showDialog() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -432,6 +436,7 @@ class LessonRecordActivity : AppCompatActivity() {
             lessonRecordBtnHelp.visibility = View.VISIBLE
             mCurrentStatus = statusFinish
             mDuration = 0
+            isComposed = false
             timerView.text = formatTime(mDuration)
             updateBtnStatus()
             stopRecord()
@@ -448,45 +453,46 @@ class LessonRecordActivity : AppCompatActivity() {
                 Toast.makeText(this@LessonRecordActivity, "请输入视频标题", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            stopRecord()
             mCurrentStatus = statusFinish
-            val json = JSONObject().apply {
-                if (editText.text != null || editText.text.isNotEmpty()) {
-                    val title: String = editText.text.toString()
-                    mTitle = if (title.length > 50) {
-                        title.substring(0, 50)
-                    } else {
-                        title
-                    }
+            val direction = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                stopRecord()
+                upload(editText, File(direction, "0.mp4").absolutePath)
+                if (dialog.isShowing) {
+                    dialog.dismiss()
                 }
-                put("title", mTitle)
-                put("duration", mDuration)
-                val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
-                put("path", File(externalFilesDir, "0.mp4"))
-            }
-            val kProgressHUD = KProgressHUD.create(this@LessonRecordActivity)
-                    .setLabel("上传中...")
-                    .setCancellable(false)
-                    .setAnimationSpeed(2)
-                    .setDimAmount(0.5f)
-                    .show()
-            ChannelManager.instance.callFlutter("uploadLearnVideo", json.toString(), object : MethodChannelResultAdapter() {
-                override fun success(result: Any?) {
-                    super.success(result)
-                    if (kProgressHUD.isShowing) {
-                        kProgressHUD.dismiss()
-                    }
-                    if (result == null) {
-                        CustomToast.showSuccessToast(applicationContext, R.string.upload_success)
+            } else {
+                if (!isComposed) {
+                    stopRecord()
+                }
+                VideoComposer.merge(direction.absolutePath, object : OnFileComposeCallback {
+                    val kComposeProgressHUD = KProgressHUD.create(this@LessonRecordActivity)
+                            .setLabel("视频处理中...")
+                            .setCancellable(false)
+                            .setAnimationSpeed(2)
+                            .setDimAmount(0.5f)
 
-                        finish()
-                    } else {
-                        CustomToast.showFailureToast(applicationContext, R.string.upload_failure)
+                    override fun onFinished(success: Boolean, path: String) {
+                        runOnUiThread {
+                            if (success) {
+                                upload(editText, path)
+                                if (dialog.isShowing) {
+                                    runOnUiThread { dialog.dismiss() }
+                                }
+                            } else {
+                                Toast.makeText(this@LessonRecordActivity, "处理视频失败", Toast.LENGTH_LONG).show()
+                            }
+                            kComposeProgressHUD.dismiss()
+                        }
                     }
-                }
-            })
-            if (dialog.isShowing) {
-                dialog.dismiss()
+
+                    override fun onCombineProcessing() {
+                    }
+
+                    override fun onStart() {
+                        runOnUiThread { kComposeProgressHUD.show() }
+                    }
+                })
             }
         }
         dialog.findViewById<ImageView>(R.id.btnCloseDialog).setOnClickListener {
@@ -497,13 +503,50 @@ class LessonRecordActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun upload(editText: EditText, path: String) {
+        val json = JSONObject().apply {
+            if (editText.text != null || editText.text.isNotEmpty()) {
+                val title: String = editText.text.toString()
+                mTitle = if (title.length > 50) {
+                    title.substring(0, 50)
+                } else {
+                    title
+                }
+            }
+            put("title", mTitle)
+            put("duration", mDuration)
+            put("path", path)
+        }
+        doUpload(json)
+    }
+
+    private fun doUpload(json: JSONObject) {
+        val kProgressHUD = KProgressHUD.create(this@LessonRecordActivity)
+                .setLabel("上传中...")
+                .setCancellable(false)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f)
+                .show()
+        ChannelManager.instance.callFlutter("uploadLearnVideo", json.toString(), object : MethodChannelResultAdapter() {
+            override fun success(result: Any?) {
+                super.success(result)
+                if (kProgressHUD.isShowing) {
+                    kProgressHUD.dismiss()
+                }
+                if (result == null) {
+                    CustomToast.showSuccessToast(applicationContext, R.string.upload_success)
+
+                    finish()
+                } else {
+                    CustomToast.showFailureToast(applicationContext, R.string.upload_failure)
+                }
+            }
+        })
+    }
+
     private fun stopRecord() {
         if (mCurrentStatus != statusFinish) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mRecordHandler.stop()
-            } else {
-                mRecordHandler.release()
-            }
+            mRecordHandler.recordFinish()
         }
     }
 
@@ -524,6 +567,9 @@ class LessonRecordActivity : AppCompatActivity() {
     }
 
     private fun updateTimeView(isPause: Boolean) {
+        if (mIsShowTimer) {
+            return
+        }
         this.mIsPause = isPause
         mHandler.post(myRunner)
     }
