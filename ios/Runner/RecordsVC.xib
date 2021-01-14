@@ -411,11 +411,6 @@
                 <constraint firstItem="L28-Bf-JZy" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="vBX-1z-I2H"/>
                 <constraint firstAttribute="bottom" secondItem="rqK-l3-8XL" secondAttribute="bottom" constant="10" id="ymh-DI-Abv"/>
             </constraints>
-            <variation key="default">
-                <mask key="subviews">
-                    <exclude reference="L28-Bf-JZy"/>
-                </mask>
-            </variation>
             <point key="canvasLocation" x="258.48214285714283" y="31.884057971014496"/>
         </view>
     </objects>
