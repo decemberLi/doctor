@@ -380,8 +380,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             Provider.of<UserInfoViewModel>(context, listen: false);
         var map = {
           "path": picPath,
-          "name": data.doctorName,
-          "userID": data.doctorUserId,
+          "name": model.data.doctorName,
+          "userID": model.data.doctorUserId,
           "hospital": model.data.hospitalName,
           "title": data.taskName
         };
