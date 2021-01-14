@@ -11,7 +11,7 @@ class OssService {
   factory OssService() => _instance;
 
   static Future<OssFileEntity> upload(path, {bool showLoading = true}) async {
-    return await _instance._upload(path, {showLoading});
+    return await _instance._upload(path, showLoading);
   }
 
   static Future getFile(params) async {
