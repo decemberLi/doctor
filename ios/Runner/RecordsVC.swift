@@ -400,6 +400,7 @@ class RecordsVC: UIViewController {
             introImage.tag = 1
             introImage.image = UIImage(named: "record_1")
             introPreBTN.isHidden = true
+            introNextBTN.isHidden = false
         }else {
 //            changeToIdle()
 //            stopRecords()
