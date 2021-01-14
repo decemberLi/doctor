@@ -309,23 +309,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           'taskName': data.taskName,
           'from': arguments['from'],
           'upFinished': (lectureID) {
-            EasyLoading.instance.flash(() async {
-              print("-------------");
-              print("the lectureID == ${lectureID}");
-              var result =
-                  await API.shared.server.doctorLectureSharePic("$lectureID");
-              var appDocDir = await getApplicationDocumentsDirectory();
-              if (Platform.isAndroid) {
-                appDocDir = await getExternalStorageDirectory();
-              }
-              String picPath =
-                  appDocDir.path + "/sharePic${DateTime.now().millisecond}.jpg";
-              await Dio().download(result["url"], picPath);
-              var obj = {"path": picPath, "url": result["codeStr"]};
-              var share = json.encode(obj).toString();
-              MedcloudsNativeApi.instance().share(share);
-              print(result);
-            });
+            _uploadFinish(lectureID);
           }
         },
       );
@@ -353,6 +337,26 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         }
       }
     }
+  }
+
+  _uploadFinish(lectureID){
+    EasyLoading.instance.flash(() async {
+      print("-------------");
+      print("the lectureID == ${lectureID}");
+      var result =
+      await API.shared.server.doctorLectureSharePic("$lectureID");
+      var appDocDir = await getApplicationDocumentsDirectory();
+      if (Platform.isAndroid) {
+        appDocDir = await getExternalStorageDirectory();
+      }
+      String picPath =
+          appDocDir.path + "/sharePic${DateTime.now().millisecond}.jpg";
+      await Dio().download(result["url"], picPath);
+      var obj = {"path": picPath, "url": result["codeStr"]};
+      var share = json.encode(obj).toString();
+      MedcloudsNativeApi.instance().share(share);
+      print(result);
+    });
   }
 
   _gotoRecord(LearnDetailItem data) {
@@ -400,7 +404,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     );
   }
 
-  _gotoRecordPage(pdf,data,result){
+  _gotoRecordPage(pdf,LearnDetailItem data,result){
     MedcloudsNativeApi.instance().record(result.toString());
     MedcloudsNativeApi.instance().addProcessor(
       "uploadLearnVideo",
@@ -424,6 +428,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           },
         );
         _model.initData();
+        _uploadFinish(result["lectureID"]);
         return null;
         //print("the result is ${result}");
       },
