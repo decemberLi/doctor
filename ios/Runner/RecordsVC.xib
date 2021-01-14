@@ -76,26 +76,26 @@
                     <rect key="frame" x="766" y="151" width="130" height="170"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="srM-hs-mry">
-                            <rect key="frame" x="25" y="25" width="80" height="0.0"/>
+                            <rect key="frame" x="10" y="25" width="110" height="0.0"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8h4-bG-OJU">
-                            <rect key="frame" x="25" y="45" width="80" height="0.0"/>
-                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                            <rect key="frame" x="10" y="45" width="110" height="0.0"/>
+                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="12"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="8h4-bG-OJU" firstAttribute="leading" secondItem="OK0-zU-QAV" secondAttribute="leading" constant="25" id="39N-y3-LBt"/>
-                        <constraint firstAttribute="trailing" secondItem="8h4-bG-OJU" secondAttribute="trailing" constant="25" id="7Tk-FX-0wl"/>
+                        <constraint firstItem="8h4-bG-OJU" firstAttribute="leading" secondItem="OK0-zU-QAV" secondAttribute="leading" constant="10" id="39N-y3-LBt"/>
+                        <constraint firstAttribute="trailing" secondItem="8h4-bG-OJU" secondAttribute="trailing" constant="10" id="7Tk-FX-0wl"/>
                         <constraint firstItem="8h4-bG-OJU" firstAttribute="top" secondItem="srM-hs-mry" secondAttribute="bottom" constant="20" id="9Vk-sC-mhQ"/>
                         <constraint firstItem="srM-hs-mry" firstAttribute="top" secondItem="OK0-zU-QAV" secondAttribute="top" constant="25" id="Gpw-OF-DKr"/>
-                        <constraint firstAttribute="trailing" secondItem="srM-hs-mry" secondAttribute="trailing" constant="25" id="JQp-4t-O0W"/>
-                        <constraint firstItem="srM-hs-mry" firstAttribute="leading" secondItem="OK0-zU-QAV" secondAttribute="leading" constant="25" id="KyJ-0U-KF9"/>
+                        <constraint firstAttribute="trailing" secondItem="srM-hs-mry" secondAttribute="trailing" constant="10" id="JQp-4t-O0W"/>
+                        <constraint firstItem="srM-hs-mry" firstAttribute="leading" secondItem="OK0-zU-QAV" secondAttribute="leading" constant="10" id="KyJ-0U-KF9"/>
                     </constraints>
                 </view>
                 <button opaque="NO" tag="1001" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6rC-4d-JNu">
@@ -141,7 +141,7 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </view>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="88:88" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TrC-Cu-ok8">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TrC-Cu-ok8">
                             <rect key="frame" x="12" y="2" width="48" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

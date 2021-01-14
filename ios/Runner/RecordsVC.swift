@@ -343,7 +343,6 @@ class RecordsVC: UIViewController {
     }
     
     private func submitFile(_ title : String){
-        MBProgressHUD.showWhiteAdded(to: view, animated: true)
         let dir = NSHomeDirectory() + "/Documents/records"
         let path = dir + "/allRecord.mp4"
         let vc = AppDelegate.shared?.window.rootViewController
@@ -409,6 +408,7 @@ class RecordsVC: UIViewController {
             return
         }
         view.endEditing(true)
+        MBProgressHUD.showWhiteAdded(to: view, animated: true)
         merge {
             self.submitFile(title)
         }
@@ -473,8 +473,7 @@ class RecordsVC: UIViewController {
         startDate = nil
         timer?.invalidate()
         timer = nil
-        timeLbl.text = ""
-        timeBG.isHidden = true
+        timeLbl.text = "00:00"
         backBTN.isHidden = false
         RPScreenRecorder.shared().cameraPreviewView?.isHidden = true
     }
@@ -494,7 +493,6 @@ class RecordsVC: UIViewController {
             if let s = self?.startDate {
                 let second = weakSelf.recordTime + Date().timeIntervalSince(s)
                 weakSelf.timeLbl.text = String(format: "%02d:%02d", Int(second/60),Int(second)%60)
-                weakSelf.timeBG.isHidden = false
                 UIView.animate(withDuration: 0.4) {
                     weakSelf.timeDot.alpha = 0.3
                 } completion: { (_) in
