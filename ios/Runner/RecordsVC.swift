@@ -230,7 +230,7 @@ class RecordsVC: UIViewController {
         RPScreenRecorder.shared().isCameraEnabled = true
         RPScreenRecorder.shared().startCapture {[weak self] (cmSampleBuffer, rpSampleBufferType, err) in
             if err != nil { return }
-            guard let writer = self?.assetWriter else {return}
+            
             guard RPScreenRecorder.shared().isMicrophoneEnabled else {
                 DispatchQueue.main.async {
                     MBProgressHUD.toastText(msg: "需授权麦克风方可开启录制，请重试")
@@ -243,39 +243,14 @@ class RecordsVC: UIViewController {
             
             if CMSampleBufferDataIsReady(cmSampleBuffer) {
 //                print("the mic is enable \(RPScreenRecorder.shared().isMicrophoneEnabled)")
-                DispatchQueue.main.async {
-                    
-                    switch rpSampleBufferType {
-                    case .video:
-                        
-                        if self?.assetWriter?.status == AVAssetWriter.Status.unknown {
-                            
-                            print("Started writing")
-                            writer.startWriting()
-                            writer.startSession(atSourceTime: CMSampleBufferGetPresentationTimeStamp(cmSampleBuffer))
-                        }
-                        
-                        if writer.status == AVAssetWriter.Status.failed {
-                            print("StartCapture Error Occurred, Status = \(writer.status.rawValue), \(writer.error?.localizedDescription ?? "error")")
-                            return
-                        }
-                        
-                        if writer.status == AVAssetWriter.Status.writing {
-                            if self?.videoInput?.isReadyForMoreMediaData == true {
-                                if self?.videoInput?.append(cmSampleBuffer) == false {
-                                    print("problem writing video")
-                                }
-                            }
-                        }
-                        
-                    case .audioMic:
-                        if self?.audioInput?.isReadyForMoreMediaData == true {
-                            self?.audioInput?.append(cmSampleBuffer)
-                        }
-                    default:
-                        break
+                if Thread.isMainThread {
+                    self?.switchBuffer(cmSampleBuffer: cmSampleBuffer, rpSampleBufferType: rpSampleBufferType)
+                }else{
+                    DispatchQueue.main.sync {
+                        self?.switchBuffer(cmSampleBuffer: cmSampleBuffer, rpSampleBufferType: rpSampleBufferType)
                     }
                 }
+                
             }
         } completionHandler: {[weak self] (error) in
             DispatchQueue.main.async {
@@ -308,6 +283,39 @@ class RecordsVC: UIViewController {
     }
     
     
+    private func switchBuffer(cmSampleBuffer:CMSampleBuffer, rpSampleBufferType:RPSampleBufferType){
+        guard let writer = assetWriter else {return}
+        switch rpSampleBufferType {
+        case .video:
+            
+            if writer.status == AVAssetWriter.Status.unknown {
+                print("Started writing")
+                writer.startWriting()
+                writer.startSession(atSourceTime: CMSampleBufferGetPresentationTimeStamp(cmSampleBuffer))
+            }
+            
+            if writer.status == AVAssetWriter.Status.failed {
+                print("StartCapture Error Occurred, Status = \(writer.status.rawValue), \(writer.error?.localizedDescription ?? "error")")
+                return
+            }
+            
+            if assetWriter?.status == .writing {
+                if videoInput?.isReadyForMoreMediaData == true {
+                    if videoInput?.append(cmSampleBuffer) == false {
+                        print("problem writing video")
+                    }
+                }
+            }
+            
+        case .audioMic:
+            if audioInput?.isReadyForMoreMediaData == true {
+                audioInput?.append(cmSampleBuffer)
+            }
+        default:
+            break
+        }
+    }
+    
     private func startRecord(){
         paths.removeAll()
         beginRecord()
@@ -323,44 +331,54 @@ class RecordsVC: UIViewController {
         
         RPScreenRecorder.shared().stopCapture { (error) in
             guard let writer = self.assetWriter else {return}
+            self.audioInput = nil
+            self.videoInput = nil
+            self.assetWriter = nil
             writer.finishWriting {
                 print("recourd finished --- ")
-                self.assetWriter = nil
             }
         }
     }
     
     private func merge(finished:(()->Void)?){
-        let mixComposition = AVMutableComposition()
-        let audioTrack = mixComposition.addMutableTrack(withMediaType: .audio, preferredTrackID: CMPersistentTrackID(kCMPersistentTrackID_Invalid))
-        let videoTrack = mixComposition.addMutableTrack(withMediaType: .video, preferredTrackID: CMPersistentTrackID(kCMPersistentTrackID_Invalid))
-        var totalDuration : CMTime = .zero
-        for url in paths {
-            let asset = AVURLAsset(url: url)
-            if let assetAudioTrack = asset.tracks(withMediaType: .audio).first {
-                try? audioTrack?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: assetAudioTrack, at: totalDuration)
-            }
-            
-            if let assetVideoTrack = asset.tracks(withMediaType: .video).first {
-                try? videoTrack?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: assetVideoTrack, at: totalDuration)
-            }
-            totalDuration = CMTimeAdd(totalDuration, asset.duration)
-        }
         let dir = NSHomeDirectory() + "/Documents/records"
         let path = dir + "/allRecord.mp4"
         let fileURL = URL(fileURLWithPath: path)
         try? FileManager.default.removeItem(at: fileURL)
-        let export = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPreset1920x1080)
-        print("the export is \(export?.description ?? "error")")
-        export?.outputURL = fileURL
-        export?.outputFileType = .mp4
-        export?.shouldOptimizeForNetworkUse = true
-        export?.exportAsynchronously {
-            print("export finished \(export?.error)")
-            DispatchQueue.main.async {
-                finished?()
+        if paths.count == 1 {
+            let old = paths[0]
+            try? FileManager.default.copyItem(at: old, to: fileURL)
+            finished?()
+        }else{
+            let mixComposition = AVMutableComposition()
+            let audioTrack = mixComposition.addMutableTrack(withMediaType: .audio, preferredTrackID: CMPersistentTrackID(kCMPersistentTrackID_Invalid))
+            let videoTrack = mixComposition.addMutableTrack(withMediaType: .video, preferredTrackID: CMPersistentTrackID(kCMPersistentTrackID_Invalid))
+            var totalDuration : CMTime = .zero
+            for url in paths {
+                let asset = AVURLAsset(url: url)
+                if let assetAudioTrack = asset.tracks(withMediaType: .audio).first {
+                    try? audioTrack?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: assetAudioTrack, at: totalDuration)
+                }
+                
+                if let assetVideoTrack = asset.tracks(withMediaType: .video).first {
+                    try? videoTrack?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: assetVideoTrack, at: totalDuration)
+                }
+                totalDuration = CMTimeAdd(totalDuration, asset.duration)
+            }
+            
+            let export = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPreset1920x1080)
+            print("the export is \(export?.description ?? "error")")
+            export?.outputURL = fileURL
+            export?.outputFileType = .mp4
+            export?.shouldOptimizeForNetworkUse = true
+            export?.exportAsynchronously {
+                print("export finished \(export?.error)")
+                DispatchQueue.main.async {
+                    finished?()
+                }
             }
         }
+        
     }
     
     private func submitFile(_ title : String){
@@ -382,9 +400,11 @@ class RecordsVC: UIViewController {
     
     //MARK:- IBAction
     @IBAction func onChangeRecordState(_ sender : UIButton){
-        sender.isEnabled = false
-        Timer.scheduledTimer(withTimeInterval: 0.33, repeats: false) { (_) in
-            sender.isEnabled = true
+        firstBTN.isEnabled = false
+        secondBTN.isEnabled = false
+        Timer.scheduledTimer(withTimeInterval: 0.33, repeats: false) {[weak self] (_) in
+            self?.firstBTN.isEnabled = true
+            self?.secondBTN.isEnabled = true
         }
         if sender.tag == 1001 {
             startRecord()
@@ -401,6 +421,7 @@ class RecordsVC: UIViewController {
             introImage.image = UIImage(named: "record_1")
             introPreBTN.isHidden = true
             introNextBTN.isHidden = false
+            introBG.isHidden = true
         }else {
 //            changeToIdle()
 //            stopRecords()
@@ -515,21 +536,26 @@ class RecordsVC: UIViewController {
         secondBTN.setImage(UIImage(named: "录制中"), for: .normal)
         secondBTN.tag = 1002
         startDate = Date()
+        updateRecordTime()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true)  {[weak self] (t) in
             guard let weakSelf = self else {
                 t.invalidate()
                 self?.timer = nil
                 return
             }
-            if let s = self?.startDate {
-                let second = weakSelf.recordTime + Date().timeIntervalSince(s)
-                weakSelf.timeLbl.text = String(format: "%02d:%02d", Int(second/60),Int(second)%60)
+            weakSelf.updateRecordTime()
+        }
+    }
+    
+    private func updateRecordTime(){
+        if let s = startDate {
+            let second = recordTime + Date().timeIntervalSince(s)
+            timeLbl.text = String(format: "%02d:%02d", Int(second/60),Int(second)%60)
+            UIView.animate(withDuration: 0.4) {
+                self.timeDot.alpha = 0.3
+            } completion: { (_) in
                 UIView.animate(withDuration: 0.4) {
-                    weakSelf.timeDot.alpha = 0.3
-                } completion: { (_) in
-                    UIView.animate(withDuration: 0.4) {
-                        weakSelf.timeDot.alpha = 1
-                    }
+                    self.timeDot.alpha = 1
                 }
             }
         }

@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "暂停.png",
+      "filename" : "结束.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "暂停@2x.png",
+      "filename" : "结束@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "暂停@3x.png",
+      "filename" : "结束@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

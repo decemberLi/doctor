@@ -176,11 +176,14 @@ class ShareVC: UIViewController {
                 UIImageWriteToSavedPhotosAlbum(save, nil, nil, nil)
                 MBProgressHUD.toast(msg: "保存成功")
             }else{
-                MBProgressHUD.toastText(msg: "请打开相机权限")
                 PHPhotoLibrary.requestAuthorization { (status) in
-                    if status == .authorized {
-                        UIImageWriteToSavedPhotosAlbum(save, nil, nil, nil)
-                        MBProgressHUD.toast(msg: "保存成功")
+                    DispatchQueue.main.async {
+                        if status == .authorized {
+                            UIImageWriteToSavedPhotosAlbum(save, nil, nil, nil)
+                            MBProgressHUD.toast(msg: "保存成功")
+                        }else{
+                            MBProgressHUD.toast(img:"错误",msg: "打开相机权限才能保存图片哦")
+                        }
                     }
                 }
             }
