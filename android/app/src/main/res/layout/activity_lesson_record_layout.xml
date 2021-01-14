@@ -92,8 +92,10 @@
                 android:layout_marginTop="23dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_gravity="center_horizontal"
                 android:textColor="@color/white"
                 android:textSize="16sp"
+                android:textAlignment="center"
                 tools:text="医生姓名" />
 
             <TextView
@@ -106,7 +108,7 @@
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="12sp"
-                tools:text="四川省成都市第二人民医院医院医院医院" />
+                tools:text="四川省成都市第二人民医院院" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

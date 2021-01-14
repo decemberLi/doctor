@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -34,6 +35,9 @@ class CustomToast {
         }
         fun showFailureToast(context: Context, @StringRes str: Int) {
             val view: View = LayoutInflater.from(context).inflate(R.layout.view_custom_toast, null)
+            view.findViewById<ImageView>(R.id.iconToast).apply {
+                setImageResource(R.mipmap.icon_toast_error)
+            }
             val msgView: TextView = view.findViewById(R.id.custom_toast_text) as TextView
             msgView.setText(str)
             val toast = Toast(context)

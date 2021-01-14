@@ -16,7 +16,7 @@ class MediaRecorderThread(
         private var mDpi: Int,
         private var mDstPath: String,
         private var mediaProjection: MediaProjection
-) : Runnable {
+) {
     companion object {
         const val TAG = "MediaRecorderThread"
     }
@@ -25,8 +25,7 @@ class MediaRecorderThread(
     private lateinit var mVirtualDisplay: VirtualDisplay
     private var mFileSequence = 0
 
-
-    override fun run() {
+    fun prepareMediaRecord() {
         try {
             mMediaRecorder = MediaRecorder()
             initMediaRecorder()
@@ -35,7 +34,6 @@ class MediaRecorderThread(
                     DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC, mMediaRecorder.surface,
                     null, null
             )
-            mMediaRecorder.start()
         } catch (e: Exception) {
             e.printStackTrace()
             Log.w(TAG, "屏幕录制发生异常，${e.printStackTrace()}")
@@ -44,54 +42,62 @@ class MediaRecorderThread(
         }
     }
 
-    private fun deleteAllFile() {
+    fun deleteAllFile() {
         val fileList = File(mDstPath).list() ?: return
         for (each in fileList) {
-            File(each).deleteOnExit()
+            try {
+                File(mDstPath, each).delete()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     private fun initMediaRecorder() {
-        deleteAllFile()
         val profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P)
-        // 设置视频来源
-        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT)
-        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        mMediaRecorder.setOutputFile(File(mDstPath, "${mFileSequence++}.mp4").absolutePath)
-        mMediaRecorder.setVideoSize(mWidth, mHeight)
-        mMediaRecorder.setVideoFrameRate(profile.videoFrameRate)
-//        mMediaRecorder.setVideoEncoder(profile.videoCodec)
-        //比特率
-        mMediaRecorder.setVideoEncodingBitRate(profile.videoBitRate)
-
-        //视频编码格式
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-
-        mMediaRecorder.setAudioChannels(profile.audioChannels)
-        mMediaRecorder.setAudioSamplingRate(profile.audioSampleRate)
-        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264)
-        //准备 到这里 就可以开始录制视频了
-        mMediaRecorder.prepare()
+        mMediaRecorder.apply {
+            // 设置视频来源
+            setVideoSource(MediaRecorder.VideoSource.SURFACE)
+            setAudioSource(MediaRecorder.AudioSource.DEFAULT)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setOutputFile(File(mDstPath, "${mFileSequence++}.mp4").absolutePath)
+            setVideoSize(mWidth, mHeight)
+            setVideoFrameRate(profile.videoFrameRate)
+            // mMediaRecorder.setVideoEncoder(profile.videoCodec)
+            // 比特率
+            setVideoEncodingBitRate(profile.videoBitRate)
+            // 视频编码格式
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setAudioChannels(profile.audioChannels)
+            setAudioSamplingRate(profile.audioSampleRate)
+            setVideoEncoder(MediaRecorder.VideoEncoder.H264)
+            // 准备 到这里 就可以开始录制视频了
+            prepare()
+        }
     }
 
-    fun release() {
-        mMediaRecorder.setOnErrorListener(null)
-        mMediaRecorder.stop()
-        mMediaRecorder.release()
-    }
-
-    fun reRecord() {
-        mFileSequence = 0
-        initMediaRecorder()
+    fun startRecord() {
         mMediaRecorder.start()
     }
 
-    fun stop() {
-        try {
-            mMediaRecorder.stop()
-        } catch (e: Exception) {
-            e.printStackTrace()
+    fun recordFinish() {
+        if (Build.VERSION.SDK_INT >= N) {
+            try {
+                mMediaRecorder.stop()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } else {
+            // merge data
+            mMediaRecorder.apply {
+                try {
+                    setOnErrorListener(null)
+                    stop()
+                    reset()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 
@@ -99,7 +105,15 @@ class MediaRecorderThread(
         if (Build.VERSION.SDK_INT >= N) {
             mMediaRecorder.pause()
         } else {
-            release()
+            mMediaRecorder.apply {
+                try {
+                    setOnErrorListener(null)
+                    stop()
+                    reset()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 
@@ -107,40 +121,10 @@ class MediaRecorderThread(
         if (Build.VERSION.SDK_INT >= N) {
             mMediaRecorder.resume()
         } else {
-            mMediaRecorder.setOutputFile(File(mDstPath, "${mFileSequence++}.mp4").absolutePath)
-            mMediaRecorder.prepare()
-            mMediaRecorder.start()
+            mMediaRecorder.apply {
+                prepareMediaRecord()
+                startRecord()
+            }
         }
-
-    }
-
-    private fun merge() {
-        val file = File(mDstPath)
-        if (!file.exists()) {
-            return
-        }
-        val lists = file.list()
-        if (lists == null || lists.isEmpty()) {
-            return
-        }
-        val videoList = ArrayList<String>()
-        for (each in lists) {
-            videoList.add("$mDstPath/$each")
-        }
-
-        VideoCombiner(videoList, File(mDstPath, "merged").absolutePath,
-                object : VideoCombiner.VideoCombineListener {
-                    override fun onCombineStart() {
-                        Log.d(TAG, "onCombineStart: ")
-                    }
-
-                    override fun onCombineProcessing(current: Int, sum: Int) {
-                        Log.d(TAG, "onCombineProcessing: ")
-                    }
-
-                    override fun onCombineFinished(success: Boolean) {
-                        Log.d(TAG, "onCombineFinished: ")
-                    }
-                })
     }
 }
