@@ -386,33 +386,46 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           "title": data.taskName
         };
         var result = json.encode(map);
-        MedcloudsNativeApi.instance().record(result.toString());
-        MedcloudsNativeApi.instance().addProcessor(
-          "uploadLearnVideo",
+        var pdfFileStream = File(picPath).openRead(0,4).transform(utf8.decoder);
+        pdfFileStream.listen((event) {
+          if (event.toUpperCase() == '%PDF') {
+            this._gotoRecordPage(pdf,data,result);
+          }else{
+            print("格式为：-  $event");
+            EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
+          }
+          
+        });
+      },
+    );
+  }
+
+  _gotoRecordPage(pdf,data,result){
+    MedcloudsNativeApi.instance().record(result.toString());
+    MedcloudsNativeApi.instance().addProcessor(
+      "uploadLearnVideo",
           (args) async {
-            print("call uploadLearnVideo ${args}");
-            var obj = json.decode(args);
-            print("call 1111111 ${obj}");
-            var entity = await OssService.upload(
-              obj["path"],
-            );
-            print("call 22222 ${entity}");
-            EasyLoading.dismiss();
-            var result = await API.shared.server.addLectureSubmit(
-              {
-                'learnPlanId': data.learnPlanId,
-                'resourceId': pdf.resourceId,
-                'videoTitle': obj['title']??data.taskName,
-                'duration': obj['duration']??0,
-                'presenter': data.doctorName,
-                'videoOssId': entity.ossId,
-              },
-            );
-            _model.initData();
-            return null;
-            //print("the result is ${result}");
+        print("call uploadLearnVideo ${args}");
+        var obj = json.decode(args);
+        print("call 1111111 ${obj}");
+        var entity = await OssService.upload(
+          obj["path"],
+        );
+        print("call 22222 ${entity}");
+        EasyLoading.dismiss();
+        var result = await API.shared.server.addLectureSubmit(
+          {
+            'learnPlanId': data.learnPlanId,
+            'resourceId': pdf.resourceId,
+            'videoTitle': obj['title']??data.taskName,
+            'duration': obj['duration']??0,
+            'presenter': data.doctorName,
+            'videoOssId': entity.ossId,
           },
         );
+        _model.initData();
+        return null;
+        //print("the result is ${result}");
       },
     );
   }

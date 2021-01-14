@@ -195,7 +195,7 @@
                             </connections>
                         </button>
                         <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BNV-4e-UZi">
-                            <rect key="frame" x="391" y="295" width="114" height="44"/>
+                            <rect key="frame" x="391" y="305" width="114" height="44"/>
                             <color key="backgroundColor" red="0.28235294117647058" green="0.61568627450980395" blue="0.99607843137254903" alpha="1" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="114" id="Fkc-x8-aMP"/>
@@ -221,7 +221,7 @@
                         <constraint firstItem="9Wt-PI-jxy" firstAttribute="leading" secondItem="bf6-sd-Lla" secondAttribute="leading" id="PBg-2n-WTD"/>
                         <constraint firstItem="9Wt-PI-jxy" firstAttribute="top" secondItem="bf6-sd-Lla" secondAttribute="top" id="QdV-d7-Osp"/>
                         <constraint firstItem="ABA-yg-Ll9" firstAttribute="leading" secondItem="bf6-sd-Lla" secondAttribute="leading" constant="40" id="W6Q-E9-iw2"/>
-                        <constraint firstAttribute="bottom" secondItem="BNV-4e-UZi" secondAttribute="bottom" constant="75" id="Xll-3H-qvE"/>
+                        <constraint firstAttribute="bottom" secondItem="BNV-4e-UZi" secondAttribute="bottom" constant="65" id="Xll-3H-qvE"/>
                         <constraint firstAttribute="trailing" secondItem="9Wt-PI-jxy" secondAttribute="trailing" id="Yqb-S8-LBF"/>
                         <constraint firstItem="xdm-yQ-abx" firstAttribute="centerY" secondItem="bf6-sd-Lla" secondAttribute="centerY" id="bwG-K8-4lW"/>
                         <constraint firstAttribute="trailing" secondItem="uYZ-T9-d6h" secondAttribute="trailing" constant="40" id="iw1-hg-Kt9"/>
