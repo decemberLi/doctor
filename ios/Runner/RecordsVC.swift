@@ -41,8 +41,8 @@ class RecordsVC: UIViewController {
     private var playerLayer : AVCaptureVideoPreviewLayer?
     private var session : AVCaptureSession = AVCaptureSession()
     private var assetWriter:AVAssetWriter?
-    private var videoInput:AVAssetWriterInput!
-    private var audioInput:AVAssetWriterInput!
+    private var videoInput:AVAssetWriterInput?
+    private var audioInput:AVAssetWriterInput?
     
     
     private var paths : [URL] = []
@@ -191,9 +191,10 @@ class RecordsVC: UIViewController {
             AVVideoHeightKey : height
         ];
         
-        videoInput  = AVAssetWriterInput (mediaType: AVMediaType.video, outputSettings: videoOutputSettings)
-        videoInput.expectsMediaDataInRealTime = true
-        assetWriter?.add(videoInput)
+        let vInput  = AVAssetWriterInput (mediaType: AVMediaType.video, outputSettings: videoOutputSettings)
+        vInput.expectsMediaDataInRealTime = true
+        assetWriter?.add(vInput)
+        videoInput = vInput
         
         let audioSettings: [String:Any] = [AVFormatIDKey : kAudioFormatMPEG4AAC,
                                            AVNumberOfChannelsKey : 2,
@@ -201,9 +202,10 @@ class RecordsVC: UIViewController {
                                            AVEncoderBitRateKey: 192000
         ]
         
-        audioInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
-        audioInput.expectsMediaDataInRealTime = true
-        assetWriter?.add(audioInput)
+        let aInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
+        aInput.expectsMediaDataInRealTime = true
+        assetWriter?.add(aInput)
+        audioInput = aInput
     }
     
     private func beginRecord(){
@@ -244,16 +246,16 @@ class RecordsVC: UIViewController {
                         }
                         
                         if writer.status == AVAssetWriter.Status.writing {
-                            if self?.videoInput.isReadyForMoreMediaData == true && self?.session.isRunning == true {
-                                if self?.videoInput.append(cmSampleBuffer) == false {
+                            if self?.videoInput?.isReadyForMoreMediaData == true {
+                                if self?.videoInput?.append(cmSampleBuffer) == false {
                                     print("problem writing video")
                                 }
                             }
                         }
                         
                     case .audioMic:
-                        if self?.audioInput.isReadyForMoreMediaData == true {
-                            self?.audioInput.append(cmSampleBuffer)
+                        if self?.audioInput?.isReadyForMoreMediaData == true {
+                            self?.audioInput?.append(cmSampleBuffer)
                         }
                     default:
                         break
@@ -357,7 +359,7 @@ class RecordsVC: UIViewController {
                 self.dismiss(animated: true, completion: nil)
                 MBProgressHUD.toast(msg: "上传成功")
             }else{
-                MBProgressHUD.toast(msg: error as? String ?? "error")
+                MBProgressHUD.toast(img:"错误",msg: error as? String ?? "error")
             }
             
         }

@@ -10,8 +10,8 @@ class OssService {
   static final OssService _instance = OssService._internal();
   factory OssService() => _instance;
 
-  static Future<OssFileEntity> upload(path) async {
-    return await _instance._upload(path);
+  static Future<OssFileEntity> upload(path, {bool showLoading = true}) async {
+    return await _instance._upload(path, {showLoading});
   }
 
   static Future getFile(params) async {
@@ -35,6 +35,7 @@ class OssService {
   Future<OssFileEntity> _upload(
     String path, {
     String loadingText = '上传中...',
+        bool showLoading = true,
     bool publicRead = false,
   }) async {
     await _querySignature();
@@ -42,7 +43,10 @@ class OssService {
     String suffix = path.substring(path.lastIndexOf('.') + 1, path.length);
 
     String ossFileName = '${_policy.fileNamePrefix}$originName';
-    EasyLoading.show(status: loadingText);
+    if(showLoading){
+      EasyLoading.show(status: loadingText);
+    }
+
     await _uploadToOss(path, originName, ossFileName);
     Map<String, dynamic> param = {
       'ossFileName': ossFileName,
@@ -53,7 +57,10 @@ class OssService {
     OssFileEntity entity = await _saveFile(param);
     entity.type = suffix;
     entity.name = originName;
-    EasyLoading.dismiss();
+    if(showLoading){
+      EasyLoading.dismiss();
+    }
+
     return entity;
   }
 
