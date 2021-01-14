@@ -92,7 +92,6 @@ class LessonRecordActivity : AppCompatActivity() {
 
                 return
             }
-            timerLayout.visibility = View.VISIBLE
             mAnimation.repeatMode = REVERSE
             mAnimation.repeatCount = 1
             timerRedDot.startAnimation(mAnimation)
@@ -258,6 +257,7 @@ class LessonRecordActivity : AppCompatActivity() {
     private fun populateUI() {
         doctorName.text = mDoctorName
         doctorHospitalName.text = mHospital
+        timerView.text = "00:00"
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -406,12 +406,10 @@ class LessonRecordActivity : AppCompatActivity() {
             statusFinish -> {
                 lessonRecordBtnAction.setImageResource(R.mipmap.btn_record_start)
                 lessonRecordBtnFinish.visibility = View.GONE
-                timerLayout.visibility = View.GONE
             }
             statusReady -> {
                 lessonRecordBtnAction.setImageResource(R.mipmap.btn_record_start)
                 lessonRecordBtnFinish.visibility = View.GONE
-                timerLayout.visibility = View.GONE
             }
             statusPlaying -> {
                 lessonRecordBtnAction.setImageResource(R.mipmap.btn_record_pause)
@@ -434,6 +432,7 @@ class LessonRecordActivity : AppCompatActivity() {
             lessonRecordBtnHelp.visibility = View.VISIBLE
             mCurrentStatus = statusFinish
             mDuration = 0
+            timerView.text = formatTime(mDuration)
             updateBtnStatus()
             stopRecord()
             if (dialog.isShowing) {
