@@ -16,6 +16,7 @@
                 <outlet property="backBTN" destination="eKf-cF-Rw6" id="Ifn-Ic-Czt"/>
                 <outlet property="firstBTN" destination="cr2-G8-4pZ" id="vpe-U2-gBA"/>
                 <outlet property="hospitalLbl" destination="8h4-bG-OJU" id="Kfz-l0-imp"/>
+                <outlet property="htmlView" destination="fT4-TA-tCV" id="kkv-jz-08H"/>
                 <outlet property="infoBG" destination="OK0-zU-QAV" id="puQ-BM-2E2"/>
                 <outlet property="introBG" destination="bf6-sd-Lla" id="iJj-Z2-3YS"/>
                 <outlet property="introBTN" destination="BNV-4e-UZi" id="KwN-Ru-8YN"/>
@@ -44,7 +45,23 @@
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jv9-es-g4M" userLabel="pdfView">
                     <rect key="frame" x="44" y="57" width="722" height="357"/>
+                    <subviews>
+                        <wkWebView hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fT4-TA-tCV">
+                            <rect key="frame" x="0.0" y="0.0" width="722" height="357"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <wkWebViewConfiguration key="configuration">
+                                <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                <wkPreferences key="preferences"/>
+                            </wkWebViewConfiguration>
+                        </wkWebView>
+                    </subviews>
                     <color key="backgroundColor" red="0.94509803921568625" green="0.94509803921568625" blue="0.94509803921568625" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="fT4-TA-tCV" secondAttribute="bottom" id="fww-Un-lvw"/>
+                        <constraint firstItem="fT4-TA-tCV" firstAttribute="top" secondItem="Jv9-es-g4M" secondAttribute="top" id="hBi-8l-sNk"/>
+                        <constraint firstItem="fT4-TA-tCV" firstAttribute="leading" secondItem="Jv9-es-g4M" secondAttribute="leading" id="lUY-c6-GUC"/>
+                        <constraint firstAttribute="trailing" secondItem="fT4-TA-tCV" secondAttribute="trailing" id="xvd-lZ-YTD"/>
+                    </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NkQ-sF-DQk">
                     <rect key="frame" x="766" y="57" width="130" height="94"/>
@@ -163,15 +180,14 @@
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="record_1" translatesAutoresizingMaskIntoConstraints="NO" id="xdm-yQ-abx">
                             <rect key="frame" x="171.5" y="52" width="553" height="310"/>
                         </imageView>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ABA-yg-Ll9">
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ABA-yg-Ll9">
                             <rect key="frame" x="40" y="192" width="60" height="30"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="60" id="IiI-cL-R6v"/>
                             </constraints>
-                            <size key="titleShadowOffset" width="2" height="2"/>
                             <state key="normal" image="上一页">
-                                <color key="titleShadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </state>
                             <connections>
                                 <action selector="onPreImage" destination="-1" eventType="touchUpInside" id="Gbz-Cf-3tS"/>
@@ -182,9 +198,8 @@
                             <constraints>
                                 <constraint firstAttribute="width" constant="60" id="94g-lD-UxK"/>
                             </constraints>
-                            <size key="titleShadowOffset" width="2" height="2"/>
                             <state key="normal" image="下一页">
-                                <color key="titleShadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </state>
                             <connections>
                                 <action selector="onNextImage" destination="-1" eventType="touchUpInside" id="Hzb-0z-TDP"/>

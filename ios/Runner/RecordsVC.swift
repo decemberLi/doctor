@@ -10,6 +10,7 @@ import AVFoundation
 import ReplayKit
 import PDFKit
 import MBProgressHUD
+import WebKit
 
 class RecordsVC: UIViewController {
     @IBOutlet var backBTN : UIButton!
@@ -20,6 +21,7 @@ class RecordsVC: UIViewController {
     @IBOutlet var nameLbl : UILabel!
     @IBOutlet var hospitalLbl : UILabel!
     @IBOutlet var pdfView : UIView!
+    @IBOutlet var htmlView : WKWebView!
     @IBOutlet var timeLbl : UILabel!
     @IBOutlet var timeBG : UIView!
     @IBOutlet var timeDot : UIView!
@@ -103,7 +105,13 @@ class RecordsVC: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.showPDF()
+        let type = data["type"] as? String ?? ""
+        if type  == "html" {
+            showWeb()
+        }else{
+            showPDF()
+        }
+        
     }
     
     @objc func enterBackground(){
@@ -117,6 +125,12 @@ class RecordsVC: UIViewController {
     }
     
     // MARK: - functions
+    
+    private func showWeb(){
+        htmlView.isHidden = false
+        let html = data["html"] as? String ?? ""
+        htmlView.loadHTMLString(html, baseURL: nil)
+    }
     
     private func showPDF(){
         guard let path = data["path"] as? String else {
@@ -375,12 +389,17 @@ class RecordsVC: UIViewController {
         if sender.tag == 1001 {
             startRecord()
         }else if sender.tag == 1002 {
-            changeToPause()
+            Timer.scheduledTimer(withTimeInterval: 0.33, repeats: false) {[weak self] (_) in
+                self?.changeToPause()
+            }
             stopRecords()
         }else if sender.tag == 1000 {
             beginRecord()
         }else if sender.tag == 999 {
             introBG.isHidden = false
+            introImage.tag = 1
+            introImage.image = UIImage(named: "record_1")
+            introPreBTN.isHidden = true
         }else {
 //            changeToIdle()
 //            stopRecords()

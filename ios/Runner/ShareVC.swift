@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import MBProgressHUD
+import AVFoundation
 
 class ShareVC: UIViewController {
     @IBOutlet var bgView : UIView!
@@ -167,7 +168,17 @@ class ShareVC: UIViewController {
         guard let save = img else{
             return
         }
-        UIImageWriteToSavedPhotosAlbum(save, nil, nil, nil)
+        if #available(iOS 13.0, *) {
+            UIImageWriteToSavedPhotosAlbum(save, nil, nil, nil)
+        }else{
+            if AVCaptureDevice.authorizationStatus(for: .metadata) == .authorized {
+                UIImageWriteToSavedPhotosAlbum(save, nil, nil, nil)
+            }else{
+                MBProgressHUD.toastText(msg: "请打开相机权限")
+            }
+        }
+        
+        
         MBProgressHUD.toast(msg: "保存成功")
     }
 }
