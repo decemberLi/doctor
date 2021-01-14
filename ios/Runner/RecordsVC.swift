@@ -209,6 +209,7 @@ class RecordsVC: UIViewController {
     }
     
     private func beginRecord(){
+        guard !RPScreenRecorder.shared().isRecording else {return}
         initRecord()
         RPScreenRecorder.shared().isMicrophoneEnabled = true
         RPScreenRecorder.shared().cameraPosition = .front
@@ -367,6 +368,10 @@ class RecordsVC: UIViewController {
     
     //MARK:- IBAction
     @IBAction func onChangeRecordState(_ sender : UIButton){
+        sender.isEnabled = false
+        Timer.scheduledTimer(withTimeInterval: 0.33, repeats: false) { (_) in
+            sender.isEnabled = true
+        }
         if sender.tag == 1001 {
             startRecord()
         }else if sender.tag == 1002 {
