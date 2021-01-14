@@ -253,6 +253,7 @@ class _HomePageState extends State<HomePage>
       this.initDoctorInfo();
     });
     initData();
+    showWeekIfNeededReporter(context);
   }
 
   @override
