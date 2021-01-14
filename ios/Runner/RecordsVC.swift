@@ -108,9 +108,11 @@ class RecordsVC: UIViewController {
     
     @objc func enterBackground(){
         print("enter background -----   ")
-        if RPScreenRecorder.shared().isRecording {
-            changeToPause()
-            stopRecords()
+        DispatchQueue.main.async {[weak self] in
+            if RPScreenRecorder.shared().isRecording {
+                self?.changeToPause()
+                self?.stopRecords()
+            }
         }
     }
     
@@ -194,9 +196,9 @@ class RecordsVC: UIViewController {
         assetWriter?.add(videoInput)
         
         let audioSettings: [String:Any] = [AVFormatIDKey : kAudioFormatMPEG4AAC,
-                                           AVNumberOfChannelsKey : 1,
+                                           AVNumberOfChannelsKey : 2,
                                            AVSampleRateKey : 44100.0,
-                                           AVEncoderBitRateKey: 64000
+                                           AVEncoderBitRateKey: 192000
         ]
         
         audioInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
@@ -223,7 +225,7 @@ class RecordsVC: UIViewController {
             }
             
             if CMSampleBufferDataIsReady(cmSampleBuffer) {
-                print("the mic is enable \(RPScreenRecorder.shared().isMicrophoneEnabled)")
+//                print("the mic is enable \(RPScreenRecorder.shared().isMicrophoneEnabled)")
                 DispatchQueue.main.async {
                     
                     switch rpSampleBufferType {
@@ -260,7 +262,7 @@ class RecordsVC: UIViewController {
             }
         } completionHandler: {[weak self] (error) in
             DispatchQueue.main.async {
-                if let err = error {
+                if error != nil {
                     MBProgressHUD.toastText(msg: "需开启系统录屏方可开启录制，请重试")
                     self?.recordTime = 0
                     self?.changeToIdle()
@@ -271,7 +273,9 @@ class RecordsVC: UIViewController {
                     if let one = RPScreenRecorder.shared().cameraPreviewView {
                         let width = self?.recourdBG.bounds.size.width ?? 0
                         let height = self?.recourdBG.bounds.size.height ?? 0
-                        one.transform = one.transform.rotated(by: -CGFloat.pi / 2)
+                        if #available(iOS 13.0, *) {
+                            one.transform = one.transform.rotated(by: -CGFloat.pi / 2)
+                        }
                         self?.recourdBG.addSubview(one)
                         one.frame = CGRect(origin: .zero, size: CGSize(width: width, height: height))
                         one.isHidden = false
@@ -335,7 +339,7 @@ class RecordsVC: UIViewController {
         export?.outputFileType = .mp4
         export?.shouldOptimizeForNetworkUse = true
         export?.exportAsynchronously {
-            print("export finished \(export?.error?.localizedDescription ?? "no error ")")
+            print("export finished \(export?.error)")
             DispatchQueue.main.async {
                 finished?()
             }
