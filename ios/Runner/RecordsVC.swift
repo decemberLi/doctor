@@ -197,12 +197,22 @@ class RecordsVC: UIViewController {
         try? FileManager.default.removeItem(at: fileURL)
         assetWriter = try! AVAssetWriter(outputURL: fileURL, fileType:
                                             AVFileType.mp4)
-        let width = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
-        let height = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
+        let width = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) * 1.5
+        let height = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) * 1.5
+        let numPixels = width * height;
+        let bitsPerPixel = 6;//12
+        let bitsPerSecond = Int(numPixels) * bitsPerPixel;
+
         let videoOutputSettings: Dictionary<String, Any> = [
             AVVideoCodecKey : AVVideoCodecType.h264,
-            AVVideoWidthKey : width,
-            AVVideoHeightKey : height
+            AVVideoWidthKey : width ,
+            AVVideoHeightKey : height,
+            AVVideoCompressionPropertiesKey:[
+                AVVideoAverageBitRateKey:bitsPerSecond,
+                AVVideoProfileLevelKey:AVVideoProfileLevelH264BaselineAutoLevel,
+                AVVideoMaxKeyFrameIntervalKey:10,
+                AVVideoExpectedSourceFrameRateKey:10
+            ]
         ];
         
         let vInput  = AVAssetWriterInput (mediaType: AVMediaType.video, outputSettings: videoOutputSettings)
@@ -213,7 +223,7 @@ class RecordsVC: UIViewController {
         let audioSettings: [String:Any] = [AVFormatIDKey : kAudioFormatMPEG4AAC,
                                            AVNumberOfChannelsKey : 2,
                                            AVSampleRateKey : 44100.0,
-                                           AVEncoderBitRateKey: 192000
+                                           AVEncoderBitRateKey: 192000,
         ]
         
         let aInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
