@@ -56,20 +56,21 @@ class MediaRecorderThread(
         val profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P)
         // 设置视频来源
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT)
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
         mMediaRecorder.setOutputFile(File(mDstPath, "${mFileSequence++}.mp4").absolutePath)
         mMediaRecorder.setVideoSize(mWidth, mHeight)
         mMediaRecorder.setVideoFrameRate(profile.videoFrameRate)
-        mMediaRecorder.setVideoEncoder(profile.videoCodec)
+//        mMediaRecorder.setVideoEncoder(profile.videoCodec)
         //比特率
         mMediaRecorder.setVideoEncodingBitRate(profile.videoBitRate)
 
         //视频编码格式
-        mMediaRecorder.setAudioEncoder(profile.audioCodec)
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
 
         mMediaRecorder.setAudioChannels(profile.audioChannels)
         mMediaRecorder.setAudioSamplingRate(profile.audioSampleRate)
+        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264)
         //准备 到这里 就可以开始录制视频了
         mMediaRecorder.prepare()
     }
