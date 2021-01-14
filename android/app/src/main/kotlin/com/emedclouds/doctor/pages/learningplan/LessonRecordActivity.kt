@@ -228,20 +228,24 @@ class LessonRecordActivity : AppCompatActivity() {
     }
 
     private fun renderPage() {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val dpi = displayMetrics.density
-        val page = mPdfRender.openPage(mCurrentPage);
-        val bitmap = Bitmap.createBitmap(
-                page.width * dpi.toInt(),
-                page.height * dpi.toInt(),
-                Bitmap.Config.ARGB_8888
-        )
-        page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-        page.close()
+        try{
+            val displayMetrics = DisplayMetrics()
+            windowManager.defaultDisplay.getMetrics(displayMetrics)
+            val dpi = displayMetrics.density
+            val page = mPdfRender.openPage(mCurrentPage);
+            val bitmap = Bitmap.createBitmap(
+                    page.width * dpi.toInt(),
+                    page.height * dpi.toInt(),
+                    Bitmap.Config.ARGB_8888
+            )
+            page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+            page.close()
 
-        mPdfContentView.setImageBitmap(bitmap)
-        mPdfContentView.invalidate()
+            mPdfContentView.setImageBitmap(bitmap)
+            mPdfContentView.invalidate()
+        }catch (e: Exception){
+
+        }
     }
 
     private fun downloadFile(): File? {
