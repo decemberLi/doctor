@@ -228,7 +228,7 @@ class LessonRecordActivity : AppCompatActivity() {
     }
 
     private fun renderPage() {
-        try{
+        try {
             val displayMetrics = DisplayMetrics()
             windowManager.defaultDisplay.getMetrics(displayMetrics)
             val dpi = displayMetrics.density
@@ -243,7 +243,7 @@ class LessonRecordActivity : AppCompatActivity() {
 
             mPdfContentView.setImageBitmap(bitmap)
             mPdfContentView.invalidate()
-        }catch (e: Exception){
+        } catch (e: Exception) {
 
         }
     }
@@ -289,8 +289,8 @@ class LessonRecordActivity : AppCompatActivity() {
             return
         }
         mRecordHandler = MediaRecorderThread(
+                1280,
                 720,
-                480,
                 resources.configuration.densityDpi,
                 externalFilesDir.absolutePath,
                 mProjection!!
@@ -457,11 +457,10 @@ class LessonRecordActivity : AppCompatActivity() {
                 Toast.makeText(this@LessonRecordActivity, "请输入视频标题", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            mCurrentStatus = statusFinish
             val direction = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 stopRecord()
-                upload(editText, File(direction, "0.mp4").absolutePath)
+                upload(editText, File(direction, "0.mp4").absolutePath, dialog)
                 if (dialog.isShowing) {
                     dialog.dismiss()
                 }
@@ -479,7 +478,7 @@ class LessonRecordActivity : AppCompatActivity() {
                     override fun onFinished(success: Boolean, path: String) {
                         runOnUiThread {
                             if (success) {
-                                upload(editText, path)
+                                upload(editText, path, dialog)
                                 if (dialog.isShowing) {
                                     runOnUiThread { dialog.dismiss() }
                                 }
@@ -498,6 +497,7 @@ class LessonRecordActivity : AppCompatActivity() {
                     }
                 })
             }
+            mCurrentStatus = statusFinish
         }
         dialog.findViewById<ImageView>(R.id.btnCloseDialog).setOnClickListener {
             if (dialog.isShowing) {
@@ -507,7 +507,7 @@ class LessonRecordActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun upload(editText: EditText, path: String) {
+    private fun upload(editText: EditText, path: String, dialog: Dialog) {
         val json = JSONObject().apply {
             if (editText.text != null || editText.text.isNotEmpty()) {
                 val title: String = editText.text.toString()
@@ -521,10 +521,10 @@ class LessonRecordActivity : AppCompatActivity() {
             put("duration", mDuration)
             put("path", path)
         }
-        doUpload(json)
+        doUpload(json, dialog)
     }
 
-    private fun doUpload(json: JSONObject) {
+    private fun doUpload(json: JSONObject, dialog: Dialog) {
         val kProgressHUD = KProgressHUD.create(this@LessonRecordActivity)
                 .setLabel("上传中...")
                 .setCancellable(false)
@@ -539,7 +539,9 @@ class LessonRecordActivity : AppCompatActivity() {
                 }
                 if (result == null) {
                     CustomToast.showSuccessToast(applicationContext, R.string.upload_success)
-
+                    if (dialog.isShowing) {
+                        dialog.dismiss()
+                    }
                     finish()
                 } else {
                     CustomToast.showFailureToast(applicationContext, R.string.upload_failure)
