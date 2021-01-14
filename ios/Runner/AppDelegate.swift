@@ -15,12 +15,12 @@ import UserNotificationsUI
     UMConfigure.initWithAppkey("5ff2a5b4adb42d58269a165e", channel: "App Store")
     Bugly.start(withAppId: "463f24e2f9")
     WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
-    let entity = JPUSHRegisterEntity()
-    entity.types = Int(UNAuthorizationOptions.alert.rawValue |
-                        UNAuthorizationOptions.badge.rawValue |
-                        UNAuthorizationOptions.sound.rawValue)
-    JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
-    JPUSHService.setup(withOption: launchOptions, appKey: "a7547476f7255646ea8646fd", channel: "App Store", apsForProduction: false)
+//    let entity = JPUSHRegisterEntity()
+//    entity.types = Int(UNAuthorizationOptions.alert.rawValue |
+//                        UNAuthorizationOptions.badge.rawValue |
+//                        UNAuthorizationOptions.sound.rawValue)
+//    JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
+//    JPUSHService.setup(withOption: launchOptions, appKey: "a7547476f7255646ea8646fd", channel: "App Store", apsForProduction: false)
     AppDelegate.shared = self
     let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
     window = UIWindow()
