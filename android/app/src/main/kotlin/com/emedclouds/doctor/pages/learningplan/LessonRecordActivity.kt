@@ -38,21 +38,25 @@ import com.emedclouds.doctor.widgets.ZoomImageView
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_lesson_record_layout.*
 import kotlinx.android.synthetic.main.dialog_record_layout.*
+import org.apache.commons.io.IOUtils
 import org.json.JSONObject
+import java.io.BufferedReader
 import java.io.File
+import java.io.FileReader
 
 class LessonRecordActivity : AppCompatActivity() {
 
     private val tag = LessonRecordActivity::class.simpleName
 
     companion object {
-        fun start(act: MainActivity, path: String, name: String, userId: String, hospital: String, title: String) {
+        fun start(act: MainActivity, path: String, name: String, userId: String, hospital: String, title: String, type: String) {
             val intent = Intent(act, LessonRecordActivity::class.java)
             intent.putExtra("path", path)
             intent.putExtra("name", name)
             intent.putExtra("userId", userId)
             intent.putExtra("hospital", hospital)
             intent.putExtra("title", title)
+            intent.putExtra("type", type)
             act.startActivity(intent)
         }
     }
@@ -81,6 +85,7 @@ class LessonRecordActivity : AppCompatActivity() {
     private var mUserId: String? = null
     private var mHospital: String? = null
     private var mTitle: String? = null
+    private var mType: String? = null
 
     private lateinit var mAnimation: Animation
 
@@ -106,6 +111,7 @@ class LessonRecordActivity : AppCompatActivity() {
         mUserId = intent.getStringExtra("userId")
         mHospital = intent.getStringExtra("hospital")
         mTitle = intent.getStringExtra("title")
+        mType = intent.getStringExtra("type")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,7 +150,7 @@ class LessonRecordActivity : AppCompatActivity() {
         if (checkExternalPermission(applicationContext)) {
             requestExternalStoragePermission(this, REQUEST_CODE_EXTERNAL_STORAGE_PERMISSION)
         } else {
-            initPdfBoard()
+            initBoard()
         }
         mCurrentStatus = statusReady
         updateBtnStatus()
@@ -187,8 +193,10 @@ class LessonRecordActivity : AppCompatActivity() {
         if (mProjection != null) {
             mProjection?.stop()
         }
-        if (mPdfRender != null) {
-            mPdfRender.close()
+        if(mType=="pdf") {
+            if (mPdfRender != null) {
+                mPdfRender?.close()
+            }
         }
         super.onDestroy()
     }
@@ -208,6 +216,28 @@ class LessonRecordActivity : AppCompatActivity() {
         projectionManager =
                 getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         startActivityForResult(projectionManager.createScreenCaptureIntent(), REQUEST_CODE_SCREEN_RECORD_PERMISSION)
+    }
+
+    private fun initBoard() {
+        mType?.apply {
+            if (mType == "pdf") {
+                richTextViewer.visibility = View.GONE
+                mPdfContentView.visibility = View.VISIBLE
+                initPdfBoard()
+            } else {
+                richTextViewer.visibility = View.VISIBLE
+                mPdfContentView.visibility = View.GONE
+                initWebViewBoard()
+            }
+        }
+    }
+
+    private fun initWebViewBoard() {
+        richTextViewer.apply {
+            val bufferedReader: BufferedReader = File(mPath).bufferedReader()
+            val inputString = bufferedReader.use { it.readText() }
+            richTextViewer.loadData(inputString, "text/html", "UTF-8")
+        }
     }
 
     private fun initPdfBoard() {
@@ -336,7 +366,7 @@ class LessonRecordActivity : AppCompatActivity() {
                         return
                     }
                 }
-                initPdfBoard()
+                initBoard()
             }
         }
     }

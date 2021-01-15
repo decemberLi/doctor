@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@mipmap/bg_lesson_record"
     android:orientation="vertical"
+    android:keepScreenOn="true"
     android:theme="@style/NormalTheme">
 
     <RelativeLayout
@@ -62,6 +63,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
+
+        <com.tencent.smtt.sdk.WebView
+            android:background="@color/white"
+            android:id="@+id/richTextViewer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:layout_weight="1"/>
 
         <LinearLayout
             android:layout_width="130dp"

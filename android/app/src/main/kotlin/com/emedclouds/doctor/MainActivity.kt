@@ -53,7 +53,8 @@ class MainActivity : FlutterActivity() {
                 val userId = jsonObject.getString("userID")
                 val hospital = jsonObject.getString("hospital")
                 val title = jsonObject.getString("title")
-                LessonRecordActivity.start(this@MainActivity, path, name, userId, hospital, title)
+                val type = jsonObject.getString("type")
+                LessonRecordActivity.start(this@MainActivity, path, name, userId, hospital, title, type)
 //                LessonRecordActivity.start(this@MainActivity, "path", "name", "userId", "hospital", "title")
             }
 
