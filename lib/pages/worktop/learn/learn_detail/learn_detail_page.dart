@@ -278,7 +278,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         );
       }
     }
-    return Text('');
+    return Container();
   }
 
   String _obtainTitleByType(String type) {
@@ -454,7 +454,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   Widget _renderUploadButton(
       LearnDetailViewModel model, arguments, LearnDetailItem data) {
-    if (data.reLearn) {
+    if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
       return Container(
         alignment: Alignment.center,
         // margin: EdgeInsets.fromLTRB(20, 10, 20, 40),
