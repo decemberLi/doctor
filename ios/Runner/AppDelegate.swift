@@ -20,7 +20,7 @@ import UserNotificationsUI
 //                        UNAuthorizationOptions.badge.rawValue |
 //                        UNAuthorizationOptions.sound.rawValue)
 //    JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
-//    JPUSHService.setup(withOption: launchOptions, appKey: "a7547476f7255646ea8646fd", channel: "App Store", apsForProduction: false)
+//    JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: false)
     AppDelegate.shared = self
     let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
     window = UIWindow()
