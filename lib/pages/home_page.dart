@@ -268,9 +268,9 @@ class _HomePageState extends State<HomePage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed && _toIndex == 0) {
-      showWeekIfNeededReporter(context);
-    }
+    // if (state == AppLifecycleState.resumed && _toIndex == 0) {
+    //   showWeekIfNeededReporter(context);
+    // }
   }
 
   @override
