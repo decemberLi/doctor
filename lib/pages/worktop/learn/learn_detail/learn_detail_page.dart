@@ -381,11 +381,14 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           "hospital": model.data.hospitalName,
           "title": data.taskName,
           'type':"pdf",
-          "html":data
         };
         if (resourceData["attachmentOssId"] == null) {
           map["type"] = "html";
-          map["html"] = _getHTML(resourceData["title"],resourceData["context"]);
+          var result = json.encode(map);
+          var html = _getHTML(resourceData["title"],resourceData["context"]);
+          var file = File(picPath);
+          file.writeAsString(html);
+          this._gotoRecordPage(pdf,data,result);
         }else{
           map["type"] = "pdf";
           var file = await CommonService.getFile({

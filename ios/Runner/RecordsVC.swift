@@ -127,8 +127,15 @@ class RecordsVC: UIViewController {
     // MARK: - functions
     
     private func showWeb(){
+        guard let path = data["path"] as? String else {
+            MBProgressHUD.toastText(msg: "文件打开失败")
+            return
+        }
+        guard let html = try? String(contentsOfFile: path, encoding: .utf8) else {
+            MBProgressHUD.toastText(msg: "数据错误")
+            return
+        }
         htmlView.isHidden = false
-        let html = data["html"] as? String ?? ""
         htmlView.loadHTMLString(html, baseURL: nil)
     }
     
@@ -286,7 +293,7 @@ class RecordsVC: UIViewController {
     //                    }
                     }
                     self?.changeToRecording()
-                    
+                    UIApplication.shared.isIdleTimerDisabled = true
                 }
             }
         }
@@ -338,7 +345,7 @@ class RecordsVC: UIViewController {
         guard RPScreenRecorder.shared().isRecording else {
             return
         }
-        
+        UIApplication.shared.isIdleTimerDisabled = false
         RPScreenRecorder.shared().stopCapture { (error) in
             guard let writer = self.assetWriter else {return}
             self.audioInput = nil
