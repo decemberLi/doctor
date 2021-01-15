@@ -20,6 +20,7 @@ class _QuestionPageState extends State<QuestionPage> {
   List _questionsInit;
   final scrollDirection = Axis.vertical;
   AutoScrollController controller;
+  var startTime;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _QuestionPageState extends State<QuestionPage> {
             Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
     super.initState();
+    startTime = DateTime.now().millisecond;
   }
 
 //确认弹窗
@@ -190,7 +192,8 @@ class _QuestionPageState extends State<QuestionPage> {
         String success = await API.shared.server.submitQuestion({
           'learnPlanId': widget.data.learnPlanId,
           'resourceId': widget.data.resourceId,
-          'questions': questionsAll
+          'questions': questionsAll,
+          'time': DateTime.now().millisecond - startTime
         }).then((res) {
           EasyLoading.showToast('提交成功');
           // 延时1s执行返回
