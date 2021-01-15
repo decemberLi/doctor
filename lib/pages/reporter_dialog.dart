@@ -36,7 +36,7 @@ void showWeekIfNeededReporter(BuildContext ctx) async {
 
     _showDialog(
         ctx,
-        "您的${DateTime.fromMillisecondsSinceEpoch(value['createTime']).month}月学习小结",
+        "您的${DateTime.fromMillisecondsSinceEpoch(value['params']['date']??0).month}月学习小结",
         value['params']['comments'],
         value['params']['viewUrl'],
         value['messageId']);
