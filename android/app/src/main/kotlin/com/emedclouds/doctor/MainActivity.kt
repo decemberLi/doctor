@@ -98,4 +98,8 @@ class MainActivity : FlutterActivity() {
         super.onPause()
         MobclickAgent.onPause(this)
     }
+
+    override fun finish() {
+        moveTaskToBack(true);
+    }
 }
