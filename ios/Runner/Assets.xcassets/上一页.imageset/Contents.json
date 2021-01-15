@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "上一页.png",
+      "filename" : "下一页.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "上一页@2x.png",
+      "filename" : "下一页@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "上一页@3x.png",
+      "filename" : "下一页@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
