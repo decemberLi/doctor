@@ -111,7 +111,7 @@
                         <action selector="onChangeRecordState:" destination="-1" eventType="touchUpInside" id="znD-cR-93m"/>
                     </connections>
                 </button>
-                <button opaque="NO" tag="1000" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cr2-G8-4pZ">
+                <button opaque="NO" tag="999" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cr2-G8-4pZ">
                     <rect key="frame" x="745" y="2.5" width="60" height="60"/>
                     <state key="normal" image="帮助"/>
                     <connections>
@@ -181,7 +181,7 @@
                             <rect key="frame" x="171.5" y="52" width="553" height="310"/>
                         </imageView>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ABA-yg-Ll9">
-                            <rect key="frame" x="40" y="192" width="60" height="30"/>
+                            <rect key="frame" x="40" y="191" width="60" height="32"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="60" id="IiI-cL-R6v"/>
@@ -194,7 +194,7 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uYZ-T9-d6h">
-                            <rect key="frame" x="796" y="192" width="60" height="30"/>
+                            <rect key="frame" x="796" y="191" width="60" height="32"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="60" id="94g-lD-UxK"/>
                             </constraints>
@@ -425,8 +425,8 @@
         <image name="recordHead" width="50" height="50"/>
         <image name="record_1" width="553" height="310"/>
         <image name="recourdBg" width="667" height="375"/>
-        <image name="上一页" width="18" height="30"/>
-        <image name="下一页" width="17" height="30"/>
+        <image name="上一页" width="24" height="32"/>
+        <image name="下一页" width="23" height="32"/>
         <image name="帮助" width="60" height="60"/>
         <image name="播放" width="61" height="61"/>
         <image name="易药云横版png" width="80" height="21"/>

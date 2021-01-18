@@ -63,6 +63,7 @@ class RecordsVC: UIViewController {
     
     deinit {
         print("records deinit")
+        session.stopRunning()
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -173,6 +174,8 @@ class RecordsVC: UIViewController {
     }
     
     func initCaputre() {
+        guard playerLayer == nil else {return}
+        
         let ds = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .front)
         guard let device = ds.devices.first  else {
             return
@@ -180,7 +183,6 @@ class RecordsVC: UIViewController {
         guard let cinput = try? AVCaptureDeviceInput(device: device) else {
             return
         }
-        guard playerLayer == nil else {return}
         session.addInput(cinput)
         let out = AVCapturePhotoOutput()
         session.addOutput(out)
@@ -204,8 +206,8 @@ class RecordsVC: UIViewController {
         try? FileManager.default.removeItem(at: fileURL)
         assetWriter = try! AVAssetWriter(outputURL: fileURL, fileType:
                                             AVFileType.mp4)
-        let width = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) * 1.5
-        let height = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) * 1.5
+        let width = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
+        let height = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
         let numPixels = width * height;
         let bitsPerPixel = 6;//12
         let bitsPerSecond = Int(numPixels) * bitsPerPixel;
@@ -277,20 +279,10 @@ class RecordsVC: UIViewController {
                     self?.changeToIdle()
                     self?.stopRecords()
                 }else {
-    //                self?.initCaputre()
-    //                self?.playerLayer?.isHidden = false
-                    if let one = RPScreenRecorder.shared().cameraPreviewView {
-                        let width = self?.recourdBG.bounds.size.width ?? 0
-                        let height = self?.recourdBG.bounds.size.height ?? 0
-                        if #available(iOS 13.0, *) {
-                            one.transform = one.transform.rotated(by: -CGFloat.pi / 2)
-                        }
-                        self?.recourdBG.addSubview(one)
-                        one.frame = CGRect(origin: .zero, size: CGSize(width: width, height: height))
-                        one.isHidden = false
-    //                    one.snp.remakeConstraints { (maker) in
-    //                        maker.edges.equalToSuperview()
-    //                    }
+                    self?.initCaputre()
+                    if let layer = self?.playerLayer {
+                        layer.isHidden = false
+                        self?.recourdBG.layer.addSublayer(layer)
                     }
                     self?.changeToRecording()
                     UIApplication.shared.isIdleTimerDisabled = true
@@ -341,7 +333,6 @@ class RecordsVC: UIViewController {
     private func stopRecords(){
         timer?.invalidate()
         timer = nil
-        playerLayer?.isHidden = true
         guard RPScreenRecorder.shared().isRecording else {
             return
         }
@@ -438,7 +429,7 @@ class RecordsVC: UIViewController {
             introImage.image = UIImage(named: "record_1")
             introPreBTN.isHidden = true
             introNextBTN.isHidden = false
-            introBG.isHidden = true
+            introBTN.isHidden = true
         }else {
 //            changeToIdle()
 //            stopRecords()
@@ -530,6 +521,7 @@ class RecordsVC: UIViewController {
     
     //MARK: - Status
     private func changeToIdle(){
+        playerLayer?.isHidden = true
         firstBTN.tag = 999
         firstBTN.isHidden = false
         firstBTN.setImage(UIImage(named: "帮助"), for: .normal)
@@ -552,6 +544,7 @@ class RecordsVC: UIViewController {
         firstBTN.isHidden = true
         secondBTN.setImage(UIImage(named: "录制中"), for: .normal)
         secondBTN.tag = 1002
+        firstBTN.tag = 1000
         startDate = Date()
         updateRecordTime()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true)  {[weak self] (t) in
