@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.pdf.PdfRenderer
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
@@ -32,6 +33,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.emedclouds.doctor.MainActivity
 import com.emedclouds.doctor.R
+import com.emedclouds.doctor.common.mediacompressor.VideoCompress
 import com.emedclouds.doctor.toast.CustomToast
 import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.widgets.ZoomImageView
@@ -488,16 +490,15 @@ class LessonRecordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val direction = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (!isComposed) {
                 stopRecord()
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 upload(editText, File(direction, "0.mp4").absolutePath, dialog)
                 if (dialog.isShowing) {
                     dialog.dismiss()
                 }
             } else {
-                if (!isComposed) {
-                    stopRecord()
-                }
                 VideoComposer.merge(direction.absolutePath, object : OnFileComposeCallback {
                     val kComposeProgressHUD = KProgressHUD.create(this@LessonRecordActivity)
                             .setLabel("视频处理中...")
@@ -527,6 +528,7 @@ class LessonRecordActivity : AppCompatActivity() {
                     }
                 })
             }
+            isComposed = true
             mCurrentStatus = statusFinish
         }
         dialog.findViewById<ImageView>(R.id.btnCloseDialog).setOnClickListener {
@@ -538,20 +540,43 @@ class LessonRecordActivity : AppCompatActivity() {
     }
 
     private fun upload(editText: EditText, path: String, dialog: Dialog) {
-        val json = JSONObject().apply {
-            if (editText.text != null || editText.text.isNotEmpty()) {
-                val title: String = editText.text.toString()
-                mTitle = if (title.length > 50) {
-                    title.substring(0, 50)
-                } else {
-                    title
-                }
-            }
-            put("title", mTitle)
-            put("duration", mDuration)
-            put("path", path)
-        }
-        doUpload(json, dialog)
+        val kProgressHUD = KProgressHUD.create(this@LessonRecordActivity)
+                .setLabel("视频压缩中...")
+                .setCancellable(false)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f)
+                .show()
+        val task = VideoCompress.compressVideoHigh(path, File(File(path).parent, "compressed.mp4").absolutePath,
+                object : VideoCompress.CompressListener {
+                    override fun onStart() {
+                    }
+
+                    override fun onSuccess() {
+                        kProgressHUD.dismiss()
+                        val json = JSONObject().apply {
+                            if (editText.text != null || editText.text.isNotEmpty()) {
+                                val title: String = editText.text.toString()
+                                mTitle = if (title.length > 50) {
+                                    title.substring(0, 50)
+                                } else {
+                                    title
+                                }
+                            }
+                            put("title", mTitle)
+                            put("duration", mDuration)
+                            put("path", path)
+                        }
+                        doUpload(json, dialog)
+                    }
+
+                    override fun onFail() {
+                        CustomToast.showFailureToast(this@LessonRecordActivity, R.string.video_compress_failure)
+                    }
+
+                    override fun onProgress(percent: Float) {
+                    }
+
+                })
     }
 
     private fun doUpload(json: JSONObject, dialog: Dialog) {
