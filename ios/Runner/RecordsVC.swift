@@ -206,21 +206,18 @@ class RecordsVC: UIViewController {
         try? FileManager.default.removeItem(at: fileURL)
         assetWriter = try! AVAssetWriter(outputURL: fileURL, fileType:
                                             AVFileType.mp4)
-        let width = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
-        let height = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
-        let numPixels = width * height;
-        let bitsPerPixel = 6;//12
-        let bitsPerSecond = Int(numPixels) * bitsPerPixel;
+        let width = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) * UIScreen.main.scale
+        let height = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) * UIScreen.main.scale
 
         let videoOutputSettings: Dictionary<String, Any> = [
             AVVideoCodecKey : AVVideoCodecType.h264,
             AVVideoWidthKey : width ,
             AVVideoHeightKey : height,
             AVVideoCompressionPropertiesKey:[
-                AVVideoAverageBitRateKey:bitsPerSecond,
-                AVVideoProfileLevelKey:AVVideoProfileLevelH264BaselineAutoLevel,
-                AVVideoMaxKeyFrameIntervalKey:10,
-                AVVideoExpectedSourceFrameRateKey:10
+                AVVideoAverageBitRateKey : width * height * 6 ,
+                AVVideoExpectedSourceFrameRateKey : 10 ,
+                AVVideoMaxKeyFrameIntervalKey : 10,
+                AVVideoProfileLevelKey : AVVideoProfileLevelH264HighAutoLevel
             ]
         ];
         
@@ -282,7 +279,9 @@ class RecordsVC: UIViewController {
                     self?.initCaputre()
                     if let layer = self?.playerLayer {
                         layer.isHidden = false
-                        self?.recourdBG.layer.addSublayer(layer)
+                        if layer.superlayer == nil {
+                            self?.recourdBG.layer.addSublayer(layer)
+                        }
                     }
                     self?.changeToRecording()
                     UIApplication.shared.isIdleTimerDisabled = true
@@ -353,37 +352,31 @@ class RecordsVC: UIViewController {
         let path = dir + "/allRecord.mp4"
         let fileURL = URL(fileURLWithPath: path)
         try? FileManager.default.removeItem(at: fileURL)
-        if paths.count == 1 {
-            let old = paths[0]
-            try? FileManager.default.copyItem(at: old, to: fileURL)
-            finished?()
-        }else{
-            let mixComposition = AVMutableComposition()
-            let audioTrack = mixComposition.addMutableTrack(withMediaType: .audio, preferredTrackID: CMPersistentTrackID(kCMPersistentTrackID_Invalid))
-            let videoTrack = mixComposition.addMutableTrack(withMediaType: .video, preferredTrackID: CMPersistentTrackID(kCMPersistentTrackID_Invalid))
-            var totalDuration : CMTime = .zero
-            for url in paths {
-                let asset = AVURLAsset(url: url)
-                if let assetAudioTrack = asset.tracks(withMediaType: .audio).first {
-                    try? audioTrack?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: assetAudioTrack, at: totalDuration)
-                }
-                
-                if let assetVideoTrack = asset.tracks(withMediaType: .video).first {
-                    try? videoTrack?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: assetVideoTrack, at: totalDuration)
-                }
-                totalDuration = CMTimeAdd(totalDuration, asset.duration)
+        let mixComposition = AVMutableComposition()
+        let audioTrack = mixComposition.addMutableTrack(withMediaType: .audio, preferredTrackID: CMPersistentTrackID(kCMPersistentTrackID_Invalid))
+        let videoTrack = mixComposition.addMutableTrack(withMediaType: .video, preferredTrackID: CMPersistentTrackID(kCMPersistentTrackID_Invalid))
+        var totalDuration : CMTime = .zero
+        for url in paths {
+            let asset = AVURLAsset(url: url)
+            if let assetAudioTrack = asset.tracks(withMediaType: .audio).first {
+                try? audioTrack?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: assetAudioTrack, at: totalDuration)
             }
             
-            let export = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPreset1920x1080)
-            print("the export is \(export?.description ?? "error")")
-            export?.outputURL = fileURL
-            export?.outputFileType = .mp4
-            export?.shouldOptimizeForNetworkUse = true
-            export?.exportAsynchronously {
-                print("export finished \(export?.error)")
-                DispatchQueue.main.async {
-                    finished?()
-                }
+            if let assetVideoTrack = asset.tracks(withMediaType: .video).first {
+                try? videoTrack?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: assetVideoTrack, at: totalDuration)
+            }
+            totalDuration = CMTimeAdd(totalDuration, asset.duration)
+        }
+        
+        let export = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPreset960x540)
+        print("the export is \(export?.description ?? "error")")
+        export?.outputURL = fileURL
+        export?.outputFileType = .mp4
+        export?.shouldOptimizeForNetworkUse = true
+        export?.exportAsynchronously {
+            print("export finished \(export?.error)")
+            DispatchQueue.main.async {
+                finished?()
             }
         }
         
@@ -400,7 +393,15 @@ class RecordsVC: UIViewController {
                 self.dismiss(animated: true, completion: nil)
                 MBProgressHUD.toast(msg: "上传成功")
             }else{
-                MBProgressHUD.toast(img:"错误",msg: error as? String ?? "error")
+                guard let e = error as? String else {
+                    MBProgressHUD.toast(img:"错误",msg: "上传失败，请重试")
+                    return
+                }
+                if e == "网络错误" {
+                    MBProgressHUD.toast(img:"错误",msg: "上传失败，请重试")
+                }else{
+                    MBProgressHUD.toast(img:"错误",msg: e)
+                }
             }
             
         }

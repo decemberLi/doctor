@@ -21,6 +21,9 @@ class MedcloudsNativeApi {
         }
       }on DioError catch (e){
         print("----------------------${e.message}");
+        if(e.message.contains("SocketException")){
+          return "网络错误";
+        }
         return "${e.message}";
       }catch (e){
         print("----------------------${e}");
