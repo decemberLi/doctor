@@ -191,12 +191,12 @@ class _QuestionPageState extends State<QuestionPage> {
       bool bindConfirm = await confirmDialog();
       if (bindConfirm) {
         var duration = (DateTime.now().millisecondsSinceEpoch - startTime)/1000;
-        duration = duration < 1 ? 1 : duration.ceil();
+        var time = duration < 1 ? 1 : duration.ceil();
         String success = await API.shared.server.submitQuestion({
           'learnPlanId': widget.data.learnPlanId,
           'resourceId': widget.data.resourceId,
           'questions': questionsAll,
-          'time': duration
+          'time': time
         }).then((res) {
           EasyLoading.showToast('提交成功');
           // 延时1s执行返回
