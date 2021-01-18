@@ -241,6 +241,13 @@ class RecordsVC: UIViewController {
     private func beginRecord(){
         guard !RPScreenRecorder.shared().isRecording else {return}
         initRecord()
+        initCaputre()
+        if let layer = playerLayer {
+            layer.isHidden = false
+            if layer.superlayer == nil {
+                recourdBG.layer.addSublayer(layer)
+            }
+        }
         RPScreenRecorder.shared().isMicrophoneEnabled = true
         RPScreenRecorder.shared().cameraPosition = .front
         RPScreenRecorder.shared().isCameraEnabled = true
@@ -276,13 +283,6 @@ class RecordsVC: UIViewController {
                     self?.changeToIdle()
                     self?.stopRecords()
                 }else {
-                    self?.initCaputre()
-                    if let layer = self?.playerLayer {
-                        layer.isHidden = false
-                        if layer.superlayer == nil {
-                            self?.recourdBG.layer.addSublayer(layer)
-                        }
-                    }
                     self?.changeToRecording()
                     UIApplication.shared.isIdleTimerDisabled = true
                 }
