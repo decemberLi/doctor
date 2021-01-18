@@ -12,7 +12,9 @@ import 'package:doctor/http/server.dart';
 
 class QuestionPage extends StatefulWidget {
   final ResourceModel data;
+
   QuestionPage(this.data);
+
   _QuestionPageState createState() => _QuestionPageState();
 }
 
@@ -31,7 +33,7 @@ class _QuestionPageState extends State<QuestionPage> {
             Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
     super.initState();
-    startTime = DateTime.now().millisecond;
+    startTime = DateTime.now().millisecondsSinceEpoch;
   }
 
 //确认弹窗
@@ -185,15 +187,16 @@ class _QuestionPageState extends State<QuestionPage> {
         });
       }
     }
-
     if (!showError) {
       bool bindConfirm = await confirmDialog();
       if (bindConfirm) {
+        var duration = (DateTime.now().millisecondsSinceEpoch - startTime)/1000;
+        var time = duration < 1 ? 1 : duration.ceil();
         String success = await API.shared.server.submitQuestion({
           'learnPlanId': widget.data.learnPlanId,
           'resourceId': widget.data.resourceId,
           'questions': questionsAll,
-          'time': DateTime.now().millisecond - startTime
+          'time': time
         }).then((res) {
           EasyLoading.showToast('提交成功');
           // 延时1s执行返回
@@ -365,10 +368,12 @@ class _QuestionPageState extends State<QuestionPage> {
 
     return new TextField(
       // maxLines: 4,
-      maxLines: null, //自适应
+      maxLines: null,
+      //自适应
       cursorColor: const Color(0xFFFE7C30),
       cursorWidth: 2.0,
-      keyboardType: TextInputType.multiline, //多行
+      keyboardType: TextInputType.multiline,
+      //多行
       inputFormatters: <TextInputFormatter>[
         LengthLimitingTextInputFormatter(200) //限制长度200
       ],
@@ -380,7 +385,8 @@ class _QuestionPageState extends State<QuestionPage> {
           borderRadius: BorderRadius.circular(8.0),
         ),
       ),
-      enabled: _dispatch, //禁用
+      enabled: _dispatch,
+      //禁用
       onChanged: (text) {
         _questionsInit[question.index]['textField'] = text;
         // print("${question.index}输入框 组件: $text");
@@ -524,6 +530,7 @@ class _QuestionPageState extends State<QuestionPage> {
   // 滚动定位
 
   int scrollTocounter = -1;
+
   Future _scrollToIndex(counter) async {
     if (counter != scrollTocounter) {
       print('$scrollTocounter----滚动定位：$counter');

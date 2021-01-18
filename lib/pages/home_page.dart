@@ -31,13 +31,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   @override
   bool get wantKeepAlive => true;
   ScrollOutScreenViewModel _outScreenViewModel;
   bool isDoctors = false;
 
   int _currentIndex = 0;
+  int _toIndex = 0;
   final List<Widget> _children = [
     WorktopPage(),
     PrescriptionPage(),
@@ -52,6 +53,7 @@ class _HomePageState extends State<HomePage>
   }
 
   void onTabTapped(int index) async {
+    _toIndex = index;
     if (index == 2) {
       if (isDoctors) {
         eventBus.fire(_outScreenViewModel.event);
@@ -254,6 +256,21 @@ class _HomePageState extends State<HomePage>
     });
     initData();
     showWeekIfNeededReporter(context);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // if (state == AppLifecycleState.resumed && _toIndex == 0) {
+    //   showWeekIfNeededReporter(context);
+    // }
   }
 
   @override

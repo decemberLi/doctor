@@ -14,7 +14,12 @@ class DoctorConclusionModel {
   DoctorConclusionParam params;
 }
 
+bool _isDialogShowing = false;
+
 void showWeekIfNeededReporter(BuildContext ctx) async {
+  if(_isDialogShowing){
+    return;
+  }
   API.shared.foundationSys.messageDoctorConclusion().then((value) async {
     if (value == null) {
       return;
@@ -33,7 +38,7 @@ void showWeekIfNeededReporter(BuildContext ctx) async {
     if (refs.getBool('$messageId') ?? false) {
       return;
     }
-
+    _isDialogShowing = true;
     _showDialog(
         ctx,
         "您的${DateTime.fromMillisecondsSinceEpoch(value['params']['date']??0).month}月学习小结",
@@ -123,6 +128,7 @@ void _showDialog(
                         ),
                       ),
                       onTap: () async {
+                        _isDialogShowing = false;
                         Navigator.pop(context);
                         Navigator.pushNamed(
                           context,
@@ -147,6 +153,7 @@ void _showDialog(
                   ),
                 ),
                 onTap: () async {
+                  _isDialogShowing = false;
                   SharedPreferences refs =
                       await SharedPreferences.getInstance();
                   refs.setBool('$messageId', true);
