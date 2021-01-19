@@ -206,16 +206,25 @@ class RecordsVC: UIViewController {
         try? FileManager.default.removeItem(at: fileURL)
         assetWriter = try! AVAssetWriter(outputURL: fileURL, fileType:
                                             AVFileType.mp4)
-        let width = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) * UIScreen.main.scale
-        let height = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) * UIScreen.main.scale
+        var width = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) * UIScreen.main.scale
+        var height = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height) * UIScreen.main.scale
+        if width > 1280 || height > 720 {
+            if width / height > 1280.0 / 720.0 {
+                height = 1280 * height / width
+                width = 1280
+            } else {
+                width = 720 * width / height
+                height = 720
+            }
+        }
 
         let videoOutputSettings: Dictionary<String, Any> = [
             AVVideoCodecKey : AVVideoCodecType.h264,
             AVVideoWidthKey : width ,
             AVVideoHeightKey : height,
             AVVideoCompressionPropertiesKey:[
-                AVVideoAverageBitRateKey : width * height * 6 ,
-                AVVideoExpectedSourceFrameRateKey : 10 ,
+                AVVideoAverageBitRateKey : width * height * 2,
+                AVVideoExpectedSourceFrameRateKey : 20 ,
                 AVVideoMaxKeyFrameIntervalKey : 10,
                 AVVideoProfileLevelKey : AVVideoProfileLevelH264HighAutoLevel
             ]
@@ -368,7 +377,7 @@ class RecordsVC: UIViewController {
             totalDuration = CMTimeAdd(totalDuration, asset.duration)
         }
         
-        let export = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPreset960x540)
+        let export = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPreset1280x720)
         print("the export is \(export?.description ?? "error")")
         export?.outputURL = fileURL
         export?.outputFileType = .mp4
@@ -382,28 +391,19 @@ class RecordsVC: UIViewController {
         
     }
     
-    private func submitFile(_ title : String){
+    private func submitFile(_ title : String,hud:MBProgressHUD){
         let dir = NSHomeDirectory() + "/Documents/records"
         let path = dir + "/allRecord.mp4"
         let vc = AppDelegate.shared?.window.rootViewController
         let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
         naviChannel.invokeMethod("uploadLearnVideo", arguments: "{\"path\":\"\(path)\",\"title\":\"\(title)\",\"duration\":\"\(Int(recordTime))\"}") { (error) in
-            MBProgressHUD.hide(for: self.view, animated: false)
+            hud.hide(animated: false)
             if error == nil {
                 self.dismiss(animated: true, completion: nil)
                 MBProgressHUD.toast(msg: "上传成功")
             }else{
-                guard let e = error as? String else {
-                    MBProgressHUD.toast(img:"错误",msg: "上传失败，请重试")
-                    return
-                }
-                if e == "网络错误" {
-                    MBProgressHUD.toast(img:"错误",msg: "上传失败，请重试")
-                }else{
-                    MBProgressHUD.toast(img:"错误",msg: e)
-                }
+                MBProgressHUD.toast(img:"错误",msg: "上传失败，请重试")
             }
-            
         }
     }
     
@@ -469,9 +469,11 @@ class RecordsVC: UIViewController {
             return
         }
         view.endEditing(true)
-        MBProgressHUD.showWhiteAdded(to: view, animated: true)
+        let hud = MBProgressHUD.showWhiteAdded(to: view, animated: true)
+        hud.label.text = "视频压缩中"
         merge {
-            self.submitFile(title)
+            hud.label.text = "上传中"
+            self.submitFile(title,hud: hud)
         }
     }
     
