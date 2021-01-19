@@ -17,5 +17,4 @@
     <string name="hint_record_video_title">请输入视频标题</string>
     <string name="upload_success">上传成功</string>
     <string name="upload_failure">上传失败，请重试</string>
-    <string name="video_compress_failure">视频压缩失败，请重试</string>
 </resources>
