@@ -18,6 +18,6 @@ class YYYApplication : FlutterApplication() {
         super.onCreate()
         APM.init(applicationContext, resources.getString(R.string.bugly_app_id))
         Reporter.init(applicationContext, "developer")
-        PushSdk.init(this)
+        // PushSdk.init(this)
     }
 }
