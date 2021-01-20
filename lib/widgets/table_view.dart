@@ -9,10 +9,12 @@ class NormalTableView<T> extends StatefulWidget {
   final EdgeInsets padding;
   final Future<List<T>> Function(int) getData; // 获取数据（接口函数）
   final int pageSize; // 每页数据个数，默认10个
+  final Widget Function(BuildContext) header;
 
   NormalTableView(
       {@required this.itemBuilder,
       this.holder,
+      this.header,
       this.getData,
       this.pageSize = 10,
       this.padding = EdgeInsets.zero});
@@ -100,10 +102,17 @@ class _SubCollectState<T> extends State<NormalTableView>
     );
     if (_list.length > 0) {
       child = ListView.builder(
-        itemCount: _list.length,
+        itemCount: _list.length + (this.widget.header != null ? 1 : 0),
         padding: widget.padding,
         itemBuilder: (context, index) {
-          var item = _list[index];
+          var i = index;
+          if (this.widget.header != null) {
+            if(i == 0) {
+              return this.widget.header(context);
+            }
+            i -= 1;
+          }
+          var item = _list[i];
           return widget.itemBuilder(context, item);
         },
       );

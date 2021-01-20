@@ -19,8 +19,24 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
             color: Color(0xff107BFD),
             height: 170,
             padding: EdgeInsets.only(right: 5),
-            alignment: Alignment.centerRight,
-            child: Image.asset("assets/images/page_list_title.png"),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(top: 20,left: 35),
+                    alignment: Alignment.centerLeft,
+                    child: Image.asset("assets/images/smallCube.png"),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(top: 40,right: 12),
+                    alignment: Alignment.topRight,
+                    child: Image.asset("assets/images/bigCube.png"),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -137,7 +153,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
                 );
               },
               getData: (page) async {
-                return [1];
+                return [];
               },
             ),
           ),
