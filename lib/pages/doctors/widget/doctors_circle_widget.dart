@@ -1,4 +1,3 @@
-
 import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -19,7 +18,6 @@ final _colorPanel = {
 };
 
 class DoctorCircleItemWidget extends StatelessWidget {
-
   final DoctorCircleEntity data;
 
   DoctorCircleItemWidget(this.data);
@@ -84,18 +82,22 @@ class DoctorCircleItemWidget extends StatelessWidget {
             child: Text(data?.postTitle ?? '',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style:
-                TextStyle(fontSize: 16,
-                    color: data.isClicked ? ThemeColor.colorFFC1C1C1:
-                    ThemeColor.colorFF222222)),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: data.isClicked
+                        ? ThemeColor.colorFFC1C1C1
+                        : ThemeColor.colorFF222222)),
           ),
           Padding(
             padding: EdgeInsets.only(top: 6, bottom: 8),
             child: Text(data?.postContent ?? '',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style:
-                TextStyle(fontSize: 14, color: data.isClicked ? ThemeColor.colorFFC1C1C1:ThemeColor.colorFF999999)),
+                style: TextStyle(
+                    fontSize: 14,
+                    color: data.isClicked
+                        ? ThemeColor.colorFFC1C1C1
+                        : ThemeColor.colorFF999999)),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,8 +159,25 @@ class DoctorPageState
   }
 
   @override
-  Widget divider(BuildContext context, int index) =>
-      Divider(
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 200,
+            color: ThemeColor.colorFF62C1FF,
+          ),
+          // Container(
+          //   child: super.build(context),
+          // )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget divider(BuildContext context, int index) => Divider(
         color: ThemeColor.colorFFF3F5F8,
         height: 12,
       );
