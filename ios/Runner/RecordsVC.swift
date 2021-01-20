@@ -265,7 +265,7 @@ class RecordsVC: UIViewController {
             
             guard RPScreenRecorder.shared().isMicrophoneEnabled else {
                 DispatchQueue.main.async {
-                    MBProgressHUD.toastText(msg: "需授权麦克风方可开启录制，请重试")
+                    MBProgressHUD.toastText(msg: "需授权麦克风方可开启录制，请重试",duration: 2)
                     self?.recordTime = 0
                     self?.changeToIdle()
                     self?.stopRecords()
@@ -287,7 +287,7 @@ class RecordsVC: UIViewController {
         } completionHandler: {[weak self] (error) in
             DispatchQueue.main.async {
                 if error != nil {
-                    MBProgressHUD.toastText(msg: "需开启系统录屏方可开启录制，请重试")
+                    MBProgressHUD.toastText(msg: "需开启系统录屏方可开启录制，请重试",duration: 2)
                     self?.recordTime = 0
                     self?.changeToIdle()
                     self?.stopRecords()

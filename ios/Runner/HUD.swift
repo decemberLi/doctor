@@ -22,7 +22,7 @@ extension MBProgressHUD {
         hud.bezelView.style = .solidColor
         hud.hide(animated: true, afterDelay: 1)
     }
-    static func toastText(msg : String) {
+    static func toastText(msg : String,duration:Int = 1) {
         guard let window = AppDelegate.shared?.window else {return}
         let hud = MBProgressHUD.showAdded(to: window, animated: true)
         hud.label.text = msg
@@ -32,7 +32,7 @@ extension MBProgressHUD {
         hud.bezelView.backgroundColor = .black
         hud.bezelView.color = UIColor(white: 0, alpha: 0.7)
         hud.bezelView.style = .solidColor
-        hud.hide(animated: true, afterDelay: 1)
+        hud.hide(animated: true, afterDelay: duration)
     }
     @discardableResult
     static func showWhiteAdded(to: UIView, animated: Bool)->MBProgressHUD{
