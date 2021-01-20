@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import com.emedclouds.doctor.common.constants.keyLaunchParam
 import com.emedclouds.doctor.pages.CommonWebActivity
 import com.emedclouds.doctor.pages.ShareActivity
@@ -18,19 +17,9 @@ import org.json.JSONObject
 
 class MainActivity : FlutterActivity() {
     private val tag = "MainActivity"
-    private lateinit var methodChannel: MethodChannel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        methodChannel = MethodChannel(flutterEngine?.dartExecutor, "com.emedclouds-channel/navigation")
-        methodChannel.setMethodCallHandler { call, result ->
-            run {
-                if ("share" == call.method) {
-
-                }
-                result.success("OK")
-            }
-        }
         ChannelManager.instance.initChannel(flutterEngine?.dartExecutor)
         ChannelManager.instance.on("share", object : OnFlutterCall {
             override fun call(arguments: String?, channel: MethodChannel) {
