@@ -46,49 +46,56 @@ class _DoctorsHomeState extends State<DoctorsHome>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        toolbarHeight: 46,
-        flexibleSpace: SafeArea(
-          child: Row(
-            children: [
-              Spacer(),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  color: Colors.white,
-                  child: Padding(
-                    padding:
-                        EdgeInsets.only(left: 0, right: 0, top: 11, bottom: 5),
-                    child: TabBar(
-                        indicator: LinearGradientTabIndicatorDecoration(),
-                        labelPadding: EdgeInsets.zero,
-                        indicatorWeight: 0,
-                        controller: _tabController,
-                        indicatorSize: TabBarIndicatorSize.label,
-                        labelStyle: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: ThemeColor.colorFF000000),
-                        unselectedLabelStyle: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.normal,
-                            color: ThemeColor.colorFF999999),
-                        tabs: _titleWidget()),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            TabBarView(
+              controller: _tabController,
+              children: <Widget>[
+                DoctorsPage(),
+                GossipNewsPage(),
+              ],
+            ),
+            Positioned(
+              child: Container(
+                color: Colors.transparent,
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(left: 0, right: 0, top: 11, bottom: 5),
+                  child: TabBar(
+                    isScrollable: true,
+                    indicator: LinearGradientTabIndicatorDecoration(
+                      borderSide: BorderSide(
+                        width: 6,
+                        color: ThemeColor.primaryColor,
+                      ),
+                      insets: EdgeInsets.only(left: 10, right: 10, top: 30),
+                      gradient: const LinearGradient(
+                        colors: [
+                          ThemeColor.primaryColor,
+                          ThemeColor.primaryColor
+                        ],
+                      ),
+                      isRound: true
+                    ),
+                    indicatorWeight: 6,
+                    controller: _tabController,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    labelStyle: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: ThemeColor.colorFF000000),
+                    unselectedLabelStyle: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.normal,
+                        color: ThemeColor.colorFF222222),
+                    tabs: _titleWidget(),
                   ),
                 ),
               ),
-              Spacer()
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: <Widget>[
-          DoctorsPage(),
-          GossipNewsPage(),
-        ],
       ),
     );
   }
@@ -96,18 +103,7 @@ class _DoctorsHomeState extends State<DoctorsHome>
   _titleWidget() {
     List<Widget> tabWidgetList = [];
     tabWidgetList.add(Text(tabs[0]));
-    var gossip = Stack(
-      overflow: Overflow.visible,
-      children: [
-        Text(tabs[1]),
-        Positioned(
-            bottom: 0,
-            right: -20,
-            child: Image.asset('assets/images/gossip_icon.png',
-                width: 20, height: 18))
-      ],
-    );
-    tabWidgetList.add(gossip);
+    tabWidgetList.add(Text(tabs[1]));
 
     return tabWidgetList;
   }
