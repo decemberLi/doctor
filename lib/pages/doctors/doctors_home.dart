@@ -5,6 +5,7 @@ import 'package:doctor/pages/doctors/widget/gossip_news_widget.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:provider/provider.dart';
 
 import 'model/in_screen_event_model.dart';
@@ -19,6 +20,8 @@ class _DoctorsHomeState extends State<DoctorsHome>
   List tabs = ['学术圈', '八卦圈'];
   TabController _tabController;
   ScrollOutScreenViewModel _inScreenViewModel;
+  var _tabBarColor = Colors.transparent;
+  final _map = {"ACADEMIC": Colors.transparent, "GOSSIP": Colors.transparent};
 
   @override
   bool get wantKeepAlive => true;
@@ -52,32 +55,58 @@ class _DoctorsHomeState extends State<DoctorsHome>
             TabBarView(
               controller: _tabController,
               children: <Widget>[
-                DoctorsPage(),
-                GossipNewsPage(),
+                DoctorsPage((offset) {
+                  if (offset > 0) {
+                    if (_map["ACADEMIC"] != Colors.white) {
+                      _map["ACADEMIC"] = Colors.white;
+                      _tabBarColor = _map["ACADEMIC"];
+                      setState(() {});
+                      return;
+                    }
+                  } else {
+                    _map["ACADEMIC"] = Colors.transparent;
+                    _tabBarColor = _map["ACADEMIC"];
+                    setState(() {});
+                  }
+                }),
+                GossipNewsPage((offset) {
+                  if (offset > 0) {
+                    if (_map["GOSSIP"] != Colors.white) {
+                      _map["GOSSIP"] = Colors.white;
+                      _tabBarColor = _map["GOSSIP"];
+                      setState(() {});
+                      return;
+                    }
+                  } else {
+                    _map["GOSSIP"] = Colors.transparent;
+                    _tabBarColor = _map["GOSSIP"];
+                    setState(() {});
+                  }
+                }),
               ],
             ),
             Positioned(
               child: Container(
-                color: Colors.transparent,
+                color: _tabBarColor,
+                width: double.infinity,
                 child: Padding(
                   padding:
                       EdgeInsets.only(left: 0, right: 0, top: 11, bottom: 5),
                   child: TabBar(
                     isScrollable: true,
                     indicator: LinearGradientTabIndicatorDecoration(
-                      borderSide: BorderSide(
-                        width: 6,
-                        color: ThemeColor.primaryColor,
-                      ),
-                      insets: EdgeInsets.only(left: 10, right: 10, top: 30),
-                      gradient: const LinearGradient(
-                        colors: [
-                          ThemeColor.primaryColor,
-                          ThemeColor.primaryColor
-                        ],
-                      ),
-                      isRound: true
-                    ),
+                        borderSide: BorderSide(
+                          width: 6,
+                          color: ThemeColor.primaryColor,
+                        ),
+                        insets: EdgeInsets.only(left: 10, right: 10, top: 30),
+                        gradient: const LinearGradient(
+                          colors: [
+                            ThemeColor.primaryColor,
+                            ThemeColor.primaryColor
+                          ],
+                        ),
+                        isRound: true),
                     indicatorWeight: 6,
                     controller: _tabController,
                     indicatorSize: TabBarIndicatorSize.label,

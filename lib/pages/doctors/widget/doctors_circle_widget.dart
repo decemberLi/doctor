@@ -36,6 +36,12 @@ class DoctorCircleItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (data == null) {
+      return Container(
+        height: 30,
+        color: Colors.red,
+      );
+    }
     ImageProvider imageProvider;
     if (data?.postUserHeader != null) {
       imageProvider = NetworkImage(data.postUserHeader);
@@ -44,10 +50,10 @@ class DoctorCircleItemWidget extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: EdgeInsets.only(left: 16, right: 16, top: 10),
       decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8))),
+          borderRadius: BorderRadius.all(Radius.circular(0))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -120,6 +126,11 @@ class DoctorCircleItemWidget extends StatelessWidget {
                 style: TextStyle(color: ThemeColor.colorFF999999, fontSize: 10),
               )
             ],
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            color: ThemeColor.colorFFF8F8F8,
+            height: 1,
           )
         ],
       ),
@@ -127,7 +138,12 @@ class DoctorCircleItemWidget extends StatelessWidget {
   }
 }
 
+typedef OnScrollerCallback = void Function(double offset);
+
 class DoctorsPage extends StatefulWidget {
+  final OnScrollerCallback callback;
+
+  DoctorsPage(this.callback);
   @override
   State<StatefulWidget> createState() => DoctorPageState();
 }
@@ -158,41 +174,90 @@ class DoctorPageState
         Provider.of<ScrollOutScreenViewModel>(context, listen: false);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            height: 200,
-            color: ThemeColor.colorFF62C1FF,
+  // @override
+  // Widget header() {
+  //   return CustomHeader(
+  //     builder: (BuildContext context, RefreshStatus mode) {
+  //       return Container(
+  //         height: 200,
+  //         color: ThemeColor.primaryColor,
+  //       );
+  //     },
+  //   );
+  // }
+
+  bodyHeader() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          alignment: Alignment.center,
+          height: 200,
+          color: ThemeColor.primaryColor,
+          child: Text(
+            "Banner位",
+            style: TextStyle(fontSize: 36, color: Colors.white),
           ),
-          // Container(
-          //   child: super.build(context),
-          // )
-        ],
-      ),
+        ),
+        Container(
+          alignment: Alignment.center,
+          height: 130,
+          color: Colors.white,
+          child: Text(
+            "金刚位",
+            style: TextStyle(
+              fontSize: 36,
+            ),
+          ),
+        ),
+        Container(
+          alignment: Alignment.center,
+          height: 180,
+          color: Colors.greenAccent,
+          child: Text(
+            "在线课堂",
+            style: TextStyle(
+              fontSize: 36,
+            ),
+          ),
+        ),
+        Container(
+          alignment: Alignment.center,
+          height: 300,
+          color: Colors.white,
+          child: Text(
+            "企业公开课",
+            style: TextStyle(
+              fontSize: 36,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
   @override
-  Widget divider(BuildContext context, int index) => Divider(
-        color: ThemeColor.colorFFF3F5F8,
-        height: 12,
-      );
+  Widget divider(BuildContext context, int index) => Container();
 
   @override
   DoctorsViewMode getModel() => DoctorsViewMode(type: 'ACADEMIC');
 
   @override
-  Widget itemWidget(BuildContext context, int index, dynamic data) =>
-      DoctorCircleItemWidget(data);
+  Widget itemWidget(BuildContext context, int index, dynamic data) {
+    return DoctorCircleItemWidget(data);
+  }
 
   @override
   void scrollOutOfScreen(bool outScreen) {
     _currentIsOutScreen = outScreen;
     _inScreenViewModel.updateState(PAGE_DOCTOR, _currentIsOutScreen);
+  }
+
+  @override
+  void scrollOffset(double offset) {
+    if(widget.callback != null) {
+      widget.callback(offset);
+    }
   }
 
   @override

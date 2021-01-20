@@ -11,6 +11,8 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
   M _model;
   ScrollController _controller;
 
+  get model => _model;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -20,22 +22,24 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
     var height = MediaQuery.of(context).size.height;
     _controller.addListener(() {
       scrollOutOfScreen(_controller.offset > height);
+      scrollOffset(_controller.offset);
     });
     return ChangeNotifierProvider<M>.value(
       value: _model,
       child: Consumer<M>(
         builder: (context, value, child) {
           return Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
             color: ThemeColor.colorFFF3F5F8,
             child: SmartRefresher(
               controller: _model.refreshController,
               enablePullUp: !_model.isError,
               header: ClassicHeader(),
-              footer: ClassicFooter(noDataText: noMoreDataText(),),
+              footer: ClassicFooter(
+                noDataText: noMoreDataText(),
+              ),
               onRefresh: _model.refresh,
               onLoading: _model.loadMore,
-              child: bodyWidget(),
+              child: body(),
             ),
           );
         },
@@ -54,7 +58,12 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
       itemBuilder: (context, index) {
         var model = _model.list[index];
         return GestureDetector(
-          child: itemWidget(context, index, _model.list[index]),
+          child: Column(
+            children: [
+              itemWidget(context, index, _model.list[index]),
+              if (index != _model.size) divider(context, index)
+            ],
+          ),
           onTap: () {
             onItemClicked(_model, model);
           },
@@ -63,6 +72,39 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
       separatorBuilder: (BuildContext context, int index) {
         return divider(context, index);
       },
+    );
+  }
+
+  bodyHeader() => Container();
+
+  body() {
+    return CustomScrollView(
+      controller: _controller,
+      slivers: [
+        SliverToBoxAdapter(
+          child: bodyHeader(),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate((context, index) {
+            var model = _model.list[index];
+            return GestureDetector(
+              child: Column(
+                children: [
+                  itemWidget(context, index, _model.list[index]),
+                  divider(context, index)
+                ],
+              ),
+              onTap: () {
+                onItemClicked(_model, model);
+              },
+            );
+            // return Container(
+            //   height: 65,
+            //   color: Colors.primaries[index % Colors.primaries.length],
+            // );
+          }, childCount: _model.size),
+        )
+      ],
     );
   }
 
@@ -110,4 +152,6 @@ abstract class AbstractListPageState<M extends RefreshableViewStateModel,
   void onItemClicked(M model, itemData) {}
 
   String noMoreDataText() => null;
+
+  void scrollOffset(double offset) {}
 }

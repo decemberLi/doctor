@@ -9,6 +9,7 @@ import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../root_widget.dart';
 import '../model/doctor_circle_entity.dart';
@@ -44,7 +45,7 @@ class GossipNewsItemWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8))),
+          borderRadius: BorderRadius.all(Radius.circular(0))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -115,7 +116,13 @@ class GossipNewsItemWidget extends StatelessWidget {
   }
 }
 
+typedef OnScrollerCallback = Function(double offset);
+
 class GossipNewsPage extends StatefulWidget {
+
+  final OnScrollerCallback callback;
+
+  GossipNewsPage(this.callback);
   @override
   State<StatefulWidget> createState() => GossipNewsPageState();
 }
@@ -142,9 +149,9 @@ class GossipNewsPageState
   }
 
   @override
-  Widget divider(BuildContext context, int index) => Divider(
-        color: ThemeColor.colorFFF3F5F8,
-        height: 12,
+  Widget divider(BuildContext context, int index) => Container(
+        color: ThemeColor.colorFFF8F8F8,
+        height: 6,
       );
 
   @override
@@ -156,13 +163,34 @@ class GossipNewsPageState
   }
 
   @override
-  Widget itemWidget(BuildContext context, int index, dynamic data) =>
-      GossipNewsItemWidget(data, index);
+  Widget itemWidget(BuildContext context, int index, dynamic data) {
+    return GossipNewsItemWidget(data, index);
+  }
 
   @override
   void scrollOutOfScreen(bool outScreen) {
     _currentIsOutScreen = outScreen;
     _inScreenViewModel.updateState(PAGE_GOSSIP, _currentIsOutScreen);
+  }
+
+  @override
+  void scrollOffset(double offset) {
+    if(widget.callback != null) {
+      widget.callback(offset);
+    }
+  }
+
+  @override
+  bodyHeader() {
+    return Container(
+      alignment: Alignment.center,
+      height: 200,
+      color: ThemeColor.primaryColor,
+      child: Text(
+        "Banner位",
+        style: TextStyle(fontSize: 36, color: Colors.white),
+      ),
+    );
   }
 
   @override
@@ -175,7 +203,7 @@ class GossipNewsPageState
           'type': 'GOSSIP'
         });
   }
-  
+
   @override
   String noMoreDataText() => '已显示全部帖子';
 }
