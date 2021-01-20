@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
+import 'package:doctor/pages/doctors/doctors_list_page.dart';
 import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -405,7 +406,9 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     Navigator.pushNamed(context, RouteManager.ABOUT_US);
                   }),
                   messageItem('录制', 'assets/images/aboutus.png', () {
-                    MedcloudsNativeApi.instance().record("123");
+                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                      return DoctorsListPage();
+                    }));
                   }),
                 ],
               ),
