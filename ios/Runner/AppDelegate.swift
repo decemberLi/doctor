@@ -12,7 +12,12 @@ import UserNotificationsUI
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    UMConfigure.initWithAppkey("5ff2a5b4adb42d58269a165e", channel: "App Store")
+    #if DEBUG
+    UMConfigure.initWithAppkey("6007995f6a2a470e8f822118", channel: "App Store")
+    #else
+    UMConfigure.initWithAppkey("60079989f1eb4f3f9b67973b", channel: "App Store")
+    #endif
+    
     Bugly.start(withAppId: "463f24e2f9")
     WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
 //    let entity = JPUSHRegisterEntity()
