@@ -32,7 +32,7 @@ extension MBProgressHUD {
         hud.bezelView.backgroundColor = .black
         hud.bezelView.color = UIColor(white: 0, alpha: 0.7)
         hud.bezelView.style = .solidColor
-        hud.hide(animated: true, afterDelay: duration)
+        hud.hide(animated: true, afterDelay: TimeInterval(duration))
     }
     @discardableResult
     static func showWhiteAdded(to: UIView, animated: Bool)->MBProgressHUD{
