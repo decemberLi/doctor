@@ -223,8 +223,8 @@ class RecordsVC: UIViewController {
             AVVideoWidthKey : width ,
             AVVideoHeightKey : height,
             AVVideoCompressionPropertiesKey:[
-                AVVideoAverageBitRateKey : width * height * 2,
-                AVVideoExpectedSourceFrameRateKey : 20 ,
+                AVVideoAverageBitRateKey : width * height * 3,
+                AVVideoExpectedSourceFrameRateKey : 10 ,
                 AVVideoMaxKeyFrameIntervalKey : 10,
                 AVVideoProfileLevelKey : AVVideoProfileLevelH264HighAutoLevel
             ]
