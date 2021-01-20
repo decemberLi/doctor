@@ -86,7 +86,13 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
           title(),
           Expanded(
             child: NormalTableView<int>(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 20),
+              padding: EdgeInsets.only(left: 16, right: 16),
+              header: (context){
+                return Container(
+                  height: 75,
+                  child: Image.asset("assets/images/titlePage.png"),
+                );
+              },
               itemBuilder: (context, dynamic data) {
                 return Container(
                   height: 112,
@@ -153,7 +159,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
                 );
               },
               getData: (page) async {
-                return [];
+                return [1];
               },
             ),
           ),
