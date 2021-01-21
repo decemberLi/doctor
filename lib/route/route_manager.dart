@@ -1,3 +1,5 @@
+import 'package:doctor/pages/doctors/doctors_list_page.dart';
+import 'package:doctor/pages/doctors/doctors_list_page2.dart';
 import 'package:doctor/pages/doctors/widget/doctors_detail_widget.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/find_password.dart';
@@ -153,6 +155,14 @@ class RouteManager {
     COMMON_WEB: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return CommonWebView(obj['url'],obj['title']);
+    },
+    '/DoctorList1':(context){
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return DoctorsListPage(obj);
+    },
+    '/DoctorList2':(context){
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return DoctorsListPage2(obj);
     },
   };
 }

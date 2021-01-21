@@ -2,6 +2,8 @@ import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
 
 class DoctorsListPage2 extends StatefulWidget {
+  String args;
+  DoctorsListPage2(this.args);
   @override
   State<StatefulWidget> createState() => _DoctorsListStates2();
 }

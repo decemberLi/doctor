@@ -91,9 +91,6 @@ class _SubCollectState<T> extends State<NormalTableView>
   Widget build(BuildContext context) {
     super.build(context);
     Widget child = Center(
-      //todo: ViewStateEmptyWidget(
-      //         message: widget.emptyMsg,
-      //       )
       child: widget.holder is Function
           ? widget.holder(_error != null, _error)
           : ViewStateEmptyWidget(
