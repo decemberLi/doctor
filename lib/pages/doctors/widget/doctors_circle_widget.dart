@@ -11,6 +11,7 @@ import '../../../root_widget.dart';
 import '../model/doctor_circle_entity.dart';
 import '../viewmodel/doctors_view_model.dart';
 import 'circleflow/category_widget.dart';
+import 'circleflow/online_classic.dart';
 
 final _colorPanel = {
   '文献专区': ThemeColor.colorFF52C41A,
@@ -205,6 +206,12 @@ class DoctorPageState
           CategoryEntity("", "", "每日医讲"),
           CategoryEntity("", "", "病例解析"),
           CategoryEntity("", "", "论文专区")
+        ]),
+        OnlineClassicWidget([
+          OnlineClassicEntity(),
+          OnlineClassicEntity(),
+          OnlineClassicEntity(),
+          OnlineClassicEntity(),
         ]),
         Container(
           alignment: Alignment.center,
