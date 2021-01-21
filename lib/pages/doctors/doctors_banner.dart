@@ -6,8 +6,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 class DoctorsBanner extends StatefulWidget {
   final List dataList;
+  final Function(BuildContext,dynamic,int) itemBuilder;
+  final double height;
 
-  DoctorsBanner(this.dataList);
+  DoctorsBanner(this.dataList, this.itemBuilder,{this.height = 237});
 
   @override
   State<StatefulWidget> createState() {
@@ -19,7 +21,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   List realList = [];
   int _currentIndex = 0;
   PageController _pageController = PageController(initialPage: 1);
-  Timer _timer = null;
+  Timer _timer;
 
   @override
   void initState() {
@@ -45,6 +47,8 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
         });
       });
       _startTimer();
+    }else{
+      _timer?.cancel();
     }
     super.initState();
   }
@@ -65,7 +69,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   @override
   Widget build(BuildContext context) {
     return NotificationListener(
-      onNotification: (notification){
+      onNotification: (notification) {
         if (widget.dataList.length <= 1) {
           return true;
         }
@@ -86,53 +90,56 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
 
   Widget content(BuildContext context) {
     return Container(
-      height: 237,
+      height: widget.height,
       child: Stack(
         children: [
           PageView(
-            physics: widget.dataList.length > 1 ? null : NeverScrollableScrollPhysics(),
+            physics: widget.dataList.length > 1
+                ? null
+                : NeverScrollableScrollPhysics(),
             controller: _pageController,
-            children: realList.map((e) => page(e)).toList(),
+            children: realList.asMap().map((key,value) => MapEntry(key, page(value,key))).values.toList(),
           ),
           if (widget.dataList.length > 1)
-          Container(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 6,
-              margin: EdgeInsets.only(bottom: 6),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: widget.dataList
-                    .asMap()
-                    .map(
-                      (key, value) => MapEntry(
-                        key,
-                        Container(
-                          width: 6,
-                          height: 6,
-                          margin: EdgeInsets.only(left: 2, right: 2),
-                          decoration: ShapeDecoration(
-                            color: _currentIndex == key
-                                ? Color(0xff0077FF)
-                                : Colors.white,
-                            shape: CircleBorder(),
+            Container(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 6,
+                margin: EdgeInsets.only(bottom: 6),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: widget.dataList
+                      .asMap()
+                      .map(
+                        (key, value) => MapEntry(
+                          key,
+                          Container(
+                            width: 6,
+                            height: 6,
+                            margin: EdgeInsets.only(left: 2, right: 2),
+                            decoration: ShapeDecoration(
+                              color: _currentIndex == key
+                                  ? Color(0xff0077FF)
+                                  : Colors.white,
+                              shape: CircleBorder(),
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                    .values
-                    .toList(),
+                      )
+                      .values
+                      .toList(),
+                ),
               ),
-            ),
-          )
+            )
         ],
       ),
     );
   }
 
-  Widget page(data) {
-    return Container(
-      child: Text("$data"),
-    );
+  Widget page(data,int index) {
+    if (widget.itemBuilder != null) {
+      return widget.itemBuilder(context,data,index);
+    }
+    return Container();
   }
 }

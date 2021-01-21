@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/doctors/doctors_banner.dart';
+import 'package:doctor/pages/doctors/doctors_banner_item.dart';
 import 'package:doctor/pages/doctors/doctors_list_page.dart';
 import 'package:doctor/pages/doctors/doctors_list_page2.dart';
 import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
@@ -411,7 +412,9 @@ class _UserPageState extends State<UserPage> with RouteAware {
               ),
             ),
             Container(
-              child: DoctorsBanner([0,1,2]),
+              child: DoctorsBanner([0],(context,data,index){
+                return DoctorBannerItemGrass(data);
+              },),
             )
           ],
         ),
