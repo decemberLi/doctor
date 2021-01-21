@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../root_widget.dart';
+import '../doctors_banner.dart';
+import '../doctors_banner_item.dart';
 import '../model/doctor_circle_entity.dart';
 
 final _avatarPanel = {};
@@ -184,11 +186,12 @@ class GossipNewsPageState
   bodyHeader() {
     return Container(
       alignment: Alignment.center,
-      height: 200,
-      color: ThemeColor.primaryColor,
-      child: Text(
-        "Banner位",
-        style: TextStyle(fontSize: 36, color: Colors.white),
+      color: Colors.white,
+      child: DoctorsBanner(
+        [0, 1, 2, 3, 4],
+            (context, data, index) {
+          return DoctorBannerItemGrass(data);
+        },
       ),
     );
   }

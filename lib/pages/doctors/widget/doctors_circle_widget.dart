@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../root_widget.dart';
+import '../doctors_banner.dart';
+import '../doctors_banner_item.dart';
 import '../model/doctor_circle_entity.dart';
 import '../viewmodel/doctors_view_model.dart';
 import 'circleflow/category_widget.dart';
@@ -185,11 +187,12 @@ class DoctorPageState
         children: [
           Container(
             alignment: Alignment.center,
-            height: 200,
-            color: ThemeColor.primaryColor,
-            child: Text(
-              "Banner位",
-              style: TextStyle(fontSize: 36, color: Colors.white),
+            color: Colors.white,
+            child: DoctorsBanner(
+              [0, 1, 2, 3, 4],
+              (context, data, index) {
+                return DoctorBannerItemGrass(data);
+              },
             ),
           ),
           CategoryWidget([
@@ -223,7 +226,14 @@ class DoctorPageState
             HotPostEntity(),
             HotPostEntity(),
             HotPostEntity(),
-          ])
+          ]),
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            child: DoctorsBanner([0, 1, 2, 3, 4], (context, data, index) {
+              return DoctorBannerItemGrass(data);
+            }, height: 80),
+          )
         ],
       ),
     );
