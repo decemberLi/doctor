@@ -263,7 +263,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                             child: Row(
                               children: [
                                 Text(
-                                  doctorData?.doctorName,
+                                  doctorData?.doctorName ?? "",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20,
@@ -411,7 +411,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
               ),
             ),
             Container(
-              child: DoctorsBanner([1,2,3]),
+              child: DoctorsBanner([0,1,2]),
             )
           ],
         ),
