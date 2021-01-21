@@ -51,3 +51,16 @@ class DoctorBannerItemGrass extends StatelessWidget {
     );
   }
 }
+
+class DoctorBannerItemNormal extends StatelessWidget {
+  final dynamic data;
+
+  DoctorBannerItemNormal(this.data);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue,
+    );
+  }
+
+}
