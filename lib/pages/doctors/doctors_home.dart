@@ -56,7 +56,7 @@ class _DoctorsHomeState extends State<DoctorsHome>
               controller: _tabController,
               children: <Widget>[
                 DoctorsPage((offset) {
-                  if (offset > 0) {
+                  if (offset > 100) {
                     if (_map["ACADEMIC"] != Colors.white) {
                       _map["ACADEMIC"] = Colors.white;
                       _tabBarColor = _map["ACADEMIC"];
@@ -70,7 +70,7 @@ class _DoctorsHomeState extends State<DoctorsHome>
                   }
                 }),
                 GossipNewsPage((offset) {
-                  if (offset > 0) {
+                  if (offset > 100) {
                     if (_map["GOSSIP"] != Colors.white) {
                       _map["GOSSIP"] = Colors.white;
                       _tabBarColor = _map["GOSSIP"];

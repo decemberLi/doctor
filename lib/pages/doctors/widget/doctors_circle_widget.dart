@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../../../root_widget.dart';
 import '../model/doctor_circle_entity.dart';
 import '../viewmodel/doctors_view_model.dart';
+import 'circleflow/category_widget.dart';
 
 final _colorPanel = {
   '文献专区': ThemeColor.colorFF52C41A,
@@ -144,6 +145,7 @@ class DoctorsPage extends StatefulWidget {
   final OnScrollerCallback callback;
 
   DoctorsPage(this.callback);
+
   @override
   State<StatefulWidget> createState() => DoctorPageState();
 }
@@ -199,17 +201,11 @@ class DoctorPageState
             style: TextStyle(fontSize: 36, color: Colors.white),
           ),
         ),
-        Container(
-          alignment: Alignment.center,
-          height: 130,
-          color: Colors.white,
-          child: Text(
-            "金刚位",
-            style: TextStyle(
-              fontSize: 36,
-            ),
-          ),
-        ),
+        CategoryWidget([
+          CategoryEntity("", "", "每日医讲"),
+          CategoryEntity("", "", "病例解析"),
+          CategoryEntity("", "", "论文专区")
+        ]),
         Container(
           alignment: Alignment.center,
           height: 180,
@@ -255,7 +251,7 @@ class DoctorPageState
 
   @override
   void scrollOffset(double offset) {
-    if(widget.callback != null) {
+    if (widget.callback != null) {
       widget.callback(offset);
     }
   }
