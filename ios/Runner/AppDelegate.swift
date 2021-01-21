@@ -12,15 +12,21 @@ import UserNotificationsUI
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    UMConfigure.initWithAppkey("5ff2a5b4adb42d58269a165e", channel: "App Store")
+    let entity = JPUSHRegisterEntity()
+    entity.types = Int(UNAuthorizationOptions.alert.rawValue |
+                        UNAuthorizationOptions.badge.rawValue |
+                        UNAuthorizationOptions.sound.rawValue)
+    JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
+    #if DEBUG
+    UMConfigure.initWithAppkey("6007995f6a2a470e8f822118", channel: "App Store")
+    JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: false)
+    #else
+    UMConfigure.initWithAppkey("60079989f1eb4f3f9b67973b", channel: "App Store")
+    JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: false)
+    #endif
+    
     Bugly.start(withAppId: "463f24e2f9")
     WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
-//    let entity = JPUSHRegisterEntity()
-//    entity.types = Int(UNAuthorizationOptions.alert.rawValue |
-//                        UNAuthorizationOptions.badge.rawValue |
-//                        UNAuthorizationOptions.sound.rawValue)
-//    JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
-//    JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: false)
     AppDelegate.shared = self
     let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
     window = UIWindow()
