@@ -179,18 +179,6 @@ class DoctorPageState
         Provider.of<ScrollOutScreenViewModel>(context, listen: false);
   }
 
-  // @override
-  // Widget header() {
-  //   return CustomHeader(
-  //     builder: (BuildContext context, RefreshStatus mode) {
-  //       return Container(
-  //         height: 200,
-  //         color: ThemeColor.primaryColor,
-  //       );
-  //     },
-  //   );
-  // }
-
   bodyHeader() {
     return Container(
       child: Column(
