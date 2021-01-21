@@ -11,6 +11,7 @@ import '../../../root_widget.dart';
 import '../model/doctor_circle_entity.dart';
 import '../viewmodel/doctors_view_model.dart';
 import 'circleflow/category_widget.dart';
+import 'circleflow/enterprise_open_class_widget.dart';
 import 'circleflow/online_classic.dart';
 
 final _colorPanel = {
@@ -190,8 +191,7 @@ class DoctorPageState
   // }
 
   bodyHeader() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Container(child: Column(
       children: [
         Container(
           alignment: Alignment.center,
@@ -213,30 +213,13 @@ class DoctorPageState
           OnlineClassicEntity(),
           OnlineClassicEntity(),
         ]),
-        Container(
-          alignment: Alignment.center,
-          height: 180,
-          color: Colors.greenAccent,
-          child: Text(
-            "在线课堂",
-            style: TextStyle(
-              fontSize: 36,
-            ),
-          ),
-        ),
-        Container(
-          alignment: Alignment.center,
-          height: 300,
-          color: Colors.white,
-          child: Text(
-            "企业公开课",
-            style: TextStyle(
-              fontSize: 36,
-            ),
-          ),
-        ),
+        EnterpriseOpenClassWidget([
+          OpenClassEntity(),
+          OpenClassEntity(),
+          OpenClassEntity(),
+        ]),
       ],
-    );
+    ),);
   }
 
   @override
