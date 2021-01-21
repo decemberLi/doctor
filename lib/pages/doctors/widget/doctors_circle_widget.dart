@@ -12,6 +12,7 @@ import '../model/doctor_circle_entity.dart';
 import '../viewmodel/doctors_view_model.dart';
 import 'circleflow/category_widget.dart';
 import 'circleflow/enterprise_open_class_widget.dart';
+import 'circleflow/hot_post_widget.dart';
 import 'circleflow/online_classic.dart';
 
 final _colorPanel = {
@@ -191,35 +192,53 @@ class DoctorPageState
   // }
 
   bodyHeader() {
-    return Container(child: Column(
-      children: [
-        Container(
-          alignment: Alignment.center,
-          height: 200,
-          color: ThemeColor.primaryColor,
-          child: Text(
-            "Banner位",
-            style: TextStyle(fontSize: 36, color: Colors.white),
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            height: 200,
+            color: ThemeColor.primaryColor,
+            child: Text(
+              "Banner位",
+              style: TextStyle(fontSize: 36, color: Colors.white),
+            ),
           ),
-        ),
-        CategoryWidget([
-          CategoryEntity("", "", "每日医讲"),
-          CategoryEntity("", "", "病例解析"),
-          CategoryEntity("", "", "论文专区")
-        ]),
-        OnlineClassicWidget([
-          OnlineClassicEntity(),
-          OnlineClassicEntity(),
-          OnlineClassicEntity(),
-          OnlineClassicEntity(),
-        ]),
-        EnterpriseOpenClassWidget([
-          OpenClassEntity(),
-          OpenClassEntity(),
-          OpenClassEntity(),
-        ]),
-      ],
-    ),);
+          CategoryWidget([
+            CategoryEntity("", "", "每日医讲"),
+            CategoryEntity("", "", "病例解析"),
+            CategoryEntity("", "", "论文专区")
+          ]),
+          Container(
+            color: ThemeColor.colorFFF9F9F9,
+            width: double.infinity,
+            height: 6,
+          ),
+          OnlineClassicWidget([
+            OnlineClassicEntity(),
+            OnlineClassicEntity(),
+            OnlineClassicEntity(),
+            OnlineClassicEntity(),
+          ]),
+          EnterpriseOpenClassWidget([
+            OpenClassEntity(),
+            OpenClassEntity(),
+            OpenClassEntity(),
+          ]),
+          Container(
+            color: ThemeColor.colorFFF9F9F9,
+            width: double.infinity,
+            height: 6,
+          ),
+          HotPostWidget([
+            HotPostEntity(),
+            HotPostEntity(),
+            HotPostEntity(),
+            HotPostEntity(),
+          ])
+        ],
+      ),
+    );
   }
 
   @override
