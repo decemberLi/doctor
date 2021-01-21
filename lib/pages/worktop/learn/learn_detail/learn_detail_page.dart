@@ -397,7 +397,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           var fileURL = file[0]['tmpUrl'];
           await Dio().download(fileURL, picPath);
           var result = json.encode(map);
-          var pdfFileStream = File(picPath).openRead(0,4).transform(utf8.decoder);
+          Stream<String> pdfFileStream;
+          pdfFileStream = File(picPath).openRead(0,4).transform(utf8.decoder);
+
           pdfFileStream.listen((event) {
             if (event.toUpperCase() == '%PDF') {
               this._gotoRecordPage(pdf,data,result);
@@ -405,7 +407,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               print("格式为：-  $event");
               EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
             }
-
+          },onError: (e){
+            print("格式为：-  $e");
+            EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
           });
         }
       },
