@@ -84,9 +84,10 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                       color: ThemeColor.colorFFBCBCBC,
                     ),
                     Positioned(
-                      left: -20,
+                      left: msgCount > 99?-30:-20,
                       top: 4,
                       child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 3),
                         // padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
                             color: dotColor,

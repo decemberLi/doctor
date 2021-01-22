@@ -15,8 +15,11 @@ import android.media.projection.MediaProjectionManager
 import android.os.*
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.Window
 import android.view.animation.Animation
@@ -30,6 +33,7 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import com.emedclouds.doctor.MainActivity
 import com.emedclouds.doctor.R
 import com.emedclouds.doctor.toast.CustomToast
@@ -38,11 +42,9 @@ import com.emedclouds.doctor.widgets.ZoomImageView
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.activity_lesson_record_layout.*
 import kotlinx.android.synthetic.main.dialog_record_layout.*
-import org.apache.commons.io.IOUtils
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.File
-import java.io.FileReader
 
 class LessonRecordActivity : AppCompatActivity() {
 
@@ -193,7 +195,7 @@ class LessonRecordActivity : AppCompatActivity() {
         if (mProjection != null) {
             mProjection?.stop()
         }
-        if(mType=="pdf") {
+        if (mType == "pdf") {
             if (mPdfRender != null) {
                 mPdfRender?.close()
             }
@@ -459,9 +461,16 @@ class LessonRecordActivity : AppCompatActivity() {
         }
     }
 
-    var isComposed = false
+    private var isComposed = false
+    private lateinit var dialog: Dialog
     private fun showDialog() {
-        val dialog = Dialog(this)
+        if (this::dialog.isInitialized) {
+            if (!dialog.isShowing) {
+                dialog.show()
+            }
+            return
+        }
+        dialog = object : Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_record_layout)
         dialog.setCancelable(false)
@@ -482,6 +491,17 @@ class LessonRecordActivity : AppCompatActivity() {
         mTitle?.let {
             editText.setText(it)
         }
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                mTitle = s?.toString()
+            }
+        })
         dialog.findViewById<TextView>(R.id.btnUpload).setOnClickListener {
             if (editText == null || editText.text.isEmpty()) {
                 Toast.makeText(this@LessonRecordActivity, "请输入视频标题", Toast.LENGTH_LONG).show()
@@ -634,6 +654,27 @@ class LessonRecordActivity : AppCompatActivity() {
         telephonyManager?.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && mCurrentStatus == statusPlaying) {
+            switchAction()
+            return true
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && mCurrentStatus == statusPause) {
+            if (this::dialog.isInitialized) {
+                if (dialog.isShowing) {
+                    dialog.dismiss()
+                } else {
+                    dialog.show()
+                }
+            } else {
+                showDialog()
+            }
+            return true
+        }
+
+        return super.onKeyDown(keyCode, event)
+    }
 }
 
 
