@@ -181,7 +181,9 @@ class RecordsVC: UIViewController {
         }else{
             AVCaptureDevice.requestAccess(for: .video) { (result) in
                 if result {
-                    self.openCaputre()
+                    DispatchQueue.main.async {
+                        self.openCaputre()
+                    }
                 }
             }
         }
@@ -205,7 +207,6 @@ class RecordsVC: UIViewController {
         recourdBG.layer.addSublayer(layer)
         session.startRunning()
         playerLayer = layer
-        playerLayer?.isHidden = true
     }
     
     private func initRecord(){
