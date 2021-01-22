@@ -173,9 +173,16 @@ class RecordsVC: UIViewController {
         }
     }
     
-    func initCaputre() {
+    private func initCaputre() {
         guard playerLayer == nil else {return}
-        
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        if status == .restricted {
+            return
+        }
+        openCaputre()
+    }
+    
+    private func openCaputre(){
         let ds = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .front)
         guard let device = ds.devices.first  else {
             return
