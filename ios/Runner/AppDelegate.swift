@@ -48,6 +48,10 @@ import UserNotificationsUI
             guard let data = value.data(using: .utf8) else {return}
             guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
             self.record(map: obj)
+        }else if call.method == "checkOpentNotification" {
+            self.checkNotification { (isOpen) in
+                result(isOpen)
+            }
         }
     }
     vc.setFlutterViewDidRenderCallback {
@@ -127,6 +131,28 @@ extension AppDelegate {
         vc.data = map
         vc.modalPresentationStyle = .fullScreen
         window.rootViewController?.present(vc, animated: false, completion: nil)
+    }
+    
+    func checkNotification(result:((Bool)->Void)?){
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            var authorized = false
+            switch settings.authorizationStatus {
+            case .authorized:
+                authorized = true
+            case .denied:
+                break
+            case .ephemeral:
+                break
+            case .notDetermined:
+                break
+            case .provisional:
+                break
+            @unknown default:
+                break
+            }
+            result?(authorized)
+        }
+        
     }
 }
 

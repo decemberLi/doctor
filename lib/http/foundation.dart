@@ -61,5 +61,8 @@ class Foundation extends SubAPI {
   hospitalKeyQueryPage(params) async => normalPost("/hospital/key-query-page",params: params);
 
   sendSMS(params) async => normalPost('/sms/send-captcha',params: params);
+  pushDeviceSubmit(params) async => normalPost('mobile/push-device/submit',params: params);
+  pushDeviceLoginSubmit(params) async => normalPost('mobile/push-device/login-submit',params: params);
+  pushDeviceDel(params) async => normalPost('mobile/push-device/del',params: params);
 }
 
