@@ -1,6 +1,7 @@
 import 'package:doctor/http/foundationSystem.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/manager.dart';
@@ -17,7 +18,7 @@ class DoctorConclusionModel {
 bool _isDialogShowing = false;
 
 void showWeekIfNeededReporter(BuildContext ctx) async {
-  if(_isDialogShowing){
+  if (_isDialogShowing) {
     return;
   }
   API.shared.foundationSys.messageDoctorConclusion().then((value) async {
@@ -41,7 +42,7 @@ void showWeekIfNeededReporter(BuildContext ctx) async {
     _isDialogShowing = true;
     _showDialog(
         ctx,
-        "您的${DateTime.fromMillisecondsSinceEpoch(value['params']['date']??0).month}月学习小结",
+        "您的${DateTime.fromMillisecondsSinceEpoch(value['params']['date'] ?? 0).month}月学习小结",
         value['params']['comments'],
         value['params']['viewUrl'],
         value['messageId']);
@@ -101,44 +102,25 @@ void _showDialog(
                             fontWeight: FontWeight.bold),
                       ),
                     ),
-                    GestureDetector(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: ThemeColor.primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(22)),
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 2,
-                              spreadRadius: 1,
-                              color: Color(0x663aa7ff),
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      child: AceButton(
+                        onPressed: () async {
+                          _isDialogShowing = false;
+                          Navigator.pop(context);
+                          Navigator.pushNamed(
+                            context,
+                            RouteManager.COMMON_WEB,
+                            arguments: {'url': url, 'title': ''},
+                          );
+                          await API.shared.foundationSys
+                              .messageUpdateStatus({'messageId': messageId});
+                        },
+                        text: "立即查收",
                         height: 44,
                         width: 152,
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          "立即查收",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
                       ),
-                      onTap: () async {
-                        _isDialogShowing = false;
-                        Navigator.pop(context);
-                        Navigator.pushNamed(
-                          context,
-                          RouteManager.COMMON_WEB,
-                          arguments: {'url': url, 'title': ''},
-                        );
-                        await API.shared.foundationSys
-                            .messageUpdateStatus({'messageId': messageId});
-                      },
-                    )
+                    ),
                   ],
                 ),
               ),
