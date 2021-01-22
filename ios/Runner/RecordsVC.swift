@@ -408,7 +408,16 @@ class RecordsVC: UIViewController {
                 self.dismiss(animated: true, completion: nil)
                 MBProgressHUD.toast(msg: "上传成功")
             }else{
-                MBProgressHUD.toast(img:"错误",msg: "上传失败，请重试")
+                if let e = error as? String {
+                    if e != "网络错误" {
+                        MBProgressHUD.toast(img:"错误",msg: e)
+                    }else{
+                        MBProgressHUD.toast(img:"错误",msg: "上传失败，请重试")
+                    }
+                }else{
+                    MBProgressHUD.toast(img:"错误",msg: "上传失败，请重试")
+                }
+                
             }
         }
     }
