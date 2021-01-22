@@ -511,9 +511,6 @@ class LessonRecordActivity : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 stopRecord()
                 upload(editText, File(direction, "0.mp4").absolutePath, dialog)
-                if (dialog.isShowing) {
-                    dialog.dismiss()
-                }
             } else {
                 if (!isComposed) {
                     stopRecord()
@@ -529,9 +526,6 @@ class LessonRecordActivity : AppCompatActivity() {
                         runOnUiThread {
                             if (success) {
                                 upload(editText, path, dialog)
-                                if (dialog.isShowing) {
-                                    runOnUiThread { dialog.dismiss() }
-                                }
                             } else {
                                 Toast.makeText(this@LessonRecordActivity, "处理视频失败", Toast.LENGTH_LONG).show()
                             }
@@ -597,7 +591,7 @@ class LessonRecordActivity : AppCompatActivity() {
                     CustomToast.showFailureToast(applicationContext, R.string.upload_failure)
                 } else {
                     if (result != null) {
-                        Toast.makeText(this@LessonRecordActivity, result as String, Toast.LENGTH_LONG).show()
+                        CustomToast.showFailureToast(applicationContext, result as String)
                     } else {
                         CustomToast.showFailureToast(applicationContext, R.string.upload_failure)
                     }
