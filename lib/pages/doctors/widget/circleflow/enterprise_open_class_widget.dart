@@ -19,7 +19,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
           child: Row(
             children: [
               Image(
-                image: AssetImage("assets/images/close.png"),
+                image: AssetImage("assets/images/docrot_circle_head_icon.png"),
                 width: 12,
                 height: 12,
               ),
@@ -39,7 +39,6 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
         ),
         GestureDetector(
           child: Container(
-            margin: EdgeInsets.only(left: 10, right: 20),
             child: Text(
               "查看全部",
               style: TextStyle(
