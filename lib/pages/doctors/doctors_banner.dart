@@ -31,7 +31,6 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       realList.add(widget.dataList[0]);
       _pageController.addListener(() {
         setState(() {
-          print("the page == ${_pageController.page}");
           if (_pageController.page == realList.length - 1) {
             _pageController.jumpToPage(1);
             _currentIndex = 0;
@@ -55,7 +54,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
 
   _startTimer() {
     _timer = Timer.periodic(
-      Duration(seconds: 1),
+      Duration(seconds: 2),
       (timer) {
         _pageController.animateToPage(
           _pageController.page.round() + 1,
@@ -88,6 +87,39 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
     );
   }
 
+  Widget point(){
+    return Container(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 6,
+        margin: EdgeInsets.only(bottom: 6),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: widget.dataList
+              .asMap()
+              .map(
+                (key, value) => MapEntry(
+              key,
+              Container(
+                width: 6,
+                height: 6,
+                margin: EdgeInsets.only(left: 2, right: 2),
+                decoration: ShapeDecoration(
+                  color: _currentIndex == key
+                      ? Color(0xff0077FF)
+                      : Colors.white,
+                  shape: CircleBorder(),
+                ),
+              ),
+            ),
+          )
+              .values
+              .toList(),
+        ),
+      ),
+    );
+  }
+
   Widget content(BuildContext context) {
     return Container(
       height: widget.height,
@@ -101,36 +133,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
             children: realList.asMap().map((key,value) => MapEntry(key, page(value,key))).values.toList(),
           ),
           if (widget.dataList.length > 1)
-            Container(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 6,
-                margin: EdgeInsets.only(bottom: 6),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: widget.dataList
-                      .asMap()
-                      .map(
-                        (key, value) => MapEntry(
-                          key,
-                          Container(
-                            width: 6,
-                            height: 6,
-                            margin: EdgeInsets.only(left: 2, right: 2),
-                            decoration: ShapeDecoration(
-                              color: _currentIndex == key
-                                  ? Color(0xff0077FF)
-                                  : Colors.white,
-                              shape: CircleBorder(),
-                            ),
-                          ),
-                        ),
-                      )
-                      .values
-                      .toList(),
-                ),
-              ),
-            )
+            point()
         ],
       ),
     );

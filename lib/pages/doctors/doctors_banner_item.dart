@@ -8,22 +8,29 @@ class DoctorBannerItemGrass extends StatelessWidget {
   DoctorBannerItemGrass(this.data);
 
   Widget bg() {
-    return Stack(
-      children: [
-        Container(
-          color: Colors.blue,
-          child: Center(
-            child: Text("this is bg"),
-          ),
+    return  Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: NetworkImage(
+              "http://qzonestyle.gtimg.cn/qzone/app/weishi/client/testimage/256/1.jpg"),
         ),
-      ],
+      ),
     );
   }
 
   Widget forground() {
     return Container(
       height: 140,
-      color: Colors.blue,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: NetworkImage(
+              "http://qzonestyle.gtimg.cn/qzone/app/weishi/client/testimage/256/1.jpg"),
+        ),
+      ),
     );
   }
 
@@ -40,12 +47,17 @@ class DoctorBannerItemGrass extends StatelessWidget {
             ),
             child: Container(
               color: Colors.white10,
-              padding: EdgeInsets.only(bottom: 22,left: 20,right: 20),
+              padding: EdgeInsets.only(bottom: 22, left: 20, right: 20),
               alignment: Alignment.bottomCenter,
-              child: forground(),
             ),
+          ),
+          Container(
+              color: Colors.white10,
+              padding: EdgeInsets.only(bottom: 22, left: 20, right: 20),
+              alignment: Alignment.bottomCenter,
+            child: forground(),
           )
-          ,
+
         ],
       ),
     );
@@ -56,11 +68,18 @@ class DoctorBannerItemNormal extends StatelessWidget {
   final dynamic data;
 
   DoctorBannerItemNormal(this.data);
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blue,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: NetworkImage(
+              "http://qzonestyle.gtimg.cn/qzone/app/weishi/client/testimage/256/1.jpg"),
+        ),
+      ),
     );
   }
-
 }

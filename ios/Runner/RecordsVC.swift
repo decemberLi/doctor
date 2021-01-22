@@ -259,7 +259,6 @@ class RecordsVC: UIViewController {
         }
         RPScreenRecorder.shared().isMicrophoneEnabled = true
         RPScreenRecorder.shared().cameraPosition = .front
-        RPScreenRecorder.shared().isCameraEnabled = true
         RPScreenRecorder.shared().startCapture {[weak self] (cmSampleBuffer, rpSampleBufferType, err) in
             if err != nil { return }
             
