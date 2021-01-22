@@ -62,4 +62,12 @@ class MedcloudsNativeApi {
     return await _channel.invokeMapMethod("record", args);
   }
 
+  Future checkNotification() async {
+    return await _channel.invokeMapMethod("checkNotification");
+  }
+
+  Future openSetting() async {
+    return await _channel.invokeMethod("openSetting");
+  }
+
 }

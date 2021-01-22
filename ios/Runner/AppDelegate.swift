@@ -26,7 +26,7 @@ import UserNotificationsUI
     #endif
     
     JPUSHService.registrationIDCompletionHandler { (code, id) in
-        
+        print("the id is ------ \(id)");
     }
     
     Bugly.start(withAppId: "463f24e2f9")
@@ -43,15 +43,20 @@ import UserNotificationsUI
             guard let data = value.data(using: .utf8) else {return}
             guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
             self.share(map: obj)
+            result(true)
         } else if call.method == "record" {
             guard let value = call.arguments as? String else {return}
             guard let data = value.data(using: .utf8) else {return}
             guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
             self.record(map: obj)
-        }else if call.method == "checkOpentNotification" {
+            result(true)
+        }else if call.method == "checkNotification" {
             self.checkNotification { (isOpen) in
                 result(isOpen)
             }
+        }else if call.method == "openSetting" {
+            self.openSetting()
+            result(true);
         }
     }
     vc.setFlutterViewDidRenderCallback {
@@ -153,6 +158,12 @@ extension AppDelegate {
             result?(authorized)
         }
         
+    }
+    
+    func openSetting(){
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
     }
 }
 
