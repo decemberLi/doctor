@@ -50,19 +50,25 @@ class Foundation extends SubAPI {
     return normalPost('/pull-down-config/list', params: params);
   }
 
-  aliossPolicy() async => normalPost("/ali-oss/policy",);
+  aliossPolicy() async => normalPost(
+        "/ali-oss/policy",
+      );
 
   aliossSave(params) async => normalPost("/ali-oss/save", params: params);
-  aliTmpURLBatch(params) async => normalPost("/ali-oss/tmp-url-batch",params: params);
+
+  aliTmpURLBatch(params) async =>
+      normalPost("/ali-oss/tmp-url-batch", params: params);
 
   ocr(params) async =>
       normalPost("/ocr/recognize-identity-card", params: params);
 
-  hospitalKeyQueryPage(params) async => normalPost("/hospital/key-query-page",params: params);
+  hospitalKeyQueryPage(params) async =>
+      normalPost("/hospital/key-query-page", params: params);
 
-  sendSMS(params) async => normalPost('/sms/send-captcha',params: params);
+  sendSMS(params) async => normalPost('/sms/send-captcha', params: params);
   pushDeviceSubmit(params) async => normalPost('mobile/push-device/submit',params: params);
   pushDeviceLoginSubmit(params) async => normalPost('mobile/push-device/login-submit',params: params);
   pushDeviceDel(params) async => normalPost('mobile/push-device/del',params: params);
-}
 
+  getBanner(params) async => normalPost("/saas/web/banner/list", params: params);
+}

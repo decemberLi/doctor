@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:doctor/pages/doctors/viewmodel/banner_view_model.dart';
 import 'package:doctor/provider/refreshable_view_state_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +9,8 @@ import '../model/doctor_circle_entity.dart';
 import '../model/doctor_article_detail_entity.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/dtp.dart';
+
+import 'academic_circle_view_model.dart';
 
 String formatViewCount(int count) {
   if (count == null) {
@@ -33,6 +38,15 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
 
   DoctorsViewMode({this.type});
 
+  final _academicCircleViewModel = AcademicCircleViewModel();
+
+  get topBannerStream => _academicCircleViewModel.topBannerStream;
+
+  get flowBannerStream => _academicCircleViewModel.flowBannerStream;
+
+  get onlineClassStream => _academicCircleViewModel.onlineClassStream;
+  get openClassStream => _academicCircleViewModel.openClassStream;
+
   Future<SharedPreferences> _references() async {
     if (_sharedPreferences == null) {
       _sharedPreferences = await SharedPreferences.getInstance();
@@ -44,9 +58,16 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   RefreshController get refreshController => _refreshController;
 
   @override
+  Future<List> refresh({bool init = false}) {
+    _academicCircleViewModel.refreshData();
+    return super.refresh(init: init);
+  }
+
+  @override
   Future<List> loadData({int pageNum}) async {
     var list = await API.shared.dtp.postList(
-        {'postType': this.type, 'ps': 20, 'pn': pageNum},);
+      {'postType': this.type, 'ps': 20, 'pn': pageNum},
+    );
     List posts = list['records']
         .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
         .toList();
@@ -81,19 +102,25 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   }
 
   Future<DoctorArticleDetailEntity> queryDetail(int postId) async {
-    var result = await API.shared.dtp.postQuery(  {'postId': postId});
+    var result = await API.shared.dtp.postQuery({'postId': postId});
     return Future.value(DoctorArticleDetailEntity.fromJson(result));
   }
 
   Future<bool> like(int postId) async {
     await API.shared.dtp.postLike(
-        {'postId': postId}, );
+      {'postId': postId},
+    );
     return Future.value(true);
   }
 
   Future<bool> collect(int postId) async {
-    await API.shared.dtp.postFavorite(
-         {'postId': postId});
+    await API.shared.dtp.postFavorite({'postId': postId});
     return Future.value(true);
+  }
+
+  @override
+  void dispose() {
+    _academicCircleViewModel.dispose();
+    super.dispose();
   }
 }

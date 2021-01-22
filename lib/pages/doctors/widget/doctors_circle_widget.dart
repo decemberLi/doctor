@@ -1,4 +1,5 @@
 import 'package:doctor/common/event/event_model.dart';
+import 'package:doctor/pages/doctors/model/banner_entity.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -158,6 +159,7 @@ class DoctorsPage extends StatefulWidget {
 class DoctorPageState
     extends AbstractListPageState<DoctorsViewMode, DoctorsPage> {
   ScrollOutScreenViewModel _inScreenViewModel;
+  final _model = DoctorsViewMode(type: 'ACADEMIC');
 
   bool _currentIsOutScreen = false;
 
@@ -188,10 +190,22 @@ class DoctorPageState
           Container(
             alignment: Alignment.center,
             color: Colors.white,
-            child: DoctorsBanner(
-              [0, 1, 2, 3, 4],
-              (context, data, index) {
-                return DoctorBannerItemGrass(data);
+            child: StreamBuilder(
+              stream: _model.topBannerStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<BannerEntity>> snapshot) {
+                if (snapshot.hasData && snapshot.data.length != 0) {
+                  return DoctorsBanner(
+                    snapshot.data,
+                    (context, data, index) {
+                      return DoctorBannerItemGrass(data);
+                    },
+                  );
+                }
+                return SafeArea(
+                    child: Container(
+                  height: 40,
+                ));
               },
             ),
           ),
@@ -205,17 +219,26 @@ class DoctorPageState
             width: double.infinity,
             height: 6,
           ),
-          OnlineClassicWidget([
-            OnlineClassicEntity(),
-            OnlineClassicEntity(),
-            OnlineClassicEntity(),
-            OnlineClassicEntity(),
-          ]),
-          EnterpriseOpenClassWidget([
-            OpenClassEntity(),
-            OpenClassEntity(),
-            OpenClassEntity(),
-          ]),
+          StreamBuilder(
+            stream: _model.onlineClassStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<OnlineClassicEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return OnlineClassicWidget(snapshot.data);
+              }
+              return SafeArea(child: Container());
+            },
+          ),
+          StreamBuilder(
+            stream: _model.openClassStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<OpenClassEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return EnterpriseOpenClassWidget(snapshot.data);
+              }
+              return SafeArea(child: Container());
+            },
+          ),
           Container(
             color: ThemeColor.colorFFF9F9F9,
             width: double.infinity,
@@ -243,7 +266,7 @@ class DoctorPageState
   Widget divider(BuildContext context, int index) => Container();
 
   @override
-  DoctorsViewMode getModel() => DoctorsViewMode(type: 'ACADEMIC');
+  DoctorsViewMode getModel() => _model;
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) {

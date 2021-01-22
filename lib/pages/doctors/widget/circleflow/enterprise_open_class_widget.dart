@@ -2,7 +2,19 @@ import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class OpenClassEntity {
-  String title;
+  final int id;
+  final String coverImgUrl;
+  final String videoUrl;
+  final String title;
+  final int viewNum;
+
+  OpenClassEntity(
+    this.id,
+    this.coverImgUrl,
+    this.videoUrl,
+    this.title,
+    this.viewNum,
+  );
 }
 
 class EnterpriseOpenClassWidget extends StatelessWidget {
@@ -61,14 +73,22 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image(
-            image: AssetImage("assets/images/common_statck_bg.png"),
-            fit: BoxFit.fill,
+          Container(
+            decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
+            height: 80,
+            width: 133,
+            child: entity.coverImgUrl == null
+                ? Container()
+                : Image.network(
+              entity.coverImgUrl,
+              width: 133,
+              height: 80,
+            ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text(
-              "首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台…",
+              "${entity.title}",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -80,7 +100,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 4),
             child: Text(
-              "17亿次学习",
+              "${entity.viewNum}次学习",
               style: TextStyle(
                 fontSize: 10,
                 color: ThemeColor.colorFF999999,
@@ -104,7 +124,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(child: buildItem(null)),
+                Expanded(child: buildItem(entities[0])),
               ],
             ),
           ),
@@ -112,12 +132,12 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(child: buildItem(null)),
+                Expanded(child: buildItem(entities[1])),
                 Container(
                   width: 20,
                   color: Colors.white,
                 ),
-                Expanded(child: buildItem(null)),
+                Expanded(child: buildItem(entities[2])),
               ],
             ),
           )

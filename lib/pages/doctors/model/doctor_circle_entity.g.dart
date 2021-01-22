@@ -15,7 +15,9 @@ DoctorCircleEntity _$DoctorCircleEntityFromJson(Map<String, dynamic> json) {
     ..columnName = json['columnName'] as String
     ..postUserName = json['postUserName'] as String
     ..commentNum = json['commentNum'] as int
-    ..postUserHeader = json['postUserHeader'] as String;
+    ..postUserHeader = json['postUserHeader'] as String
+    ..coverUrl = json['coverUrl'] as String
+    ..videoUrl = json['videoUrl'] as String;
 }
 
 Map<String, dynamic> _$DoctorCircleEntityToJson(DoctorCircleEntity instance) =>
@@ -28,4 +30,6 @@ Map<String, dynamic> _$DoctorCircleEntityToJson(DoctorCircleEntity instance) =>
       'postUserName': instance.postUserName,
       'commentNum': instance.commentNum,
       'postUserHeader': instance.postUserHeader,
+      'coverUrl':instance.coverUrl,
+      'videoUrl':instance.videoUrl,
     };

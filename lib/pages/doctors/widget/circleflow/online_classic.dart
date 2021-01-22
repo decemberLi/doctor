@@ -3,7 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OnlineClassicEntity {
-  String title;
+  final int id;
+  final String coverImgUrl;
+  final String title;
+  final int viewNum;
+
+  OnlineClassicEntity(
+    this.id,
+    this.coverImgUrl,
+    this.title,
+    this.viewNum,
+  );
 }
 
 class OnlineClassicWidget extends StatelessWidget {
@@ -63,15 +73,22 @@ class OnlineClassicWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image(
-            image: AssetImage("assets/images/common_statck_bg.png"),
-            width: 133,
+          Container(
+            decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
             height: 80,
+            width: 133,
+            child: entity.coverImgUrl == null
+                ? Container()
+                : Image.network(
+                    entity.coverImgUrl,
+                    width: 133,
+                    height: 80,
+                  ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text(
-              "首个互联网医院平台首个互联网医院平台…",
+              "${entity.title}",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -83,7 +100,7 @@ class OnlineClassicWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 4),
             child: Text(
-              "17亿次学习",
+              "${entity?.viewNum}次学习",
               style: TextStyle(
                 fontSize: 10,
                 color: ThemeColor.colorFF999999,
@@ -134,10 +151,7 @@ class OnlineClassicWidget extends StatelessWidget {
                     return buildItem(entities[index]);
                   },
                   separatorBuilder: (BuildContext context, int index) {
-                    return Container(
-                      color: Colors.white,
-                      width: 16
-                    );
+                    return Container(color: Colors.white, width: 16);
                   },
                   itemCount: entities.length),
             ),
