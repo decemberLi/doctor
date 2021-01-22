@@ -470,7 +470,7 @@ class LessonRecordActivity : AppCompatActivity() {
             }
             return
         }
-        dialog = object : Dialog(this)
+        dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_record_layout)
         dialog.setCancelable(false)
