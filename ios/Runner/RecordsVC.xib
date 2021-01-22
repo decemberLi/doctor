@@ -175,7 +175,7 @@
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Wt-PI-jxy">
                             <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
-                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.40000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                         </view>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="record_1" translatesAutoresizingMaskIntoConstraints="NO" id="xdm-yQ-abx">
                             <rect key="frame" x="171.5" y="52" width="553" height="310"/>
@@ -253,7 +253,7 @@
                         </button>
                         <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jj9-aS-wKg">
                             <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
-                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.40000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.65000000000000002" colorSpace="custom" customColorSpace="calibratedRGB"/>
                         </view>
                         <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aHh-UM-Ret">
                             <rect key="frame" x="308" y="107" width="280" height="200"/>
