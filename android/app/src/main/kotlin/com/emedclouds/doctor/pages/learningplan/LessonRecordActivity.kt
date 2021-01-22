@@ -593,8 +593,14 @@ class LessonRecordActivity : AppCompatActivity() {
                         dialog.dismiss()
                     }
                     finish()
-                } else {
+                } else if (result == "网络错误") {
                     CustomToast.showFailureToast(applicationContext, R.string.upload_failure)
+                } else {
+                    if (result != null) {
+                        Toast.makeText(this@LessonRecordActivity, result as String, Toast.LENGTH_LONG).show()
+                    } else {
+                        CustomToast.showFailureToast(applicationContext, R.string.upload_failure)
+                    }
                 }
             }
         })
