@@ -178,8 +178,13 @@ class RecordsVC: UIViewController {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         if status == .restricted {
             return
+        }else{
+            AVCaptureDevice.requestAccess(for: .video) { (result) in
+                if result {
+                    self.openCaputre()
+                }
+            }
         }
-        openCaputre()
     }
     
     private func openCaputre(){
