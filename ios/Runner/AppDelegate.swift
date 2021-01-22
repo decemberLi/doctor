@@ -19,11 +19,15 @@ import UserNotificationsUI
     JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
     #if DEBUG
     UMConfigure.initWithAppkey("6007995f6a2a470e8f822118", channel: "App Store")
-    JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: false)
+    JPUSHService.setup(withOption: launchOptions, appKey: "05de7d1b7c21f44388f972b6", channel: "App Store", apsForProduction: false)
     #else
     UMConfigure.initWithAppkey("60079989f1eb4f3f9b67973b", channel: "App Store")
-    JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: false)
+    JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: true)
     #endif
+    
+    JPUSHService.registrationIDCompletionHandler { (code, id) in
+        
+    }
     
     Bugly.start(withAppId: "463f24e2f9")
     WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");

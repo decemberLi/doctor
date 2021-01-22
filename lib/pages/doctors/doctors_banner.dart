@@ -24,6 +24,11 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   Timer _timer;
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+  @override
   void initState() {
     realList.addAll(widget.dataList);
     if (widget.dataList.length > 1) {
@@ -65,8 +70,8 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+
+  Widget _scrollNoti(Widget child) {
     return NotificationListener(
       onNotification: (notification) {
         if (widget.dataList.length <= 1) {
@@ -83,7 +88,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
         }
         return true;
       },
-      child: content(context),
+      child: child,
     );
   }
 
@@ -119,18 +124,20 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       ),
     );
   }
-
-  Widget content(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: widget.height,
       child: Stack(
         children: [
-          PageView(
-            physics: widget.dataList.length > 1
-                ? null
-                : NeverScrollableScrollPhysics(),
-            controller: _pageController,
-            children: realList.asMap().map((key,value) => MapEntry(key, page(value,key))).values.toList(),
+          _scrollNoti(
+              PageView(
+                physics: widget.dataList.length > 1
+                    ? null
+                    : NeverScrollableScrollPhysics(),
+                controller: _pageController,
+                children: realList.asMap().map((key,value) => MapEntry(key, page(value,key))).values.toList(),
+              )
           ),
           if (widget.dataList.length > 1)
             point()
