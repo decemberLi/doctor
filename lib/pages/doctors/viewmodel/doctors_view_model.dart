@@ -45,7 +45,10 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   get flowBannerStream => _academicCircleViewModel.flowBannerStream;
 
   get onlineClassStream => _academicCircleViewModel.onlineClassStream;
+
   get openClassStream => _academicCircleViewModel.openClassStream;
+
+  get hotPostStream => _academicCircleViewModel.hotPostStream;
 
   Future<SharedPreferences> _references() async {
     if (_sharedPreferences == null) {

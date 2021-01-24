@@ -244,18 +244,36 @@ class DoctorPageState
             width: double.infinity,
             height: 6,
           ),
-          HotPostWidget([
-            HotPostEntity(),
-            HotPostEntity(),
-            HotPostEntity(),
-            HotPostEntity(),
-          ]),
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-            child: DoctorsBanner([0, 1, 2, 3, 4], (context, data, index) {
-              return DoctorBannerItemGrass(data);
-            }, height: 80),
+          StreamBuilder(
+            stream: _model.hotPostStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<HotPostEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return HotPostWidget(snapshot.data);
+              }
+              return SafeArea(child: Container());
+            },
+          ),
+          StreamBuilder(
+            stream: _model.flowBannerStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<BannerEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  child: DoctorsBanner(
+                    snapshot.data,
+                    (context, data, index) {
+                      return DoctorBannerItemGrass(data);
+                    },
+                  ),
+                );
+              }
+              return Container(
+                color: Colors.white,
+                height: 12,
+              );
+            },
           )
         ],
       ),

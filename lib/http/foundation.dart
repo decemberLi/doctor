@@ -69,6 +69,4 @@ class Foundation extends SubAPI {
   pushDeviceSubmit(params) async => normalPost('mobile/push-device/submit',params: params);
   pushDeviceLoginSubmit(params) async => normalPost('mobile/push-device/login-submit',params: params);
   pushDeviceDel(params) async => normalPost('mobile/push-device/del',params: params);
-
-  getBanner(params) async => normalPost("/saas/web/banner/list", params: params);
 }

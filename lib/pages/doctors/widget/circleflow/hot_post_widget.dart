@@ -3,7 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HotPostEntity {
-  String type;
+  int id;
+  String text;
+
+  HotPostEntity(this.id, this.text);
 }
 
 class HotPostWidget extends StatelessWidget {
@@ -12,36 +15,39 @@ class HotPostWidget extends StatelessWidget {
   HotPostWidget(this.entities);
 
   buildItem(HotPostEntity entity) {
-    return Container(
-      width: 188,
-      height: 102,
-      padding: EdgeInsets.only(left: 11, right: 11, top: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(width: 1, color: ThemeColor.colorFFE8E8E8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image(
-            image: AssetImage("assets/images/icon_ying_hao.png"),
-            width: 14,
-            height: 14,
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 8),
-            child: Text(
-              "肝病内科在肝癌综合治疗中的价值和地位肝病内科在肝癌综合治疗中的价值和地位肝病内科在肝癌综合治疗中的价值和地位",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 16,
-                color: ThemeColor.colorFF444444,
-              ),
+    return GestureDetector(
+      child: Container(
+        width: 188,
+        height: 102,
+        padding: EdgeInsets.only(left: 11, right: 11, top: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(width: 1, color: ThemeColor.colorFFE8E8E8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image(
+              image: AssetImage("assets/images/icon_ying_hao.png"),
+              width: 14,
+              height: 14,
             ),
-          )
-        ],
+            Container(
+              padding: EdgeInsets.only(top: 8),
+              child: Text(
+                "${entity.text ?? ''}",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: ThemeColor.colorFF444444,
+                ),
+              ),
+            )
+          ],
+        ),
       ),
+      onTap: _goDetail,
     );
   }
 
@@ -66,39 +72,43 @@ class HotPostWidget extends StatelessWidget {
               Text(
                 "热\n帖\n榜",
                 style: TextStyle(
-                  color: ThemeColor.colorFF222222,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold
-                ),
+                    color: ThemeColor.colorFF222222,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
               )
             ],
           ),
           Expanded(
-              child: Container(
-            padding: EdgeInsets.only(left: 14),
-            child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (buildContext, index) {
-                  if (index == entities.length - 1) {
-                    return Row(
-                      children: [
-                        buildItem(entities[index]),
-                        Container(
-                          color: Colors.white,
-                          width: 20,
-                        )
-                      ],
-                    );
-                  }
-                  return buildItem(entities[index]);
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return Container(color: Colors.white, width: 16);
-                },
-                itemCount: entities.length),
-          ))
+            child: Container(
+              padding: EdgeInsets.only(left: 14),
+              child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (buildContext, index) {
+                    if (index == entities.length - 1) {
+                      return Row(
+                        children: [
+                          buildItem(entities[index]),
+                          Container(
+                            color: Colors.white,
+                            width: 20,
+                          )
+                        ],
+                      );
+                    }
+                    return buildItem(entities[index]);
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Container(color: Colors.white, width: 16);
+                  },
+                  itemCount: entities.length),
+            ),
+          )
         ],
       ),
     );
+  }
+
+  void _goDetail() {
+    // TODO 详情跳转
   }
 }

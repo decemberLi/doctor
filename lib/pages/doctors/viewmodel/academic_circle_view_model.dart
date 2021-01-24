@@ -5,6 +5,7 @@ import 'package:doctor/pages/doctors/model/banner_entity.dart';
 import 'package:doctor/pages/doctors/model/doctor_circle_entity.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/category_widget.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/enterprise_open_class_widget.dart';
+import 'package:doctor/pages/doctors/widget/circleflow/hot_post_widget.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/online_classic.dart';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/dtp.dart';
@@ -15,15 +16,22 @@ class AcademicCircleViewModel {
   // ignore: close_sinks
   StreamController<List<BannerEntity>> _topBannerStreamController =
       StreamController<List<BannerEntity>>();
+
   // ignore: close_sinks
   StreamController<List<BannerEntity>> _flowBannerStreamController =
       StreamController<List<BannerEntity>>();
+
   // ignore: close_sinks
   StreamController<List<OnlineClassicEntity>> _onlineClassStreamController =
       StreamController<List<OnlineClassicEntity>>();
+
   // ignore: close_sinks
   StreamController<List<OpenClassEntity>> _openClassStreamController =
       StreamController<List<OpenClassEntity>>();
+
+  // ignore: close_sinks
+  StreamController<List<HotPostEntity>> _hotPostStreamController =
+      StreamController<List<HotPostEntity>>();
 
   BannerViewModel _topBannerModel;
   BannerViewModel _flowBannerModel;
@@ -46,6 +54,10 @@ class AcademicCircleViewModel {
         !_onlineClassStreamController.isClosed) {
       _onlineClassStreamController.sink.close();
     }
+    if (_hotPostStreamController != null &&
+        !_hotPostStreamController.isClosed) {
+      _hotPostStreamController.sink.close();
+    }
   }
 
   get topBannerStream => _topBannerStreamController.stream;
@@ -56,7 +68,9 @@ class AcademicCircleViewModel {
 
   get openClassStream => _openClassStreamController.stream;
 
-  refreshBanner() async {
+  get hotPostStream => _hotPostStreamController.stream;
+
+  refreshTopBanner() async {
     var banner = await _topBannerModel.getBanner();
     _topBannerStreamController.sink.add(banner);
   }
@@ -113,9 +127,32 @@ class AcademicCircleViewModel {
     }
   }
 
+  refreshHotPost() async {
+    try {
+      var list = await API.shared.dtp.postList(
+        {'postType': 'ACADEMIC', 'ps': 3, 'pn': 1},
+      );
+      List<DoctorCircleEntity> posts = list['records']
+          .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
+          .toList();
+      List<HotPostEntity> results = List<HotPostEntity>();
+      for (DoctorCircleEntity each in posts) {
+        results.add(HotPostEntity(
+          each.postId,
+          each.postTitle,
+        ));
+      }
+      _hotPostStreamController.sink.add(results);
+    } on DioError catch (e) {
+      _hotPostStreamController.sink.add(List<HotPostEntity>());
+    }
+  }
+
   void refreshData() {
-    refreshBanner();
+    refreshTopBanner();
+    refreshFlowBanner();
     refreshOnlineClass();
     refreshOpenClass();
+    refreshHotPost();
   }
 }

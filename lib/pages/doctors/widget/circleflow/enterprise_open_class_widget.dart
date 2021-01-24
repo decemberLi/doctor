@@ -59,31 +59,29 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
               ),
             ),
           ),
-          onTap: () {
-            //TODO 跳转
-          },
+          onTap: _goList(),
         )
       ],
     );
   }
 
   Widget buildItem(OpenClassEntity entity) {
-    return Container(
+    return GestureDetector(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
-            height: 80,
-            width: 133,
+            height: 102,
+            width: double.infinity,
             child: entity.coverImgUrl == null
                 ? Container()
                 : Image.network(
-              entity.coverImgUrl,
-              width: 133,
-              height: 80,
-            ),
+                    entity.coverImgUrl,
+                    width: double.infinity,
+                    height: 102,
+                  ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 8),
@@ -109,6 +107,76 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
           )
         ],
       ),
+      onTap: _goDetail,
+    );
+  }
+
+  Widget buildVideoPreviewItem(OpenClassEntity entity) {
+    return GestureDetector(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
+            height: 210,
+            width: double.infinity,
+            child: entity.coverImgUrl == null
+                ? Container()
+                : Image.network(
+                    entity.coverImgUrl,
+                    width: double.infinity,
+                    height: 210,
+                  ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Container(
+                  child: Text(
+                    "${entity.title}",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: ThemeColor.colorFF222222,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Container(
+                  child: Row(
+                    children: [
+                      Text(
+                        "${entity.viewNum}次学习",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: ThemeColor.colorFF999999,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 25),
+                        child: Text(
+                          "${entity.viewNum}评论",
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: ThemeColor.colorFF999999,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+      onTap: _goDetail,
     );
   }
 
@@ -116,7 +184,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.only(left: 20, top: 12, right: 20),
+      padding: EdgeInsets.only(left: 20, top: 12, right: 20, bottom: 12),
       child: Column(
         children: [
           header(),
@@ -124,7 +192,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(child: buildItem(entities[0])),
+                Expanded(child: buildVideoPreviewItem(entities[0])),
               ],
             ),
           ),
@@ -144,5 +212,13 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  _goDetail() {
+    // TODO 详情跳转
+  }
+
+  _goList() {
+    // TODO 列表跳转
   }
 }
