@@ -226,7 +226,7 @@ class DoctorPageState
               if (snapshot.hasData && snapshot.data.length != 0) {
                 return OnlineClassicWidget(snapshot.data);
               }
-              return SafeArea(child: Container());
+              return SafeArea(child: Container(color: Colors.white));
             },
           ),
           StreamBuilder(
@@ -236,7 +236,7 @@ class DoctorPageState
               if (snapshot.hasData && snapshot.data.length != 0) {
                 return EnterpriseOpenClassWidget(snapshot.data);
               }
-              return SafeArea(child: Container());
+              return SafeArea(child: Container(color: Colors.white));
             },
           ),
           Container(
@@ -251,7 +251,7 @@ class DoctorPageState
               if (snapshot.hasData && snapshot.data.length != 0) {
                 return HotPostWidget(snapshot.data);
               }
-              return SafeArea(child: Container());
+              return Container(color: Colors.white);
             },
           ),
           StreamBuilder(

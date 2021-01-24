@@ -9,7 +9,9 @@ import com.emedclouds.doctor.pages.CommonWebActivity
 import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
 import com.emedclouds.doctor.utils.ChannelManager
+import com.emedclouds.doctor.utils.NotificationUtil
 import com.emedclouds.doctor.utils.OnFlutterCall
+import com.emedclouds.doctor.utils.OnFlutterCall.Companion.CHANNEL_RESULT_OK
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
@@ -22,19 +24,20 @@ class MainActivity : FlutterActivity() {
         super.onCreate(savedInstanceState)
         ChannelManager.instance.initChannel(flutterEngine?.dartExecutor)
         ChannelManager.instance.on("share", object : OnFlutterCall {
-            override fun call(arguments: String?, channel: MethodChannel) {
+            override fun call(arguments: String?, channel: MethodChannel): String {
                 if (arguments == null) {
-                    return
+                    return CHANNEL_RESULT_OK
                 }
 
                 val jsonObject = JSONObject(arguments)
                 ShareActivity.openShare(this@MainActivity, jsonObject.getString("path"), jsonObject.getString("url"))
+                return CHANNEL_RESULT_OK
             }
         })
         ChannelManager.instance.on("record", object : OnFlutterCall {
-            override fun call(arguments: String?, channel: MethodChannel) {
+            override fun call(arguments: String?, channel: MethodChannel): String {
                 if (arguments == null) {
-                    return
+                    return CHANNEL_RESULT_OK
                 }
                 val jsonObject = JSONObject(arguments)
                 val path = jsonObject.getString("path")
@@ -44,9 +47,20 @@ class MainActivity : FlutterActivity() {
                 val title = jsonObject.getString("title")
                 val type = jsonObject.getString("type")
                 LessonRecordActivity.start(this@MainActivity, path, name, userId, hospital, title, type)
-//                LessonRecordActivity.start(this@MainActivity, "path", "name", "userId", "hospital", "title")
+                return CHANNEL_RESULT_OK
             }
 
+        })
+        ChannelManager.instance.on("checkNotification", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel):Any {
+                return NotificationUtil.isNotificationEnabled(this@MainActivity)
+            }
+        })
+        ChannelManager.instance.on("openSetting", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                NotificationUtil.openNotificationSettingPage(this@MainActivity)
+                return CHANNEL_RESULT_OK
+            }
         })
         goWebIfNeeded(intent)
     }

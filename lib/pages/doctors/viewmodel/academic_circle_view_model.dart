@@ -148,11 +148,11 @@ class AcademicCircleViewModel {
     }
   }
 
-  void refreshData() {
-    refreshTopBanner();
-    refreshFlowBanner();
-    refreshOnlineClass();
-    refreshOpenClass();
-    refreshHotPost();
+  refreshData()async {
+    await refreshTopBanner();
+    await refreshFlowBanner();
+    await refreshOnlineClass();
+    await refreshOpenClass();
+    await refreshHotPost();
   }
 }

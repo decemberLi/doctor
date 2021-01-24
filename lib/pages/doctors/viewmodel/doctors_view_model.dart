@@ -61,8 +61,8 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   RefreshController get refreshController => _refreshController;
 
   @override
-  Future<List> refresh({bool init = false}) {
-    _academicCircleViewModel.refreshData();
+  Future<List> refresh({bool init = false}) async {
+    await _academicCircleViewModel.refreshData();
     return super.refresh(init: init);
   }
 
