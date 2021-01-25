@@ -64,7 +64,7 @@ android {
             signingConfig signingConfigs.debug
             manifestPlaceholders = [
                     JPUSH_PKGNAME : defaultConfig.applicationId,
-                    JPUSH_APPKEY : "a7547476f7255646ea8646fd",
+                    JPUSH_APPKEY : "05de7d1b7c21f44388f972b6",
                     JPUSH_CHANNEL : "developer-default",
             ]
 
@@ -81,7 +81,7 @@ android {
 
             manifestPlaceholders = [
                     JPUSH_PKGNAME : defaultConfig.applicationId,
-                    JPUSH_APPKEY : "a7547476f7255646ea8646fd",
+                    JPUSH_APPKEY : "602e4ea4245634138758a93c",
                     JPUSH_CHANNEL : "developer-default",
             ]
 
