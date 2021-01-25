@@ -273,8 +273,9 @@ class DoctorPageState
                   child: DoctorsBanner(
                     snapshot.data,
                     (context, data, index) {
-                      return DoctorBannerItemGrass(data);
+                      return DoctorBannerItemNormal(data);
                     },
+                    height: 80,
                   ),
                 );
               }

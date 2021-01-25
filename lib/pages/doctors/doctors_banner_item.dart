@@ -14,7 +14,7 @@ class DoctorBannerItemGrass extends StatelessWidget {
         image: DecorationImage(
           fit: BoxFit.cover,
           image: NetworkImage(
-              "http://qzonestyle.gtimg.cn/qzone/app/weishi/client/testimage/256/1.jpg"),
+              data.bannerUrl),
         ),
       ),
     );
@@ -28,7 +28,7 @@ class DoctorBannerItemGrass extends StatelessWidget {
         image: DecorationImage(
           fit: BoxFit.cover,
           image: NetworkImage(
-              "http://qzonestyle.gtimg.cn/qzone/app/weishi/client/testimage/256/1.jpg"),
+              data.bannerUrl),
         ),
       ),
     );
@@ -77,7 +77,7 @@ class DoctorBannerItemNormal extends StatelessWidget {
         image: DecorationImage(
           fit: BoxFit.cover,
           image: NetworkImage(
-              "http://qzonestyle.gtimg.cn/qzone/app/weishi/client/testimage/256/1.jpg"),
+              data.bannerUrl),
         ),
       ),
     );
