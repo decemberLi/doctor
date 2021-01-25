@@ -67,7 +67,7 @@ class MediaRecorderThread(
             // 比特率
             setVideoEncodingBitRate(profile.videoBitRate)
             // 视频编码格式
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setAudioChannels(profile.audioChannels)
             setAudioSamplingRate(profile.audioSampleRate)
             setVideoEncoder(MediaRecorder.VideoEncoder.H264)
