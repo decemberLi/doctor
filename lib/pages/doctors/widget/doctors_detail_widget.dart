@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_detail_view_model.dart';
@@ -10,9 +11,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:http_manager/manager.dart';
 
 import '../model/doctor_article_detail_entity.dart';
 
@@ -90,6 +91,11 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
       },
       'removeBizType': (jsonParam, bizType) {
         aMap.remove(jsonParam['key']);
+      },
+      'getWifiStatus': (jsonParam, bizType) async {
+        ConnectivityResult connectivityResult = await (Connectivity().checkConnectivity());
+        _callJs(_commonResult(
+            bizType: bizType, content: connectivityResult == ConnectivityResult.wifi));
       }
     };
   }
