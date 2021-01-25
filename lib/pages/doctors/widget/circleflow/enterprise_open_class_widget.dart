@@ -8,6 +8,7 @@ class OpenClassEntity {
   final String videoUrl;
   final String title;
   final int viewNum;
+  final String author;
 
   OpenClassEntity(
     this.id,
@@ -15,6 +16,7 @@ class OpenClassEntity {
     this.videoUrl,
     this.title,
     this.viewNum,
+    this.author,
   );
 }
 
@@ -60,7 +62,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
               ),
             ),
           ),
-          onTap: (){
+          onTap: () {
             Navigator.pushNamed(context, RouteManager.DOCTOR_LIST2,
                 arguments: 'OPEN_CLASS');
           },
@@ -111,7 +113,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
           )
         ],
       ),
-      onTap: (){
+      onTap: () {
         Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
             arguments: {
               'postId': entity?.id,
@@ -126,7 +128,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
     return GestureDetector(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
@@ -140,54 +142,47 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
                     height: 210,
                   ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: Container(
-                  child: Text(
-                    "${entity.title}",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: ThemeColor.colorFF222222,
-                    ),
-                  ),
-                ),
+          Padding(
+            padding: EdgeInsets.only(top: 4),
+            child: Text(
+              entity.title ?? '',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 16,
+                color: ThemeColor.colorFF222222,
+                fontWeight: FontWeight.bold
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: Container(
-                  child: Row(
-                    children: [
-                      Text(
-                        "${entity.viewNum}次学习",
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: ThemeColor.colorFF999999,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 25),
-                        child: Text(
-                          "${entity.viewNum}评论",
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: ThemeColor.colorFF999999,
-                          ),
-                        ),
-                      ),
-                    ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(child: Text(
+                  "${entity.author ?? ''}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: ThemeColor.colorFF222222,
+                    fontWeight: FontWeight.bold,
                   ),
-                ),
-              )
-            ],
+                )),
+                Text(
+                  "${entity.viewNum ?? ''}次学习",
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: ThemeColor.colorFF999999,
+                  ),
+                )
+              ],
+            ),
           )
         ],
       ),
-      onTap: (){
+      onTap: () {
         Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
             arguments: {
               'postId': entity?.id,
@@ -231,5 +226,4 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
       ),
     );
   }
-
 }

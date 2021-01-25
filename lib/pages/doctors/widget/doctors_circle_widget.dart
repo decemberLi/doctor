@@ -243,15 +243,19 @@ class DoctorPageState
             builder: (BuildContext context,
                 AsyncSnapshot<List<OpenClassEntity>> snapshot) {
               if (snapshot.hasData && snapshot.data.length != 0) {
-                return EnterpriseOpenClassWidget(snapshot.data);
+                return Column(
+                  children: [
+                    EnterpriseOpenClassWidget(snapshot.data),
+                    Container(
+                      color: ThemeColor.colorFFF9F9F9,
+                      width: double.infinity,
+                      height: 6,
+                    )
+                  ],
+                );
               }
               return SafeArea(child: Container(color: Colors.white));
             },
-          ),
-          Container(
-            color: ThemeColor.colorFFF9F9F9,
-            width: double.infinity,
-            height: 6,
           ),
           StreamBuilder(
             stream: _model.hotPostStream,
@@ -263,27 +267,30 @@ class DoctorPageState
               return Container(color: Colors.white);
             },
           ),
-          StreamBuilder(
-            stream: _model.flowBannerStream,
-            builder: (BuildContext context,
-                AsyncSnapshot<List<BannerEntity>> snapshot) {
-              if (snapshot.hasData && snapshot.data.length != 0) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                  child: DoctorsBanner(
-                    snapshot.data,
-                    (context, data, index) {
-                      return DoctorBannerItemNormal(data);
-                    },
-                    height: 80,
-                  ),
+          Container(
+            color: Colors.white,
+            child: StreamBuilder(
+              stream: _model.flowBannerStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<BannerEntity>> snapshot) {
+                if (snapshot.hasData && snapshot.data.length != 0) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                    child: DoctorsBanner(
+                      snapshot.data,
+                          (context, data, index) {
+                        return DoctorBannerItemNormal(data);
+                      },
+                      height: 80,
+                    ),
+                  );
+                }
+                return Container(
+                  color: Colors.white,
+                  height: 12,
                 );
-              }
-              return Container(
-                color: Colors.white,
-                height: 12,
-              );
-            },
+              },
+            ),
           )
         ],
       ),
