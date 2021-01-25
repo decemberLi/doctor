@@ -210,9 +210,9 @@ class DoctorPageState
             ),
           ),
           CategoryWidget([
-            CategoryEntity("", "", "每日医讲"),
-            CategoryEntity("", "", "病例解析"),
-            CategoryEntity("", "", "论文专区")
+            CategoryEntity("daily_class", "assets/images/daily_class.png", "每日医讲"),
+            CategoryEntity("case_analysis", "assets/images/case_analysis.png", "病例解析"),
+            CategoryEntity("doctor_circle_head_icon", "assets/images/article.png", "论文专区")
           ]),
           Container(
             color: ThemeColor.colorFFF9F9F9,

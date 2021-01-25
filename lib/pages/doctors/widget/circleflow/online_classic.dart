@@ -1,3 +1,4 @@
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class OnlineClassicWidget extends StatelessWidget {
 
   OnlineClassicWidget(this.entities);
 
-  header() {
+  header(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -30,7 +31,7 @@ class OnlineClassicWidget extends StatelessWidget {
             child: Row(
           children: [
             Image(
-              image: AssetImage("assets/images/docrot_circle_head_icon.png"),
+              image: AssetImage("assets/images/doctor_circle_head_icon.png"),
               width: 12,
               height: 12,
             ),
@@ -59,14 +60,15 @@ class OnlineClassicWidget extends StatelessWidget {
             ),
           ),
           onTap: () {
-            //TODO 跳转
+            Navigator.pushNamed(context, RouteManager.DOCTOR_LIST2,
+                arguments: 'VIDEO_ZONE');
           },
         )
       ],
     );
   }
 
-  Widget buildItem(OnlineClassicEntity entity) {
+  Widget buildItem(BuildContext context, OnlineClassicEntity entity) {
     return GestureDetector(
       child: Container(
         width: 133,
@@ -111,15 +113,22 @@ class OnlineClassicWidget extends StatelessWidget {
           ],
         ),
       ),
-      onTap: _goDetail,
+      onTap: (){
+        Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+            arguments: {
+              'postId': entity?.id,
+              'from': 'list',
+              'type': 'VIDEO_ZONE'
+            });
+      },
     );
   }
 
-  List<Widget> buildItems() {
+  List<Widget> buildItems(BuildContext context) {
     List<Widget> widgets = [];
 
     for (int i = 0; i < entities.length; i++) {
-      widgets.add(buildItem(entities[i]));
+      widgets.add(buildItem(context, entities[i]));
     }
 
     return widgets;
@@ -133,7 +142,7 @@ class OnlineClassicWidget extends StatelessWidget {
       height: 170,
       child: Column(
         children: [
-          header(),
+          header(context),
           Expanded(
             child: Container(
               margin: EdgeInsets.only(top: 12),
@@ -143,7 +152,7 @@ class OnlineClassicWidget extends StatelessWidget {
                     if (index == entities.length - 1) {
                       return Row(
                         children: [
-                          buildItem(entities[index]),
+                          buildItem(context, entities[index]),
                           Container(
                             color: Colors.white,
                             width: 20,
@@ -151,7 +160,7 @@ class OnlineClassicWidget extends StatelessWidget {
                         ],
                       );
                     }
-                    return buildItem(entities[index]);
+                    return buildItem(context, entities[index]);
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return Container(color: Colors.white, width: 16);
@@ -162,9 +171,5 @@ class OnlineClassicWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  _goDetail() {
-    // TODO 在线医课堂详情
   }
 }

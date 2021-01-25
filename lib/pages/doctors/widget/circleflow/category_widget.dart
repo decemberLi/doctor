@@ -10,6 +10,8 @@ class CategoryEntity {
   CategoryEntity(this.type, this.iconUrl, this.text);
 }
 
+
+
 class CategoryWidget extends StatelessWidget {
   final List<CategoryEntity> entities;
 
@@ -41,7 +43,7 @@ class CategoryWidget extends StatelessWidget {
         child: Column(
           children: [
             Image(
-              image: AssetImage("assets/images/icon_like.png"),
+              image: AssetImage(each.iconUrl),
               width: 54,
               height: 54,
             ),

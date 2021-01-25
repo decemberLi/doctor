@@ -73,6 +73,8 @@ class RouteManager {
   static const String QUALIFICATION_AUTH_STATUS = '/qualification_auth_status';
   static const String DOCTORS_ARTICLE_DETAIL = '/doctors_detail';
   static const String COMMON_WEB = '/commonWeb';
+  static const String DOCTOR_LIST1 = '/DoctorList1';
+  static const String DOCTOR_LIST2 = '/DoctorList2';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
@@ -156,11 +158,11 @@ class RouteManager {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return CommonWebView(obj['url'],obj['title']);
     },
-    '/DoctorList1':(context){
+    DOCTOR_LIST1: (context){
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return DoctorsListPage(obj);
     },
-    '/DoctorList2':(context){
+    DOCTOR_LIST2: (context){
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return DoctorsListPage2(obj);
     },

@@ -1,3 +1,4 @@
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
 
   EnterpriseOpenClassWidget(this.entities);
 
-  header() {
+  header(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -31,7 +32,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
           child: Row(
             children: [
               Image(
-                image: AssetImage("assets/images/docrot_circle_head_icon.png"),
+                image: AssetImage("assets/images/doctor_circle_head_icon.png"),
                 width: 12,
                 height: 12,
               ),
@@ -59,13 +60,16 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
               ),
             ),
           ),
-          onTap: _goList(),
+          onTap: (){
+            Navigator.pushNamed(context, RouteManager.DOCTOR_LIST2,
+                arguments: 'OPEN_CLASS');
+          },
         )
       ],
     );
   }
 
-  Widget buildItem(OpenClassEntity entity) {
+  Widget buildItem(BuildContext context, OpenClassEntity entity) {
     return GestureDetector(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -107,11 +111,18 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
           )
         ],
       ),
-      onTap: _goDetail,
+      onTap: (){
+        Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+            arguments: {
+              'postId': entity?.id,
+              'from': 'list',
+              'type': 'OPEN_CLASS'
+            });
+      },
     );
   }
 
-  Widget buildVideoPreviewItem(OpenClassEntity entity) {
+  Widget buildVideoPreviewItem(BuildContext context, OpenClassEntity entity) {
     return GestureDetector(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -176,7 +187,14 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
           )
         ],
       ),
-      onTap: _goDetail,
+      onTap: (){
+        Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+            arguments: {
+              'postId': entity?.id,
+              'from': 'list',
+              'type': 'OPEN_CLASS'
+            });
+      },
     );
   }
 
@@ -187,12 +205,12 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
       padding: EdgeInsets.only(left: 20, top: 12, right: 20, bottom: 12),
       child: Column(
         children: [
-          header(),
+          header(context),
           Container(
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(child: buildVideoPreviewItem(entities[0])),
+                Expanded(child: buildVideoPreviewItem(context, entities[0])),
               ],
             ),
           ),
@@ -200,12 +218,12 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(child: buildItem(entities[1])),
+                Expanded(child: buildItem(context, entities[1])),
                 Container(
                   width: 20,
                   color: Colors.white,
                 ),
-                Expanded(child: buildItem(entities[2])),
+                Expanded(child: buildItem(context, entities[2])),
               ],
             ),
           )
@@ -214,11 +232,4 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
     );
   }
 
-  _goDetail() {
-    // TODO 详情跳转
-  }
-
-  _goList() {
-    // TODO 列表跳转
-  }
 }
