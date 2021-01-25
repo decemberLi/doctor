@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:doctor/pages/doctors/viewmodel/banner_view_model.dart';
+import 'package:doctor/pages/doctors/widget/circleflow/hot_post_widget.dart';
 import 'package:doctor/provider/refreshable_view_state_model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +33,10 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  // ignore: close_sinks
+  StreamController<List<HotPostEntity>> _hotPostStreamController =
+      StreamController<List<HotPostEntity>>();
+
   SharedPreferences _sharedPreferences;
 
   final String type;
@@ -47,8 +52,9 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   get onlineClassStream => _academicCircleViewModel.onlineClassStream;
 
   get openClassStream => _academicCircleViewModel.openClassStream;
+  get categoryStream => _academicCircleViewModel.categoryStream;
 
-  get hotPostStream => _academicCircleViewModel.hotPostStream;
+  get hotPostStream => _hotPostStreamController.stream;
 
   Future<SharedPreferences> _references() async {
     if (_sharedPreferences == null) {
@@ -63,7 +69,20 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   @override
   Future<List> refresh({bool init = false}) async {
     await _academicCircleViewModel.refreshData();
-    return super.refresh(init: init);
+    var list = await super.refresh(init: init);
+    if (list.length > 3) {
+      var hotPost = list.sublist(0, 3);
+      List<HotPostEntity> results = List<HotPostEntity>();
+      for (DoctorCircleEntity each in hotPost) {
+        results.add(HotPostEntity(
+          each.postId,
+          each.postTitle,
+        ));
+      }
+      _hotPostStreamController.sink.add(results);
+    }
+
+    return Future.value(list.sublist(3));
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:doctor/pages/doctors/model/banner_entity.dart';
@@ -7,8 +8,10 @@ import 'package:doctor/pages/doctors/widget/circleflow/category_widget.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/enterprise_open_class_widget.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/hot_post_widget.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/online_classic.dart';
+import 'package:doctor/pages/qualification/model/config_data_entity.dart';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/dtp.dart';
+import 'package:doctor/http/developer.dart';
 
 import 'banner_view_model.dart';
 
@@ -30,8 +33,8 @@ class AcademicCircleViewModel {
       StreamController<List<OpenClassEntity>>();
 
   // ignore: close_sinks
-  StreamController<List<HotPostEntity>> _hotPostStreamController =
-      StreamController<List<HotPostEntity>>();
+  StreamController<List<CategoryEntity>> _categoryStreamController =
+      StreamController<List<CategoryEntity>>();
 
   BannerViewModel _topBannerModel;
   BannerViewModel _flowBannerModel;
@@ -54,9 +57,9 @@ class AcademicCircleViewModel {
         !_onlineClassStreamController.isClosed) {
       _onlineClassStreamController.sink.close();
     }
-    if (_hotPostStreamController != null &&
-        !_hotPostStreamController.isClosed) {
-      _hotPostStreamController.sink.close();
+    if (_categoryStreamController != null &&
+        !_categoryStreamController.isClosed) {
+      _categoryStreamController.sink.close();
     }
   }
 
@@ -68,7 +71,7 @@ class AcademicCircleViewModel {
 
   get openClassStream => _openClassStreamController.stream;
 
-  get hotPostStream => _hotPostStreamController.stream;
+  get categoryStream => _categoryStreamController.stream;
 
   refreshTopBanner() async {
     var banner = await _topBannerModel.getBanner();
@@ -127,32 +130,34 @@ class AcademicCircleViewModel {
     }
   }
 
-  refreshHotPost() async {
+  refreshCategoryData() async {
     try {
-      var list = await API.shared.dtp.postList(
-        {'postType': 'ACADEMIC', 'ps': 3, 'pn': 1},
-      );
-      List<DoctorCircleEntity> posts = list['records']
-          .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
-          .toList();
-      List<HotPostEntity> results = List<HotPostEntity>();
-      for (DoctorCircleEntity each in posts) {
-        results.add(HotPostEntity(
-          each.postId,
-          each.postTitle,
-        ));
+      var data = await API.shared.developer.dictCategoryList();
+      var list = data["records"] as List;
+      print(data);
+      if (list.length > 0) {
+        var configList = jsonDecode(list[0]['value'])
+            .map<CategoryEntity>((each) => CategoryEntity(
+                  each['type'],
+                  each['iconUrl'],
+                  each['title'],
+                  each['code'],
+                ))
+            .toList();
+        _categoryStreamController.sink.add(configList);
+      } else {
+        _categoryStreamController.sink.add(List<CategoryEntity>());
       }
-      _hotPostStreamController.sink.add(results);
     } on DioError catch (e) {
-      _hotPostStreamController.sink.add(List<HotPostEntity>());
+      _categoryStreamController.sink.add(List<CategoryEntity>());
     }
   }
 
-  refreshData()async {
+  refreshData() async {
     await refreshTopBanner();
     await refreshFlowBanner();
     await refreshOnlineClass();
     await refreshOpenClass();
-    await refreshHotPost();
+    await refreshCategoryData();
   }
 }

@@ -209,15 +209,24 @@ class DoctorPageState
               },
             ),
           ),
-          CategoryWidget([
-            CategoryEntity("daily_class", "assets/images/daily_class.png", "每日医讲"),
-            CategoryEntity("case_analysis", "assets/images/case_analysis.png", "病例解析"),
-            CategoryEntity("doctor_circle_head_icon", "assets/images/article.png", "论文专区")
-          ]),
-          Container(
-            color: ThemeColor.colorFFF9F9F9,
-            width: double.infinity,
-            height: 6,
+          StreamBuilder(
+            stream: _model.categoryStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<CategoryEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return Column(
+                  children: [
+                    CategoryWidget(snapshot.data),
+                    Container(
+                      color: ThemeColor.colorFFF9F9F9,
+                      width: double.infinity,
+                      height: 6,
+                    ),
+                  ],
+                );
+              }
+              return Container();
+            },
           ),
           StreamBuilder(
             stream: _model.onlineClassStream,
