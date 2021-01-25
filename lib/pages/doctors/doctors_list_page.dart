@@ -1,3 +1,4 @@
+import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/api.dart';
@@ -33,6 +34,10 @@ class _DoctorsListStates extends State<DoctorsListPage> {
     );
   }
 
+  String titleFromType(String type){
+    return "每日医讲";
+  }
+
   Widget title() {
     return Container(
       height: 44,
@@ -52,7 +57,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
           ),
           Expanded(
             child: Text(
-              "每日医讲",
+              titleFromType(widget.args),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -107,7 +112,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
                                     Row(
                                       children: [
                                         Text(
-                                          "12-25",
+                                          "${dateFormat(double.parse(data.updateShelvesTime))}",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color: Color(0xff444444)),

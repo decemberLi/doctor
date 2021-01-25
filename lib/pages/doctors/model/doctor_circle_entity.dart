@@ -39,6 +39,9 @@ class DoctorCircleEntity {
   /// 发帖人头像
   String postUserHeader;
 
+  /// 帖子时间
+  String updateShelvesTime;
+
   bool isClicked = false;
 
   List<CommentItem> topComments;

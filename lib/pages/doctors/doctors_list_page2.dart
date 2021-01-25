@@ -49,6 +49,10 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
     );
   }
 
+  String titleFromType(String type){
+    return "在线医生课堂";
+  }
+
   Widget title() {
     return Container(
       height: 44,
@@ -68,7 +72,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
           ),
           Expanded(
             child: Text(
-              "在线医生课堂",
+              titleFromType(widget.args),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -134,7 +138,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
                                     Row(
                                       children: [
                                         Text(
-                                          "34次学习",
+                                          "${data.viewNum}次学习",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color: Color(0xff444444)),
