@@ -13,6 +13,12 @@ class DoctorCircleEntity {
   /// 帖子id
   int postId;
 
+  /// 封面
+  String coverUrl;
+
+  /// 视频链接
+  String videoUrl;
+
   /// 帖子内容
   String postContent;
 

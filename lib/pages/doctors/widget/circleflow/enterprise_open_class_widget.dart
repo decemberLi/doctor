@@ -2,7 +2,19 @@ import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class OpenClassEntity {
-  String title;
+  final int id;
+  final String coverImgUrl;
+  final String videoUrl;
+  final String title;
+  final int viewNum;
+
+  OpenClassEntity(
+    this.id,
+    this.coverImgUrl,
+    this.videoUrl,
+    this.title,
+    this.viewNum,
+  );
 }
 
 class EnterpriseOpenClassWidget extends StatelessWidget {
@@ -47,28 +59,34 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
               ),
             ),
           ),
-          onTap: () {
-            //TODO 跳转
-          },
+          onTap: _goList(),
         )
       ],
     );
   }
 
   Widget buildItem(OpenClassEntity entity) {
-    return Container(
+    return GestureDetector(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image(
-            image: AssetImage("assets/images/common_statck_bg.png"),
-            fit: BoxFit.fill,
+          Container(
+            decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
+            height: 102,
+            width: double.infinity,
+            child: entity.coverImgUrl == null
+                ? Container()
+                : Image.network(
+                    entity.coverImgUrl,
+                    width: double.infinity,
+                    height: 102,
+                  ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text(
-              "首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台首个互联网医院平台…",
+              "${entity.title}",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -80,7 +98,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 4),
             child: Text(
-              "17亿次学习",
+              "${entity.viewNum}次学习",
               style: TextStyle(
                 fontSize: 10,
                 color: ThemeColor.colorFF999999,
@@ -89,6 +107,76 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
           )
         ],
       ),
+      onTap: _goDetail,
+    );
+  }
+
+  Widget buildVideoPreviewItem(OpenClassEntity entity) {
+    return GestureDetector(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
+            height: 210,
+            width: double.infinity,
+            child: entity.coverImgUrl == null
+                ? Container()
+                : Image.network(
+                    entity.coverImgUrl,
+                    width: double.infinity,
+                    height: 210,
+                  ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Container(
+                  child: Text(
+                    "${entity.title}",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: ThemeColor.colorFF222222,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Container(
+                  child: Row(
+                    children: [
+                      Text(
+                        "${entity.viewNum}次学习",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: ThemeColor.colorFF999999,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 25),
+                        child: Text(
+                          "${entity.viewNum}评论",
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: ThemeColor.colorFF999999,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+      onTap: _goDetail,
     );
   }
 
@@ -96,7 +184,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.only(left: 20, top: 12, right: 20),
+      padding: EdgeInsets.only(left: 20, top: 12, right: 20, bottom: 12),
       child: Column(
         children: [
           header(),
@@ -104,7 +192,7 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(child: buildItem(null)),
+                Expanded(child: buildVideoPreviewItem(entities[0])),
               ],
             ),
           ),
@@ -112,17 +200,25 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(child: buildItem(null)),
+                Expanded(child: buildItem(entities[1])),
                 Container(
                   width: 20,
                   color: Colors.white,
                 ),
-                Expanded(child: buildItem(null)),
+                Expanded(child: buildItem(entities[2])),
               ],
             ),
           )
         ],
       ),
     );
+  }
+
+  _goDetail() {
+    // TODO 详情跳转
+  }
+
+  _goList() {
+    // TODO 列表跳转
   }
 }

@@ -20,4 +20,5 @@ class FoundationSys extends SubAPI {
   messageCommentList(params) async => normalPost('/message/comment-list',params: params);
   /// 一周小结
   Future<dynamic> messageDoctorConclusion() async => normalPost('/message/news-doctor-work-conclusion');
+  getBanner(params) async => normalPost("mobile/banner/list", params: params);
 }

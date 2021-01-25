@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage>
 
     }
     var sp = await SharedPreferences.getInstance();
-    var notShow = sp.getBool("notShowAlertOpenNotification");
+    var notShow = sp.getBool("notShowAlertOpenNotification")??false;
     var showAlert = !allowNotification && !notShow;
     if (showAlert) {
       sp.setBool("notShowAlertOpenNotification", true);

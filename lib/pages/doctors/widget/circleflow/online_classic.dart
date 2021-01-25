@@ -3,7 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OnlineClassicEntity {
-  String title;
+  final int id;
+  final String coverImgUrl;
+  final String title;
+  final int viewNum;
+
+  OnlineClassicEntity(
+    this.id,
+    this.coverImgUrl,
+    this.title,
+    this.viewNum,
+  );
 }
 
 class OnlineClassicWidget extends StatelessWidget {
@@ -57,41 +67,51 @@ class OnlineClassicWidget extends StatelessWidget {
   }
 
   Widget buildItem(OnlineClassicEntity entity) {
-    return Container(
-      width: 133,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image(
-            image: AssetImage("assets/images/common_statck_bg.png"),
-            width: 133,
-            height: 80,
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Text(
-              "首个互联网医院平台首个互联网医院平台…",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 12,
-                color: ThemeColor.colorFF222222,
+    return GestureDetector(
+      child: Container(
+        width: 133,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
+              height: 80,
+              width: 133,
+              child: entity.coverImgUrl == null
+                  ? Container()
+                  : Image.network(
+                entity.coverImgUrl,
+                width: 133,
+                height: 80,
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 4),
-            child: Text(
-              "17亿次学习",
-              style: TextStyle(
-                fontSize: 10,
-                color: ThemeColor.colorFF999999,
+            Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Text(
+                "${entity.title}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: ThemeColor.colorFF222222,
+                ),
               ),
             ),
-          )
-        ],
+            Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: Text(
+                "${entity?.viewNum}次学习",
+                style: TextStyle(
+                  fontSize: 10,
+                  color: ThemeColor.colorFF999999,
+                ),
+              ),
+            )
+          ],
+        ),
       ),
+      onTap: _goDetail,
     );
   }
 
@@ -134,10 +154,7 @@ class OnlineClassicWidget extends StatelessWidget {
                     return buildItem(entities[index]);
                   },
                   separatorBuilder: (BuildContext context, int index) {
-                    return Container(
-                      color: Colors.white,
-                      width: 16
-                    );
+                    return Container(color: Colors.white, width: 16);
                   },
                   itemCount: entities.length),
             ),
@@ -145,5 +162,9 @@ class OnlineClassicWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  _goDetail() {
+    // TODO 在线医课堂详情
   }
 }
