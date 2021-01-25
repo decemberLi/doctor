@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 
 class DoctorBannerItemGrass extends StatelessWidget {
   final dynamic data;
+  final Function(dynamic) onClick;
 
-  DoctorBannerItemGrass(this.data);
+  DoctorBannerItemGrass(this.data, {this.onClick});
 
   Widget bg() {
-    return  Container(
+    return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage(
-              data.bannerUrl),
+          image: NetworkImage(data.bannerUrl),
         ),
       ),
     );
@@ -27,8 +27,7 @@ class DoctorBannerItemGrass extends StatelessWidget {
         color: Colors.white,
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage(
-              data.bannerUrl),
+          image: NetworkImage(data.bannerUrl),
         ),
       ),
     );
@@ -36,29 +35,35 @@ class DoctorBannerItemGrass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: [
-          bg(),
-          BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 10,
-              sigmaY: 10,
+    return GestureDetector(
+      onTap: () {
+        if (onClick != null){
+          onClick(data);
+        }
+      },
+      child: Container(
+        child: Stack(
+          children: [
+            bg(),
+            BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 10,
+                sigmaY: 10,
+              ),
+              child: Container(
+                color: Colors.white10,
+                padding: EdgeInsets.only(bottom: 22, left: 20, right: 20),
+                alignment: Alignment.bottomCenter,
+              ),
             ),
-            child: Container(
+            Container(
               color: Colors.white10,
               padding: EdgeInsets.only(bottom: 22, left: 20, right: 20),
               alignment: Alignment.bottomCenter,
-            ),
-          ),
-          Container(
-              color: Colors.white10,
-              padding: EdgeInsets.only(bottom: 22, left: 20, right: 20),
-              alignment: Alignment.bottomCenter,
-            child: forground(),
-          )
-
-        ],
+              child: forground(),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -66,18 +71,25 @@ class DoctorBannerItemGrass extends StatelessWidget {
 
 class DoctorBannerItemNormal extends StatelessWidget {
   final dynamic data;
+  final Function(dynamic) onClick;
 
-  DoctorBannerItemNormal(this.data);
+  DoctorBannerItemNormal(this.data, {this.onClick});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(
-              data.bannerUrl),
+    return GestureDetector(
+      onTap: () {
+        if (onClick != null) {
+          onClick(data);
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: NetworkImage(data.bannerUrl),
+          ),
         ),
       ),
     );
