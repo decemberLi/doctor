@@ -13,7 +13,7 @@ class _LookCoursePageState extends State<LookCoursePage> {
 
   @override
   Widget build(BuildContext context) {
-    String url = 'https://mp.weixin.qq.com/s/pzljrdjTlGOVw_NATaxPdA';
+    String url = 'https://mp.weixin.qq.com/s/YprfqD8GdSHCMvtW_LJx9Q';
 
     return Scaffold(
         appBar: AppBar(
