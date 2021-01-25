@@ -411,11 +411,6 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 ],
               ),
             ),
-            Container(
-              child: DoctorsBanner([0],(context,data,index){
-                return DoctorBannerItemGrass(data);
-              },),
-            )
           ],
         ),
       ),

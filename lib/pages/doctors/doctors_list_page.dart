@@ -112,7 +112,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
                                     Row(
                                       children: [
                                         Text(
-                                          "${dateFormat(double.parse(data.updateShelvesTime))}",
+                                          "${dateFormat(data.updateShelvesTime)}",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color: Color(0xff444444)),

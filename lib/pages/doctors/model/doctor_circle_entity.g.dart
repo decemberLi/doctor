@@ -19,11 +19,8 @@ DoctorCircleEntity _$DoctorCircleEntityFromJson(Map<String, dynamic> json) {
     ..commentNum = json['commentNum'] as int
     ..postUserHeader = json['postUserHeader'] as String
     ..isClicked = json['isClicked'] as bool
-    ..updateShelvesTime = json['updateShelvesTime'] as String
-    ..topComments = (json['topComments'] as List)
-        ?.map((e) =>
-            e == null ? null : CommentItem.fromJson(e as Map<String, dynamic>))
-        ?.toList();
+    ..updateShelvesTime = json['updateShelvesTime'] as num
+    ..topComments = json['topComments'] == null ? null : CommentItem.fromJson(json['topComments'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$DoctorCircleEntityToJson(DoctorCircleEntity instance) =>

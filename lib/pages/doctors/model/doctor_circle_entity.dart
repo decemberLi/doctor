@@ -40,11 +40,11 @@ class DoctorCircleEntity {
   String postUserHeader;
 
   /// 帖子时间
-  String updateShelvesTime;
+  num updateShelvesTime;
 
   bool isClicked = false;
 
-  List<CommentItem> topComments;
+  CommentItem topComments;
 
   DoctorCircleEntity();
 

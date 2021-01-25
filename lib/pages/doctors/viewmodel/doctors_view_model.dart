@@ -12,6 +12,7 @@ import 'package:http_manager/manager.dart';
 import 'package:doctor/http/dtp.dart';
 
 import 'academic_circle_view_model.dart';
+import 'gossip_view_model.dart';
 
 String formatViewCount(int count) {
   if (count == null) {
@@ -44,6 +45,7 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   DoctorsViewMode({this.type});
 
   final _academicCircleViewModel = AcademicCircleViewModel();
+  final _gossipCircleViewMode = GossipViewModel();
 
   get topBannerStream => _academicCircleViewModel.topBannerStream;
 
@@ -52,9 +54,12 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   get onlineClassStream => _academicCircleViewModel.onlineClassStream;
 
   get openClassStream => _academicCircleViewModel.openClassStream;
+
   get categoryStream => _academicCircleViewModel.categoryStream;
 
   get hotPostStream => _hotPostStreamController.stream;
+
+  get gossipTopBannerStream => _gossipCircleViewMode.bannerStream;
 
   Future<SharedPreferences> _references() async {
     if (_sharedPreferences == null) {
@@ -68,21 +73,27 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
 
   @override
   Future<List> refresh({bool init = false}) async {
-    await _academicCircleViewModel.refreshData();
-    var list = await super.refresh(init: init);
-    if (list.length > 3) {
-      var hotPost = list.sublist(0, 3);
-      List<HotPostEntity> results = List<HotPostEntity>();
-      for (DoctorCircleEntity each in hotPost) {
-        results.add(HotPostEntity(
-          each.postId,
-          each.postTitle,
-        ));
+    if (type == 'ACADEMIC') {
+      await _academicCircleViewModel.refreshData();
+      var listData = await super.refresh(init: init);
+      if (listData.length > 3) {
+        var hotPost = listData.sublist(0, 3);
+        List<HotPostEntity> results = List<HotPostEntity>();
+        for (DoctorCircleEntity each in hotPost) {
+          results.add(HotPostEntity(
+            each.postId,
+            each.postTitle,
+          ));
+        }
+        _hotPostStreamController.sink.add(results);
+        return Future.value(listData.sublist(3));
+      } else {
+        return Future.value(listData);
       }
-      _hotPostStreamController.sink.add(results);
+    } else {
+      _gossipCircleViewMode.refresh();
+      return super.refresh(init: init);
     }
-
-    return Future.value(list.sublist(3));
   }
 
   @override
@@ -142,7 +153,11 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
 
   @override
   void dispose() {
-    _academicCircleViewModel.dispose();
+    if (type == 'ACADEMIC') {
+      _academicCircleViewModel.dispose();
+    } else {
+      _gossipCircleViewMode.dispose();
+    }
     super.dispose();
   }
 }
