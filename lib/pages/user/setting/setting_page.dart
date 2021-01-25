@@ -5,9 +5,11 @@ import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/foundation.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -88,9 +90,10 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
       onTap: () {
-        API.shared.foundation.pushDeviceDel();
-        SessionManager.shared.session = null;
-
+        EasyLoading.instance.flash(() async {
+          await API.shared.foundation.pushDeviceDel();
+          SessionManager.shared.session = null;
+        });
       },
     );
   }

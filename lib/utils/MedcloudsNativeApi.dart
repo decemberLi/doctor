@@ -77,6 +77,7 @@ class MedcloudsNativeApi {
 
   Future uploadDeviceInfo(args) async {
     try {
+      var ids = json.decode(args);
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       var params = {'appType':'DOCTOR'};
       if (Platform.isIOS) {
@@ -85,14 +86,14 @@ class MedcloudsNativeApi {
         params['platform'] = 'iOS';
         params['model'] = iosInfo.model;
         params['os'] = "${iosInfo.systemVersion}";
+        params['deviceId'] = "${iosInfo.identifierForVendor}";
       } else if (Platform.isAndroid){
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
         params['platform'] = 'Android';
         params['model'] = androidInfo.model;
         params['os'] = "${androidInfo.version.sdkInt}";
+        params['deviceId'] = "${ids["registerId"]}";
       }
-      var ids = json.decode(args);
-      params['deviceId'] = "${ids["deviceId"]}";
       params['registerId'] = "${ids["registerId"]}";
       await API.shared.foundation.pushDeviceLoginSubmit(params);
     }catch(e){

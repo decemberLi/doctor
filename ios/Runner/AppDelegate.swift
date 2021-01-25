@@ -8,83 +8,69 @@ import UserNotificationsUI
     var naviChannel : FlutterMethodChannel!
     var gotoURL : String?
     var isLoaded  = false
-  override func application(
-    _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-  ) -> Bool {
-    let entity = JPUSHRegisterEntity()
-    entity.types = Int(UNAuthorizationOptions.alert.rawValue |
-                        UNAuthorizationOptions.badge.rawValue |
-                        UNAuthorizationOptions.sound.rawValue)
-    JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
-    #if DEBUG
-    UMConfigure.initWithAppkey("6007995f6a2a470e8f822118", channel: "App Store")
-    JPUSHService.setup(withOption: launchOptions, appKey: "05de7d1b7c21f44388f972b6", channel: "App Store", apsForProduction: false)
-    #else
-    UMConfigure.initWithAppkey("60079989f1eb4f3f9b67973b", channel: "App Store")
-    JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: true)
-    #endif
-    
-    JPUSHService.registrationIDCompletionHandler { (code, id) in
-        print("the id is ------ \(id)");
-    }
-    
-    Bugly.start(withAppId: "463f24e2f9")
-    WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
-    AppDelegate.shared = self
-    let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
-    window = UIWindow()
-    window.rootViewController = vc
-    window.makeKeyAndVisible()
-    naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
-    naviChannel.setMethodCallHandler { (call, result) in
-        if call.method == "share" {
-            guard let value = call.arguments as? String else {return}
-            guard let data = value.data(using: .utf8) else {return}
-            guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
-            self.share(map: obj)
-            result(true)
-        } else if call.method == "record" {
-            guard let value = call.arguments as? String else {return}
-            guard let data = value.data(using: .utf8) else {return}
-            guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
-            self.record(map: obj)
-            result(true)
-        }else if call.method == "checkNotification" {
-            self.checkNotification { (isOpen) in
-                result(isOpen)
+    override func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        
+        
+        Bugly.start(withAppId: "463f24e2f9")
+        WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
+        AppDelegate.shared = self
+        let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
+        window = UIWindow()
+        window.rootViewController = vc
+        window.makeKeyAndVisible()
+        naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
+        naviChannel.setMethodCallHandler { (call, result) in
+            if call.method == "share" {
+                guard let value = call.arguments as? String else {return}
+                guard let data = value.data(using: .utf8) else {return}
+                guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
+                self.share(map: obj)
+                result(true)
+            } else if call.method == "record" {
+                guard let value = call.arguments as? String else {return}
+                guard let data = value.data(using: .utf8) else {return}
+                guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
+                self.record(map: obj)
+                result(true)
+            }else if call.method == "checkNotification" {
+                self.checkNotification { (isOpen) in
+                    result(isOpen)
+                }
+            }else if call.method == "openSetting" {
+                self.openSetting()
+                result(true);
             }
-        }else if call.method == "openSetting" {
-            self.openSetting()
-            result(true);
         }
-    }
-    vc.setFlutterViewDidRenderCallback {
-        self.isLoaded = true
-        if let url = self.gotoURL {
-            self.naviChannel?.invokeMethod("commonWeb", arguments: url)
-            self.gotoURL = nil
-        }else if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
+        vc.setFlutterViewDidRenderCallback {
+            self.initThird(launchOptions: launchOptions)
+            self.isLoaded = true
+            if let url = self.gotoURL {
+                self.naviChannel?.invokeMethod("commonWeb", arguments: url)
+                self.gotoURL = nil
+            }else if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
+                if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
+                    || url.scheme == "com.emedclouds.doctor" {
+                    self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
+                }
+            }
+        }
+        if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
             if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
                 || url.scheme == "com.emedclouds.doctor" {
-                self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
+                
+            }else{
+                WXApi.handleOpen(url, delegate: self)
             }
-        }
-    }
-    if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
-        if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
-            || url.scheme == "com.emedclouds.doctor" {
             
-        }else{
-            WXApi.handleOpen(url, delegate: self)
         }
         
+        GeneratedPluginRegistrant.register(with: self)
+        
+        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
-    
-    GeneratedPluginRegistrant.register(with: self)
-    
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
     
     override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         JPUSHService.registerDeviceToken(deviceToken)
@@ -124,6 +110,29 @@ import UserNotificationsUI
 }
 
 extension AppDelegate {
+    
+    func initThird(launchOptions: [UIApplication.LaunchOptionsKey: Any]?){
+        let entity = JPUSHRegisterEntity()
+        entity.types = Int(UNAuthorizationOptions.alert.rawValue |
+                            UNAuthorizationOptions.badge.rawValue |
+                            UNAuthorizationOptions.sound.rawValue)
+        JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
+        #if DEBUG
+        UMConfigure.initWithAppkey("6007995f6a2a470e8f822118", channel: "App Store")
+        JPUSHService.setup(withOption: launchOptions, appKey: "05de7d1b7c21f44388f972b6", channel: "App Store", apsForProduction: false)
+        #else
+        UMConfigure.initWithAppkey("60079989f1eb4f3f9b67973b", channel: "App Store")
+        JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: true)
+        #endif
+        
+        JPUSHService.registrationIDCompletionHandler { (code, id) in
+            let map = ["registerId":id ?? "error id"]
+            guard let data = try? JSONSerialization.data(withJSONObject: map, options: .fragmentsAllowed) else { return }
+            let upload = String(data: data, encoding: .utf8)
+            self.naviChannel.invokeMethod("uploadDeviceInfo", arguments: upload)
+        }
+    }
+    
     func share(map : [String:Any]){
         let sharevc = ShareVC()
         sharevc.data = map

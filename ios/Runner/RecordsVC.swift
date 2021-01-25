@@ -64,6 +64,13 @@ class RecordsVC: UIViewController {
     deinit {
         print("records deinit")
         session.stopRunning()
+        RPScreenRecorder.shared().stopCapture(handler: nil)
+        session.stopRunning()
+        assetWriter?.finishWriting {
+            
+        }
+        timer?.invalidate()
+        timer = nil
         NotificationCenter.default.removeObserver(self)
     }
     
