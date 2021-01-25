@@ -63,25 +63,47 @@ class _HomePageState extends State<HomePage>
     var showAlert = !allowNotification && !notShow;
     if (showAlert) {
       sp.setBool("notShowAlertOpenNotification", true);
-      showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("老师~记得打开消息通知哦"),
-            content: Text("这样重要消息就可以及时通知您啦"),
-            actions: [
-              FlatButton(onPressed: (){
-                Navigator.of(context).pop();
-              }, child: Text("残忍拒绝")),
-              FlatButton(onPressed: (){
-                MedcloudsNativeApi.instance().openSetting();
-              }, child: Text("确认")),
-            ],
-          );
-        },
-      );
+      _showNotifAlert();
     }
+  }
+
+  _showNotifAlert(){
+    showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          content: Container(
+            padding: EdgeInsets.only(top: 12),
+            child: Text("记得打开消息通知哦\n这样重要消息就可以及时通知您啦"),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                "残忍拒绝",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).maybePop(false);
+              },
+            ),
+            FlatButton(
+              child: Text(
+                "确认",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                MedcloudsNativeApi.instance().openSetting();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void onTabTapped(int index) async {
