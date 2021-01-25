@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http_manager/manager.dart';
+import 'package:doctor/http/foundation.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -87,7 +88,9 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
       onTap: () {
+        API.shared.foundation.pushDeviceDel();
         SessionManager.shared.session = null;
+
       },
     );
   }

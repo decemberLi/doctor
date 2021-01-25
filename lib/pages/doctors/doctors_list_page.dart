@@ -1,5 +1,9 @@
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
+import 'package:http_manager/api.dart';
+import 'package:doctor/http/dtp.dart';
+
+import 'model/doctor_circle_entity.dart';
 
 class DoctorsListPage extends StatefulWidget {
   String args;
@@ -71,9 +75,10 @@ class _DoctorsListStates extends State<DoctorsListPage> {
         children: [
           title(),
           Expanded(
-            child: NormalTableView<int>(
+            child: NormalTableView<DoctorCircleEntity>(
               padding: EdgeInsets.only(left: 16, right: 16, top: 20),
-              itemBuilder: (context, dynamic data) {
+              itemBuilder: (context, dynamic d) {
+                DoctorCircleEntity data = d;
                 return Container(
                   height: 112,
                   child: Column(
@@ -94,7 +99,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        "每日精选：时间有限，快来参与中国医用超声波1sdfaass1ssaa2ss",
+                                        data.postTitle,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -114,7 +119,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
                                           ),
                                         ),
                                         Text(
-                                          "阅读2.2万",
+                                          "阅读${data.viewNum}",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color: Color(0xff444444)),
@@ -132,11 +137,11 @@ class _DoctorsListStates extends State<DoctorsListPage> {
                               color: Color(0xffEAF3FF),
                               width: 110,
                               height: 76,
-                              // child: Image.network(
-                              //   "src",
-                              //   width: 110,
-                              //   height: 76,
-                              // ),
+                              child: Image.network(
+                                "${data.coverUrl}",
+                                width: 110,
+                                height: 76,
+                              ),
                             )
                           ],
                         ),
@@ -149,7 +154,13 @@ class _DoctorsListStates extends State<DoctorsListPage> {
                 );
               },
               getData: (page) async {
-                return [1];
+                var list = await API.shared.dtp.postList(
+                  {'postType': widget.args, 'ps': 20, 'pn': page},
+                );
+                List<DoctorCircleEntity> posts = list['records']
+                    .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
+                    .toList();
+                return posts;
               },
             ),
           ),
