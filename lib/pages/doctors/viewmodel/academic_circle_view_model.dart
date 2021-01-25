@@ -122,6 +122,7 @@ class AcademicCircleViewModel {
           each.videoUrl,
           each.postTitle,
           each.viewNum,
+          each.postUserName,
         ));
       }
       _openClassStreamController.sink.add(results);
