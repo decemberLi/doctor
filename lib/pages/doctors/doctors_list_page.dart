@@ -204,6 +204,7 @@ class DoctorsListItem extends StatelessWidget {
                     "${data.coverUrl}",
                     width: 110,
                     height: 76,
+                    fit:BoxFit.cover
                   ),
                 )
               ],
