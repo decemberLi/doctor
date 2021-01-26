@@ -6,10 +6,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 class DoctorsBanner extends StatefulWidget {
   final List dataList;
-  final Function(BuildContext,dynamic,int) itemBuilder;
+  final Function(BuildContext, dynamic, int) itemBuilder;
   final double height;
 
-  DoctorsBanner(this.dataList, this.itemBuilder,{this.height = 237});
+  DoctorsBanner(this.dataList, this.itemBuilder, {this.height = 237});
 
   @override
   State<StatefulWidget> createState() {
@@ -28,6 +28,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
     _timer?.cancel();
     super.dispose();
   }
+
   @override
   void initState() {
     realList.addAll(widget.dataList);
@@ -51,7 +52,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
         });
       });
       _startTimer();
-    }else{
+    } else {
       _timer?.cancel();
     }
     super.initState();
@@ -69,7 +70,6 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       },
     );
   }
-
 
   Widget _scrollNoti(Widget child) {
     return NotificationListener(
@@ -92,7 +92,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
     );
   }
 
-  Widget point(){
+  Widget point() {
     return Container(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -104,51 +104,53 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
               .asMap()
               .map(
                 (key, value) => MapEntry(
-              key,
-              Container(
-                width: 6,
-                height: 6,
-                margin: EdgeInsets.only(left: 2, right: 2),
-                decoration: ShapeDecoration(
-                  color: _currentIndex == key
-                      ? Color(0xff0077FF)
-                      : Colors.white,
-                  shape: CircleBorder(),
+                  key,
+                  Container(
+                    width: 6,
+                    height: 6,
+                    margin: EdgeInsets.only(left: 2, right: 2),
+                    decoration: ShapeDecoration(
+                      color: _currentIndex == key
+                          ? Color(0xff0077FF)
+                          : Colors.white,
+                      shape: CircleBorder(),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          )
+              )
               .values
               .toList(),
         ),
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: widget.height,
       child: Stack(
         children: [
-          _scrollNoti(
-              PageView(
-                physics: widget.dataList.length > 1
-                    ? null
-                    : NeverScrollableScrollPhysics(),
-                controller: _pageController,
-                children: realList.asMap().map((key,value) => MapEntry(key, page(value,key))).values.toList(),
-              )
-          ),
-          if (widget.dataList.length > 1)
-            point()
+          _scrollNoti(PageView(
+            physics: widget.dataList.length > 1
+                ? null
+                : NeverScrollableScrollPhysics(),
+            controller: _pageController,
+            children: realList
+                .asMap()
+                .map((key, value) => MapEntry(key, page(value, key)))
+                .values
+                .toList(),
+          )),
+          if (widget.dataList.length > 1) point()
         ],
       ),
     );
   }
 
-  Widget page(data,int index) {
+  Widget page(data, int index) {
     if (widget.itemBuilder != null) {
-      return widget.itemBuilder(context,data,index);
+      return widget.itemBuilder(context, data, index);
     }
     return Container();
   }

@@ -8,7 +8,7 @@ import 'package:doctor/http/dtp.dart';
 import 'model/doctor_circle_entity.dart';
 
 class DoctorsListPage2 extends StatefulWidget {
-  String args;
+  final String args;
   DoctorsListPage2(this.args);
   @override
   State<StatefulWidget> createState() => _DoctorsListStates2();

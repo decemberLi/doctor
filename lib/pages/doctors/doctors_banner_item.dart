@@ -10,6 +10,7 @@ class DoctorBannerItemGrass extends StatelessWidget {
 
   Widget bg() {
     return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.white,
         image: DecorationImage(
@@ -37,31 +38,31 @@ class DoctorBannerItemGrass extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (onClick != null){
+        if (onClick != null) {
           onClick(data);
         }
       },
       child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
         child: Stack(
           children: [
             bg(),
-            BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: 10,
-                sigmaY: 10,
-              ),
-              child: Container(
-                color: Colors.white10,
-                padding: EdgeInsets.only(bottom: 22, left: 20, right: 20),
-                alignment: Alignment.bottomCenter,
+            Container(
+              child:  BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: 10,
+                  sigmaY: 10,
+                ),
+                child: Container(
+                  padding: EdgeInsets.only(bottom: 22, left: 20, right: 20),
+                  alignment: Alignment.bottomCenter,
+                  child: forground(),
+                ),
               ),
             ),
-            Container(
-              color: Colors.white10,
-              padding: EdgeInsets.only(bottom: 22, left: 20, right: 20),
-              alignment: Alignment.bottomCenter,
-              child: forground(),
-            )
           ],
         ),
       ),
