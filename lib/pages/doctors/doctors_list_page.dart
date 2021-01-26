@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
@@ -8,13 +10,27 @@ import 'model/doctor_circle_entity.dart';
 import 'viewmodel/doctors_view_model.dart';
 
 class DoctorsListPage extends StatefulWidget {
-  String args;
+  final String args;
   DoctorsListPage(this.args);
   @override
   State<StatefulWidget> createState() => _DoctorsListStates();
 }
 
 class _DoctorsListStates extends State<DoctorsListPage> {
+  String title = "";
+  String code = "";
+  @override
+  void initState(){
+    super.initState();
+    try {
+      var data = json.decode(widget.args);
+      title = data["title"];
+      code = data["code"];
+    }catch(e){
+
+    }
+  }
+
   Widget bg() {
     return Stack(
       children: [
@@ -39,7 +55,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
     return "每日医讲";
   }
 
-  Widget title() {
+  Widget titleContainer() {
     return Container(
       height: 44,
       child: Row(
@@ -58,7 +74,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
           ),
           Expanded(
             child: Text(
-              titleFromType(widget.args),
+              title,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -79,7 +95,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
     return Container(
       child: Column(
         children: [
-          title(),
+          titleContainer(),
           Expanded(
             child: NormalTableView<DoctorCircleEntity>(
               padding: EdgeInsets.only(left: 16, right: 16, top: 20),
@@ -89,7 +105,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
               },
               getData: (page) async {
                 var list = await API.shared.dtp.postList(
-                  {'postType': widget.args, 'ps': 20, 'pn': page},
+                  {'postType': code, 'ps': 20, 'pn': page},
                 );
                 List<DoctorCircleEntity> posts = list['records']
                     .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
@@ -142,6 +158,7 @@ class DoctorsListItem extends StatelessWidget {
                 Expanded(
                   child: Container(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Text(

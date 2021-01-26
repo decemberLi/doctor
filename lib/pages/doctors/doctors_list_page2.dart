@@ -127,6 +127,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
                                   right: 12,
                                 ),
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
                                       child: Text(
@@ -157,6 +158,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
                                 "${data.coverUrl}",
                                 width: 110,
                                 height: 76,
+                                fit: BoxFit.cover,
                               ),
                             )
                           ],
