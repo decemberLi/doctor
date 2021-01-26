@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
+import 'package:doctor/provider/GlobalData.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:http_manager/api.dart';
@@ -95,7 +96,9 @@ class MedcloudsNativeApi {
         params['deviceId'] = "${ids["registerId"]}";
       }
       params['registerId'] = "${ids["registerId"]}";
-      await API.shared.foundation.pushDeviceLoginSubmit(params);
+      print("the params - ${params}");
+      GlobalData.shared.registerId = "${ids["registerId"]}";
+      await API.shared.foundation.pushDeviceSubmit(params);
     }catch(e){
 
     }

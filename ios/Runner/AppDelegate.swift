@@ -8,12 +8,13 @@ import UserNotificationsUI
     var naviChannel : FlutterMethodChannel!
     var gotoURL : String?
     var isLoaded  = false
+    var notiInfo : [AnyHashable:Any]? = nil
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         
-        
+        initThird(launchOptions: launchOptions)
         Bugly.start(withAppId: "463f24e2f9")
         WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
         AppDelegate.shared = self
@@ -45,7 +46,6 @@ import UserNotificationsUI
             }
         }
         vc.setFlutterViewDidRenderCallback {
-            self.initThird(launchOptions: launchOptions)
             self.isLoaded = true
             if let url = self.gotoURL {
                 self.naviChannel?.invokeMethod("commonWeb", arguments: url)
@@ -55,6 +55,16 @@ import UserNotificationsUI
                     || url.scheme == "com.emedclouds.doctor" {
                     self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
                 }
+            }
+            JPUSHService.registrationIDCompletionHandler { (code, id) in
+                let map = ["registerId":id ?? "error id"]
+                guard let data = try? JSONSerialization.data(withJSONObject: map, options: .fragmentsAllowed) else { return }
+                let upload = String(data: data, encoding: .utf8)
+                self.naviChannel.invokeMethod("uploadDeviceInfo", arguments: upload)
+            }
+            if let info = self.notiInfo {
+                self.doNoti(info: info)
+                self.notiInfo = nil
             }
         }
         if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
@@ -125,12 +135,6 @@ extension AppDelegate {
         JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: true)
         #endif
         
-        JPUSHService.registrationIDCompletionHandler { (code, id) in
-            let map = ["registerId":id ?? "error id"]
-            guard let data = try? JSONSerialization.data(withJSONObject: map, options: .fragmentsAllowed) else { return }
-            let upload = String(data: data, encoding: .utf8)
-            self.naviChannel.invokeMethod("uploadDeviceInfo", arguments: upload)
-        }
     }
     
     func share(map : [String:Any]){
@@ -196,6 +200,22 @@ extension AppDelegate : WXApiDelegate {
 }
 
 extension AppDelegate : JPUSHRegisterDelegate {
+    func doNoti(info:[AnyHashable:Any]){
+        guard isLoaded else {
+            notiInfo = info
+            return
+        }
+        
+        guard let map = info["extras"] as? [String:Any] else {
+            return
+        }
+        guard let data = try? JSONSerialization.data(withJSONObject: map, options: .fragmentsAllowed) else {
+            return
+        }
+        let value = String(data: data, encoding: .utf8)
+        naviChannel.invokeMethod("receiveNotification", arguments: value)
+        
+    }
     func jpushNotificationCenter(_ center: UNUserNotificationCenter!, willPresent notification: UNNotification!, withCompletionHandler completionHandler: ((Int) -> Void)!) {
         let info = notification.request.content.userInfo
         JPUSHService.handleRemoteNotification(info)
@@ -204,6 +224,7 @@ extension AppDelegate : JPUSHRegisterDelegate {
                             UNAuthorizationOptions.sound.rawValue)
         completionHandler(type)
         print("the notification is ---- \(info)")
+        doNoti(info: info)
     }
     
     func jpushNotificationCenter(_ center: UNUserNotificationCenter!, didReceive response: UNNotificationResponse!, withCompletionHandler completionHandler: (() -> Void)!) {
@@ -211,6 +232,7 @@ extension AppDelegate : JPUSHRegisterDelegate {
         JPUSHService.handleRemoteNotification(info)
         completionHandler()
         print("the notification is ---- \(info)")
+        doNoti(info: info)
     }
     
     func jpushNotificationCenter(_ center: UNUserNotificationCenter!, openSettingsFor notification: UNNotification!) {

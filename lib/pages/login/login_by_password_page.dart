@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
+import 'package:doctor/provider/GlobalData.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
@@ -66,8 +67,9 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
             params['model'] = androidInfo.model;
             params['os'] = "${androidInfo.version.sdkInt}";
           }
-          params['deviceId'] = "${sp.get("deviceId")}";
-          params['registerId'] = "${sp.get("registerId")}";
+          params['deviceId'] = "${sp.get("registerId")}";
+          params['registerId'] = GlobalData.shared.registerId;
+          print("the params is -- ${params}");
           await API.shared.foundation.pushDeviceLoginSubmit(params);
         }catch(e){
 
