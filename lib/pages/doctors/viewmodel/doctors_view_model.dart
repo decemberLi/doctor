@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:doctor/pages/doctors/viewmodel/banner_view_model.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/hot_post_widget.dart';
 import 'package:doctor/provider/refreshable_view_state_model.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 import '../model/doctor_circle_entity.dart';
 import '../model/doctor_article_detail_entity.dart';
 import 'package:http_manager/manager.dart';
@@ -19,7 +21,7 @@ String formatViewCount(int count) {
     return '';
   }
   if (count < 10000) {
-    return '$count阅读';
+    return '$count';
   }
 
   double w = count / 10000;
@@ -27,7 +29,22 @@ String formatViewCount(int count) {
   double pointPart = ((count % 10000) / 1000).floorToDouble();
   // var pointValue = pointPart.toInt() > 0 ? '.${pointPart.toInt()}' : '';
   var pointValue = '.${pointPart.toInt()}';
-  return '${mainPart.toInt()}$pointValue万阅读';
+  return '${mainPart.toInt()}${pointValue}W';
+}
+String formatChineseViewCount(int count) {
+  if (count == null) {
+    return '';
+  }
+  if (count < 10000) {
+    return '$count';
+  }
+
+  double w = count / 10000;
+  double mainPart = w.floorToDouble();
+  double pointPart = ((count % 10000) / 1000).floorToDouble();
+  // var pointValue = pointPart.toInt() > 0 ? '.${pointPart.toInt()}' : '';
+  var pointValue = '.${pointPart.toInt()}';
+  return '${mainPart.toInt()}$pointValue万';
 }
 
 class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
@@ -140,9 +157,24 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
   }
 
   Future<bool> like(int postId) async {
-    await API.shared.dtp.postLike(
-      {'postId': postId},
-    );
+    try {
+      await API.shared.dtp.postLike(
+        {
+          'postId': postId,
+          'status': 'LIKE_POST',
+        },
+      );
+      for (DoctorCircleEntity each in list) {
+        if (each.postId == postId) {
+          each.likeFlag = true;
+          each.likeNum++;
+          notifyListeners();
+          break;
+        }
+      }
+    } on DioError catch (e) {
+      EasyLoading.showToast(e.message);
+    }
     return Future.value(true);
   }
 

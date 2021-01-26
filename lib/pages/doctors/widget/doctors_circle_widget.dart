@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../../root_widget.dart';
 import '../doctors_banner.dart';
 import '../doctors_banner_item.dart';
+import '../doctors_list_page.dart';
 import '../model/doctor_circle_entity.dart';
 import '../viewmodel/doctors_view_model.dart';
 import 'circleflow/category_widget.dart';
@@ -23,127 +24,6 @@ final _colorPanel = {
   '病例解析': ThemeColor.colorFF107BFD,
   '每日医讲': ThemeColor.colorFFFAAD14,
 };
-
-class DoctorCircleItemWidget extends StatelessWidget {
-  final DoctorCircleEntity data;
-
-  DoctorCircleItemWidget(this.data);
-
-  Color _categoryTextColor(String category) {
-    Color color = _colorPanel[category];
-    if (color != null) {
-      return color;
-    }
-    return ThemeColor.colorFF107BFD;
-    // var batch = _colorPanel.entries.toList();
-    // var hitColor = batch[Random().nextInt(batch.length)].value;
-    // _colorPanel.putIfAbsent(category, () => hitColor);
-    // return hitColor;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (data == null) {
-      return Container(
-        height: 30,
-        color: Colors.red,
-      );
-    }
-    ImageProvider imageProvider;
-    if (data?.postUserHeader != null) {
-      imageProvider = NetworkImage(data.postUserHeader);
-    } else {
-      imageProvider = AssetImage('assets/images/doctorAva.png');
-    }
-
-    return Container(
-      padding: EdgeInsets.only(left: 16, right: 16, top: 10),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(0))),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                    border: new Border.all(
-                        color: ThemeColor.colorFFB8D1E2, width: 2),
-                    color: ThemeColor.colorFFF3F5F8,
-                    borderRadius: new BorderRadius.all(Radius.circular(15)),
-                    image: DecorationImage(
-                      // fit: BoxFit.fill,
-                      fit: BoxFit.fitWidth,
-                      image: imageProvider,
-                    )),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 4),
-                child: Text(data?.postUserName ?? '',
-                    style: TextStyle(
-                        fontSize: 14, color: ThemeColor.colorFF444444)),
-              )
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 8),
-            // title
-            child: Text(data?.postTitle ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    fontSize: 16,
-                    color: data.isClicked
-                        ? ThemeColor.colorFFC1C1C1
-                        : ThemeColor.colorFF222222)),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 6, bottom: 8),
-            child: Text(data?.postContent ?? '',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    fontSize: 14,
-                    color: data.isClicked
-                        ? ThemeColor.colorFFC1C1C1
-                        : ThemeColor.colorFF999999)),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: ThemeColor.colorFFF6F6F6,
-                    borderRadius: BorderRadius.all(Radius.circular(2))),
-                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                child: Text(
-                  data?.columnName ?? '',
-                  style: TextStyle(
-                      color: _categoryTextColor(data?.columnName ?? ''),
-                      fontSize: 12),
-                ),
-              ),
-              Text(
-                formatViewCount(data?.viewNum),
-                style: TextStyle(color: ThemeColor.colorFF999999, fontSize: 10),
-              )
-            ],
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 10),
-            color: ThemeColor.colorFFF8F8F8,
-            height: 1,
-          )
-        ],
-      ),
-    );
-  }
-}
 
 typedef OnScrollerCallback = void Function(double offset);
 
@@ -305,7 +185,7 @@ class DoctorPageState
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) {
-    return DoctorCircleItemWidget(data);
+    return DoctorsListItem(data);
   }
 
   @override

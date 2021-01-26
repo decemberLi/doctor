@@ -1,3 +1,4 @@
+import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -103,9 +104,9 @@ class OnlineClassicWidget extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 4),
               child: Text(
-                "${entity?.viewNum}次学习",
+                "${formatViewCount(entity?.viewNum)}次学习",
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 12,
                   color: ThemeColor.colorFF999999,
                 ),
               ),
@@ -139,7 +140,7 @@ class OnlineClassicWidget extends StatelessWidget {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.only(left: 20, top: 12),
-      height: 170,
+      height: 173,
       child: Column(
         children: [
           header(context),

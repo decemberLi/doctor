@@ -14,13 +14,15 @@ DoctorCircleEntity _$DoctorCircleEntityFromJson(Map<String, dynamic> json) {
     ..videoUrl = json['videoUrl'] as String
     ..postContent = json['postContent'] as String
     ..viewNum = json['viewNum'] as int
+    ..likeNum = json['likeNum'] as int
     ..columnName = json['columnName'] as String
     ..postUserName = json['postUserName'] as String
     ..commentNum = json['commentNum'] as int
     ..postUserHeader = json['postUserHeader'] as String
     ..isClicked = json['isClicked'] as bool
+    ..likeFlag = json['likeFlag'] as bool
     ..updateShelvesTime = json['updateShelvesTime'] as num
-    ..topComments = json['topComments'] == null ? null : CommentItem.fromJson(json['topComments'] as Map<String, dynamic>);
+    ..topComment = json['topComment'] == null ? null : CommentItem.fromJson(json['topComment'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$DoctorCircleEntityToJson(DoctorCircleEntity instance) =>
@@ -31,11 +33,13 @@ Map<String, dynamic> _$DoctorCircleEntityToJson(DoctorCircleEntity instance) =>
       'videoUrl': instance.videoUrl,
       'postContent': instance.postContent,
       'viewNum': instance.viewNum,
+      'likeNum': instance.likeNum,
       'columnName': instance.columnName,
       'postUserName': instance.postUserName,
       'commentNum': instance.commentNum,
       'postUserHeader': instance.postUserHeader,
       'isClicked': instance.isClicked,
-      'topComments': instance.topComments,
+      'likeFlag': instance.likeFlag,
+      'topComment': instance.topComment,
       'updateShelvesTime': instance.updateShelvesTime,
     };

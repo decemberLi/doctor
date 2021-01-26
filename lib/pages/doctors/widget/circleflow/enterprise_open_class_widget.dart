@@ -1,3 +1,4 @@
+import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -104,9 +105,9 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 4),
             child: Text(
-              "${entity.viewNum}次学习",
+              "${formatViewCount(entity.viewNum)}次学习",
               style: TextStyle(
-                fontSize: 10,
+                fontSize: 12,
                 color: ThemeColor.colorFF999999,
               ),
             ),
@@ -166,14 +167,13 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12,
-                    color: ThemeColor.colorFF222222,
-                    fontWeight: FontWeight.bold,
+                    color: ThemeColor.colorFF999999,
                   ),
                 )),
                 Text(
-                  "${entity.viewNum ?? ''}次学习",
+                  "${formatViewCount(entity.viewNum)}次学习",
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     color: ThemeColor.colorFF999999,
                   ),
                 )

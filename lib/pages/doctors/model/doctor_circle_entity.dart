@@ -27,6 +27,9 @@ class DoctorCircleEntity {
   /// 浏览量
   int viewNum;
 
+  /// 点赞数
+  int likeNum;
+
   /// 栏目类别
   String columnName;
 
@@ -44,7 +47,9 @@ class DoctorCircleEntity {
 
   bool isClicked = false;
 
-  CommentItem topComments;
+  CommentItem topComment;
+
+  bool likeFlag;
 
   DoctorCircleEntity();
 

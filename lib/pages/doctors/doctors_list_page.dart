@@ -5,6 +5,7 @@ import 'package:http_manager/api.dart';
 import 'package:doctor/http/dtp.dart';
 
 import 'model/doctor_circle_entity.dart';
+import 'viewmodel/doctors_view_model.dart';
 
 class DoctorsListPage extends StatefulWidget {
   String args;
