@@ -203,12 +203,14 @@ extension AppDelegate : JPUSHRegisterDelegate {
                             UNAuthorizationOptions.badge.rawValue |
                             UNAuthorizationOptions.sound.rawValue)
         completionHandler(type)
+        print("the notification is ---- \(info)")
     }
     
     func jpushNotificationCenter(_ center: UNUserNotificationCenter!, didReceive response: UNNotificationResponse!, withCompletionHandler completionHandler: (() -> Void)!) {
         let info = response.notification.request.content.userInfo
         JPUSHService.handleRemoteNotification(info)
         completionHandler()
+        print("the notification is ---- \(info)")
     }
     
     func jpushNotificationCenter(_ center: UNUserNotificationCenter!, openSettingsFor notification: UNNotification!) {

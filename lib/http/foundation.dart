@@ -9,7 +9,7 @@ extension founAPI on API {
 
 class Foundation extends SubAPI {
   String get middle => "/medclouds-foundation/${API.shared.defaultClient}";
-
+  String get doctorMiddle => "/medclouds-foundation/${API.shared.defaultSystem}/${API.shared.defaultClient}";
   /// 反馈信息
   getFeedbackInfo(params) {
     print('调用接口$params');
@@ -65,8 +65,13 @@ class Foundation extends SubAPI {
   hospitalKeyQueryPage(params) async =>
       normalPost("/hospital/key-query-page", params: params);
 
-  sendSMS(params) async => normalPost('/sms/send-captcha', params: params);
-  pushDeviceSubmit(params) async => normalPost('mobile/push-device/submit',params: params);
-  pushDeviceLoginSubmit(params) async => normalPost('mobile/push-device/login-submit',params: params);
-  pushDeviceDel() async => normalPost('mobile/push-device/del');
+  String _doctorURL(String path) => host + doctorMiddle + path;
+  Future<dynamic> doctorPost(String path,{Map<String,dynamic> params}) async {
+    var url = _doctorURL(path);
+    return await HttpManager.shared.post(url, params: params);
+  }
+  sendSMS(params) async => doctorPost('/sms/send-captcha', params: params);
+  pushDeviceSubmit(params) async => doctorPost('/push-device/submit',params: params);
+  pushDeviceLoginSubmit(params) async => doctorPost('/push-device/login-submit',params: params);
+  pushDeviceDel() async => doctorPost('/push-device/del');
 }
