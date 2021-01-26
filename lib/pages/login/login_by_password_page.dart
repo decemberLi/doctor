@@ -67,7 +67,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
             params['model'] = androidInfo.model;
             params['os'] = "${androidInfo.version.sdkInt}";
           }
-          params['deviceId'] = "${sp.get("registerId")}";
+          params['deviceId'] = GlobalData.shared.registerId;
           params['registerId'] = GlobalData.shared.registerId;
           print("the params is -- ${params}");
           await API.shared.foundation.pushDeviceLoginSubmit(params);

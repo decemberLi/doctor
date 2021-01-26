@@ -1,3 +1,4 @@
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
@@ -106,69 +107,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
               },
               itemBuilder: (context, dynamic d) {
                 DoctorCircleEntity data = d;
-                return Container(
-                  height: 112,
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 100,
-                        padding: EdgeInsets.only(
-                            left: 10, right: 10, top: 10, bottom: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        data.postTitle,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "${dateFormat(data.updateShelvesTime)}",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Color(0xff444444)),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 16,
-                            ),
-                            Container(
-                              color: Color(0xffEAF3FF),
-                              width: 116,
-                              height: 80,
-                              child: Image.network(
-                                  "${data.coverUrl}",
-                                  width: 116,
-                                  height: 80,
-                                  fit:BoxFit.cover
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(),
-                      ),
-                    ],
-                  ),
-                );
+                return DoctorsListCell2(data,widget.args);
               },
               getData: (page) async {
                 var list = await API.shared.dtp.postList(
@@ -197,6 +136,89 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
             child: page(),
           ),
         ],
+      ),
+    );
+  }
+}
+
+
+class DoctorsListCell2 extends StatelessWidget {
+  final DoctorCircleEntity data;
+  final String type;
+  DoctorsListCell2(this.data,this.type);
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+        Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+            arguments: {
+              'postId': data.postId,
+              'from': 'list',
+              'type': type,
+            });
+      },
+      child: Container(
+        height: 112,
+        child: Column(
+          children: [
+            Container(
+              height: 100,
+              padding: EdgeInsets.only(
+                  left: 10, right: 10, top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              data.postTitle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                "${dateFormat(data.updateShelvesTime)}",
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xff444444)),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 16,
+                  ),
+                  Container(
+                    color: Color(0xffEAF3FF),
+                    width: 116,
+                    height: 80,
+                    child: Image.network(
+                        "${data.coverUrl}",
+                        width: 116,
+                        height: 80,
+                        fit:BoxFit.cover
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: Container(),
+            ),
+          ],
+        ),
       ),
     );
   }

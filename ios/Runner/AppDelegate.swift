@@ -206,13 +206,9 @@ extension AppDelegate : JPUSHRegisterDelegate {
             return
         }
         
-        guard let map = info["extras"] as? [String:Any] else {
+        guard let value = info["extras"] as? String else {
             return
         }
-        guard let data = try? JSONSerialization.data(withJSONObject: map, options: .fragmentsAllowed) else {
-            return
-        }
-        let value = String(data: data, encoding: .utf8)
         naviChannel.invokeMethod("receiveNotification", arguments: value)
         
     }
