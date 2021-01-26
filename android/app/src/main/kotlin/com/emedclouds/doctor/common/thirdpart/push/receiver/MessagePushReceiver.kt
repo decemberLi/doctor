@@ -9,6 +9,7 @@ import cn.jpush.android.api.JPushInterface
 import cn.jpush.android.service.JPushMessageReceiver
 import com.emedclouds.doctor.utils.ChannelManager
 import com.emedclouds.doctor.utils.MethodChannelResultAdapter
+import org.json.JSONObject
 
 class MessagePushReceiver : BroadcastReceiver() {
     companion object {
@@ -21,7 +22,12 @@ class MessagePushReceiver : BroadcastReceiver() {
         if (extra == null) {
             return
         }
-        ChannelManager.instance.callFlutter("receiveNotification", extra,
+        val json = JSONObject(extra)
+        if(!json.has("extras")){
+            Log.w(TAG, "onReceive ## extras is null")
+            return;
+        }
+        ChannelManager.instance.callFlutter("receiveNotification", json.getString("extras"),
                 object : MethodChannelResultAdapter() {
                     override fun success(result: Any?) {
                         Log.d(TAG, "Dispatch message success: [${extra}]")

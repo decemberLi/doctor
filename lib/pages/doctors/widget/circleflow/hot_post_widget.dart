@@ -1,3 +1,4 @@
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class HotPostWidget extends StatelessWidget {
 
   HotPostWidget(this.entities);
 
-  buildItem(HotPostEntity entity) {
+  buildItem(BuildContext context, HotPostEntity entity) {
     return GestureDetector(
       child: Container(
         width: 188,
@@ -47,7 +48,14 @@ class HotPostWidget extends StatelessWidget {
           ],
         ),
       ),
-      onTap: _goDetail,
+      onTap: () {
+        Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+            arguments: {
+              'postId': entity?.id,
+              'from': 'list',
+              'type': 'VIDEO_ZONE'
+            });
+      },
     );
   }
 
@@ -87,7 +95,7 @@ class HotPostWidget extends StatelessWidget {
                     if (index == entities.length - 1) {
                       return Row(
                         children: [
-                          buildItem(entities[index]),
+                          buildItem(context, entities[index]),
                           Container(
                             color: Colors.white,
                             width: 20,
@@ -95,7 +103,7 @@ class HotPostWidget extends StatelessWidget {
                         ],
                       );
                     }
-                    return buildItem(entities[index]);
+                    return buildItem(context, entities[index]);
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return Container(color: Colors.white, width: 16);
@@ -106,9 +114,5 @@ class HotPostWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _goDetail() {
-    // TODO 详情跳转
   }
 }
