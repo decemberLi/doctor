@@ -4,16 +4,20 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
+import cn.jpush.android.api.JPushInterface
 import com.emedclouds.doctor.common.constants.keyLaunchParam
 import com.emedclouds.doctor.pages.CommonWebActivity
 import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
 import com.emedclouds.doctor.utils.ChannelManager
+import com.emedclouds.doctor.utils.MethodChannelResultAdapter
 import com.emedclouds.doctor.utils.NotificationUtil
 import com.emedclouds.doctor.utils.OnFlutterCall
 import com.emedclouds.doctor.utils.OnFlutterCall.Companion.CHANNEL_RESULT_OK
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
 
@@ -52,7 +56,7 @@ class MainActivity : FlutterActivity() {
 
         })
         ChannelManager.instance.on("checkNotification", object : OnFlutterCall {
-            override fun call(arguments: String?, channel: MethodChannel):Any {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
                 return NotificationUtil.isNotificationEnabled(this@MainActivity)
             }
         })
@@ -63,6 +67,23 @@ class MainActivity : FlutterActivity() {
             }
         })
         goWebIfNeeded(intent)
+        flutterEngine?.renderer?.addIsDisplayingFlutterUiListener(object : FlutterUiDisplayListener {
+            override fun onFlutterUiDisplayed() {
+                Log.d("MainActivity","onFlutterUiDisplayed")
+                postJPushRegisterId()
+            }
+
+            override fun onFlutterUiNoLongerDisplayed() {
+                Log.d("MainActivity","onFlutterUiNoLongerDisplayed")
+            }
+
+        })
+    }
+
+    private fun postJPushRegisterId() {
+        val json = JSONObject()
+        json.put("registerId", JPushInterface.getRegistrationID(application))
+        ChannelManager.instance.callFlutter("uploadDeviceInfo", json.toString(), object : MethodChannelResultAdapter() {})
     }
 
     override fun onNewIntent(intent: Intent) {

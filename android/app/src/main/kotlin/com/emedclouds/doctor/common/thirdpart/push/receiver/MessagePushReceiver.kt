@@ -21,7 +21,7 @@ class MessagePushReceiver : BroadcastReceiver() {
         if (extra == null) {
             return
         }
-        ChannelManager.instance.callFlutter("onPushMessage", extra,
+        ChannelManager.instance.callFlutter("receiveNotification", extra,
                 object : MethodChannelResultAdapter() {
                     override fun success(result: Any?) {
                         Log.d(TAG, "Dispatch message success: [${extra}]")
