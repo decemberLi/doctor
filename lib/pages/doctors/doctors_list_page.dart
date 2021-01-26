@@ -148,7 +148,7 @@ class DoctorsListItem extends StatelessWidget {
           Container(
             height: 100,
             padding: EdgeInsets.only(
-                left: 12, right: 12, top: 10, bottom: 10),
+                left: 10, right: 10, top: 10, bottom: 10),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -194,16 +194,16 @@ class DoctorsListItem extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  width: 20,
+                  width: 16,
                 ),
                 Container(
                   color: Color(0xffEAF3FF),
-                  width: 110,
-                  height: 76,
+                  width: 116,
+                  height: 80,
                   child: Image.network(
                     "${data.coverUrl}",
-                    width: 110,
-                    height: 76,
+                    width: 116,
+                    height: 80,
                     fit:BoxFit.cover
                   ),
                 )

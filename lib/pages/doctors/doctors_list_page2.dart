@@ -1,3 +1,4 @@
+import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/api.dart';
@@ -110,8 +111,9 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
                   child: Column(
                     children: [
                       Container(
-                        clipBehavior: Clip.antiAlias,
                         height: 100,
+                        padding: EdgeInsets.only(
+                            left: 10, right: 10, top: 10, bottom: 10),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -120,18 +122,12 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
                           children: [
                             Expanded(
                               child: Container(
-                                padding: EdgeInsets.only(
-                                  left: 12,
-                                  top: 10,
-                                  bottom: 8,
-                                  right: 12,
-                                ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        "${data.postTitle}",
+                                        data.postTitle,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -139,7 +135,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
                                     Row(
                                       children: [
                                         Text(
-                                          "${data.viewNum}次学习",
+                                          "${dateFormat(data.updateShelvesTime)}",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color: Color(0xff444444)),
@@ -151,14 +147,17 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
                               ),
                             ),
                             Container(
+                              width: 16,
+                            ),
+                            Container(
                               color: Color(0xffEAF3FF),
-                              width: 117,
-                              height: 100,
+                              width: 116,
+                              height: 80,
                               child: Image.network(
-                                "${data.coverUrl}",
-                                width: 110,
-                                height: 76,
-                                fit: BoxFit.cover,
+                                  "${data.coverUrl}",
+                                  width: 116,
+                                  height: 80,
+                                  fit:BoxFit.cover
                               ),
                             )
                           ],
