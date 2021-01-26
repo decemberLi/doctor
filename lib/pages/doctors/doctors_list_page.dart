@@ -84,79 +84,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
               padding: EdgeInsets.only(left: 16, right: 16, top: 20),
               itemBuilder: (context, dynamic d) {
                 DoctorCircleEntity data = d;
-                return Container(
-                  height: 112,
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 100,
-                        padding: EdgeInsets.only(
-                            left: 12, right: 12, top: 10, bottom: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        data.postTitle,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "${dateFormat(data.updateShelvesTime)}",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Color(0xff444444)),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            height: 20,
-                                            width: 100,
-                                          ),
-                                        ),
-                                        Text(
-                                          "阅读${data.viewNum}",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Color(0xff444444)),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 20,
-                            ),
-                            Container(
-                              color: Color(0xffEAF3FF),
-                              width: 110,
-                              height: 76,
-                              child: Image.network(
-                                "${data.coverUrl}",
-                                width: 110,
-                                height: 76,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(),
-                      ),
-                    ],
-                  ),
-                );
+                return DoctorsListItem(data);
               },
               getData: (page) async {
                 var list = await API.shared.dtp.postList(
@@ -183,6 +111,88 @@ class _DoctorsListStates extends State<DoctorsListPage> {
           bg(),
           SafeArea(
             child: page(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class DoctorsListItem extends StatelessWidget {
+  final DoctorCircleEntity data;
+  DoctorsListItem(this.data);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 112,
+      child: Column(
+        children: [
+          Container(
+            height: 100,
+            padding: EdgeInsets.only(
+                left: 12, right: 12, top: 10, bottom: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            data.postTitle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "${dateFormat(data.updateShelvesTime)}",
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xff444444)),
+                            ),
+                            Expanded(
+                              child: Container(
+                                height: 20,
+                                width: 100,
+                              ),
+                            ),
+                            Text(
+                              "阅读${formatChineseViewCount(data.viewNum)}",
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xff444444)),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 20,
+                ),
+                Container(
+                  color: Color(0xffEAF3FF),
+                  width: 110,
+                  height: 76,
+                  child: Image.network(
+                    "${data.coverUrl}",
+                    width: 110,
+                    height: 76,
+                  ),
+                )
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(),
           ),
         ],
       ),
