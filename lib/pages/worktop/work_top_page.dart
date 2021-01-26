@@ -203,7 +203,7 @@ class _WorktopPageState extends State<WorktopPage>
             height: 70,
             alignment: Alignment.center,
             child: doctorInfoEntity?.fullFacePhoto == null
-                ? Image.asset("assets/images/doctorHeader.png",width: 60,height: 60,)
+                ? Image.asset("assets/images/doctorHeader.png",width: 40,height: 40,)
                 :Container(
               width: 68,
               height: 68,
