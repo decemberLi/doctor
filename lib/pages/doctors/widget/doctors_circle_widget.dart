@@ -27,6 +27,25 @@ final _colorPanel = {
 
 typedef OnScrollerCallback = void Function(double offset);
 
+openBannerDetail(BuildContext context, data){
+  print("On banner clicked -> [${data?.toJson()}]");
+  if (data.bannerType == 'RELEVANCY_POST') {
+    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+        arguments: {
+          'postId': int.parse(data?.relatedContent),
+          'from': 'list',
+          'type': 'VIDEO_ZONE'
+        });
+  }else if(data.bannerType == 'ACTIVITY'){
+    Navigator.pushNamed(context, RouteManager.COMMON_WEB,
+        arguments: {
+          'postId': data?.relatedContent,
+          'url': data?.relatedContent,
+          'title': ''
+        });
+  }
+}
+
 class DoctorsPage extends StatefulWidget {
   final OnScrollerCallback callback;
 
@@ -62,7 +81,7 @@ class DoctorPageState
     _inScreenViewModel =
         Provider.of<ScrollOutScreenViewModel>(context, listen: false);
   }
-
+  
   bodyHeader() {
     return Container(
       child: Column(
@@ -78,7 +97,9 @@ class DoctorPageState
                   return DoctorsBanner(
                     snapshot.data,
                     (context, data, index) {
-                      return DoctorBannerItemGrass(data);
+                      return DoctorBannerItemGrass(data, onClick: (data) {
+                        openBannerDetail(context,data);
+                      });
                     },
                   );
                 }
@@ -158,8 +179,10 @@ class DoctorPageState
                     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                     child: DoctorsBanner(
                       snapshot.data,
-                          (context, data, index) {
-                        return DoctorBannerItemNormal(data);
+                      (context, data, index) {
+                        return DoctorBannerItemNormal(data, onClick: (data){
+                          openBannerDetail(context,data);
+                        },);
                       },
                       height: 80,
                     ),

@@ -16,6 +16,7 @@ import '../../../root_widget.dart';
 import '../doctors_banner.dart';
 import '../doctors_banner_item.dart';
 import '../model/doctor_circle_entity.dart';
+import 'doctors_circle_widget.dart';
 
 final _avatarPanel = {};
 
@@ -282,7 +283,9 @@ class GossipNewsPageState
             return DoctorsBanner(
               snapshot.data,
               (context, data, index) {
-                return DoctorBannerItemGrass(data);
+                return DoctorBannerItemGrass(data,onClick: (data){
+                  openBannerDetail(context,data);
+                },);
               },
             );
           }

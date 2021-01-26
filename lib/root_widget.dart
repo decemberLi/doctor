@@ -49,6 +49,7 @@ class RootWidget extends StatelessWidget {
       MedcloudsNativeApi.instance().uploadDeviceInfo(args);
     });
     MedcloudsNativeApi.instance().addProcessor("receiveNotification", (args) async {
+      print('Received push message process event, arguments - > [$args]');
       var context = NavigationService().navigatorKey.currentContext;
       try{
         var obj = json.decode(args);
