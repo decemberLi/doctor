@@ -50,7 +50,7 @@ class _DoctorsHomeState extends State<DoctorsHome>
     _tabController.addListener(() {
       var pageKey = _tabController.index == 0 ? PAGE_DOCTOR : PAGE_GOSSIP;
       _tabBarColor = _map[pageKey];
-      _tabShadowColor = _map[pageKey];
+      _tabShadowColor = _shadowMap[pageKey];
       setState(() {});
       _inScreenViewModel.setCurrent(pageKey);
     });
@@ -83,8 +83,10 @@ class _DoctorsHomeState extends State<DoctorsHome>
     }
     if (offset > 300) {
       if (_tabBarColor != 0xFFFFFFFF || _tabShadowColor != 0xFFE7E7E7) {
-        _tabBarColor = _map[pageName];
-        _tabShadowColor = _shadowMap[pageName];
+        _map[pageName] = 0xFFFFFFFF;
+        _shadowMap[pageName] = 0xFFE7E7E7;
+        _tabBarColor = 0xFFFFFFFF;
+        _tabShadowColor = 0xFFE7E7E7;
         setState(() {});
       }
       return;
