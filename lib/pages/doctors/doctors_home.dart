@@ -21,8 +21,10 @@ class _DoctorsHomeState extends State<DoctorsHome>
   List tabs = ['学术圈', '八卦圈'];
   TabController _tabController;
   ScrollOutScreenViewModel _inScreenViewModel;
-  var _tabBarColor = Colors.transparent;
-  final _map = {PAGE_DOCTOR: Colors.transparent, PAGE_GOSSIP: Colors.transparent};
+  var _tabBarColor = 0x00000000;
+  var _tabShadowColor = 0x00000000;
+  final _map = {PAGE_DOCTOR: 0x00000000, PAGE_GOSSIP: 0x00000000};
+  final _shadowMap = {PAGE_DOCTOR: 0x00000000, PAGE_GOSSIP: 0x00000000};
 
   @override
   bool get wantKeepAlive => true;
@@ -46,10 +48,11 @@ class _DoctorsHomeState extends State<DoctorsHome>
     _tabController =
         TabController(initialIndex: 0, length: tabs.length, vsync: this);
     _tabController.addListener(() {
-      _inScreenViewModel
-          .setCurrent(_tabController.index == 0 ? PAGE_DOCTOR : PAGE_GOSSIP);
-      _tabBarColor = _map[PAGE_DOCTOR];
+      var pageKey = _tabController.index == 0 ? PAGE_DOCTOR : PAGE_GOSSIP;
+      _tabBarColor = _map[pageKey];
+      _tabShadowColor = _map[pageKey];
       setState(() {});
+      _inScreenViewModel.setCurrent(pageKey);
     });
   }
 
@@ -57,6 +60,40 @@ class _DoctorsHomeState extends State<DoctorsHome>
   void dispose() {
     super.dispose();
     _inScreenViewModel.clean();
+  }
+
+  final int heightMask = 0xFF000000;
+  final int lowMask = 0x00FFFFFF;
+  _calcColor(double offset, int colorVal) {
+    var heightValue = colorVal & heightMask;
+    var lowValue = colorVal & lowMask;
+    // 计算高位的值
+    var newColorValue = heightValue & (heightValue * (offset / 300)).toInt();
+    return newColorValue | lowValue;
+  }
+
+  _updateColor(offset, pageName) {
+    if (offset < 0) {
+      return;
+    }
+    if (offset == 0) {
+      _tabBarColor = 0x00000000;
+      _tabShadowColor = 0x00000000;
+      setState(() {});
+    }
+    if (offset > 300) {
+      if (_tabBarColor != 0xFFFFFFFF || _tabShadowColor != 0xFFE7E7E7) {
+        _tabBarColor = _map[pageName];
+        _tabShadowColor = _shadowMap[pageName];
+        setState(() {});
+      }
+      return;
+    }
+    _map[pageName] = _calcColor(offset, 0xFFFFFFFF);
+    _shadowMap[pageName] = _calcColor(offset, 0xFFE7E7E7);
+    _tabBarColor = _map[pageName];
+    _tabShadowColor = _shadowMap[pageName];
+    setState(() {});
   }
 
   @override
@@ -70,39 +107,27 @@ class _DoctorsHomeState extends State<DoctorsHome>
             controller: _tabController,
             children: <Widget>[
               DoctorsPage((offset) {
-                if (offset > 100) {
-                  if (_map[PAGE_DOCTOR] != Colors.white) {
-                    _map[PAGE_DOCTOR] = Colors.white;
-                    _tabBarColor = _map[PAGE_DOCTOR];
-                    setState(() {});
-                    return;
-                  }
-                } else {
-                  _map[PAGE_DOCTOR] = Colors.transparent;
-                  _tabBarColor = _map[PAGE_DOCTOR];
-                  setState(() {});
-                }
+                _updateColor(offset, PAGE_DOCTOR);
               }),
               GossipNewsPage((offset) {
-                if (offset > 100) {
-                  if (_map[PAGE_GOSSIP] != Colors.white) {
-                    _map[PAGE_GOSSIP] = Colors.white;
-                    _tabBarColor = _map[PAGE_GOSSIP];
-                    setState(() {});
-                    return;
-                  }
-                } else {
-                  _map[PAGE_GOSSIP] = Colors.transparent;
-                  _tabBarColor = _map[PAGE_GOSSIP];
-                  setState(() {});
-                }
+                _updateColor(offset, PAGE_GOSSIP);
               }),
             ],
           ),
           Positioned(
             child: Container(
-              color: _tabBarColor,
               width: double.infinity,
+              decoration: BoxDecoration(
+                color: Color(_tabBarColor),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 0,
+                    spreadRadius: 0,
+                    color: Color(_tabShadowColor),
+                    offset: Offset(0, 0.3),
+                  ),
+                ],
+              ),
               child: Padding(
                 padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 6),
                 child: SafeArea(
