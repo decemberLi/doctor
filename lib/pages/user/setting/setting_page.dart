@@ -19,6 +19,7 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   bool _flag = true;
   String _version = '';
+  String _versionCode = '';
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +155,7 @@ class _SettingPageState extends State<SettingPage> {
                 textAlign: TextAlign.left,
               ),
             )),
-            Text('当前版本 $_version')
+            Text('当前版本 $_version($_versionCode)')
           ],
         ),
       ),
@@ -220,6 +221,8 @@ class _SettingPageState extends State<SettingPage> {
       _flag = toggle;
     }
     _version = await PlatformUtils.getAppVersion();
+    _versionCode = await PlatformUtils.getBuildNum();
+
     setState(() {});
   }
 }
