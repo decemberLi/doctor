@@ -1,3 +1,5 @@
+import 'package:doctor/pages/doctors/doctors_list_page.dart';
+import 'package:doctor/pages/doctors/doctors_list_page2.dart';
 import 'package:doctor/pages/doctors/widget/doctors_detail_widget.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/find_password.dart';
@@ -71,6 +73,8 @@ class RouteManager {
   static const String QUALIFICATION_AUTH_STATUS = '/qualification_auth_status';
   static const String DOCTORS_ARTICLE_DETAIL = '/doctors_detail';
   static const String COMMON_WEB = '/commonWeb';
+  static const String DOCTOR_LIST1 = '/DoctorList1';
+  static const String DOCTOR_LIST2 = '/DoctorList2';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
@@ -153,6 +157,14 @@ class RouteManager {
     COMMON_WEB: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return CommonWebView(obj['url'],obj['title']);
+    },
+    DOCTOR_LIST1: (context){
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return DoctorsListPage(obj);
+    },
+    DOCTOR_LIST2: (context){
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return DoctorsListPage2(obj);
     },
   };
 }

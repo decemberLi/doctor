@@ -54,6 +54,6 @@ Map<String, dynamic> _$DoctorDetailInfoEntityToJson(
       'rejectReson': instance.rejectReson,
       'doctorUserId': instance.doctorUserId,
       'doctorId': instance.doctorId,
+      'fullFacePhoto': instance.fullFacePhoto,
       'headPicUrl': instance.headPicUrl,
-      'fullFacePhoto': instance.fullFacePhoto?.toJson()
     };

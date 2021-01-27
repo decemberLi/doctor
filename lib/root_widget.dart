@@ -1,10 +1,16 @@
+import 'dart:convert';
+
+import 'package:device_info/device_info.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
+import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/utils/platform_utils.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +19,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'dart:io';
+
+import 'model/ucenter/doctor_detail_info_entity.dart';
+import 'package:doctor/http/ucenter.dart';
 
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -35,6 +45,67 @@ class RootWidget extends StatelessWidget {
         );
       }
     });
+    MedcloudsNativeApi.instance().addProcessor("uploadDeviceInfo", (args) async{
+      MedcloudsNativeApi.instance().uploadDeviceInfo(args);
+    });
+    MedcloudsNativeApi.instance().addProcessor("receiveNotification", (args) async {
+      print('Received push message process event, arguments - > [$args]');
+      var context = NavigationService().navigatorKey.currentContext;
+      try{
+        var obj = json.decode(args);
+        var type = obj["bizType"];
+        if (type == "QUALIFICATION_AUTH") { // 资质认证
+          var authStatus = obj["authStatus"];
+          if (authStatus == "FAIL"){
+            var basicData = await API.shared.ucenter.getBasicData();
+            var doctorData = DoctorDetailInfoEntity.fromJson(basicData);
+            Navigator.pushNamed(
+              context,
+              RouteManager.USERINFO_DETAIL,
+              arguments: {
+                'doctorData': doctorData.toJson(),
+                'qualification': true,
+              },
+            );
+          }else{
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DoctorPhysicianStatusPage(
+                        authStatus)));
+          }
+          Navigator.of(context).pushNamed("routeName");
+        }else if (type == "ASSIGN_STUDY_PLAN") { // 学习计划详情
+          var learnPlanId = obj["learnPlanId"];
+          Navigator.of(context).pushNamed(
+            RouteManager.LEARN_DETAIL,
+            arguments: {
+              'learnPlanId': learnPlanId,
+            },
+          );
+        }else if (type == "RELEARN"){ // 学习计划详情
+          var learnPlanId = obj["learnPlanId"];
+          Navigator.of(context).pushNamed(
+            RouteManager.LEARN_DETAIL,
+            arguments: {
+              'learnPlanId': learnPlanId,
+            },
+          );
+        }
+
+      }catch(e){
+
+      }
+
+    });
+    HttpManager.shared.onRequest = (options) async {
+      debugPrint("$options");
+      debugPrint("ticket:${SessionManager.shared.session}");
+      options.headers["_ticketObject"] = SessionManager.shared.session;
+      options.headers["_appVersion"] =  await PlatformUtils.getAppVersion();
+
+      return options;
+    };
   }
 
   @override

@@ -1,5 +1,5 @@
-
 import 'package:doctor/common/event/event_model.dart';
+import 'package:doctor/pages/doctors/model/banner_entity.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -9,8 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../root_widget.dart';
+import '../doctors_banner.dart';
+import '../doctors_banner_item.dart';
+import '../doctors_list_page.dart';
 import '../model/doctor_circle_entity.dart';
 import '../viewmodel/doctors_view_model.dart';
+import 'circleflow/category_widget.dart';
+import 'circleflow/enterprise_open_class_widget.dart';
+import 'circleflow/hot_post_widget.dart';
+import 'circleflow/online_classic.dart';
 
 final _colorPanel = {
   '文献专区': ThemeColor.colorFF52C41A,
@@ -18,114 +25,32 @@ final _colorPanel = {
   '每日医讲': ThemeColor.colorFFFAAD14,
 };
 
-class DoctorCircleItemWidget extends StatelessWidget {
+typedef OnScrollerCallback = void Function(double offset);
 
-  final DoctorCircleEntity data;
-
-  DoctorCircleItemWidget(this.data);
-
-  Color _categoryTextColor(String category) {
-    Color color = _colorPanel[category];
-    if (color != null) {
-      return color;
-    }
-    return ThemeColor.colorFF107BFD;
-    // var batch = _colorPanel.entries.toList();
-    // var hitColor = batch[Random().nextInt(batch.length)].value;
-    // _colorPanel.putIfAbsent(category, () => hitColor);
-    // return hitColor;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    ImageProvider imageProvider;
-    if (data?.postUserHeader != null) {
-      imageProvider = NetworkImage(data.postUserHeader);
-    } else {
-      imageProvider = AssetImage('assets/images/doctorAva.png');
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8))),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                    border: new Border.all(
-                        color: ThemeColor.colorFFB8D1E2, width: 2),
-                    color: ThemeColor.colorFFF3F5F8,
-                    borderRadius: new BorderRadius.all(Radius.circular(15)),
-                    image: DecorationImage(
-                      // fit: BoxFit.fill,
-                      fit: BoxFit.fitWidth,
-                      image: imageProvider,
-                    )),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 4),
-                child: Text(data?.postUserName ?? '',
-                    style: TextStyle(
-                        fontSize: 14, color: ThemeColor.colorFF444444)),
-              )
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 8),
-            // title
-            child: Text(data?.postTitle ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style:
-                TextStyle(fontSize: 16,
-                    color: data.isClicked ? ThemeColor.colorFFC1C1C1:
-                    ThemeColor.colorFF222222)),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 6, bottom: 8),
-            child: Text(data?.postContent ?? '',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style:
-                TextStyle(fontSize: 14, color: data.isClicked ? ThemeColor.colorFFC1C1C1:ThemeColor.colorFF999999)),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: ThemeColor.colorFFF6F6F6,
-                    borderRadius: BorderRadius.all(Radius.circular(2))),
-                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                child: Text(
-                  data?.columnName ?? '',
-                  style: TextStyle(
-                      color: _categoryTextColor(data?.columnName ?? ''),
-                      fontSize: 12),
-                ),
-              ),
-              Text(
-                formatViewCount(data?.viewNum),
-                style: TextStyle(color: ThemeColor.colorFF999999, fontSize: 10),
-              )
-            ],
-          )
-        ],
-      ),
-    );
+openBannerDetail(BuildContext context, data){
+  print("On banner clicked -> [${data?.toJson()}]");
+  if (data.bannerType == 'RELEVANCY_POST') {
+    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
+        arguments: {
+          'postId': int.parse(data?.relatedContent),
+          'from': 'list',
+          'type': 'VIDEO_ZONE'
+        });
+  }else if(data.bannerType == 'ACTIVITY'){
+    Navigator.pushNamed(context, RouteManager.COMMON_WEB,
+        arguments: {
+          'postId': data?.relatedContent,
+          'url': data?.relatedContent,
+          'title': ''
+        });
   }
 }
 
 class DoctorsPage extends StatefulWidget {
+  final OnScrollerCallback callback;
+
+  DoctorsPage(this.callback);
+
   @override
   State<StatefulWidget> createState() => DoctorPageState();
 }
@@ -133,6 +58,7 @@ class DoctorsPage extends StatefulWidget {
 class DoctorPageState
     extends AbstractListPageState<DoctorsViewMode, DoctorsPage> {
   ScrollOutScreenViewModel _inScreenViewModel;
+  final _model = DoctorsViewMode(type: 'ACADEMIC');
 
   bool _currentIsOutScreen = false;
 
@@ -155,25 +81,147 @@ class DoctorPageState
     _inScreenViewModel =
         Provider.of<ScrollOutScreenViewModel>(context, listen: false);
   }
+  
+  bodyHeader() {
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            color: Colors.white,
+            child: StreamBuilder(
+              stream: _model.topBannerStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<BannerEntity>> snapshot) {
+                if (snapshot.hasData && snapshot.data.length != 0) {
+                  return DoctorsBanner(
+                    snapshot.data,
+                    (context, data, index) {
+                      return DoctorBannerItemGrass(data, onClick: (data) {
+                        openBannerDetail(context,data);
+                      });
+                    },
+                  );
+                }
+                return SafeArea(
+                    child: Container(
+                  height: 40,
+                ));
+              },
+            ),
+          ),
+          StreamBuilder(
+            stream: _model.categoryStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<CategoryEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return Column(
+                  children: [
+                    CategoryWidget(snapshot.data),
+                    Container(
+                      color: ThemeColor.colorFFF9F9F9,
+                      width: double.infinity,
+                      height: 6,
+                    ),
+                  ],
+                );
+              }
+              return Container();
+            },
+          ),
+          StreamBuilder(
+            stream: _model.onlineClassStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<OnlineClassicEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return OnlineClassicWidget(snapshot.data);
+              }
+              return SafeArea(child: Container(color: Colors.white));
+            },
+          ),
+          StreamBuilder(
+            stream: _model.openClassStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<OpenClassEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return Column(
+                  children: [
+                    EnterpriseOpenClassWidget(snapshot.data),
+                    Container(
+                      color: ThemeColor.colorFFF9F9F9,
+                      width: double.infinity,
+                      height: 6,
+                    )
+                  ],
+                );
+              }
+              return SafeArea(child: Container(color: Colors.white));
+            },
+          ),
+          StreamBuilder(
+            stream: _model.hotPostStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<HotPostEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return HotPostWidget(snapshot.data);
+              }
+              return Container(color: Colors.white);
+            },
+          ),
+          Container(
+            color: Colors.white,
+            child: StreamBuilder(
+              stream: _model.flowBannerStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<BannerEntity>> snapshot) {
+                if (snapshot.hasData && snapshot.data.length != 0) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                    child: DoctorsBanner(
+                      snapshot.data,
+                      (context, data, index) {
+                        return DoctorBannerItemNormal(data, onClick: (data){
+                          openBannerDetail(context,data);
+                        },);
+                      },
+                      height: 80,
+                    ),
+                  );
+                }
+                return Container(
+                  color: Colors.white,
+                  height: 12,
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
 
   @override
-  Widget divider(BuildContext context, int index) =>
-      Divider(
-        color: ThemeColor.colorFFF3F5F8,
-        height: 12,
-      );
+  Widget divider(BuildContext context, int index) => Container();
 
   @override
-  DoctorsViewMode getModel() => DoctorsViewMode(type: 'ACADEMIC');
+  DoctorsViewMode getModel() => _model;
 
   @override
-  Widget itemWidget(BuildContext context, int index, dynamic data) =>
-      DoctorCircleItemWidget(data);
+  Widget itemWidget(BuildContext context, int index, dynamic data) {
+    return DoctorsListItem(data);
+  }
 
   @override
   void scrollOutOfScreen(bool outScreen) {
     _currentIsOutScreen = outScreen;
     _inScreenViewModel.updateState(PAGE_DOCTOR, _currentIsOutScreen);
+  }
+
+  @override
+  void scrollOffset(double offset) {
+    if (widget.callback != null) {
+      widget.callback(offset);
+    }
   }
 
   @override

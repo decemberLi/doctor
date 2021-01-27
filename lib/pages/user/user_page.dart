@@ -2,6 +2,10 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
+import 'package:doctor/pages/doctors/doctors_banner.dart';
+import 'package:doctor/pages/doctors/doctors_banner_item.dart';
+import 'package:doctor/pages/doctors/doctors_list_page.dart';
+import 'package:doctor/pages/doctors/doctors_list_page2.dart';
 import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -217,14 +221,16 @@ class _UserPageState extends State<UserPage> with RouteAware {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
+                      alignment: Alignment.center,
                       width: 62,
                       height: 62,
                       child: doctorData?.fullFacePhoto == null
-                          ? Image.asset(
-                              "assets/images/doctorHeader.png",
-                              width: 50,
-                              height: 50,
-                            )
+                          ?
+                      Image.asset(
+                        "assets/images/doctorHeader.png",
+                        width: 35,
+                        height: 35,
+                      )
                           : Container(
                               width: 60,
                               height: 60,
@@ -260,7 +266,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                             child: Row(
                               children: [
                                 Text(
-                                  doctorData?.doctorName,
+                                  doctorData?.doctorName ?? "",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20,

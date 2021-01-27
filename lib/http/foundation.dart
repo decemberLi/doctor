@@ -9,7 +9,7 @@ extension founAPI on API {
 
 class Foundation extends SubAPI {
   String get middle => "/medclouds-foundation/${API.shared.defaultClient}";
-
+  String get doctorMiddle => "/medclouds-foundation/${API.shared.defaultSystem}/${API.shared.defaultClient}";
   /// 反馈信息
   getFeedbackInfo(params) {
     print('调用接口$params');
@@ -50,16 +50,28 @@ class Foundation extends SubAPI {
     return normalPost('/pull-down-config/list', params: params);
   }
 
-  aliossPolicy() async => normalPost("/ali-oss/policy",);
+  aliossPolicy() async => normalPost(
+        "/ali-oss/policy",
+      );
 
   aliossSave(params) async => normalPost("/ali-oss/save", params: params);
-  aliTmpURLBatch(params) async => normalPost("/ali-oss/tmp-url-batch",params: params);
+
+  aliTmpURLBatch(params) async =>
+      normalPost("/ali-oss/tmp-url-batch", params: params);
 
   ocr(params) async =>
       normalPost("/ocr/recognize-identity-card", params: params);
 
-  hospitalKeyQueryPage(params) async => normalPost("/hospital/key-query-page",params: params);
+  hospitalKeyQueryPage(params) async =>
+      normalPost("/hospital/key-query-page", params: params);
 
-  sendSMS(params) async => normalPost('/sms/send-captcha',params: params);
+  String _doctorURL(String path) => host + doctorMiddle + path;
+  Future<dynamic> doctorPost(String path,{Map<String,dynamic> params}) async {
+    var url = _doctorURL(path);
+    return await HttpManager.shared.post(url, params: params);
+  }
+  sendSMS(params) async => doctorPost('/sms/send-captcha', params: params);
+  pushDeviceSubmit(params) async => doctorPost('/push-device/submit',params: params);
+  pushDeviceLoginSubmit(params) async => doctorPost('/push-device/login-submit',params: params);
+  pushDeviceDel() async => doctorPost('/push-device/del');
 }
-

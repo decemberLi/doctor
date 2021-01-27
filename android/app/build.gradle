@@ -20,6 +20,10 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
+def buildVersionCode = localProperties.getProperty('build.versionCode')
+if(buildVersionCode == null){
+    buildVersionCode = '0'
+}
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -50,7 +54,7 @@ android {
         applicationId "com.emedclouds.doctor"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 7
+        versionCode buildVersionCode.toInteger()
         versionName '2.4.2'
         multiDexEnabled true
 
@@ -64,7 +68,7 @@ android {
             signingConfig signingConfigs.debug
             manifestPlaceholders = [
                     JPUSH_PKGNAME : defaultConfig.applicationId,
-                    JPUSH_APPKEY : "a7547476f7255646ea8646fd",
+                    JPUSH_APPKEY : "05de7d1b7c21f44388f972b6",
                     JPUSH_CHANNEL : "developer-default",
             ]
 
@@ -81,7 +85,7 @@ android {
 
             manifestPlaceholders = [
                     JPUSH_PKGNAME : defaultConfig.applicationId,
-                    JPUSH_APPKEY : "a7547476f7255646ea8646fd",
+                    JPUSH_APPKEY : "602e4ea4245634138758a93c",
                     JPUSH_CHANNEL : "developer-default",
             ]
 

@@ -1,4 +1,7 @@
 
+-dontoptimize
+-dontpreverify
+
 -dontwarn dalvik.**
 -dontwarn com.tencent.smtt.**
 -keep class com.tencent.smtt.** {*;}

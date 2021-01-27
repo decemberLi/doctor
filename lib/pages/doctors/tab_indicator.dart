@@ -12,7 +12,8 @@ class LinearGradientTabIndicatorDecoration extends Decoration {
         colors: [ThemeColor.primaryColor, ThemeColor.colorFF9BF2FF],
         begin: FractionalOffset(0, 1),
         end: FractionalOffset(1, 0),
-      )})
+      ),
+      this.isRound = false})
       : assert(borderSide != null),
         assert(insets != null);
 
@@ -20,6 +21,9 @@ class LinearGradientTabIndicatorDecoration extends Decoration {
   final BorderSide borderSide;
 
   final Gradient gradient;
+
+  /// Round line
+  final bool isRound;
 
   /// Locates the selected tab's underline relative to the tab's boundary.
   ///
@@ -90,11 +94,19 @@ class _LinearGradientPainter extends BoxPainter {
     final Rect indicator = decoration
         ._indicatorRectFor(rect, textDirection)
         .deflate(decoration.borderSide.width / 2.0);
-    final Paint paint = decoration.borderSide.toPaint()
-      ..strokeCap = StrokeCap.square;
+    Paint paint;
+    if(decoration.isRound){
+      paint = decoration.borderSide.toPaint()..strokeCap = StrokeCap.round;
+    }else{
+      paint = decoration.borderSide.toPaint()..strokeCap = StrokeCap.square;
+    }
+
     // 设置渐变指针
     paint.shader =
         decoration.gradient.createShader(rect, textDirection: textDirection);
+    if(decoration.isRound){
+
+    }
     canvas.drawLine(indicator.bottomLeft, indicator.bottomRight, paint);
   }
 }

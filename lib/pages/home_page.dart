@@ -10,6 +10,7 @@ import 'package:doctor/pages/user/user_page.dart';
 import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/ucenter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../root_widget.dart';
 import 'doctors/doctors_home.dart';
@@ -50,6 +52,58 @@ class _HomePageState extends State<HomePage>
 
   initData() async {
     await AppUpdateHelper.checkUpdate(context);
+    bool allowNotification = false;
+    try{
+      allowNotification = await MedcloudsNativeApi.instance().checkNotification();
+    }catch(e){
+
+    }
+    var sp = await SharedPreferences.getInstance();
+    var notShow = sp.getBool("notShowAlertOpenNotification")??false;
+    var showAlert = !allowNotification && !notShow;
+    if (showAlert) {
+      sp.setBool("notShowAlertOpenNotification", true);
+      _showNotifAlert();
+    }
+  }
+
+  _showNotifAlert(){
+    showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          content: Container(
+            padding: EdgeInsets.only(top: 12),
+            child: Text("记得打开消息通知哦\n这样重要消息就可以及时通知您啦"),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                "残忍拒绝",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).maybePop(false);
+              },
+            ),
+            FlatButton(
+              child: Text(
+                "确认",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                MedcloudsNativeApi.instance().openSetting();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void onTabTapped(int index) async {
@@ -65,7 +119,7 @@ class _HomePageState extends State<HomePage>
     if (index == _currentIndex) {
       return;
     }
-    if(index == 4){
+    if (index == 4) {
       eventBus.fire(KEY_UPDATE_USER_INFO);
     }
     if (index == 0) {
@@ -177,7 +231,7 @@ class _HomePageState extends State<HomePage>
   }
 
   _checkDoctorBindRelation(String authStatus) async {
-    if(authStatus != 'PASS'){
+    if (authStatus != 'PASS') {
       return Future.value(true);
     }
     // 已认证，未绑定代表

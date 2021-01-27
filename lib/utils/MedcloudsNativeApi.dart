@@ -1,7 +1,13 @@
 import 'dart:convert';
 
+import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
+import 'package:doctor/provider/GlobalData.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
+import 'package:http_manager/api.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 typedef OnNativeProcessor = Future Function(String args);
 
@@ -60,6 +66,42 @@ class MedcloudsNativeApi {
 
   Future record(String args) async {
     return await _channel.invokeMapMethod("record", args);
+  }
+
+  Future checkNotification() async {
+    return await _channel.invokeMapMethod("checkNotification");
+  }
+
+  Future openSetting() async {
+    return await _channel.invokeMethod("openSetting");
+  }
+
+  Future uploadDeviceInfo(args) async {
+    try {
+      var ids = json.decode(args);
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      var params = {'appType':'DOCTOR'};
+      if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        print('Running on ${iosInfo.utsname.machine}');
+        params['platform'] = 'iOS';
+        params['model'] = iosInfo.model;
+        params['os'] = "${iosInfo.systemVersion}";
+        params['deviceId'] = "${iosInfo.identifierForVendor}";
+      } else if (Platform.isAndroid){
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        params['platform'] = 'Android';
+        params['model'] = androidInfo.model;
+        params['os'] = "${androidInfo.version.sdkInt}";
+        params['deviceId'] = "${ids["registerId"]}";
+      }
+      params['registerId'] = "${ids["registerId"]}";
+      print("the params - ${params}");
+      GlobalData.shared.registerId = "${ids["registerId"]}";
+      await API.shared.foundation.pushDeviceSubmit(params);
+    }catch(e){
+
+    }
   }
 
 }
