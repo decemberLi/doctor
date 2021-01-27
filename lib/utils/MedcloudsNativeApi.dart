@@ -69,7 +69,7 @@ class MedcloudsNativeApi {
   }
 
   Future checkNotification() async {
-    return await _channel.invokeMapMethod("checkNotification");
+    return await _channel.invokeMethod("checkNotification");
   }
 
   Future openSetting() async {
