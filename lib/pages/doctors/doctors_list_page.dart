@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:doctor/pages/doctors/model/doctor_feeds_read_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
@@ -30,6 +29,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
     super.initState();
     try {
       var data = json.decode(widget.args);
+      print("the data is ${data}");
       title = data["title"];
       code = data["code"];
     } catch (e) {}
@@ -139,13 +139,25 @@ class _DoctorsListStates extends State<DoctorsListPage> {
     );
   }
 }
-
-class DoctorsListItem extends StatelessWidget {
+class DoctorsListItem extends StatefulWidget {
   final DoctorCircleEntity data;
 
   DoctorsListItem(
-    this.data,
-  );
+      this.data,
+      );
+  @override
+  State<StatefulWidget> createState() {
+    return DoctorsListItemStates();
+  }
+
+}
+class DoctorsListItemStates extends State<DoctorsListItem> {
+  DoctorCircleEntity data;
+  @override
+  void initState() {
+    data = widget.data;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,19 +171,11 @@ class DoctorsListItem extends StatelessWidget {
             'from': 'list',
           },
         );
-        DoctorFeedsReadModel.shared.addRead(data.postId);
-        print("is read is  ----- ${data.postId}");
+        setState(() {
+          data.read = true;
+        });
       },
-      child: ChangeNotifierProvider<DoctorFeedsReadModel>.value(
-        value: DoctorFeedsReadModel.shared,
-        child: Builder(
-          builder: (context) {
-            bool isRead = DoctorFeedsReadModel.shared.isRead(data.postId);
-            print("is read is  ----- $isRead");
-            return content(context, isRead);
-          },
-        ),
-      ),
+      child: content(context, data.read),
     );
   }
 

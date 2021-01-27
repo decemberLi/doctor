@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'YYYEasyLoading.dart';
 
 class NormalTableView<T> extends StatefulWidget {
   final Widget Function(BuildContext, T) itemBuilder; // 返回列表中每行Item
@@ -42,13 +44,20 @@ class _SubCollectState<T> extends State<NormalTableView>
 
   //第一次获取数据的时候，显示加载loading
   _loadingGetData() async {
-    EasyLoading.show();
-    _firstGetData();
-    EasyLoading.dismiss();
+    try {
+      EasyLoading.instance.flash(() async{
+        await _firstGetData();
+      });
+    }on DioError catch(e) {
+      setState(() {
+        _error = AssertionError(e.message);
+      });
+    }
+
   }
 
   _firstGetData() async {
-    var array = await widget.getData(0);
+    var array = await widget.getData(1);
     if (array.length >= widget.pageSize) {
       _controller.footerMode.value = LoadStatus.idle;
     } else {

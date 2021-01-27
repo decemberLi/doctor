@@ -1,4 +1,3 @@
-import 'package:doctor/pages/doctors/model/doctor_feeds_read_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
@@ -146,11 +145,28 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
   }
 }
 
-class DoctorsListCell2 extends StatelessWidget {
+class DoctorsListCell2 extends StatefulWidget {
   final DoctorCircleEntity data;
   final String type;
 
   DoctorsListCell2(this.data, this.type);
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return DoctorsListCell2States();
+  }
+
+}
+  class DoctorsListCell2States extends State<DoctorsListCell2> {
+  DoctorCircleEntity data;
+  String type;
+
+  @override
+  void initState() {
+    data = widget.data;
+    type = widget.type;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,17 +181,11 @@ class DoctorsListCell2 extends StatelessWidget {
             'type': type,
           },
         );
-        DoctorFeedsReadModel.shared.addRead(data.postId);
+        setState(() {
+          data.read = true;
+        });
       },
-      child: ChangeNotifierProvider<DoctorFeedsReadModel>.value(
-        value: DoctorFeedsReadModel.shared,
-        child: Builder(
-          builder: (context) {
-            bool isRead = DoctorFeedsReadModel.shared.isRead(data.postId);
-            return content(context, isRead);
-          },
-        ),
-      ),
+      child: content(context, data.read),
     );
   }
 
