@@ -2,6 +2,7 @@ import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 class OpenClassEntity {
   final int id;
@@ -21,10 +22,18 @@ class OpenClassEntity {
   );
 }
 
-class EnterpriseOpenClassWidget extends StatelessWidget {
+class EnterpriseOpenClassWidget extends StatefulWidget {
   final List<OpenClassEntity> entities;
 
   EnterpriseOpenClassWidget(this.entities);
+
+  @override
+  State<StatefulWidget> createState() => EnterpriseOpenClassWidgetState();
+}
+
+class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget> {
+  VideoPlayerController _controller;
+  Future _initializeVideoPlayerFuture;
 
   header(BuildContext context) {
     return Row(
@@ -135,13 +144,24 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
             decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
             height: 210,
             width: double.infinity,
-            child: entity.coverImgUrl == null
-                ? Container()
-                : Image.network(
-                    entity.coverImgUrl,
-                    width: double.infinity,
-                    height: 210,
-                  ),
+            child: FutureBuilder(
+              future: _initializeVideoPlayerFuture,
+              builder: (context, snapshot) {
+                print(snapshot.connectionState);
+                if (snapshot.hasError) print(snapshot.error);
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return AspectRatio(
+                    // aspectRatio: 16 / 9,
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 4),
@@ -150,10 +170,9 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 16,
-                color: ThemeColor.colorFF222222,
-                fontWeight: FontWeight.bold
-              ),
+                  fontSize: 16,
+                  color: ThemeColor.colorFF222222,
+                  fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
@@ -161,7 +180,8 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Expanded(child: Text(
+                Expanded(
+                    child: Text(
                   "${entity.author ?? ''}",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -194,6 +214,15 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // _controller = VideoPlayerController.network("https://oss-dev.e-medclouds.com/Business-attachment/2021-01/100000/22160003-rc-upload-1611301838305-18.mp4");
+    _controller = VideoPlayerController.network(widget.entities[0].videoUrl);
+    _controller.setLooping(true);
+    _initializeVideoPlayerFuture = _controller.initialize();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
@@ -205,7 +234,8 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(child: buildVideoPreviewItem(context, entities[0])),
+                Expanded(
+                    child: buildVideoPreviewItem(context, widget.entities[0])),
               ],
             ),
           ),
@@ -213,12 +243,12 @@ class EnterpriseOpenClassWidget extends StatelessWidget {
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(child: buildItem(context, entities[1])),
+                Expanded(child: buildItem(context, widget.entities[1])),
                 Container(
                   width: 20,
                   color: Colors.white,
                 ),
-                Expanded(child: buildItem(context, entities[2])),
+                Expanded(child: buildItem(context, widget.entities[2])),
               ],
             ),
           )

@@ -119,7 +119,7 @@ class AcademicCircleViewModel {
         results.add(OpenClassEntity(
           each.postId,
           each.coverUrl,
-          each.videoUrl,
+          each.postContent,
           each.postTitle,
           each.viewNum,
           each.postUserName,
