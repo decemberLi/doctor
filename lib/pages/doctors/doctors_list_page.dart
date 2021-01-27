@@ -1,17 +1,22 @@
 import 'dart:convert';
 
+import 'package:doctor/pages/doctors/model/doctor_feeds_read_model.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/dtp.dart';
+import 'package:provider/provider.dart';
 
 import 'model/doctor_circle_entity.dart';
 import 'viewmodel/doctors_view_model.dart';
 
 class DoctorsListPage extends StatefulWidget {
   final String args;
+
   DoctorsListPage(this.args);
+
   @override
   State<StatefulWidget> createState() => _DoctorsListStates();
 }
@@ -19,16 +24,15 @@ class DoctorsListPage extends StatefulWidget {
 class _DoctorsListStates extends State<DoctorsListPage> {
   String title = "";
   String code = "";
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     try {
       var data = json.decode(widget.args);
       title = data["title"];
       code = data["code"];
-    }catch(e){
-
-    }
+    } catch (e) {}
   }
 
   Widget bg() {
@@ -51,7 +55,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
     );
   }
 
-  String titleFromType(String type){
+  String titleFromType(String type) {
     return "每日医讲";
   }
 
@@ -108,7 +112,8 @@ class _DoctorsListStates extends State<DoctorsListPage> {
                   {'postType': code, 'ps': 20, 'pn': page},
                 );
                 List<DoctorCircleEntity> posts = list['records']
-                    .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
+                    .map<DoctorCircleEntity>(
+                        (item) => DoctorCircleEntity.fromJson(item))
                     .toList();
                 return posts;
               },
@@ -135,20 +140,47 @@ class _DoctorsListStates extends State<DoctorsListPage> {
   }
 }
 
-
 class DoctorsListItem extends StatelessWidget {
   final DoctorCircleEntity data;
-  DoctorsListItem(this.data);
+
+  DoctorsListItem(
+    this.data,
+  );
+
   @override
   Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          RouteManager.DOCTORS_ARTICLE_DETAIL,
+          arguments: {
+            'postId': data.postId,
+            'from': 'list',
+          },
+        );
+        DoctorFeedsReadModel.shared.addRead(data.postId);
+      },
+      child: ChangeNotifierProvider<DoctorFeedsReadModel>.value(
+        value: DoctorFeedsReadModel.shared,
+        child: Builder(
+          builder: (context) {
+            bool isRead = DoctorFeedsReadModel.shared.isRead(data.postId);
+            return content(context, isRead);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget content(BuildContext context, bool isRead) {
     return Container(
       height: 112,
       child: Column(
         children: [
           Container(
             height: 100,
-            padding: EdgeInsets.only(
-                left: 10, right: 10, top: 10, bottom: 10),
+            padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -172,8 +204,11 @@ class DoctorsListItem extends StatelessWidget {
                             Text(
                               "${dateFormat(data.updateShelvesTime)}",
                               style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xff444444)),
+                                fontSize: 12,
+                                color: isRead
+                                    ? Color(0xffc1c1c1)
+                                    : Color(0xff444444),
+                              ),
                             ),
                             Expanded(
                               child: Container(
@@ -184,8 +219,7 @@ class DoctorsListItem extends StatelessWidget {
                             Text(
                               "阅读${formatChineseViewCount(data.viewNum)}",
                               style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xff444444)),
+                                  fontSize: 12, color: Color(0xff444444)),
                             ),
                           ],
                         )
@@ -200,12 +234,8 @@ class DoctorsListItem extends StatelessWidget {
                   color: Color(0xffEAF3FF),
                   width: 116,
                   height: 80,
-                  child: Image.network(
-                    "${data.coverUrl}",
-                    width: 116,
-                    height: 80,
-                    fit:BoxFit.cover
-                  ),
+                  child: Image.network("${data.coverUrl}",
+                      width: 116, height: 80, fit: BoxFit.cover),
                 )
               ],
             ),

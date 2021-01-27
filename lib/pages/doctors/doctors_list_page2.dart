@@ -1,15 +1,19 @@
+import 'package:doctor/pages/doctors/model/doctor_feeds_read_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/dtp.dart';
+import 'package:provider/provider.dart';
 
 import 'model/doctor_circle_entity.dart';
 
 class DoctorsListPage2 extends StatefulWidget {
   final String args;
+
   DoctorsListPage2(this.args);
+
   @override
   State<StatefulWidget> createState() => _DoctorsListStates2();
 }
@@ -31,14 +35,14 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
               children: [
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.only(top: 20,left: 35),
+                    padding: EdgeInsets.only(top: 20, left: 35),
                     alignment: Alignment.centerLeft,
                     child: Image.asset("assets/images/smallCube.png"),
                   ),
                 ),
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.only(top: 40,right: 12),
+                    padding: EdgeInsets.only(top: 40, right: 12),
                     alignment: Alignment.topRight,
                     child: Image.asset("assets/images/bigCube.png"),
                   ),
@@ -51,7 +55,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
     );
   }
 
-  String titleFromType(String type){
+  String titleFromType(String type) {
     return "在线医生课堂";
   }
 
@@ -99,7 +103,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
           Expanded(
             child: NormalTableView<DoctorCircleEntity>(
               padding: EdgeInsets.only(left: 16, right: 16),
-              header: (context){
+              header: (context) {
                 return Container(
                   height: 75,
                   child: Image.asset("assets/images/titlePage.png"),
@@ -107,14 +111,15 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
               },
               itemBuilder: (context, dynamic d) {
                 DoctorCircleEntity data = d;
-                return DoctorsListCell2(data,widget.args);
+                return DoctorsListCell2(data, widget.args);
               },
               getData: (page) async {
                 var list = await API.shared.dtp.postList(
                   {'postType': widget.args, 'ps': 20, 'pn': page},
                 );
                 List<DoctorCircleEntity> posts = list['records']
-                    .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
+                    .map<DoctorCircleEntity>(
+                        (item) => DoctorCircleEntity.fromJson(item))
                     .toList();
                 return posts;
               },
@@ -141,84 +146,99 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
   }
 }
 
-
 class DoctorsListCell2 extends StatelessWidget {
   final DoctorCircleEntity data;
   final String type;
-  DoctorsListCell2(this.data,this.type);
+
+  DoctorsListCell2(this.data, this.type);
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-            arguments: {
-              'postId': data.postId,
-              'from': 'list',
-              'type': type,
-            });
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          RouteManager.DOCTORS_ARTICLE_DETAIL,
+          arguments: {
+            'postId': data.postId,
+            'from': 'list',
+            'type': type,
+          },
+        );
+        DoctorFeedsReadModel.shared.addRead(data.postId);
       },
-      child: Container(
-        height: 112,
-        child: Column(
-          children: [
-            Container(
-              height: 100,
-              padding: EdgeInsets.only(
-                  left: 10, right: 10, top: 10, bottom: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              data.postTitle,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "${dateFormat(data.updateShelvesTime)}",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xff444444)),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 16,
-                  ),
-                  Container(
-                    color: Color(0xffEAF3FF),
-                    width: 116,
-                    height: 80,
-                    child: Image.network(
-                        "${data.coverUrl}",
-                        width: 116,
-                        height: 80,
-                        fit:BoxFit.cover
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Expanded(
-              child: Container(),
-            ),
-          ],
+      child: ChangeNotifierProvider<DoctorFeedsReadModel>.value(
+        value: DoctorFeedsReadModel.shared,
+        child: Builder(
+          builder: (context) {
+            bool isRead = DoctorFeedsReadModel.shared.isRead(data.postId);
+            return content(context, isRead);
+          },
         ),
+      ),
+    );
+  }
+
+  Widget content(BuildContext context, bool isRead) {
+    return Container(
+      height: 112,
+      child: Column(
+        children: [
+          Container(
+            height: 100,
+            padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            data.postTitle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "${dateFormat(data.updateShelvesTime)}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isRead
+                                    ? Color(0xffc1c1c1)
+                                    : Color(0xff444444),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 16,
+                ),
+                Container(
+                  color: Color(0xffEAF3FF),
+                  width: 116,
+                  height: 80,
+                  child: Image.network("${data.coverUrl}",
+                      width: 116, height: 80, fit: BoxFit.cover),
+                )
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(),
+          ),
+        ],
       ),
     );
   }
