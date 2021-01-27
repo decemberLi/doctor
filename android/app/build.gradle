@@ -24,6 +24,9 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply plugin:'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
 
 android {
     compileSdkVersion 29
@@ -31,6 +34,11 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    packagingOptions {
+        doNotStrip '*/mips/*.so'
+        doNotStrip '*/mips64/*.so'
     }
 
     lintOptions {
@@ -42,8 +50,8 @@ android {
         applicationId "com.emedclouds.doctor"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 5
-        versionName '2.4.1'
+        versionCode 7
+        versionName '2.4.2'
         multiDexEnabled true
 
     }
@@ -54,9 +62,12 @@ android {
             zipAlignEnabled false
             shrinkResources false
             signingConfig signingConfigs.debug
-            ndk {
-                    abiFilters "x86","x86_64","arm64-v8a"
-                }
+            manifestPlaceholders = [
+                    JPUSH_PKGNAME : defaultConfig.applicationId,
+                    JPUSH_APPKEY : "a7547476f7255646ea8646fd",
+                    JPUSH_CHANNEL : "developer-default",
+            ]
+
         }
         release {
             minifyEnabled true
@@ -64,6 +75,16 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard-rules.pro'
             signingConfig signingConfigs.debug
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
+
+            manifestPlaceholders = [
+                    JPUSH_PKGNAME : defaultConfig.applicationId,
+                    JPUSH_APPKEY : "a7547476f7255646ea8646fd",
+                    JPUSH_CHANNEL : "developer-default",
+            ]
+
         }
     }
 }
@@ -76,14 +97,42 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'
 
+    implementation "androidx.core:core:$core_version"
+    implementation "androidx.core:core-ktx:$core_version"
+
     implementation "androidx.annotation:annotation:$androidx_annotation_version"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+//    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+
+    api "androidx.camera:camera-camera2:$camerax_version"
+    api "androidx.camera:camera-lifecycle:$camerax_version"
+    api "androidx.camera:camera-view:1.0.0-alpha14"
 
     implementation "com.github.bumptech.glide:glide:$glide_version"
-    annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     // WeChat share
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.6'
-
+    // bugly
+    implementation "com.tencent.bugly:crashreport:$bugly_version"
+    // umeng 统计
+    implementation "com.umeng.umsdk:common:9.3.3"
+    implementation "com.umeng.umsdk:asms:1.1.4"
+    implementation "com.umeng.umsdk:crash:0.0.5"
+    // push
+    implementation 'cn.jiguang.sdk:jpush:3.8.6'
+    implementation 'cn.jiguang.sdk:jcore:2.6.0'
     // apache io package
-    compile 'commons-io:commons-io:2.8.0'
+    api 'commons-io:commons-io:2.8.0'
+//    api 'com.github.barteksc:pdfium-android:1.9.0'
+    implementation("com.google.guava:guava:30.1-android")
+
+    api  'com.kaopiz:kprogresshud:1.0.2'
+    api 'com.tencent.tbs.tbssdk:sdk:43903'
+
+    // 注解
+//    implementation "com.google.dagger:dagger:2.30.1"
+//    kapt "com.google.dagger:dagger-compiler:2.30.1"
 }

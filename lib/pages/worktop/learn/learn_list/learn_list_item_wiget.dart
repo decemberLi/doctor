@@ -70,7 +70,7 @@ class LearnListItemWiget extends StatelessWidget {
   final String listStatus;
   final Function onSubmit;
 
-  LearnListItemWiget(this.item, this.listStatus,this.onSubmit);
+  LearnListItemWiget(this.item, this.listStatus, this.onSubmit);
 
   String timeRender() {
     if (this.item.taskTemplate == 'SALON' ||
@@ -128,7 +128,7 @@ class LearnListItemWiget extends StatelessWidget {
                   'learnPlanId': item.learnPlanId,
                 },
               );
-              if(this.onSubmit != null){
+              if (this.onSubmit != null) {
                 this.onSubmit();
               }
               EasyLoading.showToast('提交成功');
@@ -216,21 +216,23 @@ class LearnListItemWiget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              taskTemplateWidget,
-              resourceTypeListWiget,
-              SizedBox(
-                height: 6,
-              ),
-              taskNameWidget,
-              SizedBox(
-                height: 6,
-              ),
-              representNameWidget,
-            ],
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                taskTemplateWidget,
+                resourceTypeListWiget,
+                SizedBox(
+                  height: 6,
+                ),
+                taskNameWidget,
+                SizedBox(
+                  height: 6,
+                ),
+                representNameWidget,
+              ],
+            ),
           ),
           Container(
             width: 108,

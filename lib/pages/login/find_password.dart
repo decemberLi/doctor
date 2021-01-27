@@ -12,6 +12,7 @@ import 'common_style.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/foundation.dart';
 import 'package:doctor/http/Sso.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class FindPassword extends StatefulWidget {
   @override
@@ -37,19 +38,21 @@ class _FindPasswordState extends State<FindPassword> {
       if (newPassword != confirmPassword) {
         EasyLoading.showToast('两次新密码不一致，请重新输入');
       } else {
-        var response = await API.shared.sso.findPwd({
-          'phone': _mobile,
-          'code': _captcha,
-          'newPassword': newPassword,
-          'system': 'DOCTOR',
-        });
-        if (response is! DioError) {
-          // SessionManager.loginOutHandler();
-          Timer(Duration(seconds: 1), () {
-            EasyLoading.showToast('修改密码成功，请重新登录');
-            Navigator.pop(context);
+        EasyLoading.instance.flash(()async{
+          var response = await API.shared.sso.findPwd({
+            'phone': _mobile,
+            'code': _captcha,
+            'newPassword': newPassword,
+            'system': 'DOCTOR',
           });
-        }
+          if (response is! DioError) {
+            // SessionManager.loginOutHandler();
+            Timer(Duration(seconds: 1), () {
+              EasyLoading.showToast('修改密码成功，请重新登录');
+              Navigator.pop(context);
+            });
+          }
+        },text: '密码修改中...');
       }
     }
   }

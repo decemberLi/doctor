@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 
 typedef OnNativeProcessor = Future Function(String args);
@@ -13,9 +14,22 @@ class MedcloudsNativeApi {
   MedcloudsNativeApi._() {
     print("MedcloudsNativeApi");
     _channel.setMethodCallHandler((call) async {
-      if (_map.containsKey(call.method)) {
-        return await _map[call.method](call.arguments);
+      print("call method");
+      try{
+        if (_map.containsKey(call.method)) {
+          return await _map[call.method](call.arguments);
+        }
+      }on DioError catch (e){
+        print("----------------------${e.message}");
+        if(e.message.contains("SocketException")){
+          return "网络错误";
+        }
+        return "${e.message}";
+      }catch (e){
+        print("----------------------${e}");
+        return "$e";
       }
+
       return null;
     });
   }
@@ -43,4 +57,9 @@ class MedcloudsNativeApi {
   Future share(String args) async {
     return await _channel.invokeMapMethod("share", args);
   }
+
+  Future record(String args) async {
+    return await _channel.invokeMapMethod("record", args);
+  }
+
 }

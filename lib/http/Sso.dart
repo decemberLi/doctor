@@ -36,12 +36,10 @@ class Sso extends SubAPI {
   }
 
   findPwd(params) async{
-    EasyLoading.show(status: "登录中...");
     var result = await normalPost(
       '/forget/pwd',
       params: params,
     );
-    EasyLoading.dismiss();
     return result;
   }
 

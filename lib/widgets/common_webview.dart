@@ -10,7 +10,7 @@ class CommonWebView extends StatefulWidget {
   final String url;
   final String title;
 
-  CommonWebView(this.url,this.title);
+  CommonWebView(this.url, this.title);
 
   @override
   State<StatefulWidget> createState() => CommonWebViewState();
@@ -21,6 +21,7 @@ class CommonWebViewState extends State<CommonWebView> {
   Map<String, dynamic> map;
   var aMap = {};
   String _title = '';
+  bool _hasAppBar = true;
 
   @override
   void initState() {
@@ -43,10 +44,15 @@ class CommonWebViewState extends State<CommonWebView> {
       'removeBizType': (jsonParam, bizType) {
         aMap.remove(jsonParam['key']);
       },
-      'setTitle':(jsonParam, bizType){
-        setState(() {
-          _title = jsonParam['title'];
-        });
+      'titleBar': (jsonParam, bizType) {
+        _hasAppBar = jsonParam['hasTitleBar'];
+      },
+      'setTitle': (jsonParam, bizType) {
+        setState(
+          () {
+            _title = jsonParam['title'];
+          },
+        );
       }
     };
   }
@@ -62,16 +68,34 @@ class CommonWebViewState extends State<CommonWebView> {
     _controller.evaluateJavascript("nativeCall('$param')");
   }
 
+  _appBar() {
+    if (_hasAppBar) {
+      return AppBar(
+        elevation: 0.2,
+        title: Text(
+          _title ?? '',
+          style: TextStyle(fontSize: 17, color: ThemeColor.colorFF000000),
+        ),
+      );
+    } else {
+      return PreferredSize(
+        child: Container(),
+        preferredSize: Size(0, 0),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.2,
-        title: Text(_title??'',style: TextStyle(fontSize: 17, color: ThemeColor.colorFF000000),),
-      ),
+      appBar: _appBar(),
       body: WebView(
         javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (controller) => _controller = controller,
+        onWebViewCreated: (controller) async {
+          _controller = controller;
+          _title = await _controller.getTitle();
+          setState(() {});
+        },
         initialUrl: widget.url,
         onPageFinished: (url) {
           print(url);

@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import UserNotificationsUI
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -11,7 +12,20 @@ import Flutter
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    #if DEBUG
+    UMConfigure.initWithAppkey("6007995f6a2a470e8f822118", channel: "App Store")
+    #else
+    UMConfigure.initWithAppkey("60079989f1eb4f3f9b67973b", channel: "App Store")
+    #endif
+    
+    Bugly.start(withAppId: "463f24e2f9")
     WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
+//    let entity = JPUSHRegisterEntity()
+//    entity.types = Int(UNAuthorizationOptions.alert.rawValue |
+//                        UNAuthorizationOptions.badge.rawValue |
+//                        UNAuthorizationOptions.sound.rawValue)
+//    JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
+//    JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: false)
     AppDelegate.shared = self
     let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
     window = UIWindow()
@@ -24,6 +38,11 @@ import Flutter
             guard let data = value.data(using: .utf8) else {return}
             guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
             self.share(map: obj)
+        } else if call.method == "record" {
+            guard let value = call.arguments as? String else {return}
+            guard let data = value.data(using: .utf8) else {return}
+            guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
+            self.record(map: obj)
         }
     }
     vc.setFlutterViewDidRenderCallback {
@@ -53,6 +72,15 @@ import Flutter
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
+    override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        JPUSHService.registerDeviceToken(deviceToken)
+    }
+    
+    override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        JPUSHService.handleRemoteNotification(userInfo)
+        completionHandler(.newData)
+    }
+    
     override func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
         if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
             || url.scheme == "com.emedclouds.doctor" {
@@ -75,6 +103,10 @@ import Flutter
         return WXApi.handleOpenUniversalLink(userActivity, delegate: self)
     }
     
+    override func applicationDidEnterBackground(_ application: UIApplication) {
+        application.applicationIconBadgeNumber = 0
+    }
+    
 }
 
 extension AppDelegate {
@@ -83,6 +115,13 @@ extension AppDelegate {
         sharevc.data = map
         sharevc.modalPresentationStyle = .overFullScreen
         window.rootViewController?.present(sharevc, animated: false, completion: nil)
+    }
+    
+    func record(map : [String:Any]) {
+        let vc = RecordsVC()
+        vc.data = map
+        vc.modalPresentationStyle = .fullScreen
+        window.rootViewController?.present(vc, animated: false, completion: nil)
     }
 }
 
@@ -103,4 +142,27 @@ extension AppDelegate : WXApiDelegate {
     func onResp(_ resp: BaseResp) {
         print("\(resp)");
     }
+}
+
+extension AppDelegate : JPUSHRegisterDelegate {
+    func jpushNotificationCenter(_ center: UNUserNotificationCenter!, willPresent notification: UNNotification!, withCompletionHandler completionHandler: ((Int) -> Void)!) {
+        let info = notification.request.content.userInfo
+        JPUSHService.handleRemoteNotification(info)
+        let type =  Int(UNAuthorizationOptions.alert.rawValue |
+                            UNAuthorizationOptions.badge.rawValue |
+                            UNAuthorizationOptions.sound.rawValue)
+        completionHandler(type)
+    }
+    
+    func jpushNotificationCenter(_ center: UNUserNotificationCenter!, didReceive response: UNNotificationResponse!, withCompletionHandler completionHandler: (() -> Void)!) {
+        let info = response.notification.request.content.userInfo
+        JPUSHService.handleRemoteNotification(info)
+        completionHandler()
+    }
+    
+    func jpushNotificationCenter(_ center: UNUserNotificationCenter!, openSettingsFor notification: UNNotification!) {
+        
+    }
+    
+    
 }

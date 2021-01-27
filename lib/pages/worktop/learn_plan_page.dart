@@ -78,7 +78,7 @@ class _LearnPlanPageState extends State<LearnPlanPage>
                         ),
                         if (_waitLearnCount > 0)
                           Positioned(
-                            right: -30,
+                            right: redDotPosition(),
                             top: -8,
                             child: LearnTextIcon(
                               text: '$_waitLearnCount',
@@ -101,11 +101,26 @@ class _LearnPlanPageState extends State<LearnPlanPage>
         child: TabBarView(
           controller: this._tabController,
           children: [
-            LearnListPage('LEARNING',index: widget.index, onTaskTypeChange: getLearnCount),
+            LearnListPage('LEARNING',
+                index: widget.index, onTaskTypeChange: getLearnCount),
             LearnListPage('HISTORY'),
           ],
         ),
       ),
     );
+  }
+
+  double redDotPosition() {
+    if (_waitLearnCount > 9999) {
+      return - 56;
+    } else if (_waitLearnCount > 999) {
+      return -50;
+    } else if (_waitLearnCount > 99) {
+      return -42;
+    } else if (_waitLearnCount > 9) {
+      return -35;
+    } else {
+      return -30;
+    }
   }
 }

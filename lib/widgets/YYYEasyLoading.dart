@@ -17,7 +17,11 @@ extension falshEx on EasyLoading {
       }
       rethrow;
     } catch (e){
-      EasyLoading.dismiss();
+      if (e is String){
+        EasyLoading.showToast(e);
+      }else{
+        EasyLoading.dismiss();
+      }
     }
   }
 

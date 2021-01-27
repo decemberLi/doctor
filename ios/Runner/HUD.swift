@@ -9,17 +9,38 @@ import Foundation
 import MBProgressHUD
 
 extension MBProgressHUD {
-    static func toast(msg : String) {
+    static func toast(img:String = "right",msg : String) {
         guard let window = AppDelegate.shared?.window else {return}
         let hud = MBProgressHUD.showAdded(to: window, animated: true)
         hud.label.text = msg
         hud.label.textColor = .white
         hud.mode = .customView
-        hud.customView = UIImageView(image: UIImage(named: "right"))
+        hud.customView = UIImageView(image: UIImage(named: img))
         hud.contentColor = .white
         hud.bezelView.backgroundColor = .black
         hud.bezelView.color = UIColor(white: 0, alpha: 0.7)
         hud.bezelView.style = .solidColor
         hud.hide(animated: true, afterDelay: 1)
+    }
+    static func toastText(msg : String,duration:Int = 1) {
+        guard let window = AppDelegate.shared?.window else {return}
+        let hud = MBProgressHUD.showAdded(to: window, animated: true)
+        hud.label.text = msg
+        hud.label.textColor = .white
+        hud.mode = .text
+        hud.contentColor = .white
+        hud.bezelView.backgroundColor = .black
+        hud.bezelView.color = UIColor(white: 0, alpha: 0.7)
+        hud.bezelView.style = .solidColor
+        hud.hide(animated: true, afterDelay: TimeInterval(duration))
+    }
+    @discardableResult
+    static func showWhiteAdded(to: UIView, animated: Bool)->MBProgressHUD{
+        let hud = showAdded(to: to, animated: animated)
+        hud.contentColor = .white
+        hud.bezelView.backgroundColor = .black
+        hud.bezelView.color = UIColor(white: 0, alpha: 0.7)
+        hud.bezelView.style = .solidColor
+        return hud
     }
 }
