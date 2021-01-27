@@ -203,6 +203,12 @@ class DoctorsListCell2 extends StatelessWidget {
                             data.postTitle,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: isRead
+                                  ? Color(0xffc1c1c1)
+                                  : Color(0xff222222),
+                            ),
                           ),
                         ),
                         Row(

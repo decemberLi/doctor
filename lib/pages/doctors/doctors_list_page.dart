@@ -160,12 +160,14 @@ class DoctorsListItem extends StatelessWidget {
           },
         );
         DoctorFeedsReadModel.shared.addRead(data.postId);
+        print("is read is  ----- ${data.postId}");
       },
       child: ChangeNotifierProvider<DoctorFeedsReadModel>.value(
         value: DoctorFeedsReadModel.shared,
         child: Builder(
           builder: (context) {
             bool isRead = DoctorFeedsReadModel.shared.isRead(data.postId);
+            print("is read is  ----- $isRead");
             return content(context, isRead);
           },
         ),
@@ -197,6 +199,12 @@ class DoctorsListItem extends StatelessWidget {
                             data.postTitle,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: isRead
+                                  ? Color(0xffc1c1c1)
+                                  : Color(0xff222222),
+                            ),
                           ),
                         ),
                         Row(
@@ -219,7 +227,11 @@ class DoctorsListItem extends StatelessWidget {
                             Text(
                               "阅读${formatChineseViewCount(data.viewNum)}",
                               style: TextStyle(
-                                  fontSize: 12, color: Color(0xff444444)),
+                                fontSize: 12,
+                                color: isRead
+                                    ? Color(0xffc1c1c1)
+                                    : Color(0xff444444),
+                              ),
                             ),
                           ],
                         )
