@@ -20,6 +20,10 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
+def buildVersionCode = localProperties.getProperty('build.versionCode')
+if(buildVersionCode == null){
+    buildVersionCode = '0'
+}
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -50,7 +54,7 @@ android {
         applicationId "com.emedclouds.doctor"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 7
+        versionCode buildVersionCode.toInteger()
         versionName '2.4.2'
         multiDexEnabled true
 
