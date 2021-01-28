@@ -1,3 +1,4 @@
+import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
@@ -55,6 +56,10 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
   }
 
   String titleFromType(String type) {
+    if (type == "OPEN_CLASS"){
+      return "企业公开课";
+    }
+
     return "在线医生课堂";
   }
 
@@ -224,7 +229,7 @@ class DoctorsListCell2 extends StatefulWidget {
                         Row(
                           children: [
                             Text(
-                              "${dateFormat(data.updateShelvesTime)}",
+                              "${formatChineseViewCount(data.viewNum)}次学习",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: isRead
