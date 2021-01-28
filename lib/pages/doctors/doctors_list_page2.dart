@@ -105,7 +105,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
               header: (context) {
                 return Container(
                   height: 75,
-                  child: Image.asset("assets/images/titlePage.png"),
+                  child: widget.args == "OPEN_CLASS" ?Image.asset("assets/images/titlePage2.png") : Image.asset("assets/images/titlePage.png"),
                 );
               },
               itemBuilder: (context, dynamic d) {

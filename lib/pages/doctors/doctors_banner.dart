@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class DoctorsBanner extends StatefulWidget {
-  final List dataList;
+  final Stream<List> dataStream;
   final Function(BuildContext, dynamic, int) itemBuilder;
   final double height;
+  final Widget Function(BuildContext) holder;
 
-  DoctorsBanner(this.dataList, this.itemBuilder, {this.height = 237});
+  DoctorsBanner(this.dataStream, this.itemBuilder, {this.height = 237,this.holder});
 
   @override
   State<StatefulWidget> createState() {
@@ -31,21 +32,30 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
 
   @override
   void initState() {
-    realList.addAll(widget.dataList);
-    if (widget.dataList.length > 1) {
-      realList.insert(0, widget.dataList[widget.dataList.length - 1]);
-      realList.add(widget.dataList[0]);
+    print("1233222222222------");
+    widget.dataStream.listen((event) {
+      initDatas(event);
+    });
+
+    super.initState();
+  }
+  void initDatas(List dataList){
+    realList.clear();
+    realList.addAll(dataList);
+    if (dataList.length > 1) {
+      realList.insert(0, dataList[dataList.length - 1]);
+      realList.add(dataList[0]);
       _pageController.addListener(() {
         setState(() {
           if (_pageController.page == realList.length - 1) {
             _pageController.jumpToPage(1);
             _currentIndex = 0;
           } else if (_pageController.page == 0) {
-            _pageController.jumpToPage(widget.dataList.length);
-            _currentIndex = widget.dataList.length - 1;
+            _pageController.jumpToPage(dataList.length);
+            _currentIndex = dataList.length - 1;
           } else {
             var page = _pageController.page.round() - 1;
-            page = min(page, widget.dataList.length - 1);
+            page = min(page, dataList.length - 1);
             page = max(0, page);
             _currentIndex = page;
           }
@@ -53,9 +63,11 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       });
       _startTimer();
     } else {
+      setState(() {
+
+      });
       _timer?.cancel();
     }
-    super.initState();
   }
 
   _startTimer() {
@@ -74,7 +86,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   Widget _scrollNoti(Widget child) {
     return NotificationListener(
       onNotification: (notification) {
-        if (widget.dataList.length <= 1) {
+        if (realList.length <= 1) {
           return true;
         }
         if (notification.depth == 0 &&
@@ -93,6 +105,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   }
 
   Widget point() {
+    var sub = realList.sublist(1,realList.length - 2);
     return Container(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -100,7 +113,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
         margin: EdgeInsets.only(bottom: 6),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: widget.dataList
+          children: sub
               .asMap()
               .map(
                 (key, value) => MapEntry(
@@ -127,12 +140,19 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
 
   @override
   Widget build(BuildContext context) {
+    if (realList.length == 0){
+      if (widget.holder != null) {
+        return widget.holder(context);
+      }else{
+        return Container();
+      }
+    }
     return Container(
       height: widget.height,
       child: Stack(
         children: [
           _scrollNoti(PageView(
-            physics: widget.dataList.length > 1
+            physics: realList.length > 1
                 ? null
                 : NeverScrollableScrollPhysics(),
             controller: _pageController,
@@ -142,7 +162,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
                 .values
                 .toList(),
           )),
-          if (widget.dataList.length > 1) point()
+          if (realList.length > 1) point()
         ],
       ),
     );

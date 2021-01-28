@@ -229,7 +229,7 @@ class DoctorsListItemStates extends State<DoctorsListItem> {
                               ),
                             ),
                             Text(
-                              "阅读${formatChineseViewCount(data.viewNum)}",
+                              "${formatChineseViewCount(data.viewNum)}阅读",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: isRead
