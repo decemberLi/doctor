@@ -75,6 +75,43 @@
             android:theme="@style/LandScapeNoTitleNoStatusBar.Translucent"
             android:screenOrientation="landscape"/>
 
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <!--        <activity android:name=".X5WebViewActivity"-->
+        <!--            android:configChanges="orientation|screenSize|keyboardHidden"-->
+        <!--            android:exported="false"-->
+        <!--            android:launchMode="singleTask"-->
+        <!--            android:alwaysRetainTaskState="true"-->
+        <!--            android:windowSoftInputMode="stateHidden|adjustResize"-->
+        <!--            ></activity>-->
+        <activity android:name=".common.web.pluginwebview.X5WebViewActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity
+            android:name="com.tencent.smtt.sdk.VideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:alwaysRetainTaskState="true">
+            <intent-filter>
+                <action android:name="com.tencent.smtt.tbs.video.PLAY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <service
+            android:name="com.tencent.smtt.export.external.DexClassLoaderProviderService"
+            android:label="dexopt"
+            android:process=":dexopt" >
+        </service>
+        <provider
+            android:name="com.tencent.smtt.utils.FileProvider"
+            android:authorities="${applicationId}"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/x5webview_file_paths" />
+        </provider>
+
         <receiver
             android:name=".common.thirdpart.push.receiver.MessagePushReceiver"
             android:enabled="true"

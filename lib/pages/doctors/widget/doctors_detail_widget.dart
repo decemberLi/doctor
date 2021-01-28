@@ -4,10 +4,12 @@ import 'package:connectivity/connectivity.dart';
 import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_detail_view_model.dart';
+import 'package:doctor/plugins/x5web/x5_webview.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/debounce.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -31,7 +33,8 @@ class DoctorsDetailPage extends StatefulWidget {
 }
 
 class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
-  WebViewController _controller;
+  WebViewController _webViewController;
+  X5WebViewController _x5webViewController;
   TextEditingController _commentTextEditController = TextEditingController();
   FocusNode _commentFocusNode = FocusNode();
   DoctorsDetailViewMode _model = DoctorsDetailViewMode();
@@ -93,9 +96,11 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
         aMap.remove(jsonParam['key']);
       },
       'getWifiStatus': (jsonParam, bizType) async {
-        ConnectivityResult connectivityResult = await (Connectivity().checkConnectivity());
+        ConnectivityResult connectivityResult =
+            await (Connectivity().checkConnectivity());
         _callJs(_commonResult(
-            bizType: bizType, content: connectivityResult == ConnectivityResult.wifi));
+            bizType: bizType,
+            content: connectivityResult == ConnectivityResult.wifi));
       }
     };
   }
@@ -108,7 +113,11 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
   }
 
   _callJs(param) {
-    _controller.evaluateJavascript("nativeCall('$param')");
+    if(defaultTargetPlatform == TargetPlatform.android){
+      _x5webViewController.evaluateJavascript("nativeCall('$param')");
+    }else {
+      _webViewController.evaluateJavascript("nativeCall('$param')");
+    }
   }
 
   @override
@@ -136,27 +145,51 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
               Container(
                 padding: EdgeInsets.only(bottom: 50),
                 height: MediaQuery.of(context).size.height,
-                child: WebView(
-                  initialMediaPlaybackPolicy:AutoMediaPlaybackPolicy.always_allow,
-                  javascriptMode: JavascriptMode.unrestricted,
-                  initialUrl:
-                      '${UrlProvider.doctorsCircleUrl(Environment.instance)}?id=${widget.postId}&from=${widget.from}',
-                  onWebViewCreated: (controller) => _controller = controller,
-                  onPageFinished: (url) {
-                    print(url);
-                  },
-                  userAgent: 'Medclouds-doctor',
-                  javascriptChannels: <JavascriptChannel>[
-                    JavascriptChannel(
-                      name: 'jsCall',
-                      onMessageReceived: (param) async {
-                        var message = json.decode(param.message);
-                        map[message['dispatchType']](
-                            message['param'], message['bizType']);
-                      },
-                    ),
-                  ].toSet(),
-                ),
+                child: TargetPlatform.android == defaultTargetPlatform
+                    ? X5WebView(
+                        javaScriptEnabled: true,
+                        url: '${UrlProvider.doctorsCircleUrl(Environment.instance)}?id=${widget.postId}&from=${widget.from}',
+                        // url: 'http://192.168.1.27:9000/#/detail?id=${widget.postId}&from=${widget.from}',
+                        header: {},
+                        onUrlLoading: (url){
+                          print(url);
+                          _x5webViewController.loadUrl(url);
+                        },
+                        onWebViewCreated: (controller) =>
+                            _x5webViewController = controller,
+                        onPageFinished: () async {
+                          print(await _x5webViewController.currentUrl());
+                        },
+                        userAgentString: 'Medclouds-doctor',
+                        javascriptChannels: JavascriptChannels(
+                            <String>['jsCall'], (String name, String data) {
+                          var message = json.decode(data);
+                          map[message['dispatchType']](
+                              message['param'], message['bizType']);
+                        }),
+                      )
+                    : WebView(
+                        initialMediaPlaybackPolicy:AutoMediaPlaybackPolicy.always_allow,
+                        javascriptMode: JavascriptMode.unrestricted,
+                        initialUrl:
+                            '${UrlProvider.doctorsCircleUrl(Environment.instance)}?id=${widget.postId}&from=${widget.from}',
+                        onWebViewCreated: (controller) =>
+                            _webViewController = controller,
+                        onPageFinished: (url) {
+                          print(url);
+                        },
+                        userAgent: 'Medclouds-doctor',
+                        javascriptChannels: <JavascriptChannel>[
+                          JavascriptChannel(
+                            name: 'jsCall',
+                            onMessageReceived: (param) async {
+                              var message = json.decode(param.message);
+                              map[message['dispatchType']](
+                                  message['param'], message['bizType']);
+                            },
+                          ),
+                        ].toSet(),
+                      ),
               ),
               Positioned(bottom: 0, child: _bottomBar(_model.detailEntity))
             ],
