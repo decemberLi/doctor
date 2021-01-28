@@ -26,6 +26,7 @@ class DoctorBannerItemGrass extends StatelessWidget {
       height: 140,
       decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(4)),
         image: DecorationImage(
           fit: BoxFit.cover,
           image: NetworkImage(data.bannerUrl),
@@ -87,6 +88,7 @@ class DoctorBannerItemNormal extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(4)),
           image: DecorationImage(
             fit: BoxFit.cover,
             image: NetworkImage(data.bannerUrl),

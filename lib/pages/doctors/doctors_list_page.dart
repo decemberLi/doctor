@@ -109,7 +109,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
               },
               getData: (page) async {
                 var list = await API.shared.dtp.postList(
-                  {'postType': code, 'ps': 20, 'pn': page},
+                  {'postType': 'ACADEMIC','columnCode':code, 'ps': 20, 'pn': page},
                 );
                 List<DoctorCircleEntity> posts = list['records']
                     .map<DoctorCircleEntity>(
