@@ -137,6 +137,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                 padding: EdgeInsets.only(bottom: 50),
                 height: MediaQuery.of(context).size.height,
                 child: WebView(
+                  initialMediaPlaybackPolicy:AutoMediaPlaybackPolicy.always_allow,
                   javascriptMode: JavascriptMode.unrestricted,
                   initialUrl:
                       '${UrlProvider.doctorsCircleUrl(Environment.instance)}?id=${widget.postId}&from=${widget.from}',
