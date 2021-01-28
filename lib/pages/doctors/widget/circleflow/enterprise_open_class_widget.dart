@@ -8,6 +8,8 @@ import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+import '../doctors_circle_widget.dart';
+
 class OpenClassEntity {
   final int id;
   final String coverImgUrl;
@@ -29,7 +31,7 @@ class OpenClassEntity {
 class EnterpriseOpenClassWidget extends StatefulWidget {
   final List<OpenClassEntity> entities;
 
-  EnterpriseOpenClassWidget(this.entities);
+  EnterpriseOpenClassWidget(Key key, this.entities) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => EnterpriseOpenClassWidgetState();
@@ -340,8 +342,13 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         _formatTime(_controller.value.duration);
         _controller.setVolume(_currentVolume);
         eventBus.on().listen((event) {
-          if (event is EventTabIndex && (event.index != 2 || event.subIndex != 0)) {
+          if (event is EventTabIndex &&
+              (event.index != 2 || event.subIndex != 0)) {
             _pausePlaying();
+          } else if (event is EventVideoOutOfScreen) {
+            if (event.offset > -100 && event.offset < 0) {
+              _pausePlaying();
+            }
           }
         });
         setState(() {});
