@@ -1,4 +1,5 @@
 import 'package:doctor/common/event/event_model.dart';
+import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
@@ -116,6 +117,7 @@ class _HomePageState extends State<HomePage>
     } else {
       isDoctors = false;
     }
+    eventBus.fire(EventTabIndex(index, null));
     if (index == _currentIndex) {
       return;
     }
