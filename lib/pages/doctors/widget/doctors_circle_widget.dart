@@ -137,7 +137,7 @@ class DoctorPageState
               if (snapshot.hasData && snapshot.data.length != 0) {
                 return OnlineClassicWidget(snapshot.data);
               }
-              return SafeArea(child: Container(color: Colors.white));
+              return Container(color: Colors.white);
             },
           ),
           StreamBuilder(
@@ -156,7 +156,11 @@ class DoctorPageState
                   ],
                 );
               }
-              return SafeArea(child: Container(color: Colors.white));
+              return Container(
+                color: ThemeColor.colorFFF9F9F9,
+                width: double.infinity,
+                height: 6,
+              );
             },
           ),
           StreamBuilder(
