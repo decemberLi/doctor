@@ -173,7 +173,7 @@ class GossipNewsItemWidget extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 6),
                   child: Text(
-                    data.topComment.commentUserName,
+                    data.topComment.commentUserName??'',
                     style: commentTextStyle,
                   ),
                 )
