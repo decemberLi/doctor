@@ -33,6 +33,22 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   @override
   void initState() {
     print("1233222222222------");
+    _pageController.addListener(() {
+      setState(() {
+        if (_pageController.page == realList.length - 1) {
+          _pageController.jumpToPage(1);
+          _currentIndex = 0;
+        } else if (_pageController.page == 0) {
+          _pageController.jumpToPage(realList.length-2);
+          _currentIndex = realList.length-3;
+        } else {
+          var page = _pageController.page.round() - 1;
+          page = min(page, realList.length - 2);
+          page = max(0, page);
+          _currentIndex = page;
+        }
+      });
+    });
     widget.dataStream.listen((event) {
       print("the event is ---$event");
       initDatas(event);
@@ -48,22 +64,6 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       realList.add(dataList[0]);
       _pageController.jumpToPage(1);
       _currentIndex = 0;
-      _pageController.addListener(() {
-        setState(() {
-          if (_pageController.page == realList.length - 1) {
-            _pageController.jumpToPage(1);
-            _currentIndex = 0;
-          } else if (_pageController.page == 0) {
-            _pageController.jumpToPage(dataList.length);
-            _currentIndex = dataList.length - 1;
-          } else {
-            var page = _pageController.page.round() - 1;
-            page = min(page, dataList.length - 1);
-            page = max(0, page);
-            _currentIndex = page;
-          }
-        });
-      });
       _startTimer();
     } else {
       setState(() {
