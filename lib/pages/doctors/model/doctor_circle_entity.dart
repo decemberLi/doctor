@@ -51,6 +51,7 @@ class DoctorCircleEntity {
 
   bool likeFlag;
   bool read;
+  bool top;
 
   DoctorCircleEntity();
 
