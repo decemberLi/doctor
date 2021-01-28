@@ -174,12 +174,14 @@ class DoctorPageState
             child: DoctorsBanner(
               _model.flowBannerStream,
               (context, data, index) {
-                return DoctorBannerItemNormal(
-                  data,
-                  onClick: (data) {
-                    openBannerDetail(context, data);
-                  },
-                );
+                return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                    child: DoctorBannerItemNormal(
+                      data,
+                      onClick: (data) {
+                        openBannerDetail(context, data);
+                      },
+                    ));
               },
               height: 80,
               holder: (context) {
