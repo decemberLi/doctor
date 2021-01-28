@@ -59,26 +59,28 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   void initDatas(List dataList){
     realList.clear();
     realList.addAll(dataList);
+    print("the data is --- ${ dataList.length}");
     if (dataList.length > 1) {
-      realList.insert(0, dataList[dataList.length - 1]);
-      realList.add(dataList[0]);
+      setState(() {
+        realList.insert(0, dataList[dataList.length - 1]);
+        realList.add(dataList[0]);
+      });
+      _startTimer();
       _pageController.jumpToPage(1);
       _currentIndex = 0;
-      _startTimer();
     } else {
-      setState(() {
-        _pageController.jumpToPage(1);
-        _currentIndex = 0;
-      });
+      _currentIndex = 0;
       _timer?.cancel();
     }
   }
 
   _startTimer() {
+    print("start timer  ----- ");
     _timer?.cancel();
     _timer = Timer.periodic(
-      Duration(seconds: 10),
+      Duration(seconds: 2),
       (timer) {
+        print("the timer ---");
         _pageController.animateToPage(
           _pageController.page.round() + 1,
           duration: Duration(milliseconds: 400),
