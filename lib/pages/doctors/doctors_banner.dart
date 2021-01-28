@@ -64,10 +64,10 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       setState(() {
         realList.insert(0, dataList[dataList.length - 1]);
         realList.add(dataList[0]);
+        // _pageController.jumpToPage(1);
+        // _currentIndex = 0;
       });
       _startTimer();
-      _pageController.jumpToPage(1);
-      _currentIndex = 0;
     } else {
       _currentIndex = 0;
       _timer?.cancel();
