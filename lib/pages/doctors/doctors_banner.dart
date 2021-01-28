@@ -66,10 +66,9 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       });
       _startTimer();
     } else {
-      _pageController.jumpToPage(0);
-      _currentIndex = 0;
       setState(() {
-
+        _pageController.jumpToPage(1);
+        _currentIndex = 0;
       });
       _timer?.cancel();
     }
@@ -157,10 +156,12 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       height: widget.height,
       child: Stack(
         children: [
-          _scrollNoti(PageView(
-            physics: realList.length > 1
-                ? null
-                : NeverScrollableScrollPhysics(),
+          if (realList.length == 1)
+            Container(
+              child: page(realList[0], 0),
+            ),
+          if (realList.length > 1)
+            _scrollNoti(PageView(
             controller: _pageController,
             children: realList
                 .asMap()
