@@ -19,6 +19,12 @@ import 'circleflow/enterprise_open_class_widget.dart';
 import 'circleflow/hot_post_widget.dart';
 import 'circleflow/online_classic.dart';
 
+
+class EventVideoOutOfScreen{
+  double offset;
+  EventVideoOutOfScreen(this.offset);
+}
+
 final _colorPanel = {
   '文献专区': ThemeColor.colorFF52C41A,
   '病例解析': ThemeColor.colorFF107BFD,
@@ -61,6 +67,7 @@ class DoctorPageState
   final _model = DoctorsViewMode(type: 'ACADEMIC');
 
   bool _currentIsOutScreen = false;
+  GlobalKey _videoStackKey = GlobalKey();
 
   @override
   Widget emptyWidget(String msg) {
@@ -146,7 +153,7 @@ class DoctorPageState
               if (snapshot.hasData && snapshot.data.length != 0) {
                 return Column(
                   children: [
-                    EnterpriseOpenClassWidget(snapshot.data),
+                    EnterpriseOpenClassWidget(_videoStackKey, snapshot.data),
                     Container(
                       color: ThemeColor.colorFFF9F9F9,
                       width: double.infinity,
@@ -220,6 +227,10 @@ class DoctorPageState
   @override
   void scrollOffset(double offset) {
     if (widget.callback != null) {
+      RenderBox box = _videoStackKey.currentContext.findRenderObject();
+      // print(box.size); // Size(200.0, 100.0)
+      var offsetObj = box.localToGlobal(Offset.zero);
+      eventBus.fire(EventVideoOutOfScreen(offsetObj.dy));
       widget.callback(offset);
     }
   }

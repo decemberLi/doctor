@@ -1,7 +1,9 @@
 import 'package:doctor/common/event/event_model.dart';
+import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/doctors/tab_indicator.dart';
 import 'package:doctor/pages/doctors/widget/doctors_circle_widget.dart';
 import 'package:doctor/pages/doctors/widget/gossip_news_widget.dart';
+import 'package:doctor/root_widget.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,6 +51,7 @@ class _DoctorsHomeState extends State<DoctorsHome>
         TabController(initialIndex: 0, length: tabs.length, vsync: this);
     _tabController.addListener(() {
       var pageKey = _tabController.index == 0 ? PAGE_DOCTOR : PAGE_GOSSIP;
+      eventBus.fire(EventTabIndex(2, _tabController.index));
       _tabBarColor = _map[pageKey];
       _tabShadowColor = _shadowMap[pageKey];
       setState(() {});

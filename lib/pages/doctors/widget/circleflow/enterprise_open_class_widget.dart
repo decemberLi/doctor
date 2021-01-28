@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
 import 'package:doctor/root_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+
+import '../doctors_circle_widget.dart';
 
 class OpenClassEntity {
   final int id;
@@ -28,7 +31,7 @@ class OpenClassEntity {
 class EnterpriseOpenClassWidget extends StatefulWidget {
   final List<OpenClassEntity> entities;
 
-  EnterpriseOpenClassWidget(this.entities);
+  EnterpriseOpenClassWidget(Key key, this.entities) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => EnterpriseOpenClassWidgetState();
@@ -193,6 +196,33 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
                                   TextStyle(fontSize: 12, color: Colors.white),
                             ),
                           ),
+                        ),
+                        Positioned(
+                          bottom: 10,
+                          right: 10,
+                          child: GestureDetector(
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  color: Color(0xBB171717),
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Image.asset(
+                                "assets/images/mute.png",
+                                width: 10,
+                                height: 10,
+                              ),
+                            ),
+                            onTap: () {
+                              if (_currentVolume == 0) {
+                                _controller.setVolume(_volume);
+                                _currentVolume = _volume;
+                              } else {
+                                _controller.setVolume(0);
+                                _currentVolume = 0;
+                              }
+                            },
+                          ),
                         )
                       ],
                     ),
@@ -261,16 +291,11 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
       _controller.play();
       _isPlaying = true;
     }
-    if (_countDownTimer == null) {
-      _countDownTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-        var tim =
-            Duration(milliseconds: _residueTime) - _oneMillSecondsDuration;
-        _formatTime(tim);
-        setState(() {});
-      });
-    } else {
-      _countDownTimer.tick;
-    }
+    _countDownTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+      var tim = Duration(milliseconds: _residueTime) - _oneMillSecondsDuration;
+      _formatTime(tim);
+      setState(() {});
+    });
     setState(() {});
   }
 
@@ -280,12 +305,17 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
   int _residueTime = 0;
   Timer _countDownTimer;
   final _oneMillSecondsDuration = Duration(milliseconds: 1000);
+  double _volume = 0;
+  double _currentVolume = 0;
 
   _formatTime(Duration total) {
     if (total.inMilliseconds < 0) {
-      _totalTime = "00:00";
+      _totalTime = _formatTime(_controller.value.duration);
       _residueTime = _controller.value.duration.inMilliseconds;
       _countDownTimer.cancel();
+      _countDownTimer = null;
+      _isPlaying = false;
+      setState(() {});
       return;
     }
     print(total.inMilliseconds);
@@ -303,13 +333,24 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     // routeObserver.subscribe(this, ModalRoute.of(context));
     // _controller = VideoPlayerController.network("https://oss-dev.e-medclouds.com/Business-attachment/2021-01/100000/22160003-rc-upload-1611301838305-18.mp4");
     _controller = VideoPlayerController.network(widget.entities[0].videoUrl);
-    _controller.setLooping(true);
-    _controller.setVolume(0);
+    _controller.setLooping(false);
     _initializeVideoPlayerFuture = _controller.initialize()
       ..whenComplete(() {
         initialized = _controller.value.initialized;
+        _volume = _controller.value.volume;
         // 总时长
         _formatTime(_controller.value.duration);
+        _controller.setVolume(_currentVolume);
+        eventBus.on().listen((event) {
+          if (event is EventTabIndex &&
+              (event.index != 2 || event.subIndex != 0)) {
+            _pausePlaying();
+          } else if (event is EventVideoOutOfScreen) {
+            if (event.offset > -100 && event.offset < 0) {
+              _pausePlaying();
+            }
+          }
+        });
         setState(() {});
       });
     _initializeVideoPlayerFuture.then((value) {});
@@ -338,6 +379,10 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     if (_isPlaying) {
       _isPlaying = false;
       _controller.pause();
+      if (_countDownTimer != null && _countDownTimer.isActive) {
+        _countDownTimer.cancel();
+        _countDownTimer = null;
+      }
       setState(() {});
     }
   }
