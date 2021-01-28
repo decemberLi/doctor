@@ -34,6 +34,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   void initState() {
     print("1233222222222------");
     widget.dataStream.listen((event) {
+      print("the event is ---$event");
       initDatas(event);
     });
 
@@ -45,6 +46,8 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
     if (dataList.length > 1) {
       realList.insert(0, dataList[dataList.length - 1]);
       realList.add(dataList[0]);
+      _pageController.jumpToPage(1);
+      _currentIndex = 0;
       _pageController.addListener(() {
         setState(() {
           if (_pageController.page == realList.length - 1) {
@@ -63,6 +66,8 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       });
       _startTimer();
     } else {
+      _pageController.jumpToPage(0);
+      _currentIndex = 0;
       setState(() {
 
       });
@@ -71,6 +76,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   }
 
   _startTimer() {
+    _timer?.cancel();
     _timer = Timer.periodic(
       Duration(seconds: 2),
       (timer) {
@@ -105,7 +111,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   }
 
   Widget point() {
-    var sub = realList.sublist(1,realList.length - 2);
+    var sub = realList.sublist(1,realList.length - 1);
     return Container(
       alignment: Alignment.bottomCenter,
       child: Container(

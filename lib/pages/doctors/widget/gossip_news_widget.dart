@@ -275,24 +275,22 @@ class GossipNewsPageState
     return Container(
       alignment: Alignment.center,
       color: Colors.white,
-      child: StreamBuilder(
-        stream: _model.gossipTopBannerStream,
-        builder:
-            (BuildContext context, AsyncSnapshot<List<BannerEntity>> snapshot) {
-          if (snapshot.hasData && snapshot.data.length != 0) {
-            return DoctorsBanner(
-              snapshot.data,
-              (context, data, index) {
-                return DoctorBannerItemGrass(data,onClick: (data){
-                  openBannerDetail(context,data);
-                },);
-              },
-            );
-          }
+      child: DoctorsBanner(
+        _model.gossipTopBannerStream,
+        (context, data, index) {
+          return DoctorBannerItemGrass(
+            data,
+            onClick: (data) {
+              openBannerDetail(context, data);
+            },
+          );
+        },
+        holder: (context) {
           return SafeArea(
-              child: Container(
-            height: 40,
-          ));
+            child: Container(
+              height: 40,
+            ),
+          );
         },
       ),
     );

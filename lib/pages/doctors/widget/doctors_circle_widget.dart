@@ -19,9 +19,9 @@ import 'circleflow/enterprise_open_class_widget.dart';
 import 'circleflow/hot_post_widget.dart';
 import 'circleflow/online_classic.dart';
 
-
-class EventVideoOutOfScreen{
+class EventVideoOutOfScreen {
   double offset;
+
   EventVideoOutOfScreen(this.offset);
 }
 
@@ -33,7 +33,7 @@ final _colorPanel = {
 
 typedef OnScrollerCallback = void Function(double offset);
 
-openBannerDetail(BuildContext context, data){
+openBannerDetail(BuildContext context, data) {
   print("On banner clicked -> [${data?.toJson()}]");
   if (data.bannerType == 'RELEVANCY_POST') {
     Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
@@ -42,13 +42,12 @@ openBannerDetail(BuildContext context, data){
           'from': 'list',
           'type': 'VIDEO_ZONE'
         });
-  }else if(data.bannerType == 'ACTIVITY'){
-    Navigator.pushNamed(context, RouteManager.COMMON_WEB,
-        arguments: {
-          'postId': data?.relatedContent,
-          'url': data?.relatedContent,
-          'title': ''
-        });
+  } else if (data.bannerType == 'ACTIVITY') {
+    Navigator.pushNamed(context, RouteManager.COMMON_WEB, arguments: {
+      'postId': data?.relatedContent,
+      'url': data?.relatedContent,
+      'title': ''
+    });
   }
 }
 
@@ -88,7 +87,7 @@ class DoctorPageState
     _inScreenViewModel =
         Provider.of<ScrollOutScreenViewModel>(context, listen: false);
   }
-  
+
   bodyHeader() {
     return Container(
       child: Column(
@@ -96,24 +95,19 @@ class DoctorPageState
           Container(
             alignment: Alignment.center,
             color: Colors.white,
-            child: StreamBuilder(
-              stream: _model.topBannerStream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<BannerEntity>> snapshot) {
-                if (snapshot.hasData && snapshot.data.length != 0) {
-                  return DoctorsBanner(
-                    snapshot.data,
-                    (context, data, index) {
-                      return DoctorBannerItemGrass(data, onClick: (data) {
-                        openBannerDetail(context,data);
-                      });
-                    },
-                  );
-                }
+            child: DoctorsBanner(
+              _model.topBannerStream,
+              (context, data, index) {
+                return DoctorBannerItemGrass(data, onClick: (data) {
+                  openBannerDetail(context, data);
+                });
+              },
+              holder: (context) {
                 return SafeArea(
-                    child: Container(
-                  height: 40,
-                ));
+                  child: Container(
+                    height: 40,
+                  ),
+                );
               },
             ),
           ),
@@ -177,31 +171,25 @@ class DoctorPageState
           ),
           Container(
             color: Colors.white,
-            child: StreamBuilder(
-              stream: _model.flowBannerStream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<BannerEntity>> snapshot) {
-                if (snapshot.hasData && snapshot.data.length != 0) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                    child: DoctorsBanner(
-                      snapshot.data,
-                      (context, data, index) {
-                        return DoctorBannerItemNormal(data, onClick: (data){
-                          openBannerDetail(context,data);
-                        },);
-                      },
-                      height: 80,
-                    ),
-                  );
-                }
+            child: DoctorsBanner(
+              _model.flowBannerStream,
+              (context, data, index) {
+                return DoctorBannerItemNormal(
+                  data,
+                  onClick: (data) {
+                    openBannerDetail(context, data);
+                  },
+                );
+              },
+              height: 80,
+              holder: (context) {
                 return Container(
                   color: Colors.white,
                   height: 12,
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );
