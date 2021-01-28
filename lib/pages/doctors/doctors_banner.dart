@@ -77,7 +77,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(
-      Duration(seconds: 2),
+      Duration(seconds: 10),
       (timer) {
         _pageController.animateToPage(
           _pageController.page.round() + 1,
