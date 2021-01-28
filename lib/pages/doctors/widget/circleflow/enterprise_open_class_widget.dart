@@ -207,8 +207,12 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
                               decoration: BoxDecoration(
                                   color: Color(0xBB171717),
                                   borderRadius: BorderRadius.circular(15)),
-                              child: Image.asset(
+                              child: _currentVolume != 0? Image.asset(
                                 "assets/images/mute.png",
+                                width: 10,
+                                height: 10,
+                              ):Image.asset(
+                                "assets/images/in_mute.png",
                                 width: 10,
                                 height: 10,
                               ),
@@ -369,7 +373,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (AppLifecycleState.paused == state) {
+    if (AppLifecycleState.inactive == state) {
       _pausePlaying();
     }
     print(state);
