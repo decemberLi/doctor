@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Log
 import cn.jpush.android.api.JPushInterface
 import com.emedclouds.doctor.common.constants.keyLaunchParam
+import com.emedclouds.doctor.common.web.pluginwebview.X5WebViewPlugin
 import com.emedclouds.doctor.pages.CommonWebActivity
 import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
@@ -26,6 +27,7 @@ class MainActivity : FlutterActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        flutterEngine?.plugins?.add(X5WebViewPlugin())
         ChannelManager.instance.initChannel(flutterEngine?.dartExecutor)
         ChannelManager.instance.on("share", object : OnFlutterCall {
             override fun call(arguments: String?, channel: MethodChannel): String {
