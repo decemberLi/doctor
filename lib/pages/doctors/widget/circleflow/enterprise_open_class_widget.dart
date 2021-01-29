@@ -301,7 +301,6 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
       _controller.play();
       _isPlaying = true;
     }
-    _isLastPlaying = true;
     _countDownTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
       var tim = Duration(milliseconds: _residueTime) - _oneMillSecondsDuration;
       _formatTime(tim);
@@ -318,7 +317,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
   final _oneMillSecondsDuration = Duration(milliseconds: 1000);
   double _volume = 0;
   double _currentVolume = 0;
-  bool _isLastPlaying = false;
+  bool _isScrollPause = false;
 
   _formatTime(Duration total) {
     if (total.inMilliseconds < 0) {
@@ -359,8 +358,8 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
             _pausePlaying();
           } else if (event is EventVideoOutOfScreen) {
             if (event.offset > -100 && event.offset < 0) {
-              _pausePlaying();
-            } else {
+              _pausePlaying(isScrollPause: true);
+            } else if(_isScrollPause){
               doPlay();
             }
           }
@@ -394,15 +393,16 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     print(state);
   }
 
-  _pausePlaying() {
+  _pausePlaying({bool isScrollPause = false}) {
     if (_isPlaying) {
+      print("isScrollPause && _isPlaying -------------------> ${isScrollPause && _isPlaying}");
+      _isScrollPause = isScrollPause && _isPlaying;
       _isPlaying = false;
       _controller.pause();
       if (_countDownTimer != null && _countDownTimer.isActive) {
         _countDownTimer.cancel();
         _countDownTimer = null;
       }
-      _isLastPlaying = false;
       setState(() {});
     }
   }
