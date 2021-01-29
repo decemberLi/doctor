@@ -134,7 +134,7 @@ class DoctorPageState
             stream: _model.onlineClassStream,
             builder: (BuildContext context,
                 AsyncSnapshot<List<OnlineClassicEntity>> snapshot) {
-              if (snapshot.hasData && snapshot.data.length != 0) {
+              if (snapshot.hasData && snapshot.data.length >= 3) {
                 return OnlineClassicWidget(snapshot.data);
               }
               return Container(color: Colors.white);
@@ -144,7 +144,7 @@ class DoctorPageState
             stream: _model.openClassStream,
             builder: (BuildContext context,
                 AsyncSnapshot<List<OpenClassEntity>> snapshot) {
-              if (snapshot.hasData && snapshot.data.length != 0) {
+              if (snapshot.hasData && snapshot.data.length >= 3) {
                 return Column(
                   children: [
                     EnterpriseOpenClassWidget(_videoStackKey, snapshot.data),
@@ -156,18 +156,14 @@ class DoctorPageState
                   ],
                 );
               }
-              return Container(
-                color: ThemeColor.colorFFF9F9F9,
-                width: double.infinity,
-                height: 6,
-              );
+              return Container();
             },
           ),
           StreamBuilder(
             stream: _model.hotPostStream,
             builder: (BuildContext context,
                 AsyncSnapshot<List<HotPostEntity>> snapshot) {
-              if (snapshot.hasData && snapshot.data.length != 0) {
+              if (snapshot.hasData && snapshot.data.length !=0) {
                 return HotPostWidget(snapshot.data);
               }
               return Container(color: Colors.white);
