@@ -8,6 +8,8 @@ import 'package:doctor/plugins/x5web/x5_sdk.dart';
 import 'package:doctor/plugins/x5web/x5_webview.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/app_utils.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -97,14 +99,18 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
         aMap.remove(jsonParam['key']);
       },
       'getWifiStatus': (jsonParam, bizType) async {
-        ConnectivityResult connectivityResult =
-            await (Connectivity().checkConnectivity());
-        _callJs(_commonResult(
-            bizType: bizType,
-            content: connectivityResult == ConnectivityResult.wifi));
+        if (AppUtils.sp.getBool(ONLY_WIFI) ?? true) {
+          ConnectivityResult connectivityResult =
+              await (Connectivity().checkConnectivity());
+          _callJs(_commonResult(
+              bizType: bizType,
+              content: connectivityResult == ConnectivityResult.wifi));
+        } else {
+          _callJs(_commonResult(bizType: bizType, content: true));
+        }
       },
       'fullScreen': (jsonParam, bizType) async {
-        X5Sdk.openWebActivity(jsonParam['videoUrl'],title: "web页面");
+        X5Sdk.openWebActivity(jsonParam['videoUrl'], title: "web页面");
       },
     };
   }
@@ -117,9 +123,9 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
   }
 
   _callJs(param) {
-    if(defaultTargetPlatform == TargetPlatform.android){
+    if (defaultTargetPlatform == TargetPlatform.android) {
       _x5webViewController.evaluateJavascript("nativeCall('$param')");
-    }else {
+    } else {
       _webViewController.evaluateJavascript("nativeCall('$param')");
     }
   }
@@ -152,10 +158,11 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                 child: TargetPlatform.android == defaultTargetPlatform
                     ? X5WebView(
                         javaScriptEnabled: true,
-                        url: '${UrlProvider.doctorsCircleUrl(Environment.instance)}?id=${widget.postId}&from=${widget.from}',
+                        url:
+                            '${UrlProvider.doctorsCircleUrl(Environment.instance)}?id=${widget.postId}&from=${widget.from}',
                         // url: 'http://192.168.1.27:9000/#/detail?id=${widget.postId}&from=${widget.from}',
                         header: {},
-                        onUrlLoading: (url){
+                        onUrlLoading: (url) {
                           print(url);
                           _x5webViewController.loadUrl(url);
                         },
@@ -173,7 +180,8 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
                         }),
                       )
                     : WebView(
-                        initialMediaPlaybackPolicy:AutoMediaPlaybackPolicy.always_allow,
+                        initialMediaPlaybackPolicy:
+                            AutoMediaPlaybackPolicy.always_allow,
                         javascriptMode: JavascriptMode.unrestricted,
                         initialUrl:
                             '${UrlProvider.doctorsCircleUrl(Environment.instance)}?id=${widget.postId}&from=${widget.from}',
