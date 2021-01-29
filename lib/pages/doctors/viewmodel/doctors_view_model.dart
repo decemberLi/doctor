@@ -95,13 +95,11 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
       var listData = await super.refresh(init: init);
       if (listData.length > 3) {
         List<HotPostEntity> results = List<HotPostEntity>();
-        for (DoctorCircleEntity each in listData) {
-          if(each.top) {
+        for (DoctorCircleEntity each in listData.sublist(0,3)) {
             results.add(HotPostEntity(
               each.postId,
               each.postTitle,
             ));
-          }
         }
         _hotPostStreamController.sink.add(results);
         list = listData.sublist(3);

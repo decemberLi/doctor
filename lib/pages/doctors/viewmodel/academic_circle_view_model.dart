@@ -86,7 +86,7 @@ class AcademicCircleViewModel {
   refreshOnlineClass() async {
     try {
       var list = await API.shared.dtp.postList(
-        {'postType': 'VIDEO_ZONE', 'ps': 3, 'pn': 1, 'top':true},
+        {'postType': 'VIDEO_ZONE', 'ps': 3, 'pn': 1},
       );
       List<DoctorCircleEntity> posts = list['records']
           .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
@@ -109,7 +109,7 @@ class AcademicCircleViewModel {
   refreshOpenClass() async {
     try {
       var list = await API.shared.dtp.postList(
-        {'postType': 'OPEN_CLASS', 'ps': 3, 'pn': 1, 'top':true},
+        {'postType': 'OPEN_CLASS', 'ps': 3, 'pn': 1},
       );
       List<DoctorCircleEntity> posts = list['records']
           .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))

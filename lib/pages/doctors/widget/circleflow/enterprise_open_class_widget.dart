@@ -96,7 +96,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
+            decoration: BoxDecoration(color: Color(0xffEAF3FF)),
             height: 102,
             width: double.infinity,
             child: entity.coverImgUrl == null

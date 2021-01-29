@@ -52,7 +52,7 @@ class CategoryWidget extends StatelessWidget {
                   (BuildContext context, Object error, StackTrace stackTrace) {
                 return Container(
                   decoration: BoxDecoration(
-                      color: ThemeColor.colorFFBCBCBC,
+                      color: Color(0xffEAF3FF),
                       borderRadius: BorderRadius.all(Radius.circular(8))),
                   height: 54,
                   width: 54,

@@ -4,6 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_detail_view_model.dart';
+import 'package:doctor/plugins/x5web/x5_sdk.dart';
 import 'package:doctor/plugins/x5web/x5_webview.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/theme/theme.dart';
@@ -101,7 +102,10 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
         _callJs(_commonResult(
             bizType: bizType,
             content: connectivityResult == ConnectivityResult.wifi));
-      }
+      },
+      'fullScreen': (jsonParam, bizType) async {
+        X5Sdk.openWebActivity(jsonParam['videoUrl'],title: "web页面");
+      },
     };
   }
 
