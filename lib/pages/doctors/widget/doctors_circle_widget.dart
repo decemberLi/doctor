@@ -224,7 +224,7 @@ class DoctorPageState
 
   @override
   void onItemClicked(DoctorsViewMode model, itemData) {
-    model.markToNative(itemData?.postId);
+    model.markToNative(itemData);
     Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
         arguments: {
           'postId': itemData?.postId,

@@ -136,18 +136,8 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
     }
   }
 
-  markToNative(int postId) async {
-    SharedPreferences refs = await _references();
-    List<String> clickedList = refs.getStringList('${type ?? '_'}click_post');
-    if (clickedList == null) {
-      clickedList = [];
-    }
-    if (clickedList.contains('$postId')) {
-      return;
-    }
-    clickedList.add('$postId');
-    _populateData(list, clickedList);
-    refs.setStringList('${type ?? '_'}click_post', clickedList);
+  markToNative(itemData) async {
+    itemData.read = true;
     notifyListeners();
   }
 
