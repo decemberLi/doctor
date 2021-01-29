@@ -114,7 +114,8 @@ import UserNotificationsUI
     }
     
     override func applicationDidEnterBackground(_ application: UIApplication) {
-        application.applicationIconBadgeNumber = 0
+        application.applicationIconBadgeNumber = 0;
+        JPUSHService.setBadge(0);
     }
     
 }
