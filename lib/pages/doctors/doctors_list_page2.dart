@@ -60,7 +60,7 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
       return "企业公开课";
     }
 
-    return "在线医生课堂";
+    return "在线医课堂";
   }
 
   Widget title() {
