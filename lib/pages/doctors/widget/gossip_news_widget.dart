@@ -105,7 +105,7 @@ class GossipNewsItemWidget extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                     fontSize: 14,
-                    color: data.isClicked
+                    color: data.read
                         ? ThemeColor.colorFFC1C1C1
                         : ThemeColor.colorFF222222)),
           ),
