@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:doctor/route/route_manager.dart';
@@ -109,7 +110,12 @@ class _DoctorsListStates extends State<DoctorsListPage> {
               },
               getData: (page) async {
                 var list = await API.shared.dtp.postList(
-                  {'postType': 'ACADEMIC','columnCode':code, 'ps': 20, 'pn': page},
+                  {
+                    'postType': 'ACADEMIC',
+                    'columnCode': code,
+                    'ps': 20,
+                    'pn': page
+                  },
                 );
                 List<DoctorCircleEntity> posts = list['records']
                     .map<DoctorCircleEntity>(
@@ -139,24 +145,13 @@ class _DoctorsListStates extends State<DoctorsListPage> {
     );
   }
 }
-class DoctorsListItem extends StatefulWidget {
+
+class DoctorsListItem extends StatelessWidget {
   final DoctorCircleEntity data;
+  StreamController _streamController;
 
-  DoctorsListItem(
-      this.data,
-      );
-  @override
-  State<StatefulWidget> createState() {
-    return DoctorsListItemStates();
-  }
-
-}
-class DoctorsListItemStates extends State<DoctorsListItem> {
-  DoctorCircleEntity data;
-  @override
-  void initState() {
-    data = widget.data;
-    super.initState();
+  DoctorsListItem(this.data) {
+    _streamController = StreamController();
   }
 
   @override
@@ -171,11 +166,15 @@ class DoctorsListItemStates extends State<DoctorsListItem> {
             'from': 'list',
           },
         );
-        setState(() {
-          data.read = true;
-        });
+        data.read = true;
+        _streamController.sink.add("1");
       },
-      child: content(context, data.read),
+      child: StreamBuilder(
+        stream: _streamController.stream,
+        builder: (context,snapshot){
+          return content(context, data.read);
+        },
+      ),
     );
   }
 

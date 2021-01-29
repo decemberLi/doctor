@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/data_format_util.dart';
@@ -150,27 +152,13 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
   }
 }
 
-class DoctorsListCell2 extends StatefulWidget {
+class DoctorsListCell2 extends StatelessWidget {
   final DoctorCircleEntity data;
   final String type;
+  StreamController _streamController;
 
-  DoctorsListCell2(this.data, this.type);
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return DoctorsListCell2States();
-  }
-
-}
-  class DoctorsListCell2States extends State<DoctorsListCell2> {
-  DoctorCircleEntity data;
-  String type;
-
-  @override
-  void initState() {
-    data = widget.data;
-    type = widget.type;
-    super.initState();
+  DoctorsListCell2(this.data, this.type) {
+    _streamController = StreamController();
   }
 
   @override
@@ -186,11 +174,15 @@ class DoctorsListCell2 extends StatefulWidget {
             'type': type,
           },
         );
-        setState(() {
-          data.read = true;
-        });
+        data.read = true;
+        _streamController.sink.add("1");
       },
-      child: content(context, data.read),
+      child: StreamBuilder(
+        stream: _streamController.stream,
+        builder: (context,snapshot){
+          return content(context, data.read);
+        },
+      ),
     );
   }
 
