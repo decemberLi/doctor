@@ -64,10 +64,13 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       setState(() {
         realList.insert(0, dataList[dataList.length - 1]);
         realList.add(dataList[0]);
-        // _pageController.jumpToPage(1);
-        // _currentIndex = 0;
+        _currentIndex = 0;
       });
       _startTimer();
+      Future.delayed(Duration(milliseconds: 300),(){
+        _pageController.jumpToPage(1);
+      });
+
     } else {
       _currentIndex = 0;
       _timer?.cancel();
@@ -78,7 +81,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
     print("start timer  ----- ");
     _timer?.cancel();
     _timer = Timer.periodic(
-      Duration(seconds: 2),
+      Duration(seconds: 10),
       (timer) {
         print("the timer ---");
         _pageController.animateToPage(
@@ -100,10 +103,13 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
             notification is ScrollStartNotification) {
           if (notification.dragDetails != null) {
             _timer?.cancel();
+          }else{
+            if(_timer == null || !_timer.isActive){
+              _startTimer();
+            }
           }
         } else if (notification is ScrollEndNotification) {
-          _timer?.cancel();
-          _startTimer();
+
         }
         return true;
       },
