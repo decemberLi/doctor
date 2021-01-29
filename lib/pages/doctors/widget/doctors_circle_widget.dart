@@ -198,7 +198,11 @@ class DoctorPageState
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) {
-    return DoctorsListItem(data);
+    return DoctorsListItem(data,(){
+      setState(() {
+        
+      });
+    });
   }
 
   @override

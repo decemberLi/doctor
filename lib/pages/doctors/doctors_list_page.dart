@@ -106,7 +106,11 @@ class _DoctorsListStates extends State<DoctorsListPage> {
               padding: EdgeInsets.only(left: 16, right: 16, top: 20),
               itemBuilder: (context, dynamic d) {
                 DoctorCircleEntity data = d;
-                return DoctorsListItem(data);
+                return DoctorsListItem(data,(){
+                  setState(() {
+
+                  });
+                });
               },
               getData: (page) async {
                 var list = await API.shared.dtp.postList(
@@ -148,11 +152,9 @@ class _DoctorsListStates extends State<DoctorsListPage> {
 
 class DoctorsListItem extends StatelessWidget {
   final DoctorCircleEntity data;
-  StreamController _streamController;
+  final void Function() onClick;
 
-  DoctorsListItem(this.data) {
-    _streamController = StreamController();
-  }
+  DoctorsListItem(this.data,this.onClick);
 
   @override
   Widget build(BuildContext context) {
@@ -167,14 +169,11 @@ class DoctorsListItem extends StatelessWidget {
           },
         );
         data.read = true;
-        _streamController.sink.add("1");
+        if(this.onClick != null) {
+          this.onClick();
+        }
       },
-      child: StreamBuilder(
-        stream: _streamController.stream,
-        builder: (context,snapshot){
-          return content(context, data.read);
-        },
-      ),
+      child: content(context, data.read),
     );
   }
 
