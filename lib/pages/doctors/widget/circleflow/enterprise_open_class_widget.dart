@@ -146,18 +146,18 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     );
   }
 
-  _cover(OpenClassEntity entity){
+  _cover(OpenClassEntity entity) {
     return _isPlaying
         ? Container()
         : Container(
-      color: Color(0xffEAF3FF),
-      height: 210,
-      child: Image.network(
-        entity.coverImgUrl,
-        fit: BoxFit.cover,
-        height: 210,
-      ),
-    );
+            color: Color(0xffEAF3FF),
+            height: 210,
+            child: Image.network(
+              entity.coverImgUrl,
+              fit: BoxFit.cover,
+              height: 210,
+            ),
+          );
   }
 
   Widget buildVideoPreviewItem(BuildContext context, OpenClassEntity entity) {
