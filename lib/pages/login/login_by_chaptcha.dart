@@ -60,12 +60,12 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
           if (Platform.isIOS) {
             IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
             print('Running on ${iosInfo.utsname.machine}');
-            params['platform'] = 'iOS';
+            params['plantform'] = 'iOS';
             params['model'] = iosInfo.model;
             params['os'] = "${iosInfo.systemVersion}";
           } else if (Platform.isAndroid){
             AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-            params['platform'] = 'Android';
+            params['plantform'] = 'Android';
             params['model'] = androidInfo.model;
             params['os'] = "${androidInfo.version.sdkInt}";
           }
