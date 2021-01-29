@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
 import 'package:doctor/root_widget.dart';
@@ -207,15 +208,17 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
                               decoration: BoxDecoration(
                                   color: Color(0xBB171717),
                                   borderRadius: BorderRadius.circular(15)),
-                              child: _currentVolume != 0? Image.asset(
-                                "assets/images/mute.png",
-                                width: 10,
-                                height: 10,
-                              ):Image.asset(
-                                "assets/images/in_mute.png",
-                                width: 10,
-                                height: 10,
-                              ),
+                              child: _currentVolume != 0
+                                  ? Image.asset(
+                                      "assets/images/mute.png",
+                                      width: 10,
+                                      height: 10,
+                                    )
+                                  : Image.asset(
+                                      "assets/images/in_mute.png",
+                                      width: 10,
+                                      height: 10,
+                                    ),
                             ),
                             onTap: () {
                               if (_currentVolume == 0) {
@@ -291,10 +294,14 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
   }
 
   void doPlay() {
+    if (_isPlaying) {
+      return;
+    }
     if (!_isPlaying) {
       _controller.play();
       _isPlaying = true;
     }
+    _isLastPlaying = true;
     _countDownTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
       var tim = Duration(milliseconds: _residueTime) - _oneMillSecondsDuration;
       _formatTime(tim);
@@ -311,6 +318,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
   final _oneMillSecondsDuration = Duration(milliseconds: 1000);
   double _volume = 0;
   double _currentVolume = 0;
+  bool _isLastPlaying = false;
 
   _formatTime(Duration total) {
     if (total.inMilliseconds < 0) {
@@ -339,7 +347,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     _controller = VideoPlayerController.network(widget.entities[0].videoUrl);
     _controller.setLooping(false);
     _initializeVideoPlayerFuture = _controller.initialize()
-      ..whenComplete(() {
+      ..whenComplete(() async {
         initialized = _controller.value.initialized;
         _volume = _controller.value.volume;
         // 总时长
@@ -352,9 +360,16 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
           } else if (event is EventVideoOutOfScreen) {
             if (event.offset > -100 && event.offset < 0) {
               _pausePlaying();
+            } else {
+              doPlay();
             }
           }
         });
+        ConnectivityResult connectivityResult =
+            await (Connectivity().checkConnectivity());
+        if (connectivityResult == ConnectivityResult.wifi) {
+          //doPlay();
+        }
         setState(() {});
       });
     _initializeVideoPlayerFuture.then((value) {});
@@ -387,6 +402,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         _countDownTimer.cancel();
         _countDownTimer = null;
       }
+      _isLastPlaying = false;
       setState(() {});
     }
   }
