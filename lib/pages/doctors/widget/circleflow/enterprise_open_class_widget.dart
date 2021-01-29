@@ -387,6 +387,8 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
           if (connectivityResult == ConnectivityResult.wifi) {
             doPlay();
           }
+        } else {
+          doPlay();
         }
         setState(() {});
       });
