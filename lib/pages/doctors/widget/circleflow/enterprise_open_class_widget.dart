@@ -6,6 +6,8 @@ import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
 import 'package:doctor/root_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/app_utils.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -30,9 +32,14 @@ class OpenClassEntity {
 }
 
 class EnterpriseOpenClassWidget extends StatefulWidget {
-  final List<OpenClassEntity> entities;
+  final Widget holder;
+  final Stream<List<OpenClassEntity>> stream;
 
-  EnterpriseOpenClassWidget(Key key, this.entities) : super(key: key);
+  EnterpriseOpenClassWidget(
+    Key key,
+    this.stream,
+    this.holder,
+  ) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => EnterpriseOpenClassWidgetState();
@@ -338,12 +345,22 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     _residueTime = total.inMilliseconds;
   }
 
+  List<OpenClassEntity> snapshot;
+
   @override
   void initState() {
     super.initState();
     // routeObserver.subscribe(this, ModalRoute.of(context));
     // _controller = VideoPlayerController.network("https://oss-dev.e-medclouds.com/Business-attachment/2021-01/100000/22160003-rc-upload-1611301838305-18.mp4");
-    _controller = VideoPlayerController.network(widget.entities[0].videoUrl);
+    widget.stream.listen((List<OpenClassEntity> event) {
+      snapshot = event;
+      initVideoPlayerController(event[0].videoUrl);
+    });
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future initVideoPlayerController(String videoUrl) async {
+    _controller = VideoPlayerController.network(videoUrl);
     _controller.setLooping(false);
     _initializeVideoPlayerFuture = _controller.initialize()
       ..whenComplete(() async {
@@ -359,20 +376,21 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
           } else if (event is EventVideoOutOfScreen) {
             if (event.offset > -100 && event.offset < 0) {
               _pausePlaying(isScrollPause: true);
-            } else if(_isScrollPause){
+            } else if (_isScrollPause) {
               doPlay();
             }
           }
         });
-        ConnectivityResult connectivityResult =
-            await (Connectivity().checkConnectivity());
-        if (connectivityResult == ConnectivityResult.wifi) {
-          //doPlay();
+        if (AppUtils.sp.getBool(ONLY_WIFI) ?? true) {
+          ConnectivityResult connectivityResult =
+              await (Connectivity().checkConnectivity());
+          if (connectivityResult == ConnectivityResult.wifi) {
+            doPlay();
+          }
         }
         setState(() {});
       });
     _initializeVideoPlayerFuture.then((value) {});
-    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -395,7 +413,8 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
 
   _pausePlaying({bool isScrollPause = false}) {
     if (_isPlaying) {
-      print("isScrollPause && _isPlaying -------------------> ${isScrollPause && _isPlaying}");
+      print(
+          "isScrollPause && _isPlaying -------------------> ${isScrollPause && _isPlaying}");
       _isScrollPause = isScrollPause && _isPlaying;
       _isPlaying = false;
       _controller.pause();
@@ -409,6 +428,9 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
 
   @override
   Widget build(BuildContext context) {
+    if (snapshot == null || snapshot.length == 0) {
+      return widget.holder;
+    }
     return Container(
       color: Colors.white,
       padding: EdgeInsets.only(left: 20, top: 12, right: 20, bottom: 12),
@@ -419,8 +441,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(
-                    child: buildVideoPreviewItem(context, widget.entities[0])),
+                Expanded(child: buildVideoPreviewItem(context, snapshot[0])),
               ],
             ),
           ),
@@ -428,12 +449,12 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
             margin: EdgeInsets.only(top: 12),
             child: Row(
               children: [
-                Expanded(child: buildItem(context, widget.entities[1])),
+                Expanded(child: buildItem(context, snapshot[1])),
                 Container(
                   width: 20,
                   color: Colors.white,
                 ),
-                Expanded(child: buildItem(context, widget.entities[2])),
+                Expanded(child: buildItem(context, snapshot[2])),
               ],
             ),
           )
