@@ -80,6 +80,7 @@ class MainActivity : FlutterActivity() {
             }
 
         })
+//        CommonWebActivity.start(this@MainActivity, "", "http://192.168.1.27:9000/#/detail?id=283")
     }
 
     private fun postJPushRegisterId() {
