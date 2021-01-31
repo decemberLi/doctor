@@ -21,17 +21,17 @@ class MedcloudsNativeApi {
     print("MedcloudsNativeApi");
     _channel.setMethodCallHandler((call) async {
       print("call method");
-      try{
+      try {
         if (_map.containsKey(call.method)) {
           return await _map[call.method](call.arguments);
         }
-      }on DioError catch (e){
+      } on DioError catch (e) {
         print("----------------------${e.message}");
-        if(e.message.contains("SocketException")){
+        if (e.message.contains("SocketException")) {
           return "网络错误";
         }
         return "${e.message}";
-      }catch (e){
+      } catch (e) {
         print("----------------------${e}");
         return "$e";
       }
@@ -76,11 +76,16 @@ class MedcloudsNativeApi {
     return await _channel.invokeMethod("openSetting");
   }
 
+  Future openWebPage(String url, {String title = ""}) async {
+    var arguments = json.encode({"url": url, "title": title});
+    return await _channel.invokeMapMethod("openWebPage", arguments);
+  }
+
   Future uploadDeviceInfo(args) async {
     try {
       var ids = json.decode(args);
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      var params = {'appType':'DOCTOR'};
+      var params = {'appType': 'DOCTOR'};
       if (Platform.isIOS) {
         IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
         print('Running on ${iosInfo.utsname.machine}');
@@ -88,7 +93,7 @@ class MedcloudsNativeApi {
         params['model'] = iosInfo.model;
         params['os'] = "${iosInfo.systemVersion}";
         params['deviceId'] = "${iosInfo.identifierForVendor}";
-      } else if (Platform.isAndroid){
+      } else if (Platform.isAndroid) {
         AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
         params['plantform'] = 'Android';
         params['model'] = androidInfo.model;
@@ -99,9 +104,6 @@ class MedcloudsNativeApi {
       print("the params - ${params}");
       GlobalData.shared.registerId = "${ids["registerId"]}";
       await API.shared.foundation.pushDeviceSubmit(params);
-    }catch(e){
-
-    }
+    } catch (e) {}
   }
-
 }

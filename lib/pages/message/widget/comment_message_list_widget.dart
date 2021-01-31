@@ -115,8 +115,7 @@ class _CommentMessagePageState extends AbstractListPageState<
 
   @override
   void onItemClicked(SocialMessageListViewModel model, itemData) {
-    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {'postId': itemData?.postId, 'from': 'msg'});
+    RouteManager.openDoctorsDetail(itemData?.postId, from: "msg");
     model?.messageClicked(itemData.messageId);
   }
 }

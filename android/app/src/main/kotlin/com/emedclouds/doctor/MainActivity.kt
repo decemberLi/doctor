@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Log
 import cn.jpush.android.api.JPushInterface
 import com.emedclouds.doctor.common.constants.keyLaunchParam
+import com.emedclouds.doctor.common.web.WebActivity
 import com.emedclouds.doctor.common.web.pluginwebview.X5WebViewPlugin
 import com.emedclouds.doctor.pages.CommonWebActivity
 import com.emedclouds.doctor.pages.ShareActivity
@@ -68,15 +69,28 @@ class MainActivity : FlutterActivity() {
                 return CHANNEL_RESULT_OK
             }
         })
+        ChannelManager.instance.on("openWebPage", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                if (arguments == null) {
+                    return CHANNEL_RESULT_OK
+                }
+                val json = JSONObject(arguments)
+                val intent = Intent(this@MainActivity, WebActivity::class.java)
+                intent.putExtra("url", json.getString("url"))
+                intent.putExtra("title", json.getString("title"))
+                startActivity(intent)
+                return CHANNEL_RESULT_OK
+            }
+        })
         goWebIfNeeded(intent)
         flutterEngine?.renderer?.addIsDisplayingFlutterUiListener(object : FlutterUiDisplayListener {
             override fun onFlutterUiDisplayed() {
-                Log.d("MainActivity","onFlutterUiDisplayed")
+                Log.d("MainActivity", "onFlutterUiDisplayed")
                 postJPushRegisterId()
             }
 
             override fun onFlutterUiNoLongerDisplayed() {
-                Log.d("MainActivity","onFlutterUiNoLongerDisplayed")
+                Log.d("MainActivity", "onFlutterUiNoLongerDisplayed")
             }
 
         })

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
@@ -24,39 +25,54 @@ import 'dart:io';
 import 'model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/http/ucenter.dart';
 
+import 'utils/app_utils.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final EventBus eventBus = EventBus();
 
 class RootWidget extends StatelessWidget {
   final showGuide;
+
   RootWidget(this.showGuide) {
     SessionManager.shared.addListener(() {
       var context = NavigationService().navigatorKey.currentContext;
       if (SessionManager.shared.isLogin) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => HomePage()),
-              (route) => false,
+          (route) => false,
         );
       } else {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => LoginByCaptchaPage()),
-              (route) => false,
+          (route) => false,
         );
       }
     });
-    MedcloudsNativeApi.instance().addProcessor("uploadDeviceInfo", (args) async{
+    MedcloudsNativeApi.instance().addProcessor("uploadDeviceInfo",
+        (args) async {
       MedcloudsNativeApi.instance().uploadDeviceInfo(args);
     });
-    MedcloudsNativeApi.instance().addProcessor("receiveNotification", (args) async {
+    MedcloudsNativeApi.instance().addProcessor("wifiStatus", (args) async {
+      if (AppUtils.sp.getBool(ONLY_WIFI) ?? true) {
+        ConnectivityResult connectivityResult =
+            await (Connectivity().checkConnectivity());
+        return connectivityResult == ConnectivityResult.wifi;
+      } else {
+        return true;
+      }
+    });
+    MedcloudsNativeApi.instance().addProcessor("getTicket",(args) async {
+    MedcloudsNativeApi.instance().addProcessor("receiveNotification",
+        (args) async {
       print('Received push message process event, arguments - > [$args]');
       var context = NavigationService().navigatorKey.currentContext;
-      try{
+      try {
         var obj = json.decode(args);
         var type = obj["bizType"];
-        if (type == "QUALIFICATION_AUTH") { // 资质认证
+        if (type == "QUALIFICATION_AUTH") {
+          // 资质认证
           var authStatus = obj["authStatus"];
-          if (authStatus == "FAIL"){
+          if (authStatus == "FAIL") {
             var basicData = await API.shared.ucenter.getBasicData();
             var doctorData = DoctorDetailInfoEntity.fromJson(basicData);
             Navigator.pushNamed(
@@ -67,15 +83,16 @@ class RootWidget extends StatelessWidget {
                 'qualification': true,
               },
             );
-          }else{
+          } else {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => DoctorPhysicianStatusPage(
-                        authStatus)));
+                    builder: (context) =>
+                        DoctorPhysicianStatusPage(authStatus)));
           }
           Navigator.of(context).pushNamed("routeName");
-        }else if (type == "ASSIGN_STUDY_PLAN") { // 学习计划详情
+        } else if (type == "ASSIGN_STUDY_PLAN") {
+          // 学习计划详情
           var learnPlanId = obj["learnPlanId"];
           Navigator.of(context).pushNamed(
             RouteManager.LEARN_DETAIL,
@@ -83,7 +100,8 @@ class RootWidget extends StatelessWidget {
               'learnPlanId': learnPlanId,
             },
           );
-        }else if (type == "RELEARN"){ // 学习计划详情
+        } else if (type == "RELEARN") {
+          // 学习计划详情
           var learnPlanId = obj["learnPlanId"];
           Navigator.of(context).pushNamed(
             RouteManager.LEARN_DETAIL,
@@ -92,17 +110,13 @@ class RootWidget extends StatelessWidget {
             },
           );
         }
-
-      }catch(e){
-
-      }
-
+      } catch (e) {}
     });
     HttpManager.shared.onRequest = (options) async {
       debugPrint("$options");
       debugPrint("ticket:${SessionManager.shared.session}");
       options.headers["_ticketObject"] = SessionManager.shared.session;
-      options.headers["_appVersion"] =  await PlatformUtils.getAppVersion();
+      options.headers["_appVersion"] = await PlatformUtils.getAppVersion();
 
       return options;
     };
@@ -163,8 +177,8 @@ class RootWidget extends StatelessWidget {
         initialRoute: showGuide['showGuide']
             ? RouteManager.GUIDE
             : SessionManager.shared.isLogin
-            ? RouteManager.HOME
-            : RouteManager.LOGIN_CAPTCHA,
+                ? RouteManager.HOME
+                : RouteManager.LOGIN_CAPTCHA,
         builder: (BuildContext context, Widget child) {
           /// 确保 loading 组件能覆盖在其他组件之上.
           return FlutterEasyLoading(

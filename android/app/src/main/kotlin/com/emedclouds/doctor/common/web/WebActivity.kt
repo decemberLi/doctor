@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -12,34 +13,147 @@ import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.annotation.LayoutRes
+import androidx.annotation.NonNull
 import com.emedclouds.doctor.R
+import com.emedclouds.doctor.common.web.api.BaseApi
+import com.emedclouds.doctor.common.web.api.JsApiCaller
+import com.emedclouds.doctor.common.web.api.NativeApiProvider
+import com.emedclouds.doctor.utils.ChannelManager
+import com.emedclouds.doctor.utils.MethodChannelResultAdapter
 import com.emedclouds.doctor.utils.StatusBarUtil
+import com.emedclouds.doctor.widgets.CommonInputDialog
+import com.emedclouds.doctor.widgets.OnTextInputCallback
+import com.google.gson.JsonObject
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
+import kotlinx.android.synthetic.main.activity_web_doctor_detail_layout.*
 import kotlinx.android.synthetic.main.activity_web_layout.*
+import org.json.JSONObject
 
-class WebActivity : ComponentActivity() {
+open class WebActivity : ComponentActivity() {
 
-    private lateinit var mWebView: WebView
+    private lateinit var mWebView: YWebView
     private lateinit var mContainer: FrameLayout
 
     companion object {
-        const val TAG = "YWebActivity"
+        const val TAG = "YWeb.WebActivity"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        StatusBarUtil.setStatusBarMode(this, true, R.color.tt_33ffffff)
+    @LayoutRes
+    protected open fun layout(): Int {
+        return R.layout.activity_web_layout
+    }
+
+    final override fun onCreate(savedInstanceState: Bundle?) {
+        StatusBarUtil.setStatusBarMode(this, true, R.color.white)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_web_layout)
-        mTitleContainer.visibility = View.GONE
+        setContentView(layout())
+        hiddenTitleBar(false)
         mWebView = yWebView
         mContainer = flVideoContainer
         mWebView.webChromeClient = YWebChromeClient()
         mWebView.webViewClient = YWebViewClient()
-        mWebView.loadUrl("http://www.baidu.com")
+        bindEvent()
+        val jsApiCaller = JsApiCaller(this, mWebView)
+        initJavaScriptApi(jsApiCaller)
+        mWebView.addJavascriptInterface(NativeApiProvider(this, jsApiCaller), "jsCall")
+        mWebView.loadUrl(getUrl())
+    }
+
+    open fun initJavaScriptApi(apiCaller: JsApiCaller) {
+        ApiManager.instance.addApi("ticket",
+                object : BaseApi(apiCaller) {
+                    override fun doAction(bizType: String, param: String?) {
+                        runOnUiThread {
+                            ChannelManager.instance.callFlutter("getTicket", "", object : MethodChannelResultAdapter() {
+                                override fun success(result: Any?) {
+                                    successCallJavaScript(bizType, "$result")
+                                    super.success(result)
+                                }
+                            })
+                        }
+
+                    }
+                })
+        ApiManager.instance.addApi("setTitle",
+                object : BaseApi(apiCaller) {
+                    override fun doAction(bizType: String, param: String?) {
+                        tvTitle.text = param ?: ""
+                        successCallJavaScript(bizType, "OK")
+                    }
+                })
+        ApiManager.instance.addApi("getWifiStatus",
+                object : BaseApi(apiCaller) {
+                    override fun doAction(bizType: String, param: String?) {
+                        runOnUiThread {
+                            ChannelManager.instance.callFlutter("wifiStatus", "", object : MethodChannelResultAdapter() {
+                                override fun success(result: Any?) {
+                                    if (result == null) {
+                                        successCallJavaScript(bizType, false)
+                                        return
+                                    }
+                                    successCallJavaScript(bizType, true)
+                                    super.success(result)
+                                }
+                            })
+                        }
+                    }
+                })
+        ApiManager.instance.addApi(
+                "showInputBar",
+                object : BaseApi(apiCaller) {
+                    override fun doAction(bizType: String, param: String?) {
+                        if (param == null) {
+                            return
+                        }
+                        runOnUiThread {
+                            val json = JSONObject(param)
+                            val id = json.optInt("id")
+                            val replyContent = json.optString("replyContent") ?: ""
+                            val placeHolder = json.optString("placeHolder") ?: "请输入"
+                            val commentContent = json.optString("commentContent") ?: ""
+                            CommonInputDialog.show(this@WebActivity,
+                                    json.optString("placeHolder") ?: "请输入", replyContent, commentContent, object : OnTextInputCallback {
+                                override fun onInputFinish(text: String, action: String) {
+                                    successCallJavaScript(bizType, JSONObject().apply {
+                                        put("id", id)
+                                        put("text", text)
+                                        put("action", action)
+                                    })
+                                }
+                            })
+                        }
+                    }
+                }
+        )
+    }
+
+    @NonNull
+    protected open fun getUrl(): String {
+        return intent.getStringExtra("url") ?: ""
+//        return "http://192.168.1.27:9000/#/detail?id=292"
+    }
+
+    private fun bindEvent() {
+        btnBack.setOnClickListener {
+            if (mWebView.canGoBack()) {
+                mWebView.goBack()
+                return@setOnClickListener
+            }
+            finish()
+        }
+    }
+
+    fun hiddenTitleBar(hidden: Boolean) {
+        mTitleContainer.visibility = if (hidden) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
     }
 
     override fun onPause() {
@@ -160,6 +274,14 @@ class WebActivity : ComponentActivity() {
         private var mCallback: IX5WebChromeClient.CustomViewCallback? = null
         override fun onCloseWindow(p0: WebView?) {
             super.onCloseWindow(p0)
+        }
+
+        override fun onReceivedTitle(p0: WebView?, p1: String?) {
+            super.onReceivedTitle(p0, p1)
+            if (TextUtils.isEmpty(p1)) {
+                return
+            }
+            tvTitle.text = p1
         }
 
         override fun onProgressChanged(p0: WebView?, p1: Int) {

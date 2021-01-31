@@ -36,18 +36,9 @@ typedef OnScrollerCallback = void Function(double offset);
 openBannerDetail(BuildContext context, data) {
   print("On banner clicked -> [${data?.toJson()}]");
   if (data.bannerType == 'RELEVANCY_POST') {
-    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {
-          'postId': int.parse(data?.relatedContent),
-          'from': 'list',
-          'type': 'VIDEO_ZONE'
-        });
+    RouteManager.openDoctorsDetail(int.parse(data?.relatedContent), from: "msg");
   } else if (data.bannerType == 'ACTIVITY') {
-    Navigator.pushNamed(context, RouteManager.COMMON_WEB, arguments: {
-      'postId': data?.relatedContent,
-      'url': data?.relatedContent,
-      'title': ''
-    });
+    RouteManager.openWebPage(data?.relatedContent);
   }
 }
 
@@ -225,12 +216,7 @@ class DoctorPageState
   @override
   void onItemClicked(DoctorsViewMode model, itemData) {
     model.markToNative(itemData);
-    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {
-          'postId': itemData?.postId,
-          'from': 'list',
-          'type': 'ACADEMIC'
-        });
+    RouteManager.openDoctorsDetail(itemData?.postId);
   }
 
   @override

@@ -49,12 +49,7 @@ class HotPostWidget extends StatelessWidget {
         ),
       ),
       onTap: () {
-        Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-            arguments: {
-              'postId': entity?.id,
-              'from': 'list',
-              'type': 'VIDEO_ZONE'
-            });
+        RouteManager.openDoctorsDetail(entity?.id);
       },
     );
   }

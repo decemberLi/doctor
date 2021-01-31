@@ -9,14 +9,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import com.emedclouds.doctor.R
-import com.emedclouds.doctor.common.web.api.JsApiDispatcher
+import com.emedclouds.doctor.common.web.YWebView
+import com.emedclouds.doctor.common.web.api.JsApiCaller
+import com.emedclouds.doctor.common.web.api.NativeApiProvider
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
 
 class CommonWebActivity : ComponentActivity() {
 
-    private lateinit var mWebView: WebView
+    private lateinit var mWebView: YWebView
     private lateinit var mTitleView: TextView
 
     companion object {
@@ -54,7 +56,8 @@ class CommonWebActivity : ComponentActivity() {
             }
 
         }
-        mWebView.addJavascriptInterface(JsApiDispatcher(this, mWebView), "jsCall")
+
+        mWebView.addJavascriptInterface(NativeApiProvider(this, JsApiCaller(this, mWebView)), "jsCall")
         mWebView.loadUrl(intent.getStringExtra(keyUrl))
     }
 }

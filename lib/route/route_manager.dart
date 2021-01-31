@@ -1,3 +1,5 @@
+import 'package:doctor/common/env/environment.dart';
+import 'package:doctor/common/env/url_provider.dart';
 import 'package:doctor/pages/doctors/doctors_list_page.dart';
 import 'package:doctor/pages/doctors/doctors_list_page2.dart';
 import 'package:doctor/pages/doctors/widget/doctors_detail_widget.dart';
@@ -33,6 +35,7 @@ import 'package:doctor/pages/worktop/learn/lecture_videos/lecture_videos_page.da
 import 'package:doctor/pages/worktop/learn/lecture_videos/look_lecture_video_page.dart';
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/widgets/common_webview.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -167,4 +170,14 @@ class RouteManager {
       return DoctorsListPage2(obj);
     },
   };
+
+  static openDoctorsDetail(postId, {String from = "list"}) {
+    String url =
+        "${UrlProvider.doctorsCircleUrl(Environment.instance)}?id=$postId&from=$from";
+    MedcloudsNativeApi.instance().openWebPage(url);
+  }
+
+  static openWebPage(String url){
+    MedcloudsNativeApi.instance().openWebPage(url);
+  }
 }
