@@ -269,7 +269,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                         arguments: {
                           "learnPlanId": data.learnPlanId,
                           "resourceId": data.resources[0].resourceId,
-                          'doctorName': data.doctorName,
+                          'doctorName': userInfo?.doctorName ?? '',
                         });
                   },
                 ),
@@ -376,7 +376,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             Provider.of<UserInfoViewModel>(context, listen: false);
         var map = {
           "path": picPath,
-          "name": model.data.doctorName,
+          "name": userInfo?.doctorName ?? '',
           "userID": model.data.doctorUserId,
           "hospital": model.data.hospitalName,
           "title": data.taskName,
@@ -440,7 +440,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             'resourceId': pdf.resourceId,
             'videoTitle': obj['title'] ?? data.taskName,
             'duration': obj['duration'] ?? 0,
-            'presenter': data.doctorName,
+            'presenter': userInfo?.doctorName ?? '',
             'videoOssId': entity.ossId,
           },
         );
@@ -472,7 +472,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                             .pushNamed(RouteManager.LOOK_LECTURE_VIDEOS, arguments: {
                           "learnPlanId": data.learnPlanId,
                           "resourceId": data.resources[0].resourceId,
-                          'doctorName': data.doctorName,
+                          'doctorName': userInfo?.doctorName ?? '',
                         });
                   },
                   child: Text(
