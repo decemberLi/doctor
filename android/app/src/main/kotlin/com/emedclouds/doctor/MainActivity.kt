@@ -125,8 +125,10 @@ class MainActivity : FlutterActivity() {
         val parse = Uri.parse(ext)
         val extValue = parse.getQueryParameter("ext");
         if (extValue != null) {
-            val url = JSONObject(extValue).getString("url")
-            CommonWebActivity.start(this@MainActivity, "", url)
+            val recIntent = Intent(this@MainActivity, WebActivity::class.java)
+            recIntent.putExtra("url", JSONObject(extValue).getString("url"))
+            recIntent.putExtra("title", "")
+            startActivity(recIntent)
         }
     }
 
