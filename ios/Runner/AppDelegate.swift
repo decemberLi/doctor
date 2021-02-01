@@ -13,7 +13,7 @@ import UserNotificationsUI
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        
+        addCookie()
         initThird(launchOptions: launchOptions)
         Bugly.start(withAppId: "463f24e2f9")
         WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
@@ -127,6 +127,22 @@ import UserNotificationsUI
 }
 
 extension AppDelegate {
+    
+    func addCookie(){
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "2.4"
+        var properties : [HTTPCookiePropertyKey:String] = [:]
+        properties[HTTPCookiePropertyKey.name] = "appVersion"
+        properties[HTTPCookiePropertyKey.value] = version
+        properties[HTTPCookiePropertyKey.domain] = "m-dev.e-medclouds.com"
+        properties[HTTPCookiePropertyKey.path] = "/"
+        if let cookie = HTTPCookie(properties: properties) {
+            HTTPCookieStorage.shared.setCookie(cookie)
+        }
+        properties[HTTPCookiePropertyKey.domain] = "m.e-medclouds.com"
+        if let cookie = HTTPCookie(properties: properties) {
+            HTTPCookieStorage.shared.setCookie(cookie)
+        }
+    }
     
     func initThird(launchOptions: [UIApplication.LaunchOptionsKey: Any]?){
         let entity = JPUSHRegisterEntity()

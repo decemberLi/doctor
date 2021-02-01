@@ -9,7 +9,7 @@ import UIKit
 import WebKit
 
 class WebVC: UIViewController {
-    @IBOutlet var webview : WKWebView!
+    var webview : WKWebView!
     @IBOutlet var progressView : UIProgressView!
     @IBOutlet var titleLbl : UILabel!
     @IBOutlet var commentLbl : UILabel!
@@ -38,7 +38,10 @@ class WebVC: UIViewController {
         webConfig.allowsInlineMediaPlayback = true
         webConfig.mediaTypesRequiringUserActionForPlayback = .all
         webConfig.userContentController = userConfig
-        
+        let array = HTTPCookieStorage.shared.cookies ?? []
+        for cookie in array  {
+            webConfig.websiteDataStore.httpCookieStore.setCookie(cookie, completionHandler: nil)
+        }
         webview = WKWebView(frame: .zero, configuration: webConfig)
         webview.customUserAgent = "Medclouds-doctor"
         view.insertSubview(webview, belowSubview: progressView)
@@ -49,7 +52,8 @@ class WebVC: UIViewController {
         webview.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
         webview.uiDelegate = self
         webview.navigationDelegate = self
-        let urlString = initData?["url"] as? String ?? ""
+//        let urlString = initData?["url"] as? String ?? ""
+        let urlString = "http://192.168.1.27:9000/#/detail?id=340"
         if let url = URL(string: urlString) {
             let request = URLRequest(url: url)
             webview.load(request)
@@ -74,7 +78,7 @@ class WebVC: UIViewController {
             }
             webview.snp.remakeConstraints { (maker) in
                 maker.left.right.equalToSuperview()
-                maker.top.equalTo(self.progressView.snp.bottom)
+                maker.top.equalTo(self.progressView.snp.top)
                 maker.bottom.equalToSuperview().offset(-rect.size.height)
             }
             UIView.animate(withDuration: duration) {
@@ -88,7 +92,7 @@ class WebVC: UIViewController {
             }
             webview.snp.remakeConstraints { (maker) in
                 maker.left.right.equalToSuperview()
-                maker.top.equalTo(self.progressView.snp.bottom)
+                maker.top.equalTo(self.progressView.snp.top)
                 maker.bottom.equalToSuperview()
             }
             UIView.animate(withDuration: duration) {
