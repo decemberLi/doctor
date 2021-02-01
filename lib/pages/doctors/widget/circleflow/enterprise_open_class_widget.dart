@@ -136,12 +136,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         ],
       ),
       onTap: () {
-        Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-            arguments: {
-              'postId': entity?.id,
-              'from': 'list',
-              'type': 'OPEN_CLASS'
-            });
+        RouteManager.openDoctorsDetail(entity?.id);
       },
     );
   }
@@ -304,12 +299,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
       ),
       onTap: () {
         _pausePlaying();
-        Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-            arguments: {
-              'postId': entity?.id,
-              'from': 'list',
-              'type': 'OPEN_CLASS'
-            });
+        RouteManager.openDoctorsDetail(entity?.id);
       },
     );
   }

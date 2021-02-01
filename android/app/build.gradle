@@ -92,6 +92,15 @@ android {
 
         }
     }
+
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 flutter {
@@ -138,6 +147,8 @@ dependencies {
     api 'com.tencent.tbs.tbssdk:sdk:43903'
 
     implementation 'androidx.webkit:webkit:1.0.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    api 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     // 注解
 //    implementation "com.google.dagger:dagger:2.30.1"
 //    kapt "com.google.dagger:dagger-compiler:2.30.1"

@@ -534,11 +534,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 12),
       child: FlatButton(
         onPressed: () {
-          Navigator.pushNamed(
-            context,
-            RouteManager.DOCTORS_ARTICLE_DETAIL,
-            arguments: {'postId': data.postId},
-          );
+          RouteManager.openDoctorsDetail(data.postId);
         },
         child: Container(
           decoration: BoxDecoration(
