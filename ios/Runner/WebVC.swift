@@ -19,6 +19,8 @@ class WebVC: UIViewController {
     @IBOutlet var textColorBG : UIView!
     @IBOutlet var textAllBG : UIView!
     
+    var initData : [String:Any]?
+    
     fileprivate var commentData : [AnyHashable:Any]?
     
     deinit {
@@ -30,11 +32,24 @@ class WebVC: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        titleLbl.text = initData?["title"] as? String ?? "title"
+        let userConfig = initMessageHandler()
+        let webConfig = WKWebViewConfiguration()
+        webConfig.allowsInlineMediaPlayback = true
+        webConfig.mediaTypesRequiringUserActionForPlayback = .all
+        webConfig.userContentController = userConfig
+        
+        webview = WKWebView(frame: .zero, configuration: webConfig)
+        webview.customUserAgent = "Medclouds-doctor"
+        view.insertSubview(webview, belowSubview: progressView)
+        webview.snp.makeConstraints { (maker) in
+            maker.left.right.bottom.equalToSuperview()
+            maker.top.equalTo(self.progressView.snp.top)
+        }
         webview.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
         webview.uiDelegate = self
         webview.navigationDelegate = self
-        initMessageHandler()
-        let urlString = "http://192.168.1.27:9000/#/detail?id=292"
+        let urlString = initData?["url"] as? String ?? ""
         if let url = URL(string: urlString) {
             let request = URLRequest(url: url)
             webview.load(request)
@@ -55,19 +70,31 @@ class WebVC: UIViewController {
             textAllBG.isHidden = false
             
             self.textBG.snp.remakeConstraints { (maker) in
-                maker.bottom.equalToSuperview().offset(-rect.origin.y)
+                maker.bottom.equalToSuperview().offset(-rect.size.height)
+            }
+            webview.snp.remakeConstraints { (maker) in
+                maker.left.right.equalToSuperview()
+                maker.top.equalTo(self.progressView.snp.bottom)
+                maker.bottom.equalToSuperview().offset(-rect.size.height)
             }
             UIView.animate(withDuration: duration) {
                 self.textColorBG.alpha = 1
                 self.textAllBG.layoutIfNeeded()
+                self.view.layoutIfNeeded()
             }
         }else{
             self.textBG.snp.remakeConstraints { (maker) in
                 maker.bottom.equalToSuperview()
             }
+            webview.snp.remakeConstraints { (maker) in
+                maker.left.right.equalToSuperview()
+                maker.top.equalTo(self.progressView.snp.bottom)
+                maker.bottom.equalToSuperview()
+            }
             UIView.animate(withDuration: duration) {
                 self.textColorBG.alpha = 0
                 self.textAllBG.layoutIfNeeded()
+                self.view.layoutIfNeeded()
             } completion: { (_) in
                 self.textAllBG.isHidden = true
             }
@@ -86,11 +113,12 @@ class WebVC: UIViewController {
      }
      */
     
-    func initMessageHandler() {
+    func initMessageHandler() ->  WKUserContentController{
         let userConfig = WKUserContentController()
         userConfig.add(self, name: "jsCall")
         let script = WKUserScript(source: "window.jsCall=webkit.messageHandlers.jsCall", injectionTime: .atDocumentStart, forMainFrameOnly: false)
         userConfig.addUserScript(script)
+        return userConfig
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -107,6 +135,18 @@ class WebVC: UIViewController {
 private extension WebVC {
     func showCommentBox() {
         textView.becomeFirstResponder()
+        guard let putData = commentData else {return}
+        let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
+        let text = putParam["replyContent"] as? String ?? ""
+        commentLbl.text = text
+        textView.text = putParam["commentContent"] as? String ?? ""
+        let count = 150 - textView.text.count
+        textNumLbl.text = "\(count)"
+        if count >= 0 {
+            textNumLbl.textColor = UIColor(rgb: 0x888888)
+        } else {
+            textNumLbl.textColor = UIColor(rgb: 0xF67777)
+        }
     }
     
     @IBAction func onSend(){
@@ -114,9 +154,9 @@ private extension WebVC {
         guard let putData = commentData else {return}
         let bizType = putData["bizType"] as? String ?? ""
         let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
-        let id = putParam["id"] as? String ?? ""
-        let text = putParam["text"] as? String ?? ""
-        let params = #"{"bizType":\#(bizType),"param":{"code":0,"content":{"id":"\#(id)","text":"\#(text)","action":"publish"}}}"#
+        let id = putParam["id"] as? Int ?? -1
+        let text = textView.text ?? ""
+        let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":{"id":\#(id),"text":"\#(text)","action":"publish"}}}"#
         webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
     }
     @IBAction func onCancel(){
@@ -125,9 +165,13 @@ private extension WebVC {
         let bizType = putData["bizType"] as? String ?? ""
         let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
         let id = putParam["id"] as? String ?? ""
-        let text = putParam["text"] as? String ?? ""
+        let text = textView.text ?? ""
         let params = #"{"bizType":\#(bizType),"param":{"code":0,"content":{"id":"\#(id)","text":"\#(text)","action":"cancel"}}}"#
         webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+    }
+    
+    @IBAction func onBack(){
+        dismiss(animated: true, completion: nil)
     }
 }
 
@@ -144,7 +188,7 @@ extension WebVC :WKScriptMessageHandler {
             naviChannel.invokeMethod("getTicket", arguments: nil) { (result) in
                 guard let ticket = result as? String else {return}
                 let bizType = json["bizType"] as? String ?? ""
-                let params = #"{"bizType":"\#(bizType)","params":{"code":0,"content":"\#(ticket)"}}"#
+                let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":"\#(ticket)"}}"#
                 self.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
             }
             
@@ -160,7 +204,7 @@ extension WebVC :WKScriptMessageHandler {
             naviChannel.invokeMethod("wifiStatus", arguments: nil) { (result) in
                 guard let status = result as? String else {return}
                 let bizType = json["bizType"] as? String ?? ""
-                let params = #"{"bizType":"\#(bizType)","params":{"code":0,"content":"\#(status)"}}"#
+                let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":"\#(status)"}}"#
                 self.webview.evaluateJavaScript("nativeCall(\(params)", completionHandler: nil)
             }
         }
@@ -188,6 +232,12 @@ extension WebVC : WKNavigationDelegate {
 
 extension WebVC : UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        
+        let count = 150 - textView.text.count
+        textNumLbl.text = "\(count)"
+        if count >= 0 {
+            textNumLbl.textColor = UIColor(rgb: 0x888888)
+        } else {
+            textNumLbl.textColor = UIColor(rgb: 0xF67777)
+        }
     }
 }

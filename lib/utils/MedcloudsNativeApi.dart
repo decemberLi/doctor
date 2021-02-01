@@ -78,7 +78,7 @@ class MedcloudsNativeApi {
 
   Future openWebPage(String url, {String title = ""}) async {
     var arguments = json.encode({"url": url, "title": title});
-    return await _channel.invokeMapMethod("openWebPage", arguments);
+    return await _channel.invokeMethod("openWebPage", arguments);
   }
 
   Future uploadDeviceInfo(args) async {

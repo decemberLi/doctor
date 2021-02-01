@@ -43,7 +43,11 @@ import UserNotificationsUI
             }else if call.method == "openSetting" {
                 self.openSetting()
                 result(true)
-            }else if call.method == "openWebView" {
+            }else if call.method == "openWebPage" {
+                guard let value = call.arguments as? String else {return}
+                guard let data = value.data(using: .utf8) else {return}
+                guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
+                self.openWebView(map: obj)
                 result(true)
             }
         }
@@ -182,8 +186,9 @@ extension AppDelegate {
         }
     }
     
-    func openWebView(){
+    func openWebView(map : [String:Any]){
         let vc = WebVC()
+        vc.initData = map
         vc.modalPresentationStyle = .fullScreen
         window.rootViewController?.present(vc, animated: false, completion: nil)
     }
