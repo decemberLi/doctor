@@ -62,6 +62,8 @@ class RootWidget extends StatelessWidget {
       }
     });
     MedcloudsNativeApi.instance().addProcessor("getTicket",(args) async {
+      return SessionManager.shared.session;
+    });
     MedcloudsNativeApi.instance().addProcessor("receiveNotification",
         (args) async {
       print('Received push message process event, arguments - > [$args]');
