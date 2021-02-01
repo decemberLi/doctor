@@ -42,7 +42,9 @@ import UserNotificationsUI
                 }
             }else if call.method == "openSetting" {
                 self.openSetting()
-                result(true);
+                result(true)
+            }else if call.method == "openWebView" {
+                result(true)
             }
         }
         vc.setFlutterViewDidRenderCallback {
@@ -178,6 +180,12 @@ extension AppDelegate {
         if let url = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
+    }
+    
+    func openWebView(){
+        let vc = WebVC()
+        vc.modalPresentationStyle = .fullScreen
+        window.rootViewController?.present(vc, animated: false, completion: nil)
     }
 }
 
