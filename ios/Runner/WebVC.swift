@@ -227,6 +227,9 @@ extension WebVC : WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         progressView.isHidden = true
+        webview.evaluateJavaScript("document.title") { (result, error) in
+            self.titleLbl.text = result as? String ?? "详情"
+        }
     }
     
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
