@@ -134,9 +134,10 @@
         <receiver
             android:name=".common.thirdpart.push.receiver.MessagePushReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="true" >
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>
+                <action android:name="cn.jpush.android.intent.REGISTRATION" />
                 <category android:name="com.emedclouds.doctor" />
             </intent-filter>
         </receiver>

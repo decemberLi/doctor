@@ -9,6 +9,8 @@ import cn.jpush.android.api.JPushInterface
 import cn.jpush.android.service.JPushMessageReceiver
 import com.emedclouds.doctor.utils.ChannelManager
 import com.emedclouds.doctor.utils.MethodChannelResultAdapter
+import com.tencent.bugly.Bugly
+import com.tencent.bugly.crashreport.BuglyLog
 import org.json.JSONObject
 
 class MessagePushReceiver : BroadcastReceiver() {
@@ -17,6 +19,13 @@ class MessagePushReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        if (intent?.action == JPushInterface.EXTRA_REGISTRATION_ID) {
+            BuglyLog.d(TAG,"MessagePushReceiver#onReceive#cn.jpush.android.REGISTRATION_ID")
+            val json = JSONObject()
+            json.put("registerId", JPushInterface.getRegistrationID(context))
+            ChannelManager.instance.callFlutter("uploadDeviceInfo", json.toString(), object : MethodChannelResultAdapter() {})
+            return
+        }
         val extra = intent?.extras?.getString(JPushInterface.EXTRA_EXTRA)
         Log.w(TAG, "onReceive ## Receive new message by JPush, message: [${intent?.toString()}]")
         if (extra == null) {
