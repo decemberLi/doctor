@@ -47,6 +47,7 @@ class _CommentMessagePageState extends AbstractListPageState<
   Widget itemWidget(BuildContext context, int index, dynamic data) {
     return Container(
       padding: EdgeInsets.all(12),
+      margin: EdgeInsets.symmetric(horizontal: 16),
       decoration: itemContainerDecoration,
       child: IntrinsicHeight(
         child: Row(

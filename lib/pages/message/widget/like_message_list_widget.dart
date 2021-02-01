@@ -49,6 +49,7 @@ class _LikeMessagePageState
     }
     return Container(
       padding: EdgeInsets.all(12),
+      margin: EdgeInsets.symmetric(horizontal: 16),
       decoration: itemContainerDecoration,
       child: IntrinsicHeight(
         child: Row(

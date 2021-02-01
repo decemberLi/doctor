@@ -146,6 +146,20 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     );
   }
 
+  _cover(OpenClassEntity entity) {
+    return _isPlaying
+        ? Container()
+        : Container(
+            color: Color(0xffEAF3FF),
+            height: 210,
+            child: Image.network(
+              entity.coverImgUrl,
+              fit: BoxFit.cover,
+              height: 210,
+            ),
+          );
+  }
+
   Widget buildVideoPreviewItem(BuildContext context, OpenClassEntity entity) {
     return GestureDetector(
       child: Column(
@@ -153,9 +167,8 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            decoration: BoxDecoration(color: ThemeColor.colorFFBCBCBC),
+            decoration: BoxDecoration(color: Color(0xffEAF3FF)),
             height: 210,
-            width: double.infinity,
             child: FutureBuilder(
               future: _initializeVideoPlayerFuture,
               builder: (context, snapshot) {
@@ -168,24 +181,6 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
                     child: Stack(
                       children: [
                         VideoPlayer(_controller),
-                        Positioned(
-                          child: !_isPlaying
-                              ? GestureDetector(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: Image(
-                                      image: AssetImage(
-                                          "assets/images/video_playing.png"),
-                                      width: 41,
-                                      height: 41,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    doPlay();
-                                  },
-                                )
-                              : Container(),
-                        ),
                         Positioned(
                           bottom: 10,
                           left: 10,
@@ -237,7 +232,26 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
                               }
                             },
                           ),
-                        )
+                        ),
+                        _cover(entity),
+                        Positioned(
+                          child: !_isPlaying
+                              ? GestureDetector(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Image(
+                                      image: AssetImage(
+                                          "assets/images/video_playing.png"),
+                                      width: 41,
+                                      height: 41,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    doPlay();
+                                  },
+                                )
+                              : Container(),
+                        ),
                       ],
                     ),
                   );
@@ -374,7 +388,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
               (event.index != 2 || event.subIndex != 0)) {
             _pausePlaying();
           } else if (event is EventVideoOutOfScreen) {
-            if (event.offset > -100 && event.offset < 0) {
+            if (event.offset < 0) {
               _pausePlaying(isScrollPause: true);
             } else if (_isScrollPause) {
               doPlay();
@@ -387,6 +401,8 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
           if (connectivityResult == ConnectivityResult.wifi) {
             doPlay();
           }
+        } else {
+          doPlay();
         }
         setState(() {});
       });
