@@ -9,6 +9,7 @@ import com.emedclouds.doctor.common.web.DispatchException
 import com.google.gson.Gson
 
 
+@Keep
 data class JavaScriptRequest(
         val dispatchType: String,
         val bizType: String,
