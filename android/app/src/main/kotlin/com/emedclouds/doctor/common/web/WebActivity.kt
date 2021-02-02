@@ -89,6 +89,12 @@ open class WebActivity : ComponentActivity() {
                         successCallJavaScript(bizType, "OK")
                     }
                 })
+        ApiManager.instance.addApi("closeWindow",
+                object : BaseApi(apiCaller) {
+                    override fun doAction(bizType: String, param: String?) {
+                        runOnUiThread{finish()}
+                    }
+                })
         ApiManager.instance.addApi("getWifiStatus",
                 object : BaseApi(apiCaller) {
                     override fun doAction(bizType: String, param: String?) {
@@ -99,7 +105,7 @@ open class WebActivity : ComponentActivity() {
                                         successCallJavaScript(bizType, false)
                                         return
                                     }
-                                    successCallJavaScript(bizType, true)
+                                    successCallJavaScript(bizType, result)
                                     super.success(result)
                                 }
                             })
@@ -125,7 +131,7 @@ open class WebActivity : ComponentActivity() {
                                 override fun onInputFinish(text: String, action: String) {
                                     if (action == ACTION_PUBLISH) {
                                         if (TextUtils.isEmpty(text)) {
-                                            if (TextUtils.isEmpty(requiredMessage)) {
+                                            if (!TextUtils.isEmpty(requiredMessage)) {
                                                 Toast.makeText(this@WebActivity, requiredMessage, Toast.LENGTH_SHORT).show()
                                             }
                                             return
