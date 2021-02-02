@@ -56,8 +56,9 @@ class WebVC: UIViewController {
         webview.customUserAgent = "Medclouds-doctor"
         view.insertSubview(webview, belowSubview: progressView)
         webview.snp.makeConstraints { (maker) in
-            maker.left.right.bottom.equalToSuperview()
+            maker.left.right.equalToSuperview()
             maker.top.equalTo(self.progressView.snp.top)
+            maker.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
         webview.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
         webview.uiDelegate = self
@@ -85,29 +86,17 @@ class WebVC: UIViewController {
             self.textBG.snp.remakeConstraints { (maker) in
                 maker.bottom.equalToSuperview().offset(-rect.size.height)
             }
-            webview.snp.remakeConstraints { (maker) in
-                maker.left.right.equalToSuperview()
-                maker.top.equalTo(self.progressView.snp.top)
-                maker.bottom.equalToSuperview().offset(-rect.size.height)
-            }
             UIView.animate(withDuration: duration) {
                 self.textColorBG.alpha = 1
                 self.textAllBG.layoutIfNeeded()
-                self.view.layoutIfNeeded()
             }
         }else{
             self.textBG.snp.remakeConstraints { (maker) in
                 maker.bottom.equalToSuperview()
             }
-            webview.snp.remakeConstraints { (maker) in
-                maker.left.right.equalToSuperview()
-                maker.top.equalTo(self.progressView.snp.top)
-                maker.bottom.equalToSuperview()
-            }
             UIView.animate(withDuration: duration) {
                 self.textColorBG.alpha = 0
                 self.textAllBG.layoutIfNeeded()
-                self.view.layoutIfNeeded()
             } completion: { (_) in
                 self.textAllBG.isHidden = true
             }

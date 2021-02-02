@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage>
   ScrollOutScreenViewModel _outScreenViewModel;
   bool isDoctors = false;
 
-  int _currentIndex = 2;
+  int _currentIndex = 1;
   int _toIndex = 0;
   final List<Widget> _children = [
     WorktopPage(),

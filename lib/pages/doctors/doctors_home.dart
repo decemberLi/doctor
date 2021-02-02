@@ -51,7 +51,7 @@ class _DoctorsHomeState extends State<DoctorsHome>
         TabController(initialIndex: 0, length: tabs.length, vsync: this);
     _tabController.addListener(() {
       var pageKey = _tabController.index == 0 ? PAGE_DOCTOR : PAGE_GOSSIP;
-      eventBus.fire(EventTabIndex(2, _tabController.index));
+      eventBus.fire(EventTabIndex(1, _tabController.index));
       _tabBarColor = _map[pageKey];
       _tabShadowColor = _shadowMap[pageKey];
       setState(() {});
