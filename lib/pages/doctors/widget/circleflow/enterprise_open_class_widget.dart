@@ -456,7 +456,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     }
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.only(left: 20, top: 12, right: 20, bottom: 12),
+      padding: EdgeInsets.only(left: 20, top: 12, right: 20),
       child: Column(
         children: [
           header(context),
@@ -480,6 +480,16 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
                 Expanded(child: buildItem(context, snapshot[2])),
               ],
             ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 12,
+            color: Colors.white,
+          ),
+          Container(
+            color: ThemeColor.colorFFF9F9F9,
+            width: double.infinity,
+            height: 6,
           )
         ],
       ),

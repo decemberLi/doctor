@@ -99,6 +99,7 @@ class MainActivity : FlutterActivity() {
     private fun postJPushRegisterId() {
         val json = JSONObject()
         json.put("registerId", JPushInterface.getRegistrationID(application))
+        Log.d(tag, "postJPushRegisterId: $json")
         ChannelManager.instance.callFlutter("uploadDeviceInfo", json.toString(), object : MethodChannelResultAdapter() {})
     }
 

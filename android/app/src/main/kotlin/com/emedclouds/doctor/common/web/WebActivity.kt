@@ -6,12 +6,14 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
@@ -24,6 +26,7 @@ import com.emedclouds.doctor.utils.MethodChannelResultAdapter
 import com.emedclouds.doctor.utils.StatusBarUtil
 import com.emedclouds.doctor.widgets.CommonInputDialog
 import com.emedclouds.doctor.widgets.OnTextInputCallback
+import com.emedclouds.doctor.widgets.OnTextInputCallback.Companion.ACTION_PUBLISH
 import com.google.gson.JsonObject
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.tencent.smtt.export.external.interfaces.*
@@ -87,6 +90,12 @@ open class WebActivity : ComponentActivity() {
                         successCallJavaScript(bizType, "OK")
                     }
                 })
+        ApiManager.instance.addApi("closeWindow",
+                object : BaseApi(apiCaller) {
+                    override fun doAction(bizType: String, param: String?) {
+                        runOnUiThread{finish()}
+                    }
+                })
         ApiManager.instance.addApi("getWifiStatus",
                 object : BaseApi(apiCaller) {
                     override fun doAction(bizType: String, param: String?) {
@@ -97,7 +106,7 @@ open class WebActivity : ComponentActivity() {
                                         successCallJavaScript(bizType, false)
                                         return
                                     }
-                                    successCallJavaScript(bizType, true)
+                                    successCallJavaScript(bizType, result)
                                     super.success(result)
                                 }
                             })
@@ -115,23 +124,40 @@ open class WebActivity : ComponentActivity() {
                             val json = JSONObject(param)
                             val id = json.optInt("id")
                             val replyContent = json.optString("replyContent") ?: ""
-                            val placeHolder = json.optString("placeHolder") ?: "请输入"
+                            val requiredMessage = json.optString("requiredMessage") ?: "请输入内容"
                             val commentContent = json.optString("commentContent") ?: ""
                             CommonInputDialog.show(this@WebActivity,
                                     json.optString("placeHolder")
                                             ?: "请输入", replyContent, commentContent, object : OnTextInputCallback {
-                                override fun onInputFinish(text: String, action: String) {
+                                override fun onInputFinish(text: String, action: String):Boolean {
+                                    if (action == ACTION_PUBLISH) {
+                                        if (TextUtils.isEmpty(text)) {
+                                            toast(requiredMessage)
+                                            return false
+                                        }
+                                        if (text.length > 150) {
+                                            toast("字数超过限制")
+                                            return false
+                                        }
+                                    }
                                     successCallJavaScript(bizType, JSONObject().apply {
                                         put("id", id)
                                         put("text", text)
                                         put("action", action)
                                     })
+                                    return true
                                 }
                             })
                         }
                     }
                 }
         )
+    }
+
+    private fun toast(text:String){
+        val toast = Toast.makeText(this@WebActivity, text, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.CENTER_VERTICAL,0,0)
+        toast.show()
     }
 
     @NonNull
@@ -299,12 +325,6 @@ open class WebActivity : ComponentActivity() {
             Log.d(TAG, "onShowCustomView: ")
             this.mCallback = p1
             super.onShowCustomView(p0, p1)
-        }
-
-        override fun getVideoLoadingProgressView(): View {
-            return TextView(this@WebActivity).apply {
-                text = "------..."
-            }
         }
 
         override fun onHideCustomView() {
