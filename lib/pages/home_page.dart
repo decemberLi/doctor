@@ -109,14 +109,14 @@ class _HomePageState extends State<HomePage>
 
   void onTabTapped(int index) async {
     _toIndex = index;
-    // if (index == 2) {
-    //   if (isDoctors) {
-    //     eventBus.fire(_outScreenViewModel.event);
-    //   }
-    //   isDoctors = true;
-    // } else {
-    //   isDoctors = false;
-    // }
+    if (index == 1) {
+      if (isDoctors) {
+        eventBus.fire(_outScreenViewModel.event);
+      }
+      isDoctors = true;
+    } else {
+      isDoctors = false;
+    }
     eventBus.fire(EventTabIndex(index, null));
     if (index == _currentIndex) {
       return;
@@ -311,7 +311,7 @@ class _HomePageState extends State<HomePage>
       this.initDoctorInfo();
     });
     initData();
-    showWeekIfNeededReporter(context);
+    // showWeekIfNeededReporter(context);
     WidgetsBinding.instance.addObserver(this);
   }
 
