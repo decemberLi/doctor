@@ -385,25 +385,6 @@ class _UserPageState extends State<UserPage> with RouteAware {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  messageItem('资质认证', 'assets/images/zzrz.png', () {
-                    if (doctorData?.authStatus == 'VERIFYING' ||
-                        doctorData?.authStatus == 'PASS') {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DoctorPhysicianStatusPage(
-                                  doctorData?.authStatus)));
-                      return;
-                    }
-                    Navigator.pushNamed(
-                      context,
-                      RouteManager.USERINFO_DETAIL,
-                      arguments: {
-                        'doctorData': doctorData.toJson(),
-                        'qualification': true,
-                      },
-                    );
-                  }),
                   messageItem('设置', 'assets/images/setting.png', () {
                     Navigator.pushNamed(context, RouteManager.SETTING);
                   }),
