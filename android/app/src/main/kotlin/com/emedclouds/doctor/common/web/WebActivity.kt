@@ -12,6 +12,7 @@ import android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
@@ -24,6 +25,7 @@ import com.emedclouds.doctor.utils.MethodChannelResultAdapter
 import com.emedclouds.doctor.utils.StatusBarUtil
 import com.emedclouds.doctor.widgets.CommonInputDialog
 import com.emedclouds.doctor.widgets.OnTextInputCallback
+import com.emedclouds.doctor.widgets.OnTextInputCallback.Companion.ACTION_PUBLISH
 import com.google.gson.JsonObject
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.tencent.smtt.export.external.interfaces.*
@@ -115,12 +117,24 @@ open class WebActivity : ComponentActivity() {
                             val json = JSONObject(param)
                             val id = json.optInt("id")
                             val replyContent = json.optString("replyContent") ?: ""
-                            val placeHolder = json.optString("placeHolder") ?: "请输入"
+                            val requiredMessage = json.optString("requiredMessage") ?: "请输入"
                             val commentContent = json.optString("commentContent") ?: ""
                             CommonInputDialog.show(this@WebActivity,
                                     json.optString("placeHolder")
                                             ?: "请输入", replyContent, commentContent, object : OnTextInputCallback {
                                 override fun onInputFinish(text: String, action: String) {
+                                    if (action == ACTION_PUBLISH) {
+                                        if (TextUtils.isEmpty(text)) {
+                                            if (TextUtils.isEmpty(requiredMessage)) {
+                                                Toast.makeText(this@WebActivity, requiredMessage, Toast.LENGTH_SHORT).show()
+                                            }
+                                            return
+                                        }
+                                        if (text.length > 150) {
+                                            Toast.makeText(this@WebActivity, "字数超过限制", Toast.LENGTH_SHORT).show()
+                                            return
+                                        }
+                                    }
                                     successCallJavaScript(bizType, JSONObject().apply {
                                         put("id", id)
                                         put("text", text)
@@ -299,12 +313,6 @@ open class WebActivity : ComponentActivity() {
             Log.d(TAG, "onShowCustomView: ")
             this.mCallback = p1
             super.onShowCustomView(p0, p1)
-        }
-
-        override fun getVideoLoadingProgressView(): View {
-            return TextView(this@WebActivity).apply {
-                text = "------..."
-            }
         }
 
         override fun onHideCustomView() {
