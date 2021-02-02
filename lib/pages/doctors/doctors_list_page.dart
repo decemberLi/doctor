@@ -152,9 +152,10 @@ class _DoctorsListStates extends State<DoctorsListPage> {
 
 class DoctorsListItem extends StatelessWidget {
   final DoctorCircleEntity data;
+  final double lineHeight;
   final void Function() onClick;
 
-  DoctorsListItem(this.data,this.onClick);
+  DoctorsListItem(this.data,this.onClick,{this.lineHeight = 12});
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +173,7 @@ class DoctorsListItem extends StatelessWidget {
 
   Widget content(BuildContext context, bool isRead) {
     return Container(
-      height: 112,
+      height: 100+lineHeight,
       child: Column(
         children: [
           Container(

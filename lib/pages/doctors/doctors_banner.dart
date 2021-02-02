@@ -32,7 +32,6 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
 
   @override
   void initState() {
-    print("1233222222222------");
     _pageController.addListener(() {
       setState(() {
         if (_pageController.page == realList.length - 1) {
@@ -103,8 +102,9 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
             notification is ScrollStartNotification) {
           if (notification.dragDetails != null) {
             _timer?.cancel();
+            _timer = null;
           }else{
-            if(_timer == null || !_timer.isActive){
+            if(_timer == null){
               _startTimer();
             }
           }

@@ -92,6 +92,7 @@ class DoctorPageState
                   openBannerDetail(context, data);
                 });
               },
+              height: 207+MediaQuery.of(context).padding.top,
               holder: (context) {
                 return SafeArea(
                   child: Container(
@@ -192,7 +193,7 @@ class DoctorPageState
       setState(() {
         
       });
-    });
+    },lineHeight: 1);
   }
 
   @override
