@@ -52,8 +52,7 @@ class WebVC: UIViewController {
         webview.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
         webview.uiDelegate = self
         webview.navigationDelegate = self
-//        let urlString = initData?["url"] as? String ?? ""
-        let urlString = "http://192.168.1.27:9000/#/detail?id=340"
+        let urlString = initData?["url"] as? String ?? ""
         if let url = URL(string: urlString) {
             let request = URLRequest(url: url)
             webview.load(request)
