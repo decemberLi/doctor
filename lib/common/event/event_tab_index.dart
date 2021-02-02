@@ -4,3 +4,5 @@ class EventTabIndex {
 
   EventTabIndex(this.index, this.subIndex);
 }
+
+class EventVideoPause{}

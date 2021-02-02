@@ -1,5 +1,5 @@
 import 'package:doctor/common/event/event_model.dart';
-import 'package:doctor/pages/doctors/model/banner_entity.dart';
+import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -12,7 +12,6 @@ import '../../../root_widget.dart';
 import '../doctors_banner.dart';
 import '../doctors_banner_item.dart';
 import '../doctors_list_page.dart';
-import '../model/doctor_circle_entity.dart';
 import '../viewmodel/doctors_view_model.dart';
 import 'circleflow/category_widget.dart';
 import 'circleflow/enterprise_open_class_widget.dart';
@@ -216,6 +215,7 @@ class DoctorPageState
   @override
   void onItemClicked(DoctorsViewMode model, itemData) {
     model.markToNative(itemData);
+    eventBus.fire(EventVideoPause());
     RouteManager.openDoctorsDetail(itemData?.postId);
   }
 

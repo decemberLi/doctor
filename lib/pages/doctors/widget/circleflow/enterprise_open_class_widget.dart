@@ -88,6 +88,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
             ),
           ),
           onTap: () {
+            eventBus.fire(EventVideoPause());
             Navigator.pushNamed(context, RouteManager.DOCTOR_LIST2,
                 arguments: 'OPEN_CLASS');
           },
@@ -390,6 +391,8 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
             } else if (_isScrollPause) {
               doPlay();
             }
+          }else if(event is EventVideoPause){
+            _pausePlaying();
           }
         });
         if (AppUtils.sp.getBool(ONLY_WIFI) ?? true) {

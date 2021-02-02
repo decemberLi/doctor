@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:doctor/common/event/event_tab_index.dart';
+import 'package:doctor/root_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,6 +72,7 @@ class CategoryWidget extends StatelessWidget {
         ),
       ),
       onTap: () {
+        eventBus.fire(EventVideoPause());
         Navigator.pushNamed(context, RouteManager.DOCTOR_LIST1, arguments: jsonEncode({
           'title': each.text,
           'code': each.code,

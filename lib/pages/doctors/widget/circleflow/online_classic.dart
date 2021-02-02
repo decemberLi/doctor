@@ -1,4 +1,6 @@
+import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
+import 'package:doctor/root_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -61,6 +63,7 @@ class OnlineClassicWidget extends StatelessWidget {
             ),
           ),
           onTap: () {
+            eventBus.fire(EventVideoPause());
             Navigator.pushNamed(context, RouteManager.DOCTOR_LIST2,
                 arguments: 'VIDEO_ZONE');
           },
@@ -116,6 +119,7 @@ class OnlineClassicWidget extends StatelessWidget {
         ),
       ),
       onTap: (){
+        eventBus.fire(EventVideoPause());
         RouteManager.openDoctorsDetail(entity?.id,from: 'msg');
       },
     );
