@@ -197,7 +197,7 @@ class DoctorPageState
           }, lineHeight: 0,),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Divider(height: 0.5,),
+            child: Divider(height: 0.5,color: Color(0xffF3F5F8),),
           )
         ],
       ),

@@ -26,6 +26,7 @@ class WebVC: UIViewController {
     deinit {
         webview.removeObserver(self, forKeyPath: "estimatedProgress")
         NotificationCenter.default.removeObserver(self)
+        print("--------- deinit")
     }
     
     override func viewDidLoad() {
@@ -118,7 +119,9 @@ class WebVC: UIViewController {
     
     func initMessageHandler() ->  WKUserContentController{
         let userConfig = WKUserContentController()
-        userConfig.add(self, name: "jsCall")
+        let obj = MessageHander()
+        obj.inVC = self
+        userConfig.add(obj, name: "jsCall")
         let script = WKUserScript(source: "window.jsCall=webkit.messageHandlers.jsCall", injectionTime: .atDocumentStart, forMainFrameOnly: false)
         userConfig.addUserScript(script)
         return userConfig
@@ -143,9 +146,9 @@ private extension WebVC {
         let text = putParam["replyContent"] as? String ?? ""
         commentLbl.text = text
         textView.text = putParam["commentContent"] as? String ?? ""
-        let count = 150 - textView.text.count
+        let count = textView.text.count
         textNumLbl.text = "\(count)"
-        if count >= 0 {
+        if count <= 150 {
             textNumLbl.textColor = UIColor(rgb: 0x888888)
         } else {
             textNumLbl.textColor = UIColor(rgb: 0xF67777)
@@ -178,7 +181,9 @@ private extension WebVC {
     }
 }
 
-extension WebVC :WKScriptMessageHandler {
+private class MessageHander : NSObject,WKScriptMessageHandler {
+    weak var inVC : WebVC?
+    
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == "jsCall" else {return}
         guard let body = message.body as? String else {return}
@@ -192,23 +197,24 @@ extension WebVC :WKScriptMessageHandler {
                 guard let ticket = result as? String else {return}
                 let bizType = json["bizType"] as? String ?? ""
                 let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":"\#(ticket)"}}"#
-                self.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+                self.inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
             }
             
         }else if dispatchType == "closeWindow" {
-            dismiss(animated: true, completion: nil)
+            inVC?.dismiss(animated: true, completion: nil)
         }else if dispatchType == "setTitle" {
             let param = json["param"] as? String
-            titleLbl.text = param
+            inVC?.titleLbl.text = param
         }else if dispatchType == "showInputBar" {
-            commentData = json
-            showCommentBox()
+            inVC?.commentData = json
+            inVC?.showCommentBox()
         }else if dispatchType == "getWifiStatus" {
-            naviChannel.invokeMethod("wifiStatus", arguments: nil) { (result) in
+            naviChannel.invokeMethod("wifiStatus", arguments: nil) {[weak self] (result) in
+                guard let self = self else {return}
                 guard let status = result as? String else {return}
                 let bizType = json["bizType"] as? String ?? ""
                 let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":"\#(status)"}}"#
-                self.webview.evaluateJavaScript("nativeCall(\(params)", completionHandler: nil)
+                self.inVC?.webview.evaluateJavaScript("nativeCall(\(params)", completionHandler: nil)
             }
         }
     }
@@ -223,14 +229,15 @@ extension WebVC : WKNavigationDelegate {
         progressView.isHidden = false
         progressView.progress = 0
     }
-    
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         progressView.isHidden = true
-        webview.evaluateJavaScript("document.title") { (result, error) in
+        webview.evaluateJavaScript("document.title") {[weak self] (result, error) in
+            guard let self = self else {return}
             self.titleLbl.text = result as? String ?? "详情"
         }
     }
-    
+
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         progressView.isHidden = true
     }
@@ -238,9 +245,9 @@ extension WebVC : WKNavigationDelegate {
 
 extension WebVC : UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        let count = 150 - textView.text.count
+        let count = textView.text.count
         textNumLbl.text = "\(count)"
-        if count >= 0 {
+        if count <= 150 {
             textNumLbl.textColor = UIColor(rgb: 0x888888)
         } else {
             textNumLbl.textColor = UIColor(rgb: 0xF67777)
