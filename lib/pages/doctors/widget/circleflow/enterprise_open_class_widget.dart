@@ -390,7 +390,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         _controller.setVolume(_currentVolume);
         eventBus.on().listen((event) {
           if (event is EventTabIndex &&
-              (event.index != 2 || event.subIndex != 0)) {
+              (event.index != 1 || event.subIndex != 0)) {
             _pausePlaying();
           } else if (event is EventVideoOutOfScreen) {
             if (event.offset < 0) {

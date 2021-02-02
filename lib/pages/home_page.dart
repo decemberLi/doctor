@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage>
   int _toIndex = 0;
   final List<Widget> _children = [
     WorktopPage(),
-    PrescriptionPage(),
+    // PrescriptionPage(),
     DoctorsHome(),
     MessagePage(),
     UserPage(),
@@ -109,39 +109,39 @@ class _HomePageState extends State<HomePage>
 
   void onTabTapped(int index) async {
     _toIndex = index;
-    if (index == 2) {
-      if (isDoctors) {
-        eventBus.fire(_outScreenViewModel.event);
-      }
-      isDoctors = true;
-    } else {
-      isDoctors = false;
-    }
+    // if (index == 2) {
+    //   if (isDoctors) {
+    //     eventBus.fire(_outScreenViewModel.event);
+    //   }
+    //   isDoctors = true;
+    // } else {
+    //   isDoctors = false;
+    // }
     eventBus.fire(EventTabIndex(index, null));
     if (index == _currentIndex) {
       return;
     }
-    if (index == 4) {
+    if (index == 3) {
       eventBus.fire(KEY_UPDATE_USER_INFO);
     }
     if (index == 0) {
       showWeekIfNeededReporter(context);
       this.updateDoctorInfo();
     }
-    if (index == 1) {
-      UserInfoViewModel model =
-          Provider.of<UserInfoViewModel>(context, listen: false);
-      if (!await _checkDoctorBindRelation(model.data?.authStatus)) {
-        return;
-      }
-      if (model.data?.authStatus != 'PASS') {
-        _showAuthenticationDialog(model);
-        return;
-      }
-    }
+    // if (index == 1) {
+    //   UserInfoViewModel model =
+    //       Provider.of<UserInfoViewModel>(context, listen: false);
+    //   if (!await _checkDoctorBindRelation(model.data?.authStatus)) {
+    //     return;
+    //   }
+    //   if (model.data?.authStatus != 'PASS') {
+    //     _showAuthenticationDialog(model);
+    //     return;
+    //   }
+    // }
     setState(() {
       _currentIndex = index;
-      if (index == 3) {
+      if (index == 2) {
         _refreshMessageCenterData();
       }
     });
@@ -373,19 +373,19 @@ class _HomePageState extends State<HomePage>
                 ),
                 label: '工作台',
               ),
-              new BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/images/prescribe_uncheck.png',
-                  // width: 24,
-                  // height: 24,
-                ),
-                activeIcon: Image.asset(
-                  'assets/images/prescribe_checked.png',
-                  // width: 24,
-                  // height: 24,
-                ),
-                label: '开处方',
-              ),
+              // new BottomNavigationBarItem(
+              //   icon: Image.asset(
+              //     'assets/images/prescribe_uncheck.png',
+              //     // width: 24,
+              //     // height: 24,
+              //   ),
+              //   activeIcon: Image.asset(
+              //     'assets/images/prescribe_checked.png',
+              //     // width: 24,
+              //     // height: 24,
+              //   ),
+              //   label: '开处方',
+              // ),
               _buildDoctorsTabBarItem(value),
               new BottomNavigationBarItem(
                 icon: _messageIcon(false),
