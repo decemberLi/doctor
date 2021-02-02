@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
@@ -123,22 +124,20 @@ open class WebActivity : ComponentActivity() {
                             val json = JSONObject(param)
                             val id = json.optInt("id")
                             val replyContent = json.optString("replyContent") ?: ""
-                            val requiredMessage = json.optString("requiredMessage") ?: "请输入"
+                            val requiredMessage = json.optString("requiredMessage") ?: "请输入内容"
                             val commentContent = json.optString("commentContent") ?: ""
                             CommonInputDialog.show(this@WebActivity,
                                     json.optString("placeHolder")
                                             ?: "请输入", replyContent, commentContent, object : OnTextInputCallback {
-                                override fun onInputFinish(text: String, action: String) {
+                                override fun onInputFinish(text: String, action: String):Boolean {
                                     if (action == ACTION_PUBLISH) {
                                         if (TextUtils.isEmpty(text)) {
-                                            if (!TextUtils.isEmpty(requiredMessage)) {
-                                                Toast.makeText(this@WebActivity, requiredMessage, Toast.LENGTH_SHORT).show()
-                                            }
-                                            return
+                                            toast(requiredMessage)
+                                            return false
                                         }
                                         if (text.length > 150) {
-                                            Toast.makeText(this@WebActivity, "字数超过限制", Toast.LENGTH_SHORT).show()
-                                            return
+                                            toast("字数超过限制")
+                                            return false
                                         }
                                     }
                                     successCallJavaScript(bizType, JSONObject().apply {
@@ -146,12 +145,19 @@ open class WebActivity : ComponentActivity() {
                                         put("text", text)
                                         put("action", action)
                                     })
+                                    return true
                                 }
                             })
                         }
                     }
                 }
         )
+    }
+
+    private fun toast(text:String){
+        val toast = Toast.makeText(this@WebActivity, text, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.CENTER_VERTICAL,0,0)
+        toast.show()
     }
 
     @NonNull

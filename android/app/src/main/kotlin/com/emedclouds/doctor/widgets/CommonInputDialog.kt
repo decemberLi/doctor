@@ -23,7 +23,7 @@ interface OnTextInputCallback {
         const val ACTION_CANCEL = "cancel"
     }
 
-    fun onInputFinish(text: String, action: String)
+    fun onInputFinish(text: String, action: String): Boolean
 }
 
 class CommonInputDialog {
@@ -39,8 +39,9 @@ class CommonInputDialog {
             inputView.setInputText(commentContent)
             val dialog = object : Dialog(ctx, R.style.inputDialog) {
                 override fun dismiss() {
-                    super.dismiss()
-                    callback.onInputFinish(inputView.text(), action)
+                    if(callback.onInputFinish(inputView.text(), action)){
+                        super.dismiss()
+                    }
                 }
             }
             val mainView = (ctx.findViewById(android.R.id.content) as ViewGroup).getChildAt(0)
