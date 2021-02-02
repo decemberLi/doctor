@@ -35,7 +35,8 @@ typedef OnScrollerCallback = void Function(double offset);
 openBannerDetail(BuildContext context, data) {
   print("On banner clicked -> [${data?.toJson()}]");
   if (data.bannerType == 'RELEVANCY_POST') {
-    RouteManager.openDoctorsDetail(int.parse(data?.relatedContent), from: "msg");
+    RouteManager.openDoctorsDetail(int.parse(data?.relatedContent),
+        from: "msg");
   } else if (data.bannerType == 'ACTIVITY') {
     RouteManager.openWebPage(data?.relatedContent);
   }
@@ -92,7 +93,7 @@ class DoctorPageState
                   openBannerDetail(context, data);
                 });
               },
-              height: 207+MediaQuery.of(context).padding.top,
+              height: 207 + MediaQuery.of(context).padding.top,
               holder: (context) {
                 return SafeArea(
                   child: Container(
@@ -187,11 +188,20 @@ class DoctorPageState
 
   @override
   Widget itemWidget(BuildContext context, int index, dynamic data) {
-    return DoctorsListItem(data,(){
-      setState(() {
-        
-      });
-    },lineHeight: 1);
+    return Container(
+      color: Colors.white,
+      child: Column(
+        children: [
+          DoctorsListItem(data, () {
+            setState(() {});
+          }, lineHeight: 0,),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Divider(height: 0.5,),
+          )
+        ],
+      ),
+    );
   }
 
   @override
