@@ -38,7 +38,6 @@ class GossipNewsItemWidget extends StatelessWidget {
     if (color != null) {
       return color;
     }
-    ;
     var hitColor = colors[Random().nextInt(3)];
     _avatarPanel[idx] = hitColor;
     return hitColor;
@@ -184,7 +183,7 @@ class GossipNewsItemWidget extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(top: 5),
                 child: Text(
-                  "回复：${data.topComment.respondentContent}",
+                  "回复：${data.topComment.respondentUserName} ${data.topComment.respondentContent}",
                   style:
                       TextStyle(fontSize: 12, color: ThemeColor.colorFF999999),
                 ),
@@ -299,7 +298,7 @@ class GossipNewsPageState
   @override
   void onItemClicked(DoctorsViewMode model, itemData) {
     model.markToNative(itemData);
-    RouteManager.openDoctorsDetail(itemData?.id);
+    RouteManager.openDoctorsDetail(itemData?.postId);
   }
 
   @override

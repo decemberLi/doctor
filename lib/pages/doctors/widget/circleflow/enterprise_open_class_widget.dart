@@ -146,11 +146,34 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         ? Container()
         : Container(
             color: Color(0xffEAF3FF),
-            height: 210,
-            child: Image.network(
-              entity.coverImgUrl,
-              fit: BoxFit.cover,
-              height: 210,
+            height: 280,
+            child: Stack(
+              children: [
+                Image.network(
+                  entity.coverImgUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 280,
+                ),
+                Positioned(
+                  child: !_isPlaying
+                      ? GestureDetector(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Image(
+                              image:
+                                  AssetImage("assets/images/video_playing.png"),
+                              width: 41,
+                              height: 41,
+                            ),
+                          ),
+                          onTap: () {
+                            doPlay();
+                          },
+                        )
+                      : Container(),
+                )
+              ],
             ),
           );
   }
@@ -162,101 +185,87 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            alignment: Alignment.center,
             decoration: BoxDecoration(color: Color(0xffEAF3FF)),
             height: 210,
-            child: FutureBuilder(
-              future: _initializeVideoPlayerFuture,
-              builder: (context, snapshot) {
-                print(snapshot.connectionState);
-                if (snapshot.hasError) print(snapshot.error);
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return AspectRatio(
-                    // aspectRatio: 16 / 9,
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: Stack(
-                      children: [
-                        VideoPlayer(_controller),
-                        Positioned(
-                          bottom: 10,
-                          left: 10,
-                          child: Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.only(right: 12),
-                            width: 50,
-                            height: 20,
-                            decoration: BoxDecoration(
-                                color: Color(0xFF171717),
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Text(
-                              '${_totalTime ?? ''}',
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: GestureDetector(
-                            child: Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  color: Color(0xBB171717),
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: _currentVolume != 0
-                                  ? Image.asset(
-                                      "assets/images/mute.png",
-                                      width: 10,
-                                      height: 10,
-                                    )
-                                  : Image.asset(
-                                      "assets/images/in_mute.png",
-                                      width: 10,
-                                      height: 10,
-                                    ),
-                            ),
-                            onTap: () {
-                              if (_currentVolume == 0) {
-                                _controller.setVolume(_volume);
-                                _currentVolume = _volume;
-                              } else {
-                                _controller.setVolume(0);
-                                _currentVolume = 0;
-                              }
-                            },
-                          ),
-                        ),
-                        _cover(entity),
-                        Positioned(
-                          child: !_isPlaying
-                              ? GestureDetector(
+            child: !_isPlaying
+                ? _cover(entity)
+                : FutureBuilder(
+                    future: _initializeVideoPlayerFuture,
+                    builder: (context, snapshot) {
+                      print(snapshot.connectionState);
+                      if (snapshot.hasError) print(snapshot.error);
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return AspectRatio(
+                          // aspectRatio: 16 / 9,
+                          aspectRatio: _controller.value.aspectRatio,
+                          child: Stack(
+                            children: [
+                              VideoPlayer(_controller),
+                              Positioned(
+                                bottom: 10,
+                                left: 10,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.only(right: 12),
+                                  width: 50,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xFF171717),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Text(
+                                    '${_totalTime ?? ''}',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 10,
+                                right: 10,
+                                child: GestureDetector(
                                   child: Container(
                                     alignment: Alignment.center,
-                                    child: Image(
-                                      image: AssetImage(
-                                          "assets/images/video_playing.png"),
-                                      width: 41,
-                                      height: 41,
-                                    ),
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Color(0xBB171717),
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: _currentVolume != 0
+                                        ? Image.asset(
+                                            "assets/images/mute.png",
+                                            width: 10,
+                                            height: 10,
+                                          )
+                                        : Image.asset(
+                                            "assets/images/in_mute.png",
+                                            width: 10,
+                                            height: 10,
+                                          ),
                                   ),
                                   onTap: () {
-                                    doPlay();
+                                    if (_currentVolume == 0) {
+                                      _controller.setVolume(_volume);
+                                      _currentVolume = _volume;
+                                    } else {
+                                      _controller.setVolume(0);
+                                      _currentVolume = 0;
+                                    }
                                   },
-                                )
-                              : Container(),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
+                                ),
+                              ),
+                              _cover(entity),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 4),
@@ -354,8 +363,6 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
   @override
   void initState() {
     super.initState();
-    // routeObserver.subscribe(this, ModalRoute.of(context));
-    // _controller = VideoPlayerController.network("https://oss-dev.e-medclouds.com/Business-attachment/2021-01/100000/22160003-rc-upload-1611301838305-18.mp4");
     widget.stream.listen((List<OpenClassEntity> event) {
       snapshot = event;
       initVideoPlayerController(event[0].videoUrl);

@@ -97,7 +97,7 @@ class _LikeMessagePageState
 
   @override
   void onItemClicked(SocialMessageListViewModel model, itemData) {
-    RouteManager.openDoctorsDetail(itemData?.id,from: 'msg');
+    RouteManager.openDoctorsDetail(itemData?.postId,from: 'msg');
     model?.messageClicked(itemData?.messageId);
   }
 }
