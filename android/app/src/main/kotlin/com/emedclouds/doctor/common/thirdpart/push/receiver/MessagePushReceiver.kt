@@ -7,8 +7,10 @@ import android.util.Log
 import cn.jpush.android.api.CustomMessage
 import cn.jpush.android.api.JPushInterface
 import cn.jpush.android.service.JPushMessageReceiver
+import com.emedclouds.doctor.MainActivity
 import com.emedclouds.doctor.utils.ChannelManager
 import com.emedclouds.doctor.utils.MethodChannelResultAdapter
+import com.emedclouds.doctor.utils.SystemUtil
 import com.tencent.bugly.Bugly
 import com.tencent.bugly.crashreport.BuglyLog
 import org.json.JSONObject
@@ -35,6 +37,12 @@ class MessagePushReceiver : BroadcastReceiver() {
         if(!json.has("extras")){
             Log.w(TAG, "onReceive ## extras is null")
             return;
+        }
+        if(SystemUtil.isForeground(context)){
+            Log.d(TAG, "onReceive: 非前台应用，启动 activity, context = $context")
+            val openIntent = Intent(context, MainActivity::class.java)
+            openIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context?.startActivity(openIntent)
         }
         ChannelManager.instance.callFlutter("receiveNotification", json.getString("extras"),
                 object : MethodChannelResultAdapter() {
