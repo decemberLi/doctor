@@ -314,12 +314,19 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     );
   }
 
-  void doPlay() {
+  void doPlay() async {
     if (_isPlaying) {
       return;
     }
     if (!_isPlaying) {
-      _controller.play();
+      if (_isReplay) {
+        print("------------replay----play");
+        _formatTime(
+            Duration(milliseconds: _residueTime) - _oneMillSecondsDuration);
+        await _controller.seekTo(Duration(milliseconds: 0));
+        _isReplay = false;
+      }
+      await _controller.play();
       _isPlaying = true;
     }
     _countDownTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
@@ -339,15 +346,15 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
   double _volume = 0;
   double _currentVolume = 0;
   bool _isScrollPause = false;
+  bool _isReplay = false;
 
   _formatTime(Duration total) {
     if (total.inMilliseconds < 0) {
       _totalTime = _formatTime(_controller.value.duration);
       _residueTime = _controller.value.duration.inMilliseconds;
-      _countDownTimer.cancel();
-      _countDownTimer = null;
-      _isPlaying = false;
-      setState(() {});
+      _pausePlaying();
+      print("------------replay");
+      _isReplay = true;
       return;
     }
     print(total.inMilliseconds);
@@ -391,7 +398,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
             } else if (_isScrollPause) {
               doPlay();
             }
-          }else if(event is EventVideoPause){
+          } else if (event is EventVideoPause) {
             _pausePlaying();
           }
         });

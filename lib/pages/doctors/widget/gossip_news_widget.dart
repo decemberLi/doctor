@@ -183,7 +183,7 @@ class GossipNewsItemWidget extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(top: 5),
                 child: Text(
-                  "回复：${data.topComment.respondentUserName} ${data.topComment.respondentContent}",
+                  "回复 ${data.topComment.respondentUserName}：${data.topComment.respondentContent}",
                   style:
                       TextStyle(fontSize: 12, color: ThemeColor.colorFF999999),
                 ),
