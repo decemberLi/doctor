@@ -23,6 +23,15 @@ class WebVC: UIViewController {
     
     fileprivate var commentData : [AnyHashable:Any]?
     
+    override var shouldAutorotate: Bool { true }
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        .portrait
+    }
+    
+    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        .portrait
+    }
+    
     deinit {
         webview.removeObserver(self, forKeyPath: "estimatedProgress")
         NotificationCenter.default.removeObserver(self)
