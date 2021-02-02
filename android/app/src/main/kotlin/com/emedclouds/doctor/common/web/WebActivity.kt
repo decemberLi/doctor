@@ -57,6 +57,7 @@ open class WebActivity : ComponentActivity() {
         mContainer = flVideoContainer
         mWebView.webChromeClient = YWebChromeClient()
         mWebView.webViewClient = YWebViewClient()
+        mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         bindEvent()
         val jsApiCaller = JsApiCaller(this, mWebView)
         initJavaScriptApi(jsApiCaller)
@@ -117,7 +118,8 @@ open class WebActivity : ComponentActivity() {
                             val placeHolder = json.optString("placeHolder") ?: "请输入"
                             val commentContent = json.optString("commentContent") ?: ""
                             CommonInputDialog.show(this@WebActivity,
-                                    json.optString("placeHolder") ?: "请输入", replyContent, commentContent, object : OnTextInputCallback {
+                                    json.optString("placeHolder")
+                                            ?: "请输入", replyContent, commentContent, object : OnTextInputCallback {
                                 override fun onInputFinish(text: String, action: String) {
                                     successCallJavaScript(bizType, JSONObject().apply {
                                         put("id", id)

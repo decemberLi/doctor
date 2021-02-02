@@ -8,6 +8,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.view.inputmethod.InputMethod.SHOW_FORCED
 import android.view.inputmethod.InputMethodManager
@@ -43,18 +44,21 @@ class CommonInputDialog {
                 }
             }
             val mainView = (ctx.findViewById(android.R.id.content) as ViewGroup).getChildAt(0)
-            mainView.viewTreeObserver.addOnGlobalLayoutListener {
-                val r = Rect()
-                if (mainView != null) {
-                    mainView.getWindowVisibleDisplayFrame(r)
-                    // check if the visible part of the screen is less than 85%
-                    // if it is then the keyboard is showing
-                    val newState = r.height().toDouble() / mainView.rootView.height.toDouble() < 0.85
-                    if (!newState && dialog.isShowing) {
-                        dialog.dismiss()
+            mainView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val r = Rect()
+                    if (mainView != null) {
+                        mainView.getWindowVisibleDisplayFrame(r)
+                        // check if the visible part of the screen is less than 85%
+                        // if it is then the keyboard is showing
+                        val newState = r.height().toDouble() / mainView.rootView.height.toDouble() < 0.85
+                        if (!newState && dialog.isShowing) {
+                            dialog.dismiss()
+                            mainView.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                        }
                     }
                 }
-            }
+            })
             inputView.publish(Runnable {
                 action = ACTION_PUBLISH
                 if (dialog.isShowing) {

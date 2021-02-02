@@ -9,7 +9,6 @@ import cn.jpush.android.api.JPushInterface
 import com.emedclouds.doctor.common.constants.keyLaunchParam
 import com.emedclouds.doctor.common.web.WebActivity
 import com.emedclouds.doctor.common.web.pluginwebview.X5WebViewPlugin
-import com.emedclouds.doctor.pages.CommonWebActivity
 import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
 import com.emedclouds.doctor.utils.ChannelManager
