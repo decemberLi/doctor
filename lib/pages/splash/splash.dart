@@ -12,7 +12,6 @@ class GuidePage extends StatefulWidget {
     'guidance2.png',
     'guidance3.png',
     'guidance4.png',
-    'guidance5.png',
   ];
 
   @override

@@ -7,6 +7,7 @@
 
 import UIKit
 import WebKit
+import MBProgressHUD
 
 class WebVC: UIViewController {
     var webview : WKWebView!
@@ -154,8 +155,18 @@ private extension WebVC {
     }
     
     @IBAction func onSend(){
-        view.endEditing(true)
         guard let putData = commentData else {return}
+        if textView.text.count > 150 {
+            MBProgressHUD.toastText(msg: "字数超过限制")
+            return
+        }else if textView.text.count == 0 {
+            let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
+            let message = putParam["requiredMessage"] as? String ?? "请输入内容"
+            MBProgressHUD.toastText(msg: message)
+            return
+        }
+        view.endEditing(true)
+        
         let bizType = putData["bizType"] as? String ?? ""
         let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
         let id = putParam["id"] as? Int ?? -1
