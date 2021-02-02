@@ -154,24 +154,22 @@ class DoctorPageState
             },
           ),
           Container(
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
             color: Colors.white,
             child: DoctorsBanner(
               _model.flowBannerStream,
               (context, data, index) {
-                return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                    child: DoctorBannerItemNormal(
-                      data,
-                      onClick: (data) {
-                        openBannerDetail(context, data);
-                      },
-                    ));
+                return DoctorBannerItemNormal(
+                  data,
+                  onClick: (data) {
+                    openBannerDetail(context, data);
+                  },
+                );
               },
               height: 80,
               holder: (context) {
                 return Container(
                   color: Colors.white,
-                  height: 12,
                 );
               },
             ),
