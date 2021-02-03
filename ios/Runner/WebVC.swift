@@ -167,7 +167,7 @@ private extension WebVC {
         if textView.text.count > 150 {
             MBProgressHUD.toastText(msg: "字数超过限制")
             return
-        }else if textView.text.count == 0 {
+        }else if textView.text.trimmingCharacters(in: CharacterSet.whitespaces).count == 0 {
             let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
             let message = putParam["requiredMessage"] as? String ?? "请输入内容"
             MBProgressHUD.toastText(msg: message)
