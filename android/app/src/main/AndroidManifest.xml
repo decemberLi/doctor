@@ -110,7 +110,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light.NoTitleBar">
+            android:theme="@style/BaseActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
