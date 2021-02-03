@@ -237,17 +237,13 @@ open class WebActivity : ComponentActivity() {
 
 
     inner class YWebViewClient : WebViewClient() {
-        val mKProgressHUD = KProgressHUD(this@WebActivity)
-                .setLabel("加载中...")
 
         override fun onPageStarted(p0: WebView?, p1: String?, p2: Bitmap?) {
-            mKProgressHUD.show()
             super.onPageStarted(p0, p1, p2)
         }
 
         override fun onPageFinished(p0: WebView?, p1: String?) {
-            mKProgressHUD.dismiss()
-            mWebView.visibility = View.GONE
+            mEmptyView.visibility = View.GONE
             super.onPageFinished(p0, p1)
         }
 
