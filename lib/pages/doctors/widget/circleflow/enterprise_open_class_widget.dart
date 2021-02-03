@@ -235,14 +235,14 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
                                             BorderRadius.circular(15)),
                                     child: _currentVolume != 0
                                         ? Image.asset(
-                                            "assets/images/mute.png",
-                                            width: 10,
-                                            height: 10,
+                                            "assets/images/in_mute.png",
+                                            width: 15,
+                                            height: 15,
                                           )
                                         : Image.asset(
-                                            "assets/images/in_mute.png",
-                                            width: 10,
-                                            height: 10,
+                                            "assets/images/mute.png",
+                                            width: 15,
+                                            height: 15,
                                           ),
                                   ),
                                   onTap: () {

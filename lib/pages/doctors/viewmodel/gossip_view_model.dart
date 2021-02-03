@@ -22,6 +22,9 @@ class GossipViewModel {
 
   refreshTopBanner() async {
     var banner = await _topBannerModel.getBanner();
+    if(banner == null || banner.length == 0){
+      return ;
+    }
     _topBannerStreamController.sink.add(banner);
   }
 

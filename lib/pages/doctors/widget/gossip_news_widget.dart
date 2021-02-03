@@ -103,10 +103,13 @@ class GossipNewsItemWidget extends StatelessWidget {
                 maxLines: 10,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                    fontSize: 14,
-                    color: data.read
-                        ? ThemeColor.colorFFC1C1C1
-                        : ThemeColor.colorFF222222)),
+                  fontSize: 15,
+                  color: data.read
+                      ? ThemeColor.colorFFC1C1C1
+                      : ThemeColor.colorFF222222,
+                  height: 1.6,
+                  letterSpacing: 0.6,
+                )),
           ),
           _buildCommentArea(),
           Padding(
@@ -172,7 +175,7 @@ class GossipNewsItemWidget extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 6),
                   child: Text(
-                    data.topComment.commentUserName??'',
+                    data.topComment.commentUserName ?? '',
                     style: commentTextStyle,
                   ),
                 )
