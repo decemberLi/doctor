@@ -75,7 +75,7 @@ class AcademicCircleViewModel {
 
   refreshTopBanner() async {
     var banner = await _topBannerModel.getBanner();
-    if(banner == null || banner.length == 0){
+    if(banner == null){
       return ;
     }
     _topBannerStreamController.sink.add(banner);
@@ -83,7 +83,7 @@ class AcademicCircleViewModel {
 
   refreshFlowBanner() async {
     var banner = await _flowBannerModel.getBanner();
-    if(banner == null || banner.length == 0){
+    if(banner == null){
       return ;
     }
     _flowBannerStreamController.sink.add(banner);

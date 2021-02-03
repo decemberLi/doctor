@@ -17,10 +17,10 @@ class BannerViewModel {
           .toList();
       return Future.value(result);
     } on DioError catch (e) {
-      return Future.value(List<BannerEntity>());
+      return Future.value(null);
     } catch (e) {
       print(e);
-      return Future.value(List<BannerEntity>());
+      return Future.value(null);
     }
   }
 }
