@@ -66,7 +66,10 @@ open class WebActivity : ComponentActivity() {
         initJavaScriptApi(jsApiCaller)
         mWebView.addJavascriptInterface(NativeApiProvider(this, jsApiCaller), "jsCall")
         mWebView.loadUrl(getUrl())
-        mEmptyView.setOnClickListener { mWebView.loadUrl(getUrl()) }
+        mEmptyView.setOnClickListener {
+            mWebView.loadUrl(getUrl())
+            mEmptyView.visibility = View.VISIBLE
+        }
     }
 
     open fun initJavaScriptApi(apiCaller: JsApiCaller) {
@@ -243,7 +246,6 @@ open class WebActivity : ComponentActivity() {
         }
 
         override fun onPageFinished(p0: WebView?, p1: String?) {
-            mEmptyView.visibility = View.GONE
             super.onPageFinished(p0, p1)
         }
 

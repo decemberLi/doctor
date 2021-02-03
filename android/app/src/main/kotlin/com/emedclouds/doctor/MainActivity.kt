@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Log
 import cn.jpush.android.api.JPushInterface
 import com.emedclouds.doctor.common.constants.keyLaunchParam
+import com.emedclouds.doctor.common.thirdpart.push.receiver.MessagePushReceiver
 import com.emedclouds.doctor.common.web.WebActivity
 import com.emedclouds.doctor.common.web.pluginwebview.X5WebViewPlugin
 import com.emedclouds.doctor.pages.ShareActivity
@@ -21,6 +22,7 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
+import java.lang.Exception
 
 class MainActivity : FlutterActivity() {
     private val tag = "MainActivity"
@@ -82,10 +84,12 @@ class MainActivity : FlutterActivity() {
             }
         })
         goWebIfNeeded(intent)
+        openNotificationIfNeeded(intent)
         flutterEngine?.renderer?.addIsDisplayingFlutterUiListener(object : FlutterUiDisplayListener {
             override fun onFlutterUiDisplayed() {
                 Log.d("MainActivity", "onFlutterUiDisplayed")
                 postJPushRegisterId()
+                openNotificationIfNeeded(intent)
             }
 
             override fun onFlutterUiNoLongerDisplayed() {
@@ -106,6 +110,7 @@ class MainActivity : FlutterActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         goWebIfNeeded(intent)
+        openNotificationIfNeeded(intent)
     }
 
     private fun goWebIfNeeded(intent: Intent?) {
@@ -123,7 +128,7 @@ class MainActivity : FlutterActivity() {
         }
 
         val parse = Uri.parse(ext)
-        val extValue = parse.getQueryParameter("ext");
+        val extValue = parse.getQueryParameter("ext")
         if (extValue != null) {
             val recIntent = Intent(this@MainActivity, WebActivity::class.java)
             recIntent.putExtra("url", JSONObject(extValue).getString("url"))
@@ -140,6 +145,35 @@ class MainActivity : FlutterActivity() {
     override fun onPause() {
         super.onPause()
         MobclickAgent.onPause(this)
+    }
+
+    private fun openNotificationIfNeeded(intent: Intent?) {
+        if(intent == null){
+            return
+        }
+        val extra = intent.getStringExtra("extras")
+        intent.removeExtra("extras")
+        if(extra == null){
+            return
+        }
+        try {
+            ChannelManager.instance.callFlutter("receiveNotification", intent.getStringExtra(extra),
+                    object : MethodChannelResultAdapter() {
+                        override fun success(result: Any?) {
+                            Log.d(MessagePushReceiver.TAG, "Dispatch message success: [${extra}]")
+                        }
+
+                        override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                            Log.d(MessagePushReceiver.TAG, "Dispatch message failure: [${extra}]")
+                        }
+
+                        override fun notImplemented() {
+                            Log.d(MessagePushReceiver.TAG, "Dispatch message failure, method not implemented")
+                        }
+                    })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 //    override fun finish() {

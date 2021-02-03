@@ -50,23 +50,30 @@ class MessagePushReceiver : BroadcastReceiver() {
             }
             if (!SystemUtil.isForeground(ctx)) {
                 Log.d(TAG, "onReceive: 非前台应用，启动 activity, context = $context")
-                SystemUtil.setTopApp(ctx)
-                val openIntent = Intent(ctx, YYYActivity::class.java)
-                openIntent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK)
-                ctx.startActivity(openIntent)
+                if(!SystemUtil.setTopApp(ctx)){
+                    val openIntent = Intent(ctx, YYYActivity::class.java)
+                    openIntent.putExtra("extras", json.getString("extras"))
+                    openIntent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK)
+                    ctx.startActivity(openIntent)
+                    return
+                }
             }
-            ChannelManager.instance.callFlutter("receiveNotification", json.getString("extras"),
+            val extraStr = json.getString("extras")
+            if (extraStr == null) {
+                return
+            }
+            ChannelManager.instance.callFlutter("receiveNotification", extraStr,
                     object : MethodChannelResultAdapter() {
                         override fun success(result: Any?) {
-                            Log.d(TAG, "Dispatch message success: [${extra}]")
+                            Log.d(MessagePushReceiver.TAG, "Dispatch message success: [${extra}]")
                         }
 
                         override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                            Log.d(TAG, "Dispatch message failure: [${extra}]")
+                            Log.d(MessagePushReceiver.TAG, "Dispatch message failure: [${extra}]")
                         }
 
                         override fun notImplemented() {
-                            Log.d(TAG, "Dispatch message failure, method not implemented")
+                            Log.d(MessagePushReceiver.TAG, "Dispatch message failure, method not implemented")
                         }
                     })
         } catch (e: Exception) {
