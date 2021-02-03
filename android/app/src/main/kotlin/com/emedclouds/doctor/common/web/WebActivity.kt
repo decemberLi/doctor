@@ -66,6 +66,7 @@ open class WebActivity : ComponentActivity() {
         initJavaScriptApi(jsApiCaller)
         mWebView.addJavascriptInterface(NativeApiProvider(this, jsApiCaller), "jsCall")
         mWebView.loadUrl(getUrl())
+        mEmptyView.setOnClickListener { mWebView.loadUrl(getUrl()) }
     }
 
     open fun initJavaScriptApi(apiCaller: JsApiCaller) {
@@ -93,7 +94,7 @@ open class WebActivity : ComponentActivity() {
         ApiManager.instance.addApi("closeWindow",
                 object : BaseApi(apiCaller) {
                     override fun doAction(bizType: String, param: String?) {
-                        runOnUiThread{finish()}
+                        runOnUiThread { finish() }
                     }
                 })
         ApiManager.instance.addApi("getWifiStatus",
@@ -129,9 +130,9 @@ open class WebActivity : ComponentActivity() {
                             CommonInputDialog.show(this@WebActivity,
                                     json.optString("placeHolder")
                                             ?: "请输入", replyContent, commentContent, object : OnTextInputCallback {
-                                override fun onInputFinish(text: String, action: String):Boolean {
+                                override fun onInputFinish(text: String, action: String): Boolean {
                                     if (action == ACTION_PUBLISH) {
-                                        if (TextUtils.isEmpty(text)) {
+                                        if (TextUtils.isEmpty(text) || text.trim().isEmpty()) {
                                             toast(requiredMessage)
                                             return false
                                         }
@@ -154,9 +155,9 @@ open class WebActivity : ComponentActivity() {
         )
     }
 
-    private fun toast(text:String){
+    private fun toast(text: String) {
         val toast = Toast.makeText(this@WebActivity, text, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.CENTER_VERTICAL,0,0)
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
         toast.show()
     }
 
@@ -246,6 +247,7 @@ open class WebActivity : ComponentActivity() {
 
         override fun onPageFinished(p0: WebView?, p1: String?) {
             mKProgressHUD.dismiss()
+            mWebView.visibility = View.GONE
             super.onPageFinished(p0, p1)
         }
 
@@ -267,8 +269,10 @@ open class WebActivity : ComponentActivity() {
         override fun onReceivedError(view: WebView?,
                                      request: WebResourceRequest?,
                                      error: WebResourceError?) {
-            if (ERROR_HOST_LOOKUP == error?.errorCode) {
+            if ((ERROR_HOST_LOOKUP == error?.errorCode || error?.errorCode == ERROR_UNKNOWN) && request?.isForMainFrame == true) {
+                mWebView.clearHistory()
                 Log.d(TAG, "网络链接错误")
+                mEmptyView.visibility = View.VISIBLE
             } else {
                 Log.d(TAG,
                         "onReceivedError:: errorCode [${error?.errorCode}], errorMsg [${error?.description}]")
