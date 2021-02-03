@@ -94,7 +94,7 @@ class OnlineClassicWidget extends StatelessWidget {
                       entity.coverImgUrl,
                       width: 133,
                       height: 80,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
             ),
             Padding(

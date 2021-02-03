@@ -106,12 +106,14 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         children: [
           Container(
             decoration: BoxDecoration(color: Color(0xffEAF3FF)),
-            height: 102,
-            width: double.infinity,
-            child: entity.coverImgUrl == null
-                ? Container()
-                : Image.network(entity.coverImgUrl,
-                    width: double.infinity, height: 102, fit: BoxFit.cover),
+            height: 90,
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: entity.coverImgUrl == null
+                  ? Container()
+                  : Image.network(entity.coverImgUrl,
+                      width: double.infinity, height: 102, fit: BoxFit.fill),
+            ),
           ),
           Padding(
             padding: EdgeInsets.only(top: 8),
@@ -276,8 +278,9 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                  fontSize: 14,
-                  color: ThemeColor.colorFF222222,),
+                fontSize: 14,
+                color: ThemeColor.colorFF222222,
+              ),
             ),
           ),
           Padding(
@@ -478,7 +481,8 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
                   margin: EdgeInsets.only(top: 12),
                   child: Row(
                     children: [
-                      Expanded(child: buildVideoPreviewItem(context, snapshot[0])),
+                      Expanded(
+                          child: buildVideoPreviewItem(context, snapshot[0])),
                     ],
                   ),
                 ),
