@@ -100,7 +100,7 @@ class WebVC: UIViewController {
             }
         }else{
             self.textBG.snp.remakeConstraints { (maker) in
-                maker.bottom.equalToSuperview()
+                maker.top.equalTo(self.textAllBG.snp.bottom)
             }
             UIView.animate(withDuration: duration) {
                 self.textColorBG.alpha = 0

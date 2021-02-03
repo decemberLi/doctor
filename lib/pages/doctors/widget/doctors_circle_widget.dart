@@ -190,6 +190,7 @@ class DoctorPageState
   Widget itemWidget(BuildContext context, int index, dynamic data) {
     return Container(
       color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         children: [
           DoctorsListItem(data, () {

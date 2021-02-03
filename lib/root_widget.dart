@@ -5,6 +5,7 @@ import 'package:device_info/device_info.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -70,6 +71,12 @@ class RootWidget extends StatelessWidget {
       var context = NavigationService().navigatorKey.currentContext;
       try {
         var obj = json.decode(args);
+        var userID = obj["userId"];
+        UserInfoViewModel model =
+        Provider.of<UserInfoViewModel>(context, listen: false);
+        if (userID != model.data.doctorUserId) {
+          return ;
+        }
         var type = obj["bizType"];
         if (type == "QUALIFICATION_AUTH") {
           // 资质认证
