@@ -315,7 +315,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
   }
 
   void doPlay() async {
-    if (_isPlaying) {
+    if (_isPlaying || !_isCurrentPage) {
       return;
     }
     if (!_isPlaying) {
@@ -378,7 +378,12 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     WidgetsBinding.instance.addObserver(this);
   }
 
+  bool _isCurrentPage = true;
+
   Future initVideoPlayerController(String videoUrl) async {
+    if (_controller != null) {
+      _pausePlaying();
+    }
     _controller = VideoPlayerController.network(videoUrl);
     _controller.setLooping(false);
     _initializeVideoPlayerFuture = _controller.initialize()
@@ -389,11 +394,17 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         _formatTime(_controller.value.duration);
         _controller.setVolume(_currentVolume);
         eventBus.on().listen((event) {
+          if (event is EventTabIndex) {
+            _isCurrentPage = event.index == 1;
+          }
           if (event is EventTabIndex &&
               (event.index != 1 || event.subIndex != 0)) {
             _pausePlaying();
           } else if (event is EventVideoOutOfScreen) {
             if (event.offset < 0) {
+              if (!_controller.value.isPlaying) {
+                return;
+              }
               _pausePlaying(isScrollPause: true);
             } else if (_isScrollPause) {
               doPlay();
