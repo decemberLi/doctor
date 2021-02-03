@@ -182,6 +182,7 @@ private extension WebVC {
         let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":{"id":\#(id),"text":"\#(text)","action":"publish"}}}"#
         webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
         textView.text = ""
+        updateText()
         
     }
     @IBAction func onCancel(){
