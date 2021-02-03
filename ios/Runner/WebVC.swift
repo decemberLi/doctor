@@ -19,11 +19,18 @@ class WebVC: UIViewController {
     @IBOutlet var textBG : UIView!
     @IBOutlet var textColorBG : UIView!
     @IBOutlet var textAllBG : UIView!
+    @IBOutlet var errorView : UIView!
     
     var initData : [String:Any]?
     
     fileprivate var commentData : [AnyHashable:Any]?
-    
+    @available(iOS 13.0 , *)
+    override var overrideUserInterfaceStyle: UIUserInterfaceStyle {
+        get{.light}
+        set{
+            super.overrideUserInterfaceStyle = newValue
+        }
+    }
     override var shouldAutorotate: Bool { true }
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         .portrait
@@ -188,6 +195,15 @@ private extension WebVC {
     @IBAction func onBack(){
         dismiss(animated: true, completion: nil)
     }
+    
+    @IBAction func onRefreash() {
+        errorView.isHidden = true
+        let urlString = initData?["url"] as? String ?? ""
+        if let url = URL(string: urlString) {
+            let request = URLRequest(url: url)
+            webview.load(request)
+        }
+    }
 }
 
 private class MessageHander : NSObject,WKScriptMessageHandler {
@@ -249,6 +265,7 @@ extension WebVC : WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         progressView.isHidden = true
+        errorView.isHidden = false
     }
 }
 

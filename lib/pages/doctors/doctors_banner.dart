@@ -104,12 +104,12 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
             _timer?.cancel();
             _timer = null;
           }else{
-            if(_timer == null){
-              _startTimer();
-            }
+
           }
         } else if (notification is ScrollEndNotification) {
-
+          if(_timer == null){
+            _startTimer();
+          }
         }
         return true;
       },

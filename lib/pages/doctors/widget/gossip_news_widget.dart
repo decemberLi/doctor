@@ -284,6 +284,7 @@ class GossipNewsPageState
             },
           );
         },
+        height: 207 + MediaQuery.of(context).padding.top,
         holder: (context) {
           return SafeArea(
             child: Container(
