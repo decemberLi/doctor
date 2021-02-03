@@ -74,7 +74,7 @@ class RootWidget extends StatelessWidget {
         var userID = obj["userId"];
         UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
-        if (userID != model.data.doctorUserId) {
+        if (userID != model.data.doctorUserId || !SessionManager.shared.isLogin) {
           return ;
         }
         var type = obj["bizType"];
