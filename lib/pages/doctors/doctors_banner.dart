@@ -42,7 +42,6 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
           _currentIndex = realList.length-3;
         } else {
           var page = _pageController.page.round() - 1;
-          print("the old page is $page");
           if (page > realList.length - 2 - 1) {
             page = 0;
           } else if (page <= -1) {
@@ -50,7 +49,6 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
           }
           // page = min(page, );
           // page = max(0, page);
-          print("the page is $page");
           _currentIndex = page;
         }
       });
