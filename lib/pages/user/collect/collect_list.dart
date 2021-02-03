@@ -25,6 +25,7 @@ class CollectDetailList extends StatelessWidget {
     }
 
     Widget timeLineCell(BuildContext context, dynamic data) {
+      print("the cell is $data");
       return _DoctorTimeLineCell(data);
     }
 
@@ -391,6 +392,8 @@ class _DoctorTimeLineCell extends StatelessWidget {
     } else if (type == "ACADEMIC") {
       rendColor = Color(0xff9577FA);
       name = "学术";
+    }else{
+      return Container();
     }
     return DecoratedBox(
       decoration: BoxDecoration(color: rendColor),
@@ -437,7 +440,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
         );
       }
     } else {
-      name = data.anonymityName;
+      name = data.anonymityName ?? "Name";
       head = Text(
         name[0],
         style: TextStyle(
