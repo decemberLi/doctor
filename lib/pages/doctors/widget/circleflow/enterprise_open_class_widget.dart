@@ -60,15 +60,16 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
             children: [
               Image(
                 image: AssetImage("assets/images/doctor_circle_head_icon.png"),
-                width: 12,
-                height: 12,
+                width: 14,
+                height: 14,
               ),
               Container(
+                padding: EdgeInsets.only(bottom: 2),
                 margin: EdgeInsets.only(left: 10),
                 child: Text(
                   "企业公开课",
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 16,
                     color: ThemeColor.colorFF222222,
                     fontWeight: FontWeight.bold,
                   ),
@@ -82,7 +83,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
             child: Text(
               "查看全部",
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 14,
                 color: ThemeColor.colorFF489DFE,
               ),
             ),
@@ -119,7 +120,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 14,
                 color: ThemeColor.colorFF222222,
               ),
             ),
@@ -235,14 +236,14 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
                                             BorderRadius.circular(15)),
                                     child: _currentVolume != 0
                                         ? Image.asset(
-                                            "assets/images/mute.png",
-                                            width: 10,
-                                            height: 10,
+                                            "assets/images/in_mute.png",
+                                            width: 15,
+                                            height: 15,
                                           )
                                         : Image.asset(
-                                            "assets/images/in_mute.png",
-                                            width: 10,
-                                            height: 10,
+                                            "assets/images/mute.png",
+                                            width: 15,
+                                            height: 15,
                                           ),
                                   ),
                                   onTap: () {
@@ -275,9 +276,8 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                  fontSize: 16,
-                  color: ThemeColor.colorFF222222,
-                  fontWeight: FontWeight.bold),
+                  fontSize: 14,
+                  color: ThemeColor.colorFF222222,),
             ),
           ),
           Padding(
@@ -467,28 +467,34 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     }
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.only(left: 20, top: 12, right: 20),
       child: Column(
         children: [
-          header(context),
           Container(
-            margin: EdgeInsets.only(top: 12),
-            child: Row(
+            padding: EdgeInsets.only(left: 20, top: 12, right: 20),
+            child: Column(
               children: [
-                Expanded(child: buildVideoPreviewItem(context, snapshot[0])),
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 12),
-            child: Row(
-              children: [
-                Expanded(child: buildItem(context, snapshot[1])),
+                header(context),
                 Container(
-                  width: 20,
-                  color: Colors.white,
+                  margin: EdgeInsets.only(top: 12),
+                  child: Row(
+                    children: [
+                      Expanded(child: buildVideoPreviewItem(context, snapshot[0])),
+                    ],
+                  ),
                 ),
-                Expanded(child: buildItem(context, snapshot[2])),
+                Container(
+                  margin: EdgeInsets.only(top: 12),
+                  child: Row(
+                    children: [
+                      Expanded(child: buildItem(context, snapshot[1])),
+                      Container(
+                        width: 20,
+                        color: Colors.white,
+                      ),
+                      Expanded(child: buildItem(context, snapshot[2])),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

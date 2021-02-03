@@ -31,33 +31,37 @@ class OnlineClassicWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Expanded(
-            child: Row(
-          children: [
-            Image(
-              image: AssetImage("assets/images/doctor_circle_head_icon.png"),
-              width: 12,
-              height: 12,
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 10),
-              child: Text(
-                "在线医课堂",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: ThemeColor.colorFF222222,
-                  fontWeight: FontWeight.bold,
-                ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image(
+                image: AssetImage("assets/images/doctor_circle_head_icon.png"),
+                width: 14,
+                height: 14,
               ),
-            )
-          ],
-        )),
+              Container(
+                padding: EdgeInsets.only(bottom: 2),
+                margin: EdgeInsets.only(left: 10),
+                child: Text(
+                  "在线医课堂",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: ThemeColor.colorFF222222,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
         GestureDetector(
           child: Container(
             margin: EdgeInsets.only(left: 10, right: 20),
             child: Text(
               "查看全部",
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 14,
                 color: ThemeColor.colorFF489DFE,
               ),
             ),
@@ -87,11 +91,11 @@ class OnlineClassicWidget extends StatelessWidget {
               child: entity.coverImgUrl == null
                   ? Container()
                   : Image.network(
-                entity.coverImgUrl,
-                width: 133,
-                height: 80,
-                fit: BoxFit.cover,
-              ),
+                      entity.coverImgUrl,
+                      width: 133,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    ),
             ),
             Padding(
               padding: EdgeInsets.only(top: 8),
@@ -100,7 +104,7 @@ class OnlineClassicWidget extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 14,
                   color: ThemeColor.colorFF222222,
                 ),
               ),
@@ -118,9 +122,9 @@ class OnlineClassicWidget extends StatelessWidget {
           ],
         ),
       ),
-      onTap: (){
+      onTap: () {
         eventBus.fire(EventVideoPause());
-        RouteManager.openDoctorsDetail(entity?.id,from: 'msg');
+        RouteManager.openDoctorsDetail(entity?.id, from: 'msg');
       },
     );
   }
@@ -140,7 +144,7 @@ class OnlineClassicWidget extends StatelessWidget {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.only(left: 20, top: 12),
-      height: 173,
+      height: 178,
       child: Column(
         children: [
           header(context),

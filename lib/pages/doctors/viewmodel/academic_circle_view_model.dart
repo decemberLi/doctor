@@ -75,11 +75,17 @@ class AcademicCircleViewModel {
 
   refreshTopBanner() async {
     var banner = await _topBannerModel.getBanner();
+    if(banner == null || banner.length == 0){
+      return ;
+    }
     _topBannerStreamController.sink.add(banner);
   }
 
   refreshFlowBanner() async {
     var banner = await _flowBannerModel.getBanner();
+    if(banner == null || banner.length == 0){
+      return ;
+    }
     _flowBannerStreamController.sink.add(banner);
   }
 
@@ -102,7 +108,6 @@ class AcademicCircleViewModel {
       }
       _onlineClassStreamController.sink.add(results);
     } on DioError catch (e) {
-      _onlineClassStreamController.sink.add(List<OnlineClassicEntity>());
     }
   }
 
@@ -127,7 +132,6 @@ class AcademicCircleViewModel {
       }
       _openClassStreamController.sink.add(results);
     } on DioError catch (e) {
-      _openClassStreamController.sink.add(List<OpenClassEntity>());
     }
   }
 
@@ -147,10 +151,8 @@ class AcademicCircleViewModel {
             .toList();
         _categoryStreamController.sink.add(configList);
       } else {
-        _categoryStreamController.sink.add(List<CategoryEntity>());
       }
     } on DioError catch (e) {
-      _categoryStreamController.sink.add(List<CategoryEntity>());
     }
   }
 
