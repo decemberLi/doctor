@@ -145,20 +145,27 @@ class WebVC: UIViewController {
 }
 
 private extension WebVC {
-    func showCommentBox() {
+    func showCommentBox(old:[AnyHashable:Any]) {
         textView.becomeFirstResponder()
         guard let putData = commentData else {return}
         let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
         let text = putParam["replyContent"] as? String ?? ""
         commentLbl.text = text
-        textView.text = putParam["commentContent"] as? String ?? ""
-        let count = textView.text.count
-        textNumLbl.text = "\(count)"
-        if count <= 150 {
-            textNumLbl.textColor = UIColor(rgb: 0x888888)
-        } else {
-            textNumLbl.textColor = UIColor(rgb: 0xF67777)
+        if let oldParams = old["param"] as? [AnyHashable:Any] {
+            let oldID = oldParams["id"] as? Int ?? -100
+            let newID = putParam["id"] as? Int ?? -101
+            if oldID != newID {
+                textView.text = ""
+                let count = textView.text.count
+                textNumLbl.text = "\(count)"
+                if count <= 150 {
+                    textNumLbl.textColor = UIColor(rgb: 0x888888)
+                } else {
+                    textNumLbl.textColor = UIColor(rgb: 0xF67777)
+                }
+            }
         }
+        
     }
     
     @IBAction func onSend(){
@@ -231,8 +238,9 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
             let param = json["param"] as? String
             inVC?.titleLbl.text = param
         }else if dispatchType == "showInputBar" {
+            let old = inVC?.commentData ?? [:]
             inVC?.commentData = json
-            inVC?.showCommentBox()
+            inVC?.showCommentBox(old: old)
         }else if dispatchType == "getWifiStatus" {
             naviChannel.invokeMethod("wifiStatus", arguments: nil) {[weak self] (result) in
                 guard let self = self else {return}

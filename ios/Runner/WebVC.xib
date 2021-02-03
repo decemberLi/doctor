@@ -125,7 +125,7 @@
                                         <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lZd-AF-0yF">
                                             <rect key="frame" x="12" y="10" width="374" height="33"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="123" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SOC-zS-VO7">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SOC-zS-VO7">
                                                     <rect key="frame" x="0.0" y="0.0" width="374" height="33"/>
                                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     <color key="textColor" systemColor="labelColor"/>
