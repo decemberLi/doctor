@@ -25,13 +25,13 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            android:lines="1"
-            android:layout_marginLeft="60dp"
-            android:layout_marginRight="60dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
             android:ellipsize="end"
+            android:lines="1"
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_17" />
 
@@ -51,6 +51,24 @@
             android:id="@+id/flVideoContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/mEmptyView"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/empty" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="网络错误，请点击重试" />
+        </LinearLayout>
 
     </FrameLayout>
 
