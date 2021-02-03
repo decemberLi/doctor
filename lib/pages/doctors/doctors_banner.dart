@@ -77,12 +77,10 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
   }
 
   _startTimer() {
-    print("start timer  ----- ");
     _timer?.cancel();
     _timer = Timer.periodic(
       Duration(seconds: 10),
       (timer) {
-        print("the timer ---");
         _pageController.animateToPage(
           _pageController.page.round() + 1,
           duration: Duration(milliseconds: 400),

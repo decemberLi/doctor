@@ -23,9 +23,9 @@ class SystemUtil {
             return false
         }
 
-        fun setTopApp(context: Context) {
+        fun setTopApp(context: Context):Boolean {
             if (isForeground(context)) {
-                return
+                return true
             }
             //获取ActivityManager
             val activityManager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
@@ -36,9 +36,10 @@ class SystemUtil {
                 //找到本应用的 task，并将它切换到前台
                 if (taskInfo.topActivity!!.packageName == context.packageName) {
                     activityManager.moveTaskToFront(taskInfo.id, 0)
-                    break
+                    return true
                 }
             }
+            return false
         }
     }
 }
