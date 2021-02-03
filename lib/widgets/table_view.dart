@@ -53,12 +53,14 @@ class _SubCollectState<T> extends State<NormalTableView>
     }on DioError catch(e) {
       setState(() {
         if (e.error is SocketException){
-          _error = "网络错误，请下拉刷新重试";
+          _error = "网络错误，请点击重试";
         }else{
           _error = e.message;
         }
       });
-    }finally {
+    }catch (e) {
+      _error = "$e";
+    } finally {
       EasyLoading.dismiss();
       setState(() {
         _firstLoading = false;
@@ -75,6 +77,7 @@ class _SubCollectState<T> extends State<NormalTableView>
       _controller.footerMode.value = LoadStatus.noMore;
     }
     setState(() {
+      _error = null;
       _list = array;
     });
   }
@@ -111,15 +114,18 @@ class _SubCollectState<T> extends State<NormalTableView>
     if (_firstLoading){
       return Container();
     }
+    var child = widget.holder is Function
+        ? widget.holder(_error != null, _error)
+        : ViewStateEmptyWidget(
+      message: _error != null ? "$_error" : "没有数据",
+    );
+
     return Center(
-      child: widget.holder is Function
-          ? widget.holder(_error != null, _error)
-          : ViewStateEmptyWidget(
-        message: _error != null ? "$_error" : "没有数据",
+      child: FlatButton(
+        child: child,
         onPressed: (){
-          if(_error != null){
-            _firstGetData();
-          }
+          print("the print is  0---");
+          _loadingGetData();
         },
       ),
     );
@@ -146,6 +152,8 @@ class _SubCollectState<T> extends State<NormalTableView>
           return widget.itemBuilder(context, item);
         },
       );
+    }else if (_error != null) {
+      return child;
     }
     return SmartRefresher(
       controller: _controller,
