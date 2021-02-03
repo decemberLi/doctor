@@ -1,6 +1,7 @@
 package com.emedclouds.doctor.utils
 
 import android.app.ActivityManager
+import android.app.ActivityManager.MOVE_TASK_WITH_HOME
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 
@@ -35,7 +36,7 @@ class SystemUtil {
             for (taskInfo in taskInfoList) {
                 //找到本应用的 task，并将它切换到前台
                 if (taskInfo.topActivity!!.packageName == context.packageName) {
-                    activityManager.moveTaskToFront(taskInfo.id, 0)
+                    activityManager.moveTaskToFront(taskInfo.id, MOVE_TASK_WITH_HOME)
                     return true
                 }
             }
