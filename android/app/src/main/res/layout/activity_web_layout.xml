@@ -53,9 +53,9 @@
             android:layout_height="match_parent" />
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/mEmptyView"
             android:gravity="center"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -65,6 +65,7 @@
                 android:src="@drawable/empty" />
 
             <TextView
+                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="网络错误，请点击重试" />

@@ -269,7 +269,8 @@ open class WebActivity : ComponentActivity() {
         override fun onReceivedError(view: WebView?,
                                      request: WebResourceRequest?,
                                      error: WebResourceError?) {
-            if (ERROR_HOST_LOOKUP == error?.errorCode) {
+            if ((ERROR_HOST_LOOKUP == error?.errorCode || error?.errorCode == ERROR_UNKNOWN) && request?.isForMainFrame == true) {
+                mWebView.clearHistory()
                 Log.d(TAG, "网络链接错误")
                 mEmptyView.visibility = View.VISIBLE
             } else {
