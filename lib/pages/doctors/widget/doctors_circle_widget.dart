@@ -80,104 +80,107 @@ class DoctorPageState
   }
 
   bodyHeader() {
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            alignment: Alignment.center,
-            color: Colors.white,
-            child: DoctorsBanner(
-              _model.topBannerStream,
-              (context, data, index) {
-                return DoctorBannerItemGrass(data, onClick: (data) {
-                  openBannerDetail(context, data);
-                });
-              },
-              height: 207 + MediaQuery.of(context).padding.top,
-              holder: (context) {
-                return SafeArea(
-                  child: Container(
-                    height: 40,
-                  ),
-                );
-              },
-            ),
-          ),
-          StreamBuilder(
-            stream: _model.categoryStream,
-            builder: (BuildContext context,
-                AsyncSnapshot<List<CategoryEntity>> snapshot) {
-              if (snapshot.hasData && snapshot.data.length != 0) {
-                return Column(
-                  children: [
-                    CategoryWidget(snapshot.data),
-                    Container(
-                      color: ThemeColor.colorFFF9F9F9,
-                      width: double.infinity,
-                      height: 6,
+    return Stack(children: [
+
+      Container(
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              color: Colors.white,
+              child: DoctorsBanner(
+                _model.topBannerStream,
+                    (context, data, index) {
+                  return DoctorBannerItemGrass(data, onClick: (data) {
+                    openBannerDetail(context, data);
+                  });
+                },
+                height: 207 + MediaQuery.of(context).padding.top,
+                holder: (context) {
+                  return SafeArea(
+                    child: Container(
+                      height: 40,
                     ),
-                  ],
-                );
-              }
-              return Container();
-            },
-          ),
-          StreamBuilder(
-            stream: _model.onlineClassStream,
-            builder: (BuildContext context,
-                AsyncSnapshot<List<OnlineClassicEntity>> snapshot) {
-              if (snapshot.hasData && snapshot.data.length >= 3) {
-                return OnlineClassicWidget(snapshot.data);
-              }
-              return Container(color: Colors.white);
-            },
-          ),
-          Container(
-            color: Colors.white,
-            child: EnterpriseOpenClassWidget(
-              _videoStackKey,
-              _model.openClassStream,
-              Container(
-                color: ThemeColor.colorFFF9F9F9,
-                width: double.infinity,
-                height: 6,
+                  );
+                },
               ),
             ),
-          ),
-          StreamBuilder(
-            stream: _model.hotPostStream,
-            builder: (BuildContext context,
-                AsyncSnapshot<List<HotPostEntity>> snapshot) {
-              if (snapshot.hasData && snapshot.data.length != 0) {
-                return HotPostWidget(snapshot.data);
-              }
-              return Container(color: Colors.white);
-            },
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-            color: Colors.white,
-            child: DoctorsBanner(
-              _model.flowBannerStream,
-              (context, data, index) {
-                return DoctorBannerItemNormal(
-                  data,
-                  onClick: (data) {
-                    openBannerDetail(context, data);
-                  },
-                );
-              },
-              height: 80,
-              holder: (context) {
-                return Container(
-                  color: Colors.white,
-                );
+            StreamBuilder(
+              stream: _model.categoryStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<CategoryEntity>> snapshot) {
+                if (snapshot.hasData && snapshot.data.length != 0) {
+                  return Column(
+                    children: [
+                      CategoryWidget(snapshot.data),
+                      Container(
+                        color: ThemeColor.colorFFF9F9F9,
+                        width: double.infinity,
+                        height: 6,
+                      ),
+                    ],
+                  );
+                }
+                return Container();
               },
             ),
-          ),
-        ],
-      ),
-    );
+            StreamBuilder(
+              stream: _model.onlineClassStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<OnlineClassicEntity>> snapshot) {
+                if (snapshot.hasData && snapshot.data.length >= 3) {
+                  return OnlineClassicWidget(snapshot.data);
+                }
+                return Container(color: Colors.white);
+              },
+            ),
+            Container(
+              color: Colors.white,
+              child: EnterpriseOpenClassWidget(
+                _videoStackKey,
+                _model.openClassStream,
+                Container(
+                  color: ThemeColor.colorFFF9F9F9,
+                  width: double.infinity,
+                  height: 6,
+                ),
+              ),
+            ),
+            StreamBuilder(
+              stream: _model.hotPostStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<HotPostEntity>> snapshot) {
+                if (snapshot.hasData && snapshot.data.length != 0) {
+                  return HotPostWidget(snapshot.data);
+                }
+                return Container(color: Colors.white);
+              },
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+              color: Colors.white,
+              child: DoctorsBanner(
+                _model.flowBannerStream,
+                    (context, data, index) {
+                  return DoctorBannerItemNormal(
+                    data,
+                    onClick: (data) {
+                      openBannerDetail(context, data);
+                    },
+                  );
+                },
+                height: 80,
+                holder: (context) {
+                  return Container(
+                    color: Colors.white,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      )
+    ],);
   }
 
   @override
