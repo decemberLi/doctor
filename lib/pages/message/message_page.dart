@@ -84,7 +84,7 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                       color: ThemeColor.colorFFBCBCBC,
                     ),
                     Positioned(
-                      left: msgCount > 99?-30:-20,
+                      left: msgCount > 99 ? -30 : -20,
                       top: 4,
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 3),
@@ -149,24 +149,26 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      messageItem('系统通知', 'assets/images/msg_system_notice.png',
-                          systemCount, () {
-                        goMessageList(MessageType.TYPE_SYSTEM);
-                      }, 1, dotColor: _dotColor(systemCount)),
-                      messageItem('学术推广', 'assets/images/msg_learn_plan.png',
-                          leanPlanCount + interactiveCount, () {
-                        goStudyPlane();
-                      }, 2,
-                          dotColor:
-                              _dotColor(leanPlanCount + interactiveCount)),
-                      messageItem('患者处方', 'assets/images/msg_patient.png',
-                          prescriptionCount, () {
-                        goMessageList(MessageType.TYPE_PRESCRIPTION);
-                      }, 3, dotColor: _dotColor(prescriptionCount)),
-                      // messageItem('互动消息', 'assets/images/msg_interact.png',
-                      //     interactiveCount, () {
-                      //   goMessageList(MessageType.TYPE_INTERACTIVE);
-                      // }, 4, dotColor: _dotColor(interactiveCount)),
+                      messageItem(
+                        '系统通知',
+                        'assets/images/msg_system_notice.png',
+                        systemCount,
+                        () {
+                          goMessageList(MessageType.TYPE_SYSTEM);
+                        },
+                        1,
+                        dotColor: _dotColor(systemCount),
+                      ),
+                      messageItem(
+                        '学术推广',
+                        'assets/images/msg_learn_plan.png',
+                        leanPlanCount + interactiveCount,
+                        () {
+                          goStudyPlane();
+                        },
+                        2,
+                        dotColor: _dotColor(leanPlanCount + interactiveCount),
+                      ),
                     ],
                   ),
                 )

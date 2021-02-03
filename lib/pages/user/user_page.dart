@@ -91,7 +91,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
 
 //跳转列表样式
   Widget messageItem(String lable, String img, callBack, {String num}) {
-    return Container(
+    var content = Container(
       padding: EdgeInsets.symmetric(horizontal: 34),
       child: Container(
         height: 54,
@@ -138,43 +138,13 @@ class _UserPageState extends State<UserPage> with RouteAware {
             ),
           ],
         ),
-        // child: ListTile(
-        //   title: Text(
-        //     lable ?? '',
-        //     style: TextStyle(
-        //       color: ThemeColor.colorFF000000,
-        //       fontSize: 14,
-        //     ),
-        //   ),
-        //   leading: Image.asset(
-        //     img,
-        //     width: 24,
-        //     height: 24,
-        //   ),
-        //   trailing: Container(
-        //     color: Colors.white,
-        //     width: 100,
-        //     child: Row(
-        //       crossAxisAlignment: CrossAxisAlignment.center,
-        //       mainAxisAlignment: MainAxisAlignment.end,
-        //       children: [
-        //         if (lable == "我的收藏")
-        //           Text(
-        //             num,
-        //             style: TextStyle(
-        //               color: ThemeColor.colorFF000000,
-        //               fontSize: 14,
-        //             ),
-        //           ),
-        //         Icon(Icons.keyboard_arrow_right),
-        //       ],
-        //     ),
-        //   ),
-        //   onTap: () {
-        //     callBack();
-        //   },
-        // ),
       ),
+    );
+    return GestureDetector(
+      onTap: (){
+        callBack();
+      },
+      child: content,
     );
   }
 
