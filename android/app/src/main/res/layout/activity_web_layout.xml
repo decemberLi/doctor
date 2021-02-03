@@ -53,6 +53,7 @@
             android:layout_height="match_parent" />
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/mEmptyView"
             android:gravity="center"
             android:orientation="vertical"
