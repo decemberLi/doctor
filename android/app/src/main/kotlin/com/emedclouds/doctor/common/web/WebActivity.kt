@@ -131,7 +131,7 @@ open class WebActivity : ComponentActivity() {
                                             ?: "请输入", replyContent, commentContent, object : OnTextInputCallback {
                                 override fun onInputFinish(text: String, action: String):Boolean {
                                     if (action == ACTION_PUBLISH) {
-                                        if (TextUtils.isEmpty(text)) {
+                                        if (TextUtils.isEmpty(text) || text.trim().isEmpty()) {
                                             toast(requiredMessage)
                                             return false
                                         }
