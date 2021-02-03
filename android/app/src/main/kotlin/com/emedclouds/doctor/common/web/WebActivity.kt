@@ -3,6 +3,7 @@ package com.emedclouds.doctor.common.web
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -159,8 +160,8 @@ open class WebActivity : ComponentActivity() {
     }
 
     private fun toast(text: String) {
-        val toast = Toast.makeText(this@WebActivity, text, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+        val toast = Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.CENTER, 0, 0)
         toast.show()
     }
 
