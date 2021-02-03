@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +9,7 @@ import 'YYYEasyLoading.dart';
 
 class NormalTableView<T> extends StatefulWidget {
   final Widget Function(BuildContext, T) itemBuilder; // 返回列表中每行Item
-  final Widget Function(bool, Error) holder; // 空页面或者错误占位页面
+  final Widget Function(bool, String) holder; // 空页面或者错误占位页面
   final EdgeInsets padding;
   final Future<List<T>> Function(int) getData; // 获取数据（接口函数）
   final int pageSize; // 每页数据个数，默认10个
@@ -30,8 +32,9 @@ class NormalTableView<T> extends StatefulWidget {
 class _SubCollectState<T> extends State<NormalTableView>
     with AutomaticKeepAliveClientMixin {
   RefreshController _controller = RefreshController(initialRefresh: false);
-  Error _error;
+  String _error;
   List<T> _list = [];
+  bool _firstLoading = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -45,12 +48,20 @@ class _SubCollectState<T> extends State<NormalTableView>
   //第一次获取数据的时候，显示加载loading
   _loadingGetData() async {
     try {
-      EasyLoading.instance.flash(() async{
-        await _firstGetData();
-      });
+      EasyLoading.show();
+      await _firstGetData();
     }on DioError catch(e) {
       setState(() {
-        _error = AssertionError(e.message);
+        if (e.error is SocketException){
+          _error = "网络错误，请下拉刷新重试";
+        }else{
+          _error = e.message;
+        }
+      });
+    }finally {
+      EasyLoading.dismiss();
+      setState(() {
+        _firstLoading = false;
       });
     }
 
@@ -96,16 +107,29 @@ class _SubCollectState<T> extends State<NormalTableView>
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    Widget child = Center(
+  Widget _showHolder(){
+    if (_firstLoading){
+      return Container();
+    }
+    return Center(
       child: widget.holder is Function
           ? widget.holder(_error != null, _error)
           : ViewStateEmptyWidget(
-              message: _error != null ? _error : "没有数据",
-            ),
+        message: _error != null ? "$_error" : "没有数据",
+        onPressed: (){
+          if(_error != null){
+            _firstGetData();
+          }
+        },
+      ),
     );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    Widget child = _showHolder();
     if (_list.length > 0) {
       child = ListView.builder(
         itemCount: _list.length + (this.widget.header != null ? 1 : 0),

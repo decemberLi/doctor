@@ -156,13 +156,7 @@ private extension WebVC {
             let newID = putParam["id"] as? Int ?? -101
             if oldID != newID {
                 textView.text = ""
-                let count = textView.text.count
-                textNumLbl.text = "\(count)"
-                if count <= 150 {
-                    textNumLbl.textColor = UIColor(rgb: 0x888888)
-                } else {
-                    textNumLbl.textColor = UIColor(rgb: 0xF67777)
-                }
+                updateText()
             }
         }
         
@@ -187,16 +181,19 @@ private extension WebVC {
         let text = textView.text ?? ""
         let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":{"id":\#(id),"text":"\#(text)","action":"publish"}}}"#
         webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+        textView.text = ""
+        
     }
     @IBAction func onCancel(){
         view.endEditing(true)
         guard let putData = commentData else {return}
         let bizType = putData["bizType"] as? String ?? ""
         let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
-        let id = putParam["id"] as? String ?? ""
+        let id = putParam["id"] as? Int ?? -1
         let text = textView.text ?? ""
-        let params = #"{"bizType":\#(bizType),"param":{"code":0,"content":{"id":"\#(id)","text":"\#(text)","action":"cancel"}}}"#
+        let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":{"id":\#(id),"text":"\#(text)","action":"cancel"}}}"#
         webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+        
     }
     
     @IBAction func onBack(){
@@ -278,7 +275,8 @@ extension WebVC : WKNavigationDelegate {
 }
 
 extension WebVC : UITextViewDelegate {
-    func textViewDidChange(_ textView: UITextView) {
+    
+    func updateText(){
         let count = textView.text.count
         textNumLbl.text = "\(count)"
         if count <= 150 {
@@ -286,5 +284,9 @@ extension WebVC : UITextViewDelegate {
         } else {
             textNumLbl.textColor = UIColor(rgb: 0xF67777)
         }
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        updateText()
     }
 }
