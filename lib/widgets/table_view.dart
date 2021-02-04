@@ -13,6 +13,7 @@ class NormalTableViewController {
   _SubCollectState _inState;
 
   void refresh() {
+    _inState._scrollController.jumpTo(0);
     _inState._controller.requestRefresh();
   }
 }
@@ -89,7 +90,6 @@ class _SubCollectState<T> extends State<NormalTableView>
       });
     } catch (e) {
       _error = "$e";
-      throw e;
     } finally {
       EasyLoading.dismiss();
       setState(() {
