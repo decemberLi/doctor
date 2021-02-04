@@ -7,7 +7,7 @@ import 'package:doctor/provider/view_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'YYYEasyLoading.dart';
+import 'package:flutter/cupertino.dart';
 
 class NormalTableViewController {
   _SubCollectState _inState;
@@ -78,7 +78,7 @@ class _SubCollectState<T> extends State<NormalTableView>
   //第一次获取数据的时候，显示加载loading
   _loadingGetData() async {
     try {
-      EasyLoading.show();
+      _firstLoading = true;
       await _firstGetData();
     } on DioError catch (e) {
       setState(() {
@@ -165,11 +165,38 @@ class _SubCollectState<T> extends State<NormalTableView>
     );
   }
 
+  Widget loading(){
+    return Container(
+      child: Center(
+        child: Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child:Theme(
+            data: ThemeData(
+                cupertinoOverrideTheme: CupertinoThemeData(
+                  brightness: Brightness.dark,
+                )
+            ),
+            child: CupertinoActivityIndicator(
+              radius: 14,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     Widget child = _showHolder();
-    if (_list.length > 0) {
+    if(_firstLoading){
+      return loading();
+    }else if (_list.length > 0) {
       child = CustomScrollView(
         controller: _scrollController,
         slivers: [
