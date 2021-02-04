@@ -90,8 +90,10 @@ class MainActivity : FlutterActivity() {
         flutterEngine?.renderer?.addIsDisplayingFlutterUiListener(object : FlutterUiDisplayListener {
             override fun onFlutterUiDisplayed() {
                 Log.d("MainActivity", "onFlutterUiDisplayed")
-                postJPushRegisterId()
-                mHandler.postDelayed({ openNotificationIfNeeded(intent) }, 2000)
+                mHandler.postDelayed({
+                    postJPushRegisterId()
+                    openNotificationIfNeeded (intent)
+                }, 2000)
             }
 
             override fun onFlutterUiNoLongerDisplayed() {
