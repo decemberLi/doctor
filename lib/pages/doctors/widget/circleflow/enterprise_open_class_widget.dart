@@ -327,13 +327,19 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
       }
       await _controller.play();
       _isPlaying = true;
-    }
-    _countDownTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      var tim = Duration(milliseconds: _residueTime) - _oneMillSecondsDuration;
-      _formatTime(tim);
       setState(() {});
-    });
-    setState(() {});
+    }
+    print("_countDownTimer == null ${_countDownTimer == null}");
+    if(_countDownTimer == null) {
+      _countDownTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+        setState(() {
+          print("time被调度");
+          var tim = Duration(milliseconds: _residueTime) -
+              _oneMillSecondsDuration;
+          _formatTime(tim);
+        });
+      });
+    }
   }
 
   bool _isPlaying = false;
@@ -356,7 +362,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
       _isReplay = true;
       return;
     }
-    print(total.inMilliseconds);
+    // print(total.inMilliseconds);
     var minute = total.inMinutes;
     var second = total.inSeconds - minute * 60;
     var seconds = second < 10 ? "0$second" : "$second";
@@ -415,6 +421,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         if (AppUtils.sp.getBool(ONLY_WIFI) ?? true) {
           ConnectivityResult connectivityResult =
               await (Connectivity().checkConnectivity());
+          print("isWifi: ------- ${connectivityResult == ConnectivityResult.wifi}");
           if (connectivityResult == ConnectivityResult.wifi) {
             doPlay();
           }
@@ -444,14 +451,15 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     print(state);
   }
 
-  _pausePlaying({bool isScrollPause = false}) {
+  _pausePlaying({bool isScrollPause = false}) async {
     if (_isPlaying) {
       print(
           "isScrollPause && _isPlaying -------------------> ${isScrollPause && _isPlaying}");
       _isScrollPause = isScrollPause && _isPlaying;
       _isPlaying = false;
-      _controller.pause();
-      if (_countDownTimer != null && _countDownTimer.isActive) {
+      await _controller.pause();
+      if (_countDownTimer != null) {
+        //print("_countDownTimer 被取消");
         _countDownTimer.cancel();
         _countDownTimer = null;
       }
