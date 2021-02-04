@@ -4,6 +4,7 @@ import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
+import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,17 +53,14 @@ class DoctorsPage extends StatefulWidget {
 }
 
 class DoctorPageState
-    extends AbstractListPageState<DoctorsViewMode, DoctorsPage> {
+    extends State<DoctorsPage> {
   ScrollOutScreenViewModel _inScreenViewModel;
   final _model = DoctorsViewMode(type: 'ACADEMIC');
 
   bool _currentIsOutScreen = false;
   GlobalKey _videoStackKey = GlobalKey();
+  final NormalTableViewController _controller = NormalTableViewController();
 
-  @override
-  Widget emptyWidget(String msg) {
-    return super.emptyWidget('暂无数据，请刷新后重试');
-  }
 
   @override
   void initState() {
@@ -72,7 +70,7 @@ class DoctorPageState
           event is OutScreenEvent &&
           event.page == PAGE_DOCTOR &&
           _currentIsOutScreen) {
-        requestRefresh();
+        _controller.refresh();
       }
     }, cancelOnError: true);
     _inScreenViewModel =
@@ -87,12 +85,12 @@ class DoctorPageState
             alignment: Alignment.center,
             color: Colors.white,
             child: DoctorsBanner(
-              _model.topBannerStream,
                   (context, data, index) {
                 return DoctorBannerItemGrass(data, onClick: (data) {
                   openBannerDetail(context, data);
                 });
               },
+              dataStream: _model.topBannerStream,
               height: 207 + MediaQuery.of(context).padding.top,
               holder: (context) {
                 return SafeArea(
@@ -158,7 +156,6 @@ class DoctorPageState
             padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
             color: Colors.white,
             child: DoctorsBanner(
-              _model.flowBannerStream,
                   (context, data, index) {
                 return DoctorBannerItemNormal(
                   data,
@@ -167,6 +164,7 @@ class DoctorPageState
                   },
                 );
               },
+              dataStream: _model.flowBannerStream,
               height: 80,
               holder: (context) {
                 return Container(
@@ -180,20 +178,15 @@ class DoctorPageState
     );
   }
 
-  @override
-  Widget divider(BuildContext context, int index) => Container();
 
-  @override
-  DoctorsViewMode getModel() => _model;
-
-  @override
-  Widget itemWidget(BuildContext context, int index, dynamic data) {
+  Widget itemWidget(BuildContext context, dynamic data) {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         children: [
           DoctorsListItem(data, () {
+            eventBus.fire(EventVideoPause());
             setState(() {});
           }, lineHeight: 0,),
           Container(
@@ -205,13 +198,13 @@ class DoctorPageState
     );
   }
 
-  @override
+
   void scrollOutOfScreen(bool outScreen) {
     _currentIsOutScreen = outScreen;
     _inScreenViewModel.updateState(PAGE_DOCTOR, _currentIsOutScreen);
   }
 
-  @override
+
   void scrollOffset(double offset) {
     if (widget.callback != null) {
       RenderBox box = _videoStackKey.currentContext.findRenderObject();
@@ -222,7 +215,6 @@ class DoctorPageState
     }
   }
 
-  @override
   void onItemClicked(DoctorsViewMode model, itemData) {
     model.markToNative(itemData);
     eventBus.fire(EventVideoPause());
@@ -230,5 +222,27 @@ class DoctorPageState
   }
 
   @override
-  String noMoreDataText() => '已显示全部帖子';
+  Widget build(BuildContext context) {
+    return NormalTableView(
+      controller: _controller,
+      pageSize: 20,
+      itemBuilder: (context, data) {
+        return itemWidget(context, data);
+      },
+      header: (context) {
+        return bodyHeader();
+      },
+      getData: (page) async {
+        if (page == 1) {
+          return await _model.refresh();
+        }
+        return await _model.loadData(pageNum: page);
+      },
+      onScroll: (context, offset) {
+        var outScreen = MediaQuery.of(context).size.height < offset;
+        scrollOutOfScreen(outScreen);
+        scrollOffset(offset);
+      },
+    );
+  }
 }

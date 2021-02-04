@@ -7,6 +7,7 @@ import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
+import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,6 @@ final _avatarPanel = {};
 
 class GossipNewsItemWidget extends StatelessWidget {
   final DoctorCircleEntity data;
-  final int index;
   final VoidCallback onLikeClick;
 
   final List<Color> colors = [
@@ -31,7 +31,7 @@ class GossipNewsItemWidget extends StatelessWidget {
     const Color(0xFFFABB3E),
   ];
 
-  GossipNewsItemWidget(this.data, this.index, this.onLikeClick);
+  GossipNewsItemWidget(this.data, this.onLikeClick);
 
   Color _avatarColor(int idx) {
     Color color = _avatarPanel[idx];
@@ -216,12 +216,12 @@ class GossipNewsPage extends StatefulWidget {
   State<StatefulWidget> createState() => GossipNewsPageState();
 }
 
-class GossipNewsPageState
-    extends AbstractListPageState<DoctorsViewMode, GossipNewsPage> {
+class GossipNewsPageState extends State<GossipNewsPage> {
   ScrollOutScreenViewModel _inScreenViewModel;
 
   bool _currentIsOutScreen = false;
   final _model = DoctorsViewMode(type: 'GOSSIP');
+  final NormalTableViewController _controller = NormalTableViewController();
 
   @override
   void initState() {
@@ -231,7 +231,7 @@ class GossipNewsPageState
           event is OutScreenEvent &&
           event.page == PAGE_GOSSIP &&
           _currentIsOutScreen) {
-        requestRefresh();
+        _controller.refresh();
       }
     }, cancelOnError: true);
     _inScreenViewModel =
@@ -239,46 +239,54 @@ class GossipNewsPageState
   }
 
   @override
-  Widget divider(BuildContext context, int index) => Container(
-        color: ThemeColor.colorFFF8F8F8,
-        height: 6,
-      );
-
-  @override
-  DoctorsViewMode getModel() => _model;
-
-  @override
-  Widget emptyWidget(String msg) {
-    return super.emptyWidget('暂无数据，请刷新后重试');
+  Widget build(BuildContext context) {
+    return NormalTableView(
+      controller: _controller,
+      pageSize: 20,
+      itemBuilder: (context, data) {
+        var content = Column(
+          children: [
+            GossipNewsItemWidget(data, () {
+              _model.like(data.postId);
+            }),
+            Container(
+              color: ThemeColor.colorFFF8F8F8,
+              height: 6,
+            ),
+          ],
+        );
+        return GestureDetector(
+          onTap: (){
+            onItemClicked(_model,data);
+          },
+          child: content,
+        );
+      },
+      header: (context) {
+        return bodyHeader();
+      },
+      getData: (page) async {
+        if (page == 1) {
+          return await _model.refresh();
+        }
+        return await _model.loadData(pageNum: page);
+      },
+      onScroll: (context, offset) {
+        var outScreen = MediaQuery.of(context).size.height < offset;
+        _currentIsOutScreen = outScreen;
+        _inScreenViewModel.updateState(PAGE_GOSSIP, _currentIsOutScreen);
+        if (widget.callback != null) {
+          widget.callback(offset);
+        }
+      },
+    );
   }
 
-  @override
-  Widget itemWidget(BuildContext context, int index, dynamic data) {
-    return GossipNewsItemWidget(data, index, () {
-      _model.like(data.postId);
-    });
-  }
-
-  @override
-  void scrollOutOfScreen(bool outScreen) {
-    _currentIsOutScreen = outScreen;
-    _inScreenViewModel.updateState(PAGE_GOSSIP, _currentIsOutScreen);
-  }
-
-  @override
-  void scrollOffset(double offset) {
-    if (widget.callback != null) {
-      widget.callback(offset);
-    }
-  }
-
-  @override
   bodyHeader() {
     return Container(
       alignment: Alignment.center,
       color: Colors.white,
       child: DoctorsBanner(
-        _model.gossipTopBannerStream,
         (context, data, index) {
           return DoctorBannerItemGrass(
             data,
@@ -287,6 +295,7 @@ class GossipNewsPageState
             },
           );
         },
+        dataStream: _model.gossipTopBannerStream,
         height: 207 + MediaQuery.of(context).padding.top,
         holder: (context) {
           return SafeArea(
@@ -299,12 +308,9 @@ class GossipNewsPageState
     );
   }
 
-  @override
   void onItemClicked(DoctorsViewMode model, itemData) {
     model.markToNative(itemData);
     RouteManager.openDoctorsDetail(itemData?.postId);
   }
 
-  @override
-  String noMoreDataText() => '已显示全部帖子';
 }

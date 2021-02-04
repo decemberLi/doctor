@@ -9,8 +9,9 @@ class DoctorsBanner extends StatefulWidget {
   final Function(BuildContext, dynamic, int) itemBuilder;
   final double height;
   final Widget Function(BuildContext) holder;
+  final List data;
 
-  DoctorsBanner(this.dataStream, this.itemBuilder, {this.height = 237,this.holder});
+  DoctorsBanner(this.itemBuilder, {this.dataStream, this.height = 237,this.holder,this.data});
 
   @override
   State<StatefulWidget> createState() {
@@ -53,18 +54,27 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
         }
       });
     });
-    widget.dataStream.listen((event) {
-      print("the event is ---$event");
-      initDatas(event);
-    });
+    if (widget.dataStream != null) {
+      widget.dataStream.listen((event) {
+        print("the event is ---$event");
+        initDatas(event);
+      });
+    }else{
+      initDatas(widget.data);
+    }
+
 
     super.initState();
   }
+
   void initDatas(List dataList){
     realList.clear();
-    realList.addAll(dataList);
-    print("the data is --- ${ dataList.length}");
-    if (dataList.length > 1) {
+    if (dataList is List) {
+      realList.addAll(dataList);
+    }
+
+    print("the data is --- ${ dataList}");
+    if (realList.length > 1) {
       setState(() {
         realList.insert(0, dataList[dataList.length - 1]);
         realList.add(dataList[0]);
