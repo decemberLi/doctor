@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
   ScrollOutScreenViewModel _outScreenViewModel;
-  bool isDoctors = false;
+  bool isDoctors = true;
 
   int _currentIndex = 1;
   int _toIndex = 0;
