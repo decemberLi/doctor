@@ -178,7 +178,8 @@ private extension WebVC {
         let bizType = putData["bizType"] as? String ?? ""
         let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
         let id = putParam["id"] as? Int ?? -1
-        let text = textView.text ?? ""
+        var text = textView.text ?? ""
+        text = text.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
         let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":{"id":\#(id),"text":"\#(text)","action":"publish"}}}"#
         webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
         textView.text = ""
