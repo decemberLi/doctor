@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -147,7 +148,7 @@ open class WebActivity : ComponentActivity() {
                                     }
                                     successCallJavaScript(bizType, JSONObject().apply {
                                         put("id", id)
-                                        put("text", text)
+                                        put("text", Uri.encode(text))
                                         put("action", action)
                                     })
                                     return true

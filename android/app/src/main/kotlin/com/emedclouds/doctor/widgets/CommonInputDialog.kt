@@ -32,13 +32,16 @@ class CommonInputDialog {
         private const val TAG = "Input.CommonInputDialog"
 
         fun show(ctx: Activity, placeHolder: String, replyContent: String, commentContent: String, callback: OnTextInputCallback) {
+            var isPublished = false
             val inputView = InputView(ctx)
             inputView.setPlaceHolder(placeHolder)
             inputView.setTopHintText(replyContent)
             inputView.setInputText(commentContent)
             val dialog = object : Dialog(ctx, R.style.inputDialog) {
                 override fun dismiss() {
-                    callback.onInputFinish(inputView.text(), ACTION_CANCEL)
+                    if(!isPublished) {
+                        callback.onInputFinish(inputView.text(), ACTION_CANCEL)
+                    }
                     super.dismiss()
                 }
             }
@@ -60,6 +63,7 @@ class CommonInputDialog {
             })
             inputView.publish(Runnable {
                 if (callback.onInputFinish(inputView.text(), ACTION_PUBLISH) && dialog.isShowing) {
+                    isPublished = true
                     dialog.dismiss()
                 }
             })
