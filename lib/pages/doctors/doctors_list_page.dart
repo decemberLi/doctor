@@ -103,6 +103,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
           titleContainer(),
           Expanded(
             child: NormalTableView<DoctorCircleEntity>(
+              pageSize: 20,
               padding: EdgeInsets.only(left: 16, right: 16, top: 20),
               itemBuilder: (context, dynamic d) {
                 DoctorCircleEntity data = d;

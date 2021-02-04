@@ -173,15 +173,19 @@ class _SubCollectState<T> extends State<NormalTableView>
       child = CustomScrollView(
         controller: _scrollController,
         slivers: [
-          SliverToBoxAdapter(
-            child: widget.header(context),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return widget.itemBuilder(context, _list[index]);
-              },
-              childCount: _list.length,
+          if (widget.header != null)
+            SliverToBoxAdapter(
+              child: widget.header(context),
+            ),
+          SliverPadding(
+            padding: widget.padding,
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return widget.itemBuilder(context, _list[index]);
+                },
+                childCount: _list.length,
+              ),
             ),
           )
         ],
