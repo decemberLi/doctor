@@ -3,6 +3,7 @@ package com.emedclouds.doctor
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import cn.jpush.android.api.JPushInterface
@@ -26,6 +27,7 @@ import java.lang.Exception
 
 class MainActivity : FlutterActivity() {
     private val tag = "MainActivity"
+    private val mHandler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +91,7 @@ class MainActivity : FlutterActivity() {
             override fun onFlutterUiDisplayed() {
                 Log.d("MainActivity", "onFlutterUiDisplayed")
                 postJPushRegisterId()
-                openNotificationIfNeeded(intent)
+                mHandler.postDelayed({ openNotificationIfNeeded(intent) }, 2000)
             }
 
             override fun onFlutterUiNoLongerDisplayed() {
@@ -100,6 +102,10 @@ class MainActivity : FlutterActivity() {
 //        CommonWebActivity.start(this@MainActivity, "", "http://192.168.1.27:9000/#/detail?id=283")
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
     private fun postJPushRegisterId() {
         val json = JSONObject()
         json.put("registerId", JPushInterface.getRegistrationID(application))
@@ -148,16 +154,16 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun openNotificationIfNeeded(intent: Intent?) {
-        if(intent == null){
+        if (intent == null) {
             return
         }
         val extra = intent.getStringExtra("extras")
-        intent.removeExtra("extras")
-        if(extra == null){
+//        intent.removeExtra("extras")
+        if (extra == null) {
             return
         }
         try {
-            ChannelManager.instance.callFlutter("receiveNotification", intent.getStringExtra(extra),
+            ChannelManager.instance.callFlutter("receiveNotification", extra,
                     object : MethodChannelResultAdapter() {
                         override fun success(result: Any?) {
                             Log.d(MessagePushReceiver.TAG, "Dispatch message success: [${extra}]")
