@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+import com.emedclouds.doctor.BuildConfig
 import com.tencent.smtt.sdk.CookieManager
 import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
@@ -52,6 +53,8 @@ class YWebViewHelper {
                 pluginState = WebSettings.PluginState.ON
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
+                    CookieManager.getInstance().setCookie("m.e-medclouds.com", "appVersion=${BuildConfig.VERSION_NAME}")
+                    CookieManager.getInstance().setCookie("m-dev.e-medclouds.com", "appVersion=${BuildConfig.VERSION_NAME}")
                     mixedContentMode = WebSettings.LOAD_DEFAULT
                 }
                 userAgentString = String.format("$userAgentString Medclouds-doctor")

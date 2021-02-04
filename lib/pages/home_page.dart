@@ -63,7 +63,6 @@ class _HomePageState extends State<HomePage>
     var notShow = sp.getBool("notShowAlertOpenNotification")??false;
     var showAlert = !allowNotification && !notShow;
     if (showAlert) {
-      sp.setBool("notShowAlertOpenNotification", true);
       _showNotifAlert();
     }
   }
@@ -85,7 +84,9 @@ class _HomePageState extends State<HomePage>
                   color: ThemeColor.primaryColor,
                 ),
               ),
-              onPressed: () {
+              onPressed: () async{
+                var sp = await SharedPreferences.getInstance();
+                sp.setBool("notShowAlertOpenNotification", true);
                 Navigator.of(context).maybePop(false);
               },
             ),
@@ -97,6 +98,8 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               onPressed: () async {
+                var sp = await SharedPreferences.getInstance();
+                sp.setBool("notShowAlertOpenNotification", true);
                 Navigator.of(context).pop();
                 MedcloudsNativeApi.instance().openSetting();
               },
