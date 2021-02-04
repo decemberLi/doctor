@@ -243,10 +243,11 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
         }else if dispatchType == "getWifiStatus" {
             naviChannel.invokeMethod("wifiStatus", arguments: nil) {[weak self] (result) in
                 guard let self = self else {return}
-                guard let status = result as? String else {return}
+                let status = result ?? 0
                 let bizType = json["bizType"] as? String ?? ""
-                let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":"\#(status)"}}"#
-                self.inVC?.webview.evaluateJavaScript("nativeCall(\(params)", completionHandler: nil)
+                let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":\#(status)}}"#
+//                print("the params is -- \(params)")
+                self.inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
             }
         }
     }
