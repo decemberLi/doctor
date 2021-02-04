@@ -54,7 +54,7 @@ abstract class ViewStateRefreshListModel<T> extends ViewStateListModel<T> {
       if (init) list.clear();
       refreshController.refreshFailed();
       setError(e, s);
-      return null;
+      throw e;
     }
   }
 
