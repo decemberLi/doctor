@@ -69,8 +69,8 @@ open class WebActivity : ComponentActivity() {
         mWebView.addJavascriptInterface(NativeApiProvider(this, jsApiCaller), "jsCall")
         mWebView.loadUrl(getUrl())
         mEmptyView.setOnClickListener {
-            mWebView.reload()
-            mEmptyView.visibility = View.VISIBLE
+            mWebView.loadUrl(getUrl())
+            mEmptyView.visibility = View.GONE
         }
     }
 
