@@ -3,8 +3,6 @@ package com.emedclouds.doctor.common.web
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -14,7 +12,6 @@ import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import android.widget.FrameLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.LayoutRes
@@ -29,8 +26,6 @@ import com.emedclouds.doctor.utils.StatusBarUtil
 import com.emedclouds.doctor.widgets.CommonInputDialog
 import com.emedclouds.doctor.widgets.OnTextInputCallback
 import com.emedclouds.doctor.widgets.OnTextInputCallback.Companion.ACTION_PUBLISH
-import com.google.gson.JsonObject
-import com.kaopiz.kprogresshud.KProgressHUD
 import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebView
@@ -38,6 +33,7 @@ import com.tencent.smtt.sdk.WebViewClient
 import kotlinx.android.synthetic.main.activity_web_doctor_detail_layout.*
 import kotlinx.android.synthetic.main.activity_web_layout.*
 import org.json.JSONObject
+import java.net.URLEncoder
 
 open class WebActivity : ComponentActivity() {
 
@@ -148,7 +144,7 @@ open class WebActivity : ComponentActivity() {
                                     }
                                     successCallJavaScript(bizType, JSONObject().apply {
                                         put("id", id)
-                                        put("text", Uri.encode(text))
+                                        put("text", URLEncoder.encode(text))
                                         put("action", action)
                                     })
                                     return true
