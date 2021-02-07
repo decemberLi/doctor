@@ -152,7 +152,7 @@ private extension WebVC {
         let text = putParam["replyContent"] as? String ?? ""
         commentLbl.text = text
         let commentText = putParam["commentContent"] as? String ?? ""
-        textView.text = commentText.removingPercentEncoding
+        textView.text = commentText
         updateText()
 //        if let oldParams = old["param"] as? [AnyHashable:Any] {
 //            let oldID = oldParams["id"] as? Int ?? -100
