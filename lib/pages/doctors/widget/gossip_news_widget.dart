@@ -242,7 +242,7 @@ class GossipNewsPageState extends State<GossipNewsPage> {
   Widget build(BuildContext context) {
     return NormalTableView(
       controller: _controller,
-      pageSize: 20,
+      pageSize: (page) => 20,
       itemBuilder: (context, data) {
         var content = Column(
           children: [

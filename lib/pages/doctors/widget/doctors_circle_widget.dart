@@ -225,7 +225,7 @@ class DoctorPageState
   Widget build(BuildContext context) {
     return NormalTableView(
       controller: _controller,
-      pageSize: 20,
+      pageSize: (page) => page == 1 ? 17 : 20,
       itemBuilder: (context, data) {
         return itemWidget(context, data);
       },

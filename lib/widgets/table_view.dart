@@ -18,12 +18,13 @@ class NormalTableViewController {
   }
 }
 
+int _defaultPageSize(page) => 10;
 class NormalTableView<T> extends StatefulWidget {
   final Widget Function(BuildContext, T) itemBuilder; // 返回列表中每行Item
   final Widget Function(bool, String) holder; // 空页面或者错误占位页面
   final EdgeInsets padding;
   final Future<List<T>> Function(int) getData; // 获取数据（接口函数）
-  final int pageSize; // 每页数据个数，默认10个
+  final int Function(int) pageSize; // 每页数据个数，默认10个
   final Widget Function(BuildContext) header;
   final void Function(BuildContext context, double offset) onScroll;
   final NormalTableViewController controller;
@@ -33,7 +34,7 @@ class NormalTableView<T> extends StatefulWidget {
       this.holder,
       this.header,
       this.getData,
-      this.pageSize = 10,
+      this.pageSize = _defaultPageSize,
       this.padding = EdgeInsets.zero,
       this.onScroll,
       this.controller});
@@ -51,6 +52,8 @@ class _SubCollectState<T> extends State<NormalTableView>
   String _error;
   List<T> _list = [];
   bool _firstLoading = true;
+  int _page = 1;
+
 
   @override
   bool get wantKeepAlive => true;
@@ -99,6 +102,7 @@ class _SubCollectState<T> extends State<NormalTableView>
   }
 
   _firstGetData() async {
+    _page = 1;
     var array = await widget.getData(1);
     if (!(array is List)) {
       setState(() {
@@ -106,7 +110,7 @@ class _SubCollectState<T> extends State<NormalTableView>
       });
       return;
     }
-    if (array.length >= widget.pageSize) {
+    if (array.length >= widget.pageSize(1)) {
       _controller.footerMode.value = LoadStatus.idle;
     } else {
       _controller.footerMode.value = LoadStatus.noMore;
@@ -130,15 +134,14 @@ class _SubCollectState<T> extends State<NormalTableView>
   //加载更多
   void onLoading() async {
     try {
-      int page = _list.length ~/ widget.pageSize + 1;
-      var array = await widget.getData(page);
+      var array = await widget.getData(_page+1);
       _list += array;
-      if (array.length >= widget.pageSize) {
+      if (array.length >= widget.pageSize(_page+1)) {
         _controller.footerMode.value = LoadStatus.idle;
       } else {
         _controller.footerMode.value = LoadStatus.noMore;
       }
-
+      _page ++;
       setState(() {});
     } catch (e) {
       _controller.footerMode.value = LoadStatus.failed;
