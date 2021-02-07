@@ -151,14 +151,17 @@ private extension WebVC {
         let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
         let text = putParam["replyContent"] as? String ?? ""
         commentLbl.text = text
-        if let oldParams = old["param"] as? [AnyHashable:Any] {
-            let oldID = oldParams["id"] as? Int ?? -100
-            let newID = putParam["id"] as? Int ?? -101
-            if oldID != newID {
-                textView.text = ""
-                updateText()
-            }
-        }
+        let commentText = putParam["commentContent"] as? String ?? ""
+        textView.text = commentText.removingPercentEncoding
+        updateText()
+//        if let oldParams = old["param"] as? [AnyHashable:Any] {
+//            let oldID = oldParams["id"] as? Int ?? -100
+//            let newID = putParam["id"] as? Int ?? -101
+//            if oldID != newID {
+//                textView.text = ""
+//                updateText()
+//            }
+//        }
         
     }
     
