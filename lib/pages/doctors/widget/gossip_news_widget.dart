@@ -246,8 +246,11 @@ class GossipNewsPageState extends State<GossipNewsPage> {
       itemBuilder: (context, data) {
         var content = Column(
           children: [
-            GossipNewsItemWidget(data, () {
-              _model.like(data.postId);
+            GossipNewsItemWidget(data, () async{
+               await _model.like(data.postId);
+               setState(() {
+
+               });
             }),
             Container(
               color: ThemeColor.colorFFF8F8F8,
