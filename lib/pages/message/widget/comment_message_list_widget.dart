@@ -47,6 +47,7 @@ class _CommentMessagePageState extends AbstractListPageState<
   Widget itemWidget(BuildContext context, int index, dynamic data) {
     return Container(
       padding: EdgeInsets.all(12),
+      margin: EdgeInsets.symmetric(horizontal: 16),
       decoration: itemContainerDecoration,
       child: IntrinsicHeight(
         child: Row(
@@ -114,8 +115,7 @@ class _CommentMessagePageState extends AbstractListPageState<
 
   @override
   void onItemClicked(SocialMessageListViewModel model, itemData) {
-    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {'postId': itemData?.postId, 'from': 'msg'});
+    RouteManager.openDoctorsDetail(itemData?.postId, from: "msg");
     model?.messageClicked(itemData.messageId);
   }
 }

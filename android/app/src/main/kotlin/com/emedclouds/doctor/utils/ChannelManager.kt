@@ -5,7 +5,11 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
 
 interface OnFlutterCall {
-    fun call(arguments: String?, channel: MethodChannel)
+    companion object {
+        const val CHANNEL_RESULT_OK = "OK"
+    }
+
+    fun call(arguments: String?, channel: MethodChannel): Any
 }
 
 class ChannelManager {
@@ -23,11 +27,13 @@ class ChannelManager {
     fun initChannel(messenger: BinaryMessenger?) {
         mMethodChannel = MethodChannel(messenger, "com.emedclouds-channel/navigation")
         mMethodChannel.setMethodCallHandler { call, result ->
-            run {
-                mMap[call.method]?.call(call.arguments as String, mMethodChannel)
-                Log.d(TAG, "Flutter call Native method -> [${call.arguments}], args -> [${call.arguments}]")
-                result.success("OK")
+            var arguments = ""
+            if (call.arguments != null) {
+                arguments = call.arguments as String
             }
+            val retValue = mMap[call.method]?.call(arguments, mMethodChannel)
+            Log.d(TAG, "Flutter call Native method -> [${call.arguments}], args -> [${call.arguments}]")
+            result.success(retValue)
         }
     }
 
@@ -41,14 +47,18 @@ class ChannelManager {
 
 }
 
-open class MethodChannelResultAdapter : MethodChannel.Result{
+open class MethodChannelResultAdapter : MethodChannel.Result {
+    private val TAG = MethodChannelResultAdapter::class.java.simpleName
     override fun success(result: Any?) {
+        Log.d(TAG, "success: result -> $result")
     }
 
     override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+        Log.d(TAG, "error: errorCode: $errorCode, errorMessage $errorMessage, errorDetails: $errorDetails")
     }
 
     override fun notImplemented() {
+        Log.d(TAG, "notImplemented")
     }
 
 }

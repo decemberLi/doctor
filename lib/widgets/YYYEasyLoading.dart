@@ -22,6 +22,7 @@ extension falshEx on EasyLoading {
       }else{
         EasyLoading.dismiss();
       }
+      rethrow;
     }
   }
 

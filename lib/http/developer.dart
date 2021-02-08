@@ -18,4 +18,13 @@ class Developer extends SubAPI {
           'type': 'doctor',
         },
       );
+  dictCategoryList() async => await normalPost(
+        "/dict/list-data-dict",
+        params: {
+          'pn': 1,
+          'ps': 10,
+          'code': 'doctor_category_config',
+          'type': 'doctor',
+        },
+      );
 }

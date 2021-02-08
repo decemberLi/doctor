@@ -64,6 +64,8 @@ class RecordsVC: UIViewController {
     deinit {
         print("records deinit")
         session.stopRunning()
+        timer?.invalidate()
+        timer = nil
         NotificationCenter.default.removeObserver(self)
     }
     

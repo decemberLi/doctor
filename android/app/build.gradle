@@ -20,6 +20,10 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
+def buildVersionCode = localProperties.getProperty('build.versionCode')
+if(buildVersionCode == null){
+    buildVersionCode = '1'
+}
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -50,8 +54,8 @@ android {
         applicationId "com.emedclouds.doctor"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 7
-        versionName '2.4.2'
+        versionCode buildVersionCode.toInteger()
+        versionName '2.4.3'
         multiDexEnabled true
 
     }
@@ -64,7 +68,7 @@ android {
             signingConfig signingConfigs.debug
             manifestPlaceholders = [
                     JPUSH_PKGNAME : defaultConfig.applicationId,
-                    JPUSH_APPKEY : "a7547476f7255646ea8646fd",
+                    JPUSH_APPKEY : "05de7d1b7c21f44388f972b6",
                     JPUSH_CHANNEL : "developer-default",
             ]
 
@@ -81,11 +85,21 @@ android {
 
             manifestPlaceholders = [
                     JPUSH_PKGNAME : defaultConfig.applicationId,
-                    JPUSH_APPKEY : "a7547476f7255646ea8646fd",
+                    JPUSH_APPKEY : "602e4ea4245634138758a93c",
+//                    JPUSH_APPKEY : "05de7d1b7c21f44388f972b6",
                     JPUSH_CHANNEL : "developer-default",
             ]
 
         }
+    }
+
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
@@ -132,6 +146,9 @@ dependencies {
     api  'com.kaopiz:kprogresshud:1.0.2'
     api 'com.tencent.tbs.tbssdk:sdk:43903'
 
+    implementation 'androidx.webkit:webkit:1.0.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    api 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     // 注解
 //    implementation "com.google.dagger:dagger:2.30.1"
 //    kapt "com.google.dagger:dagger-compiler:2.30.1"

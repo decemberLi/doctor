@@ -1,7 +1,13 @@
 import 'dart:convert';
 
+import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
+import 'package:doctor/provider/GlobalData.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
+import 'package:http_manager/api.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 typedef OnNativeProcessor = Future Function(String args);
 
@@ -15,17 +21,17 @@ class MedcloudsNativeApi {
     print("MedcloudsNativeApi");
     _channel.setMethodCallHandler((call) async {
       print("call method");
-      try{
+      try {
         if (_map.containsKey(call.method)) {
           return await _map[call.method](call.arguments);
         }
-      }on DioError catch (e){
+      } on DioError catch (e) {
         print("----------------------${e.message}");
-        if(e.message.contains("SocketException")){
+        if (e.message.contains("SocketException")) {
           return "网络错误";
         }
         return "${e.message}";
-      }catch (e){
+      } catch (e) {
         print("----------------------${e}");
         return "$e";
       }
@@ -62,4 +68,42 @@ class MedcloudsNativeApi {
     return await _channel.invokeMapMethod("record", args);
   }
 
+  Future checkNotification() async {
+    return await _channel.invokeMethod("checkNotification");
+  }
+
+  Future openSetting() async {
+    return await _channel.invokeMethod("openSetting");
+  }
+
+  Future openWebPage(String url, {String title = ""}) async {
+    var arguments = json.encode({"url": url, "title": title});
+    return await _channel.invokeMethod("openWebPage", arguments);
+  }
+
+  Future uploadDeviceInfo(args) async {
+    try {
+      var ids = json.decode(args);
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      var params = {'appType': 'DOCTOR'};
+      if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        print('Running on ${iosInfo.utsname.machine}');
+        params['plantform'] = 'iOS';
+        params['model'] = iosInfo.model;
+        params['os'] = "${iosInfo.systemVersion}";
+        params['deviceId'] = "${iosInfo.identifierForVendor}";
+      } else if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        params['plantform'] = 'Android';
+        params['model'] = androidInfo.model;
+        params['os'] = "${androidInfo.version.sdkInt}";
+        params['deviceId'] = "${ids["registerId"]}";
+      }
+      params['registerId'] = "${ids["registerId"]}";
+      print("the params - ${params}");
+      GlobalData.shared.registerId = "${ids["registerId"]}";
+      await API.shared.foundation.pushDeviceSubmit(params);
+    } catch (e) {}
+  }
 }

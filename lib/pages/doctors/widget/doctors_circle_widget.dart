@@ -1,16 +1,29 @@
-
 import 'package:doctor/common/event/event_model.dart';
+import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
+import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../root_widget.dart';
-import '../model/doctor_circle_entity.dart';
+import '../doctors_banner.dart';
+import '../doctors_banner_item.dart';
+import '../doctors_list_page.dart';
 import '../viewmodel/doctors_view_model.dart';
+import 'circleflow/category_widget.dart';
+import 'circleflow/enterprise_open_class_widget.dart';
+import 'circleflow/hot_post_widget.dart';
+import 'circleflow/online_classic.dart';
+
+class EventVideoOutOfScreen {
+  double offset;
+
+  EventVideoOutOfScreen(this.offset);
+}
 
 final _colorPanel = {
   '文献专区': ThemeColor.colorFF52C41A,
@@ -18,128 +31,36 @@ final _colorPanel = {
   '每日医讲': ThemeColor.colorFFFAAD14,
 };
 
-class DoctorCircleItemWidget extends StatelessWidget {
+typedef OnScrollerCallback = void Function(double offset);
 
-  final DoctorCircleEntity data;
-
-  DoctorCircleItemWidget(this.data);
-
-  Color _categoryTextColor(String category) {
-    Color color = _colorPanel[category];
-    if (color != null) {
-      return color;
-    }
-    return ThemeColor.colorFF107BFD;
-    // var batch = _colorPanel.entries.toList();
-    // var hitColor = batch[Random().nextInt(batch.length)].value;
-    // _colorPanel.putIfAbsent(category, () => hitColor);
-    // return hitColor;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    ImageProvider imageProvider;
-    if (data?.postUserHeader != null) {
-      imageProvider = NetworkImage(data.postUserHeader);
-    } else {
-      imageProvider = AssetImage('assets/images/doctorAva.png');
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8))),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                    border: new Border.all(
-                        color: ThemeColor.colorFFB8D1E2, width: 2),
-                    color: ThemeColor.colorFFF3F5F8,
-                    borderRadius: new BorderRadius.all(Radius.circular(15)),
-                    image: DecorationImage(
-                      // fit: BoxFit.fill,
-                      fit: BoxFit.fitWidth,
-                      image: imageProvider,
-                    )),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 4),
-                child: Text(data?.postUserName ?? '',
-                    style: TextStyle(
-                        fontSize: 14, color: ThemeColor.colorFF444444)),
-              )
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 8),
-            // title
-            child: Text(data?.postTitle ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style:
-                TextStyle(fontSize: 16,
-                    color: data.isClicked ? ThemeColor.colorFFC1C1C1:
-                    ThemeColor.colorFF222222)),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 6, bottom: 8),
-            child: Text(data?.postContent ?? '',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style:
-                TextStyle(fontSize: 14, color: data.isClicked ? ThemeColor.colorFFC1C1C1:ThemeColor.colorFF999999)),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: ThemeColor.colorFFF6F6F6,
-                    borderRadius: BorderRadius.all(Radius.circular(2))),
-                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                child: Text(
-                  data?.columnName ?? '',
-                  style: TextStyle(
-                      color: _categoryTextColor(data?.columnName ?? ''),
-                      fontSize: 12),
-                ),
-              ),
-              Text(
-                formatViewCount(data?.viewNum),
-                style: TextStyle(color: ThemeColor.colorFF999999, fontSize: 10),
-              )
-            ],
-          )
-        ],
-      ),
-    );
+openBannerDetail(BuildContext context, data) {
+  print("On banner clicked -> [${data?.toJson()}]");
+  if (data.bannerType == 'RELEVANCY_POST') {
+    RouteManager.openDoctorsDetail(int.parse(data?.relatedContent),
+        from: "msg");
+  } else if (data.bannerType == 'ACTIVITY') {
+    RouteManager.openWebPage(data?.relatedContent);
   }
 }
 
 class DoctorsPage extends StatefulWidget {
+  final OnScrollerCallback callback;
+
+  DoctorsPage(this.callback);
+
   @override
   State<StatefulWidget> createState() => DoctorPageState();
 }
 
 class DoctorPageState
-    extends AbstractListPageState<DoctorsViewMode, DoctorsPage> {
+    extends State<DoctorsPage> {
   ScrollOutScreenViewModel _inScreenViewModel;
+  final _model = DoctorsViewMode(type: 'ACADEMIC');
 
   bool _currentIsOutScreen = false;
+  GlobalKey _videoStackKey = GlobalKey();
+  final NormalTableViewController _controller = NormalTableViewController();
 
-  @override
-  Widget emptyWidget(String msg) {
-    return super.emptyWidget('暂无数据，请刷新后重试');
-  }
 
   @override
   void initState() {
@@ -149,44 +70,179 @@ class DoctorPageState
           event is OutScreenEvent &&
           event.page == PAGE_DOCTOR &&
           _currentIsOutScreen) {
-        requestRefresh();
+        _controller.refresh();
       }
     }, cancelOnError: true);
     _inScreenViewModel =
         Provider.of<ScrollOutScreenViewModel>(context, listen: false);
   }
 
-  @override
-  Widget divider(BuildContext context, int index) =>
-      Divider(
-        color: ThemeColor.colorFFF3F5F8,
-        height: 12,
-      );
+  bodyHeader() {
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            color: Colors.white,
+            child: DoctorsBanner(
+                  (context, data, index) {
+                return DoctorBannerItemGrass(data, onClick: (data) {
+                  openBannerDetail(context, data);
+                });
+              },
+              dataStream: _model.topBannerStream,
+              height: 207 + MediaQuery.of(context).padding.top,
+              holder: (context) {
+                return SafeArea(
+                  child: Container(
+                    height: 40,
+                  ),
+                );
+              },
+            ),
+          ),
+          StreamBuilder(
+            stream: _model.categoryStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<CategoryEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return Column(
+                  children: [
+                    CategoryWidget(snapshot.data),
+                    Container(
+                      color: ThemeColor.colorFFF9F9F9,
+                      width: double.infinity,
+                      height: 6,
+                    ),
+                  ],
+                );
+              }
+              return Container();
+            },
+          ),
+          StreamBuilder(
+            stream: _model.onlineClassStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<OnlineClassicEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length >= 3) {
+                return OnlineClassicWidget(snapshot.data);
+              }
+              return Container(color: Colors.white);
+            },
+          ),
+          Container(
+            color: Colors.white,
+            child: EnterpriseOpenClassWidget(
+              _videoStackKey,
+              _model.openClassStream,
+              Container(
+                color: ThemeColor.colorFFF9F9F9,
+                width: double.infinity,
+                height: 6,
+              ),
+            ),
+          ),
+          StreamBuilder(
+            stream: _model.hotPostStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<HotPostEntity>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length != 0) {
+                return HotPostWidget(snapshot.data);
+              }
+              return Container(color: Colors.white);
+            },
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            color: Colors.white,
+            child: DoctorsBanner(
+                  (context, data, index) {
+                return DoctorBannerItemNormal(
+                  data,
+                  onClick: (data) {
+                    openBannerDetail(context, data);
+                  },
+                );
+              },
+              dataStream: _model.flowBannerStream,
+              height: 80,
+              holder: (context) {
+                return Container(
+                  color: Colors.white,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-  @override
-  DoctorsViewMode getModel() => DoctorsViewMode(type: 'ACADEMIC');
 
-  @override
-  Widget itemWidget(BuildContext context, int index, dynamic data) =>
-      DoctorCircleItemWidget(data);
+  Widget itemWidget(BuildContext context, dynamic data) {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        children: [
+          DoctorsListItem(data, () {
+            eventBus.fire(EventVideoPause());
+            setState(() {});
+          }, lineHeight: 0,),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Divider(height: 0.5,color: Color(0xffF3F5F8),),
+          )
+        ],
+      ),
+    );
+  }
 
-  @override
+
   void scrollOutOfScreen(bool outScreen) {
     _currentIsOutScreen = outScreen;
     _inScreenViewModel.updateState(PAGE_DOCTOR, _currentIsOutScreen);
   }
 
-  @override
+
+  void scrollOffset(double offset) {
+    if (widget.callback != null) {
+      RenderBox box = _videoStackKey.currentContext.findRenderObject();
+      // print(box.size); // Size(200.0, 100.0)
+      var offsetObj = box.localToGlobal(Offset.zero);
+      eventBus.fire(EventVideoOutOfScreen(offsetObj.dy));
+      widget.callback(offset);
+    }
+  }
+
   void onItemClicked(DoctorsViewMode model, itemData) {
-    model.markToNative(itemData?.postId);
-    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {
-          'postId': itemData?.postId,
-          'from': 'list',
-          'type': 'ACADEMIC'
-        });
+    model.markToNative(itemData);
+    eventBus.fire(EventVideoPause());
+    RouteManager.openDoctorsDetail(itemData?.postId);
   }
 
   @override
-  String noMoreDataText() => '已显示全部帖子';
+  Widget build(BuildContext context) {
+    return NormalTableView(
+      controller: _controller,
+      pageSize: (page) => page == 1 ? 17 : 20,
+      itemBuilder: (context, data) {
+        return itemWidget(context, data);
+      },
+      header: (context) {
+        return bodyHeader();
+      },
+      getData: (page) async {
+        if (page == 1) {
+          return await _model.refresh();
+        }
+        return await _model.loadData(pageNum: page);
+      },
+      onScroll: (context, offset) {
+        var outScreen = MediaQuery.of(context).size.height < offset;
+        scrollOutOfScreen(outScreen);
+        scrollOffset(offset);
+      },
+    );
+  }
 }

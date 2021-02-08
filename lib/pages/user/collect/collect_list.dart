@@ -25,6 +25,7 @@ class CollectDetailList extends StatelessWidget {
     }
 
     Widget timeLineCell(BuildContext context, dynamic data) {
+      print("the cell is $data");
       return _DoctorTimeLineCell(data);
     }
 
@@ -388,9 +389,11 @@ class _DoctorTimeLineCell extends StatelessWidget {
     } else if (type == "GOSSIP") {
       rendColor = Color(0xffF67777);
       name = "八卦";
-    } else if (type == "ACADEMIC") {
+    } else if (type == "ACADEMIC" || type == "OPEN_CLASS" || type == "VIDEO_ZONE") {
       rendColor = Color(0xff9577FA);
       name = "学术";
+    }else{
+      return Container();
     }
     return DecoratedBox(
       decoration: BoxDecoration(color: rendColor),
@@ -415,7 +418,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
     Widget head;
     Color headColor = Color(0xFF62C1FF);
     // ACADEMIC-学术圈，GOSSIP-八卦圈
-    if (data.postType == "ACADEMIC") {
+    if (data.postType != "GOSSIP") {
       name = data.postUserName ?? "匿名";
       headColor = Color(0xffB8D1E2);
       if (data.postUserHeader == null) {
@@ -437,7 +440,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
         );
       }
     } else {
-      name = data.anonymityName;
+      name = data.anonymityName ?? "Name";
       head = Text(
         name[0],
         style: TextStyle(
@@ -534,11 +537,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 12),
       child: FlatButton(
         onPressed: () {
-          Navigator.pushNamed(
-            context,
-            RouteManager.DOCTORS_ARTICLE_DETAIL,
-            arguments: {'postId': data.postId},
-          );
+          RouteManager.openDoctorsDetail(data.postId);
         },
         child: Container(
           decoration: BoxDecoration(

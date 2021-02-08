@@ -9,7 +9,8 @@ class PushSdk {
     companion object {
         fun init(ctx: Context) {
             JPushInterface.setDebugMode(BuildConfig.DEBUG);
-            JPushInterface.init(ctx);
+            JPushInterface.init(ctx)
+            
         }
     }
 }

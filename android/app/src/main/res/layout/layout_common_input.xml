@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFAFAFA"
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/mCommentHintView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="6dp"
+        android:text="回复大亮：大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论"
+        android:textColor="#FF888888"
+        android:textSize="12dp"
+        tools:text="回复大亮：大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论大亮的言论" />
+
+    <EditText
+        android:id="@+id/mEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/shape_input_bg"
+        android:focusable="true"
+        android:maxLines="5"
+        android:text="这里是输入内容最多五行这里是输入内容是很伤脑筋最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行车岑飞机俄方i诶份米饭这里是输入内容最多五行这里是输入内容是很伤脑筋最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行车岑飞机俄方i诶份米饭这里是输入内容最多五行这里是输入内容是很伤脑筋最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行车岑飞机俄方i诶份米饭"
+        android:textColor="#FF222222"
+        android:textSize="14sp"
+        tools:text="这里是输入内容最多五行这里是输入内容是很伤脑筋最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行这里是输入内容最多五行车岑飞机俄方i诶份米饭 传送促进暗疮你的车" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
+
+        <TextView
+            android:id="@+id/mTextStatisticsView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="120/150"
+            android:textColor="#FF888888"
+            android:textSize="14sp"
+            tools:text="120/150" />
+
+        <TextView
+            android:id="@+id/mInputFinishView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:padding="12dp"
+            android:text="发表"
+            android:textColor="#FF107BFD"
+            android:textSize="16sp"
+            tools:text="发表" />
+
+
+    </FrameLayout>
+</LinearLayout>

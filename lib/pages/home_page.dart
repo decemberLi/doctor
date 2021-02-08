@@ -1,4 +1,5 @@
 import 'package:doctor/common/event/event_model.dart';
+import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
@@ -10,6 +11,7 @@ import 'package:doctor/pages/user/user_page.dart';
 import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/ucenter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../root_widget.dart';
 import 'doctors/doctors_home.dart';
@@ -35,13 +38,13 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
   ScrollOutScreenViewModel _outScreenViewModel;
-  bool isDoctors = false;
+  bool isDoctors = true;
 
-  int _currentIndex = 0;
+  int _currentIndex = 1;
   int _toIndex = 0;
   final List<Widget> _children = [
     WorktopPage(),
-    PrescriptionPage(),
+    // PrescriptionPage(),
     DoctorsHome(),
     MessagePage(),
     UserPage(),
@@ -50,11 +53,66 @@ class _HomePageState extends State<HomePage>
 
   initData() async {
     await AppUpdateHelper.checkUpdate(context);
+    bool allowNotification = false;
+    try{
+      allowNotification = await MedcloudsNativeApi.instance().checkNotification();
+    }catch(e){
+
+    }
+    var sp = await SharedPreferences.getInstance();
+    var notShow = sp.getBool("notShowAlertOpenNotification")??false;
+    var showAlert = !allowNotification && !notShow;
+    if (showAlert) {
+      _showNotifAlert();
+    }
+  }
+
+  _showNotifAlert(){
+    showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          content: Container(
+            padding: EdgeInsets.only(top: 12),
+            child: Text("记得打开消息通知哦\n这样重要消息就可以及时通知您啦"),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                "残忍拒绝",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () async{
+                var sp = await SharedPreferences.getInstance();
+                sp.setBool("notShowAlertOpenNotification", true);
+                Navigator.of(context).maybePop(false);
+              },
+            ),
+            FlatButton(
+              child: Text(
+                "确认",
+                style: TextStyle(
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+              onPressed: () async {
+                var sp = await SharedPreferences.getInstance();
+                sp.setBool("notShowAlertOpenNotification", true);
+                Navigator.of(context).pop();
+                MedcloudsNativeApi.instance().openSetting();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void onTabTapped(int index) async {
     _toIndex = index;
-    if (index == 2) {
+    if (index == 1) {
       if (isDoctors) {
         eventBus.fire(_outScreenViewModel.event);
       }
@@ -62,30 +120,31 @@ class _HomePageState extends State<HomePage>
     } else {
       isDoctors = false;
     }
+    eventBus.fire(EventTabIndex(index, null));
     if (index == _currentIndex) {
       return;
     }
-    if(index == 4){
+    if (index == 3) {
       eventBus.fire(KEY_UPDATE_USER_INFO);
     }
     if (index == 0) {
       showWeekIfNeededReporter(context);
       this.updateDoctorInfo();
     }
-    if (index == 1) {
-      UserInfoViewModel model =
-          Provider.of<UserInfoViewModel>(context, listen: false);
-      if (!await _checkDoctorBindRelation(model.data?.authStatus)) {
-        return;
-      }
-      if (model.data?.authStatus != 'PASS') {
-        _showAuthenticationDialog(model);
-        return;
-      }
-    }
+    // if (index == 1) {
+    //   UserInfoViewModel model =
+    //       Provider.of<UserInfoViewModel>(context, listen: false);
+    //   if (!await _checkDoctorBindRelation(model.data?.authStatus)) {
+    //     return;
+    //   }
+    //   if (model.data?.authStatus != 'PASS') {
+    //     _showAuthenticationDialog(model);
+    //     return;
+    //   }
+    // }
     setState(() {
       _currentIndex = index;
-      if (index == 3) {
+      if (index == 2) {
         _refreshMessageCenterData();
       }
     });
@@ -177,7 +236,7 @@ class _HomePageState extends State<HomePage>
   }
 
   _checkDoctorBindRelation(String authStatus) async {
-    if(authStatus != 'PASS'){
+    if (authStatus != 'PASS') {
       return Future.value(true);
     }
     // 已认证，未绑定代表
@@ -255,7 +314,7 @@ class _HomePageState extends State<HomePage>
       this.initDoctorInfo();
     });
     initData();
-    showWeekIfNeededReporter(context);
+    // showWeekIfNeededReporter(context);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -317,19 +376,19 @@ class _HomePageState extends State<HomePage>
                 ),
                 label: '工作台',
               ),
-              new BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/images/prescribe_uncheck.png',
-                  // width: 24,
-                  // height: 24,
-                ),
-                activeIcon: Image.asset(
-                  'assets/images/prescribe_checked.png',
-                  // width: 24,
-                  // height: 24,
-                ),
-                label: '开处方',
-              ),
+              // new BottomNavigationBarItem(
+              //   icon: Image.asset(
+              //     'assets/images/prescribe_uncheck.png',
+              //     // width: 24,
+              //     // height: 24,
+              //   ),
+              //   activeIcon: Image.asset(
+              //     'assets/images/prescribe_checked.png',
+              //     // width: 24,
+              //     // height: 24,
+              //   ),
+              //   label: '开处方',
+              // ),
               _buildDoctorsTabBarItem(value),
               new BottomNavigationBarItem(
                 icon: _messageIcon(false),

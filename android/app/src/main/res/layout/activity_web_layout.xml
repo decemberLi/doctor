@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/mTitleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        tools:ignore="UselessLeaf">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="5dp"
+            android:src="@mipmap/nav_back_w" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_17" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.emedclouds.doctor.common.web.YWebView
+            android:id="@+id/yWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none" />
+
+        <FrameLayout
+            android:id="@+id/flVideoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/mEmptyView"
+            android:gravity="center"
+            android:visibility="gone"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/empty" />
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="网络错误，请点击重试" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

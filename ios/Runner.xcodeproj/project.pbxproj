@@ -17,6 +17,8 @@
 		6A655EB325A461F6003251FB /* RecordsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A655EB125A461F6003251FB /* RecordsVC.swift */; };
 		6A655EB425A461F6003251FB /* RecordsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A655EB225A461F6003251FB /* RecordsVC.xib */; };
 		6A84B1BD259B0E42000C1870 /* HUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A84B1BC259B0E42000C1870 /* HUD.swift */; };
+		6ABA8A8A25C79DFC0090BC4C /* WebVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABA8A8825C79DFC0090BC4C /* WebVC.swift */; };
+		6ABA8A8B25C79DFC0090BC4C /* WebVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6ABA8A8925C79DFC0090BC4C /* WebVC.xib */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -47,6 +49,8 @@
 		6A655EB125A461F6003251FB /* RecordsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsVC.swift; sourceTree = "<group>"; };
 		6A655EB225A461F6003251FB /* RecordsVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RecordsVC.xib; sourceTree = "<group>"; };
 		6A84B1BC259B0E42000C1870 /* HUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUD.swift; sourceTree = "<group>"; };
+		6ABA8A8825C79DFC0090BC4C /* WebVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebVC.swift; sourceTree = "<group>"; };
+		6ABA8A8925C79DFC0090BC4C /* WebVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WebVC.xib; sourceTree = "<group>"; };
 		6ADFEEB925AFF3BC00372E8B /* RunnerDebug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = RunnerDebug.entitlements; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -142,6 +146,8 @@
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				6A84B1BC259B0E42000C1870 /* HUD.swift */,
 				6A3A470825A86FFF0025C014 /* UIViewCorner.swift */,
+				6ABA8A8825C79DFC0090BC4C /* WebVC.swift */,
+				6ABA8A8925C79DFC0090BC4C /* WebVC.xib */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -212,6 +218,7 @@
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				6A655EB425A461F6003251FB /* RecordsVC.xib in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
+				6ABA8A8B25C79DFC0090BC4C /* WebVC.xib in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				6A0B7C762593219E0018D252 /* ShareVC.xib in Resources */,
 			);
@@ -299,6 +306,7 @@
 				6A3A470925A86FFF0025C014 /* UIViewCorner.swift in Sources */,
 				6A0B7CCA25934D3C0018D252 /* color.swift in Sources */,
 				6A655EB325A461F6003251FB /* RecordsVC.swift in Sources */,
+				6ABA8A8A25C79DFC0090BC4C /* WebVC.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				6A0B7C74259320CD0018D252 /* ShareVC.swift in Sources */,
 			);
@@ -375,7 +383,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Runner/RunnerApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Runner/RunnerDebug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20300;
 				DEVELOPMENT_TEAM = 44SDL2RZYX;
 				ENABLE_BITCODE = NO;
@@ -393,9 +403,11 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.2;
+				MARKETING_VERSION = 2.4.3;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emedclouds.doctor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -538,7 +550,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.2;
+				MARKETING_VERSION = 2.4.3;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emedclouds.doctor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -557,6 +570,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerApp.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20300;
 				DEVELOPMENT_TEAM = 44SDL2RZYX;
 				ENABLE_BITCODE = NO;
@@ -574,9 +589,11 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.2;
+				MARKETING_VERSION = 2.4.3;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emedclouds.doctor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

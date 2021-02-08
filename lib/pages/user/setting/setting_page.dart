@@ -5,8 +5,11 @@ import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http_manager/manager.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -16,6 +19,7 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   bool _flag = true;
   String _version = '';
+  String _versionCode = '';
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +91,10 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
       onTap: () {
-        SessionManager.shared.session = null;
+        EasyLoading.instance.flash(() async {
+          await API.shared.foundation.pushDeviceDel();
+          SessionManager.shared.session = null;
+        });
       },
     );
   }
@@ -148,7 +155,7 @@ class _SettingPageState extends State<SettingPage> {
                 textAlign: TextAlign.left,
               ),
             )),
-            Text('当前版本 $_version')
+            Text('当前版本 $_version($_versionCode)')
           ],
         ),
       ),
@@ -214,6 +221,8 @@ class _SettingPageState extends State<SettingPage> {
       _flag = toggle;
     }
     _version = await PlatformUtils.getAppVersion();
+    _versionCode = await PlatformUtils.getBuildNum();
+
     setState(() {});
   }
 }

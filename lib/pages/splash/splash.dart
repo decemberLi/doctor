@@ -8,11 +8,10 @@ import 'package:http_manager/manager.dart';
 
 class GuidePage extends StatefulWidget {
   static const List<String> images = <String>[
-    'android1.jpg',
-    'android2.jpg',
-    'android5.png',
-    'android3.jpg',
-    'android4.png',
+    'guidance1.png',
+    'guidance2.png',
+    'guidance3.png',
+    'guidance4.png',
   ];
 
   @override

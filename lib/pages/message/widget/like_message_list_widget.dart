@@ -49,6 +49,7 @@ class _LikeMessagePageState
     }
     return Container(
       padding: EdgeInsets.all(12),
+      margin: EdgeInsets.symmetric(horizontal: 16),
       decoration: itemContainerDecoration,
       child: IntrinsicHeight(
         child: Row(
@@ -96,8 +97,7 @@ class _LikeMessagePageState
 
   @override
   void onItemClicked(SocialMessageListViewModel model, itemData) {
-    Navigator.pushNamed(context, RouteManager.DOCTORS_ARTICLE_DETAIL,
-        arguments: {'postId': itemData?.postId,'from':'msg'});
+    RouteManager.openDoctorsDetail(itemData?.postId,from: 'msg');
     model?.messageClicked(itemData?.messageId);
   }
 }
