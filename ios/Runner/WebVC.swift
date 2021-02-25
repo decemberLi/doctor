@@ -224,7 +224,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
         guard let data = body.data(using: .utf8) else {return}
         guard let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [AnyHashable:Any] else {return}
         guard let dispatchType = json["dispatchType"] as? String else {return}
-        let vc = AppDelegate.shared?.window.rootViewController
+        let vc = AppDelegate.shared?.rootVC
         let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
         if dispatchType == "ticket" {
             naviChannel.invokeMethod("getTicket", arguments: nil) { (result) in

@@ -9,6 +9,9 @@ import UserNotificationsUI
     var gotoURL : String?
     var isLoaded  = false
     var notiInfo : [AnyHashable:Any]? = nil
+    var navi : UINavigationController?
+    var rootVC : FlutterViewController?
+    
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -18,9 +21,13 @@ import UserNotificationsUI
         Bugly.start(withAppId: "463f24e2f9")
         WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
         AppDelegate.shared = self
-        let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
+        let vc = FlutterViewController()
+        rootVC = vc
+        navi = UINavigationController(rootViewController: vc)
+        navi?.interactivePopGestureRecognizer?.delegate = self
+        navi?.setNavigationBarHidden(true, animated: false)
         window = UIWindow()
-        window.rootViewController = vc
+        window.rootViewController = navi
         window.makeKeyAndVisible()
         naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
         naviChannel.setMethodCallHandler { (call, result) in
@@ -123,6 +130,23 @@ import UserNotificationsUI
         application.applicationIconBadgeNumber = 0;
         JPUSHService.setBadge(0);
     }
+    @objc var rootFlutterViewController : FlutterViewController {
+        return rootVC!
+    }
+    
+    //MARK - FlutterPluginRegistry methods. All delegating to the rootViewController
+    
+    override func registrar(forPlugin pluginKey: String) -> FlutterPluginRegistrar? {
+        rootVC?.pluginRegistry().registrar(forPlugin: pluginKey)
+    }
+    
+    override func hasPlugin(_ pluginKey: String) -> Bool {
+        rootVC?.pluginRegistry().hasPlugin(pluginKey) ?? false
+    }
+    
+    override func valuePublished(byPlugin pluginKey: String) -> NSObject? {
+        rootVC?.pluginRegistry().valuePublished(byPlugin: pluginKey)
+    }
     
 }
 
@@ -205,8 +229,13 @@ extension AppDelegate {
     func openWebView(map : [String:Any]){
         let vc = WebVC()
         vc.initData = map
-        vc.modalPresentationStyle = .fullScreen
-        window.rootViewController?.present(vc, animated: false, completion: nil)
+        navi?.pushViewController(vc, animated: true)
+    }
+}
+
+extension AppDelegate : UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
 
