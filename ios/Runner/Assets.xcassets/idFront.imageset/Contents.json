@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "返回.png",
+      "filename" : "idFront.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "返回@2x.png",
+      "filename" : "idFront@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "返回@3x.png",
+      "filename" : "idFront@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
@@ -19,8 +19,5 @@
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "template-rendering-intent" : "template"
   }
 }

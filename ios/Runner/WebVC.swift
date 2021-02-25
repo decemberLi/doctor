@@ -202,7 +202,7 @@ private extension WebVC {
     }
     
     @IBAction func onBack(){
-        dismiss(animated: true, completion: nil)
+        navigationController?.popViewController(animated: true)
     }
     
     @IBAction func onRefreash() {

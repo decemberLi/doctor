@@ -16,6 +16,9 @@
 		6A3A470925A86FFF0025C014 /* UIViewCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3A470825A86FFF0025C014 /* UIViewCorner.swift */; };
 		6A655EB325A461F6003251FB /* RecordsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A655EB125A461F6003251FB /* RecordsVC.swift */; };
 		6A655EB425A461F6003251FB /* RecordsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A655EB225A461F6003251FB /* RecordsVC.xib */; };
+		6A7CA92625E784E300D43F6B /* OCRVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7CA92425E784E300D43F6B /* OCRVC.swift */; };
+		6A7CA92725E784E300D43F6B /* OCRVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A7CA92525E784E300D43F6B /* OCRVC.xib */; };
+		6A7CA92925E7851F00D43F6B /* OCRCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7CA92825E7851F00D43F6B /* OCRCoverView.swift */; };
 		6A84B1BD259B0E42000C1870 /* HUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A84B1BC259B0E42000C1870 /* HUD.swift */; };
 		6ABA8A8A25C79DFC0090BC4C /* WebVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABA8A8825C79DFC0090BC4C /* WebVC.swift */; };
 		6ABA8A8B25C79DFC0090BC4C /* WebVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6ABA8A8925C79DFC0090BC4C /* WebVC.xib */; };
@@ -48,6 +51,9 @@
 		6A48EB212599C8E00086F5F2 /* RunnerApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerApp.entitlements; sourceTree = "<group>"; };
 		6A655EB125A461F6003251FB /* RecordsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsVC.swift; sourceTree = "<group>"; };
 		6A655EB225A461F6003251FB /* RecordsVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RecordsVC.xib; sourceTree = "<group>"; };
+		6A7CA92425E784E300D43F6B /* OCRVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRVC.swift; sourceTree = "<group>"; };
+		6A7CA92525E784E300D43F6B /* OCRVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OCRVC.xib; sourceTree = "<group>"; };
+		6A7CA92825E7851F00D43F6B /* OCRCoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRCoverView.swift; sourceTree = "<group>"; };
 		6A84B1BC259B0E42000C1870 /* HUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUD.swift; sourceTree = "<group>"; };
 		6ABA8A8825C79DFC0090BC4C /* WebVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebVC.swift; sourceTree = "<group>"; };
 		6ABA8A8925C79DFC0090BC4C /* WebVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WebVC.xib; sourceTree = "<group>"; };
@@ -148,6 +154,9 @@
 				6A3A470825A86FFF0025C014 /* UIViewCorner.swift */,
 				6ABA8A8825C79DFC0090BC4C /* WebVC.swift */,
 				6ABA8A8925C79DFC0090BC4C /* WebVC.xib */,
+				6A7CA92425E784E300D43F6B /* OCRVC.swift */,
+				6A7CA92525E784E300D43F6B /* OCRVC.xib */,
+				6A7CA92825E7851F00D43F6B /* OCRCoverView.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -218,6 +227,7 @@
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				6A655EB425A461F6003251FB /* RecordsVC.xib in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
+				6A7CA92725E784E300D43F6B /* OCRVC.xib in Resources */,
 				6ABA8A8B25C79DFC0090BC4C /* WebVC.xib in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				6A0B7C762593219E0018D252 /* ShareVC.xib in Resources */,
@@ -301,6 +311,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A7CA92625E784E300D43F6B /* OCRVC.swift in Sources */,
+				6A7CA92925E7851F00D43F6B /* OCRCoverView.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				6A84B1BD259B0E42000C1870 /* HUD.swift in Sources */,
 				6A3A470925A86FFF0025C014 /* UIViewCorner.swift in Sources */,
