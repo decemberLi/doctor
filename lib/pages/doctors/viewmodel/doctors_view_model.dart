@@ -124,6 +124,7 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
     SharedPreferences refs = await _references();
     List<String> clickedList = refs.getStringList('${type ?? '_'}click_post');
     _populateData(posts, clickedList);
+    this.list.addAll(posts);
     return Future.value(posts);
   }
 

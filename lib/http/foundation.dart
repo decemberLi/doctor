@@ -70,7 +70,7 @@ class Foundation extends SubAPI {
     var url = _doctorURL(path);
     return await HttpManager.shared.post(url, params: params);
   }
-  sendSMS(params) async => doctorPost('/sms/send-captcha', params: params);
+  sendSMS(params) async => normalPost('/sms/send-captcha', params: params);
   pushDeviceSubmit(params) async => normalPost('/push-device/submit',params: params);
   pushDeviceLoginSubmit(params) async => normalPost('/push-device/submit',params: params);
   pushDeviceDel() async => doctorPost('/push-device/del');
