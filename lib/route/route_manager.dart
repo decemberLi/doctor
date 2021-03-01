@@ -22,6 +22,8 @@ import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
+import 'package:doctor/pages/user/auth/doctor_authentication.dart';
+import 'package:doctor/pages/user/auth/doctor_authentication_step_two.dart';
 import 'package:doctor/pages/user/collect/collect_list.dart';
 import 'package:doctor/pages/user/setting/setting_page.dart';
 import 'package:doctor/pages/user/update_pwd/set_new_pwd.dart';
@@ -78,6 +80,8 @@ class RouteManager {
   static const String COMMON_WEB = '/commonWeb';
   static const String DOCTOR_LIST1 = '/DoctorList1';
   static const String DOCTOR_LIST2 = '/DoctorList2';
+  static const String DOCTOR_AUTHENTICATION_INFO_PAGE = '/DoctorAuthenticationInfoPage';
+  static const String DOCTOR_AUTHENTICATION_PAGE = '/DoctorAuthenticationPage';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
@@ -169,6 +173,12 @@ class RouteManager {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return DoctorsListPage2(obj);
     },
+    DOCTOR_AUTHENTICATION_INFO_PAGE:(context){
+      return DoctorAuthenticationPage();
+    },
+    DOCTOR_AUTHENTICATION_PAGE:(context){
+      return DoctorAuthenticationStepTwoPage();
+    }
   };
 
   static openDoctorsDetail(postId, {String from = "list"}) {
