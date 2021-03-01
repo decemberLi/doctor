@@ -1,0 +1,408 @@
+import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
+import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/constants.dart';
+import 'package:doctor/widgets/new_text_icon.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class ResearchDetail extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _ResearchDetailState();
+  }
+}
+
+class _ResearchDetailState extends State<ResearchDetail> {
+  bool collapsed = false;
+
+  Widget item(Widget content) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: EdgeInsets.fromLTRB(16, 14, 16, 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: content,
+    );
+  }
+
+  Widget message() {
+    return item(
+      Column(
+        children: [
+          Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '${"123"}推广员给您留言了：', //data.representName
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    color: Color(0xFFfece35),
+                  ),
+                ),
+              ]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Text(
+                  '${"原因"}', //data.reLearnReason
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                    color: Color(0xFFfece35),
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget info() {
+    List learnListFields = LEARN_LIST['DOCTOR_LECTURE'];
+    List<Widget> infoList = [];
+    for (int i = 0; i < learnListFields.length; i++) {
+      var fields = learnListFields[i];
+      if (collapsed && fields['notCollapse'] == null) {
+        continue;
+      }
+      var infoItem = _buildListItem(
+          label: fields['label'],
+          value: '123',
+          format: null,
+          needBorder: infoList.length != 0);
+      infoList.add(infoItem);
+    }
+    return item(
+      Column(
+        children: [
+          Container(
+            child: GestureDetector(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        '学习计划信息',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: Color(0xFF107BFD),
+                        ),
+                      ),
+                      LearnTextIcon(
+                        text: "继续调研",
+                        color: Color(0xffF6A419),
+                        margin: EdgeInsets.only(left: 10),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        collapsed
+                            ? Icons.keyboard_arrow_down
+                            : Icons.keyboard_arrow_up,
+                        color: Color(0xFF107BFD),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              onTap: () {
+                setState(() {
+                  collapsed = !collapsed;
+                });
+              },
+            ),
+          ),
+          ...infoList,
+        ],
+      ),
+    );
+  }
+
+  Widget plans() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: EdgeInsets.fromLTRB(0, 16, 0, 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: Text(
+                '执行学习计划',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  color: Color(0xFF107BFD),
+                ),
+              ),
+            ),
+            buildPlanItem(false),
+            buildPlanItem(true),
+            Container(
+              width: double.infinity,
+              height: 44,
+              alignment: Alignment.center,
+              margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
+              child: Text(
+                "提交学习计划",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              decoration: BoxDecoration(
+                color: Color(0xff489DFE).withOpacity(0.85),
+                borderRadius: BorderRadius.all(Radius.circular(22)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0xff489DFE).withOpacity(0.4),
+                    offset: Offset(0, 4),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListItem(
+      {String label, dynamic value, Function format, bool needBorder = false}) {
+    return Container(
+        child: Column(
+      children: [
+        needBorder
+            ? Container(
+                height: 20,
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  height: 1,
+                  color: Color(0xFFF3F5F8),
+                ),
+              )
+            : Container(
+                height: 16,
+              ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              label,
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                color: Color(0xff444444),
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Expanded(
+              child: Text(
+                format != null ? format(value) : value.toString(),
+                style: TextStyle(
+                  color: Color(0xff222222),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ));
+  }
+
+  Widget buildPlanItem(bool isEnd) {
+    var content = Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.fromLTRB(26, 15, 15, 10),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Color(0xfff8f8f8),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "this is title",
+                style: TextStyle(
+                  color: Color(0xff222222),
+                  fontSize: 14,
+                ),
+              ),
+              Text(
+                "this is content，1211111111123123122222222222222222222",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Color(0xff444444),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          left: -52,
+          top: -28,
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 6),
+            child: Transform(
+              //对齐方式
+              alignment: Alignment.topRight,
+              //设置扭转值
+              transform: Matrix4.rotationZ(-0.9),
+              //设置被旋转的容器
+              child: typeDecoratedBox("VIDEO"),
+            ),
+          ),
+        ),
+      ],
+    );
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 0, 25, 0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 50,
+                alignment: Alignment.center,
+                child: Text(
+                  "10%",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff52C41A),
+                  ),
+                ),
+              ),
+              Text(
+                "填写问卷",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
+                decoration: BoxDecoration(
+                  color: Color(0xff52C41A),
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                ),
+                child: Text(
+                  "已完成",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              Expanded(child: Container()),
+              Text(
+                "12月11日完成",
+                style: TextStyle(
+                  color: Color(0xff888888),
+                  fontSize: 10,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(25, 0, 0, 0),
+            padding: EdgeInsets.fromLTRB(25, 5, 0, 20),
+            decoration: isEnd
+                ? null
+                : BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: Color(0xff52C41A),
+                      ),
+                    ),
+                  ),
+            child: content,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget typeDecoratedBox(String type) {
+    Color rendColor = ThemeColor.color72c140;
+    if (type == 'VIDEO') {
+      rendColor = ThemeColor.color5d9df7;
+    } else if (type == 'QUESTIONNAIRE') {
+      rendColor = ThemeColor.colorefaf41;
+    }
+    return DecoratedBox(
+      decoration: BoxDecoration(color: rendColor),
+      child: Padding(
+        // 分别指定四个方向的补白
+        padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+        child: Text(
+          MAP_RESOURCE_TYPE[type],
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 12,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text("医学调研详情"),
+      ),
+      body: Container(
+        color: Color(0xfff3f5f8),
+        height: double.infinity,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              message(),
+              info(),
+              plans(),
+              Container(
+                height: 20,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

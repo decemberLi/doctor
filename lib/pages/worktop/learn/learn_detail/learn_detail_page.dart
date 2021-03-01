@@ -122,28 +122,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     );
   }
 
-  Widget typeDecoratedBox(String type) {
-    Color rendColor = ThemeColor.color72c140;
-    if (type == 'VIDEO') {
-      rendColor = ThemeColor.color5d9df7;
-    } else if (type == 'QUESTIONNAIRE') {
-      rendColor = ThemeColor.colorefaf41;
-    }
-    return DecoratedBox(
-        decoration: BoxDecoration(color: rendColor),
-        child: Padding(
-          // 分别指定四个方向的补白
-          padding: const EdgeInsets.fromLTRB(30, 1, 30, 1),
-          child: Text(MAP_RESOURCE_TYPE[type],
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                color: Colors.white,
-              )),
-        ));
-  }
-
   Widget _buildListItem({
     String label,
     dynamic value,
@@ -467,21 +445,23 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               child: Container(
                 height: 44,
                 child: FlatButton(
-                  onPressed: (){
-                    Navigator.of(context)
-                            .pushNamed(RouteManager.LOOK_LECTURE_VIDEOS, arguments: {
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(
+                        RouteManager.LOOK_LECTURE_VIDEOS,
+                        arguments: {
                           "learnPlanId": data.learnPlanId,
                           "resourceId": data.resources[0].resourceId,
                           'doctorName': userInfo?.doctorName ?? '',
                         });
                   },
                   child: Text(
-                      "查看讲课视频",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),),
+                    "查看讲课视频",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
                 decoration: BoxDecoration(
                     color: Color(0xff489DFE),

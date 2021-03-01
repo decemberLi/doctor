@@ -278,7 +278,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                   fontWeight: FontWeight.bold),
                             ),
                             Container(
-                              width: 80,
+                              width: 65,
                               height: 20,
                               margin: EdgeInsets.only(left: 5),
                               alignment: Alignment.center,
@@ -310,8 +310,8 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                         color: Colors.white,
                                       ),
                                       text: doctorData?.authStatus == 'PASS'
-                                          ? '资质认证'
-                                          : '尚未认证',
+                                          ? '已认证'
+                                          : '未认证',
                                     ),
                                   ],
                                 ),

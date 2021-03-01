@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../root_widget.dart';
+import 'learn/research_detail/research_detail.dart';
 
 class WorktopPage extends StatefulWidget {
   @override
@@ -106,14 +107,19 @@ class _WorktopPageState extends State<WorktopPage>
           color: Color(0xFFF3F5F8),
           child: GestureDetector(
             onTap: () async {
-              await Navigator.of(context).pushNamed(
-                RouteManager.LEARN_DETAIL,
-                arguments: {
-                  'learnPlanId': item.learnPlanId,
-                  'listStatus': 'LEARNING',
-                  'from': 'work_top',
-                },
-              );
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context){
+                  return ResearchDetail();
+                }
+              ));
+              // await Navigator.of(context).pushNamed(
+              //   RouteManager.LEARN_DETAIL,
+              //   arguments: {
+              //     'learnPlanId': item.learnPlanId,
+              //     'listStatus': 'LEARNING',
+              //     'from': 'work_top',
+              //   },
+              // );
               // 从详情页回来后刷新数据
               _model.initData();
             },
@@ -466,7 +472,7 @@ class _WorktopPageState extends State<WorktopPage>
 
   _buildAuthStatusWidget(DoctorDetailInfoEntity doctorInfoEntity) {
     return Container(
-      width: 80,
+      width: 65,
       height: 20,
       margin: EdgeInsets.only(left: 5),
       alignment: Alignment.center,
@@ -497,7 +503,7 @@ class _WorktopPageState extends State<WorktopPage>
                 fontSize: 12,
                 color: Colors.white,
               ),
-              text: doctorInfoEntity?.authStatus == 'PASS' ? '资质认证' : '尚未认证',
+              text: doctorInfoEntity?.authStatus == 'PASS' ? '已认证' : '未认证',
             ),
           ],
         ),
