@@ -72,4 +72,11 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowSoftInputMode">stateAlwaysVisible</item>
     </style>
+
+    <!--重要提示，该 Style 不允许使用，不允许修改，存在的原因是修改腾讯 OCR sdk 中字体的颜-->
+    <style name="txy_white_text_16sp_style">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+    </style>
+
 </resources>

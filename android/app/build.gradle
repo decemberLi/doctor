@@ -43,6 +43,8 @@ android {
     packagingOptions {
         doNotStrip '*/mips/*.so'
         doNotStrip '*/mips64/*.so'
+        pickFirst 'lib/armeabi-v7a/libopencv_world.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
     }
 
     lintOptions {
@@ -108,6 +110,7 @@ flutter {
 }
 
 dependencies {
+    fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'
 
@@ -151,6 +154,14 @@ dependencies {
     implementation 'androidx.webkit:webkit:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     api 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+
+    // OCR
+    implementation files('libs/OcrSDKv1.0.5-release.aar')
+    // OCR SDK 依赖 xlog 组件需要添加引用
+    implementation 'com.tencent.mars:mars-xlog:1.2.3'
+    // OCR SDK 返回实体对象需要的依赖
+    implementation 'com.google.code.gson:gson:2.8.5'
+
     // 注解
 //    implementation "com.google.dagger:dagger:2.30.1"
 //    kapt "com.google.dagger:dagger-compiler:2.30.1"

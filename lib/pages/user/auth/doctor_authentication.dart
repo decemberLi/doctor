@@ -175,7 +175,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             width: 18,
             height: 17,
           ),
-          onTap: _doOcrInfo("bank"),
+          onTap: bankOrc,
         ),
       ],
     );
@@ -192,14 +192,6 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
         style: const TextStyle(fontSize: 12, color: Color(0xFF222222)),
       ),
     );
-  }
-
-  _selectPicture(
-    type,
-  ) async {
-    String jsonStr = await _doOcrInfo(type);
-    if (type == "face") {
-    } else {}
   }
 
   _buildIdCardWidget(DoctorQualificationModel model) {
@@ -224,7 +216,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                 child: ImageChooseWidget(
               hintText: '人像面照片',
               url: model?.physicianInfoEntity?.idCardLicense1?.url,
-              addImgCallback: () => _selectPicture("face"),
+              addImgCallback: () => idCardFaceSideOcr(),
               removeImgCallback: () => _model.setIdCardFaceSide(null),
               showOriginImgCallback: () {
                 _showOriginImage(data, 0);
@@ -237,7 +229,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                 child: ImageChooseWidget(
               hintText: '国徽面照片',
               url: model?.physicianInfoEntity?.idCardLicense2?.url,
-              addImgCallback: () => _selectPicture("back"),
+              addImgCallback: () => idCardBackSideOcr(),
               removeImgCallback: () => _model.setIdCardBackgroundSide(null),
               showOriginImgCallback: () {
                 _showOriginImage(data, 1);
@@ -356,7 +348,8 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                         style: _testStyle(ThemeColor.primaryColor),
                         recognizer: _agreementTap
                           ..onTap = () {
-                            MedcloudsNativeApi.instance().openWebPage('https://static.e-medclouds.com/web/other/protocols/license_partner.html');
+                            MedcloudsNativeApi.instance().openWebPage(
+                                'https://static.e-medclouds.com/web/other/protocols/license_partner.html');
                             // Navigator.push(context,
                             //     MaterialPageRoute(builder: (context) {
                             //   return CommonWebView(
@@ -376,5 +369,31 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     );
   }
 
-  _doOcrInfo(String type) {}
+  bankOrc() async {
+    MedcloudsNativeApi.instance().addProcessor("ocrBankCard", (args) {
+      print("ocrBankCard -> $args");
+      return Future.value("OK");
+    });
+    MedcloudsNativeApi.instance().ocrBankCard();
+  }
+
+  idCardFaceSideOcr() async {
+    MedcloudsNativeApi.instance().addProcessor("ocrIdCardFaceSide",
+        (args) {
+      print("ocrIdCardFaceSide -> $args");
+      return Future.value("OK");
+    });
+    MedcloudsNativeApi.instance().ocrIdCardFaceSide();
+  }
+
+  idCardBackSideOcr() async {
+    print("idCardBackSideOcr ----------------------");
+    MedcloudsNativeApi.instance().addProcessor("ocrIdCardBackSide",
+        (args) {
+      print("ocrIdCardBackSide -> $args");
+      return Future.value("OK");
+    });
+    MedcloudsNativeApi.instance().ocrIdCardBackSide();
+  }
+
 }
