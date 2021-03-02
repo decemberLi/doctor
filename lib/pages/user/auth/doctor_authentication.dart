@@ -4,6 +4,7 @@ import 'package:doctor/pages/user/auth/viewmodel/authentication_view_model.dart'
 import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_webview.dart';
 import 'package:doctor/widgets/photo_view_gallery_screen.dart';
@@ -41,51 +42,64 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             return SingleChildScrollView(
               child: Container(
                 color: const Color(0xFFF3F5F8),
-                child: Column(
+                height: MediaQuery.of(context).size.height - 100,
+                child: Stack(
                   children: [
-                    commonTips(),
-                    failTips("理由理由理由理由理由理由理由理由理由理由理由理由理"),
-                    CrudeProgressWidget(1),
-                    Container(
-                        margin: EdgeInsets.symmetric(horizontal: 16),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 18),
-                          child: Column(
-                            children: [
-                              _buildIdCardWidget(null),
-                              if (model.needShowIdCardInfo)
-                                _buildItemWidget(
-                                    "姓名：", model.data.identityName ?? ''),
-                              if (model.needShowIdCardInfo)
-                                _buildItemWidget(
-                                    "身份证号：", model.data.identityNo ?? ''),
-                              _underLineContainer(_phoneNumberWidget(model)),
-                              _underLineContainer(_bankCardWidget(model))
-                            ],
-                          ),
-                        )),
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: 76, right: 76, top: 12, bottom: 105),
-                      child: agreement(),
+                    Column(
+                      children: [
+                        commonTips(),
+                        CrudeProgressWidget(1),
+                        Container(
+                            margin: EdgeInsets.symmetric(horizontal: 16),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 18),
+                              child: Column(
+                                children: [
+                                  _buildIdCardWidget(null),
+                                  if (model.needShowIdCardInfo)
+                                    _buildItemWidget(
+                                        "姓名：", model.data.identityName ?? ''),
+                                  if (model.needShowIdCardInfo)
+                                    _buildItemWidget(
+                                        "身份证号：", model.data.identityNo ?? ''),
+                                  _underLineContainer(
+                                      _phoneNumberWidget(model)),
+                                  _underLineContainer(_bankCardWidget(model))
+                                ],
+                              ),
+                            )),
+                        Container(
+                          margin: EdgeInsets.only(left: 76, right: 76, top: 12),
+                          child: agreement(),
+                        ),
+                      ],
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 30, right: 30, bottom: 26),
-                      child: AceButton(
-                        width: double.infinity,
-                        type: model.canNext
-                            ? AceButtonType.primary
-                            : AceButtonType.grey,
-                        text: "下一步",
-                        onPressed: () async {
-                          await model.commitAuthenticationData();
-                          Navigator.pushNamed(context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-                        },
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        margin:
+                            EdgeInsets.only(left: 30, right: 30, bottom: 26),
+                        child: AceButton(
+                          width: double.infinity,
+                          type: model.canNext
+                              ? AceButtonType.primary
+                              : AceButtonType.grey,
+                          text: "下一步",
+                          onPressed: () async {
+                            if (model.canNext) {
+                              await model.commitAuthenticationData();
+                              Navigator.pushNamed(context,
+                                  RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+                            }
+                          },
+                        ),
                       ),
                     )
                   ],
@@ -176,31 +190,6 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
       child: Text(
         "注：以下信息仅供认证使用，请您放心填写，我们将严格保密",
         style: const TextStyle(fontSize: 12, color: Color(0xFF222222)),
-      ),
-    );
-  }
-
-  failTips(String cause) {
-    return Container(
-      alignment: Alignment.centerLeft,
-      margin: EdgeInsets.fromLTRB(16, 6, 16, 0),
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(8)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '审核失败原因：',
-            style:
-                const TextStyle(fontSize: 16, color: const Color(0xFFFECE35)),
-          ),
-          Text(
-            '${cause ?? ''}',
-            style:
-                const TextStyle(fontSize: 12, color: const Color(0xFFFECE35)),
-          )
-        ],
       ),
     );
   }
@@ -324,7 +313,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   agreement() {
     _testStyle(Color color) {
       return TextStyle(
-          color: color, fontSize: 10, textBaseline: TextBaseline.ideographic);
+          color: color, fontSize: 11, textBaseline: TextBaseline.ideographic);
     }
 
     return Container(
@@ -367,12 +356,13 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                         style: _testStyle(ThemeColor.primaryColor),
                         recognizer: _agreementTap
                           ..onTap = () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return CommonWebView(
-                                  'https://static.e-medclouds.com/web/other/protocols/license_partner.html',
-                                  '共享经济合作伙伴协议');
-                            }));
+                            MedcloudsNativeApi.instance().openWebPage('https://static.e-medclouds.com/web/other/protocols/license_partner.html');
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (context) {
+                            //   return CommonWebView(
+                            //       'https://static.e-medclouds.com/web/other/protocols/license_partner.html',
+                            //       '共享经济合作伙伴协议');
+                            // }));
                           },
                       ),
                     ],
