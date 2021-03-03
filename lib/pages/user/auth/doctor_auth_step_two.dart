@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/model/face_photo.dart';
 import 'package:doctor/pages/qualification/image_choose_widget.dart';
-import 'package:doctor/pages/user/auth/viewmodel/authentication_step2_model.dart';
+import 'package:doctor/pages/user/auth/viewmodel/auth_step2_view_model.dart';
 import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';

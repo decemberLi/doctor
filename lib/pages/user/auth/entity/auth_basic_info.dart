@@ -1,10 +1,10 @@
 import 'package:doctor/model/face_photo.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'authentication_basic_info.g.dart';
+part 'auth_basic_info.g.dart';
 
 @JsonSerializable()
-class AuthenticationBasicInfoEntity {
+class AuthBasicInfoEntity {
   String identityNo; // 身份证号
   String identityName; // 身份证姓名
   int identitySex; // 性别（0-女、1-男）
@@ -18,9 +18,9 @@ class AuthenticationBasicInfoEntity {
   FacePhoto idCardLicenseBehind; // 身份证-反面照URL
   FacePhoto bankCardCertificates; // 银行卡图片
 
-  AuthenticationBasicInfoEntity();
+  AuthBasicInfoEntity();
 
-  factory AuthenticationBasicInfoEntity.fromJson(Map<String, dynamic> json) =>
+  factory AuthBasicInfoEntity.fromJson(Map<String, dynamic> json) =>
       _$AuthenticationBasicInfoEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$AuthenticationBasicInfoEntityToJson(this);

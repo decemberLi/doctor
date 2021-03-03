@@ -1,12 +1,11 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/pages/qualification/image_choose_widget.dart';
-import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
-import 'package:doctor/pages/user/auth/viewmodel/authentication_view_model.dart';
+import 'package:doctor/pages/user/auth/viewmodel/auth_step1_view_model.dart';
 import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/widgets/ace_button.dart';
-import 'package:doctor/widgets/common_webview.dart';
 import 'package:doctor/widgets/photo_view_gallery_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -60,7 +59,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                   vertical: 16, horizontal: 18),
                               child: Column(
                                 children: [
-                                  _buildIdCardWidget(null),
+                                  _buildIdCardWidget(model),
                                   if (model.needShowIdCardInfo)
                                     _buildItemWidget(
                                         "姓名：", model.data.identityName ?? ''),
@@ -194,11 +193,14 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     );
   }
 
-  _buildIdCardWidget(DoctorQualificationModel model) {
-    List<String> data = [
-      model?.physicianInfoEntity?.idCardLicense1?.url,
-      model?.physicianInfoEntity?.idCardLicense2?.url
-    ];
+  _buildIdCardWidget(AuthenticationViewModel model) {
+    List<String> data = [];
+    if (!TextUtil.isEmpty(model.data.idCardLicenseFront?.url)) {
+      data.add(model.data.idCardLicenseFront?.url);
+    }
+    if (!TextUtil.isEmpty(model.data.idCardLicenseBehind?.url)) {
+      data.add(model.data.idCardLicenseBehind?.url);
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -215,7 +217,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             Expanded(
                 child: ImageChooseWidget(
               hintText: '人像面照片',
-              url: model?.physicianInfoEntity?.idCardLicense1?.url,
+              url: model.data.idCardLicenseFront?.url,
               addImgCallback: () => idCardFaceSideOcr(),
               removeImgCallback: () => _model.setIdCardFaceSide(null),
               showOriginImgCallback: () {
@@ -228,7 +230,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             Expanded(
                 child: ImageChooseWidget(
               hintText: '国徽面照片',
-              url: model?.physicianInfoEntity?.idCardLicense2?.url,
+              url: model.data.idCardLicenseBehind?.url,
               addImgCallback: () => idCardBackSideOcr(),
               removeImgCallback: () => _model.setIdCardBackgroundSide(null),
               showOriginImgCallback: () {
@@ -371,16 +373,15 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
 
   bankOrc() async {
     MedcloudsNativeApi.instance().addProcessor("ocrBankCard", (args) {
-      print("ocrBankCard -> $args");
+      _model.processBankCardResult(args);
       return Future.value("OK");
     });
     MedcloudsNativeApi.instance().ocrBankCard();
   }
 
   idCardFaceSideOcr() async {
-    MedcloudsNativeApi.instance().addProcessor("ocrIdCardFaceSide",
-        (args) {
-      print("ocrIdCardFaceSide -> $args");
+    MedcloudsNativeApi.instance().addProcessor("ocrIdCardFaceSide", (args) {
+      _model.processIdCardFaceSideResult(args);
       return Future.value("OK");
     });
     MedcloudsNativeApi.instance().ocrIdCardFaceSide();
@@ -388,12 +389,10 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
 
   idCardBackSideOcr() async {
     print("idCardBackSideOcr ----------------------");
-    MedcloudsNativeApi.instance().addProcessor("ocrIdCardBackSide",
-        (args) {
-      print("ocrIdCardBackSide -> $args");
+    MedcloudsNativeApi.instance().addProcessor("ocrIdCardBackSide", (args) {
+      _model.processIdCardBackSideResult(args);
       return Future.value("OK");
     });
     MedcloudsNativeApi.instance().ocrIdCardBackSide();
   }
-
 }

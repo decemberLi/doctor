@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'authentication_basic_info.dart';
+part of 'auth_basic_info.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-AuthenticationBasicInfoEntity _$AuthenticationBasicInfoEntityFromJson(
+AuthBasicInfoEntity _$AuthenticationBasicInfoEntityFromJson(
     Map<String, dynamic> json) {
-  return AuthenticationBasicInfoEntity()
+  return AuthBasicInfoEntity()
     ..identityNo = json['identityNo'] as String
     ..identityName = json['identityName'] as String
     ..identitySex = json['identitySex'] as int
@@ -32,7 +32,7 @@ AuthenticationBasicInfoEntity _$AuthenticationBasicInfoEntityFromJson(
 }
 
 Map<String, dynamic> _$AuthenticationBasicInfoEntityToJson(
-        AuthenticationBasicInfoEntity instance) =>
+        AuthBasicInfoEntity instance) =>
     <String, dynamic>{
       'identityNo': instance.identityNo,
       'identityName': instance.identityName,

@@ -1,7 +1,6 @@
 package com.emedclouds.doctor
 
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -16,8 +15,6 @@ import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
 import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.utils.OnFlutterCall.Companion.CHANNEL_RESULT_OK
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.tencent.ocr.sdk.common.CustomConfigUi
 import com.tencent.ocr.sdk.common.ISDKKitResultListener
 import com.tencent.ocr.sdk.common.OcrSDKKit
@@ -169,9 +166,8 @@ class MainActivity : FlutterActivity() {
 
     fun ocrCallback(type: String, srcBase64Image: String, response: String) {
         val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, type)
-        val json = JSONObject().apply {
+        val json = JSONObject(response).apply {
             put("imgPath", filePath?.absolutePath)
-            put("data", response)
         }
         ChannelManager.instance.callFlutter(type, json.toString(), MethodChannelResultAdapter())
     }
