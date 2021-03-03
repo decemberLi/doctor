@@ -37,7 +37,15 @@ android {
     buildToolsVersion '30.0.2'
 
     sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
+        main{
+            java.srcDirs += 'src/main/kotlin'
+        }
+        qa{
+            res.srcDirs += 'src/qa'
+        }
+        production{
+            res.srcDirs += 'src/production'
+        }
     }
 
     packagingOptions {
@@ -95,6 +103,14 @@ android {
         }
     }
 
+    flavorDimensions "env"
+    productFlavors{
+        qa{
+        }
+        production{
+        }
+    }
+
     compileOptions {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
@@ -102,6 +118,12 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    applicationVariants.all{ variant ->
+        variant.outputs.all {
+            outputFileName = "droctor-${variant.flavorName}-${variant.buildType.name}-v${versionName}-${versionCode}.apk"
+        }
     }
 }
 
