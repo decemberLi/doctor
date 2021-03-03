@@ -295,12 +295,11 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     super.dispose();
   }
 
-  bool _agree = false;
   TapGestureRecognizer _agreementTap = TapGestureRecognizer();
 
   onAgreementTaped() {
     setState(() {
-      _agree = !_agree;
+      _model.changeAgreeState(!_model.agree);
     });
   }
 
@@ -322,10 +321,10 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
               padding: EdgeInsets.only(top: 1, right: 3),
               child: Icon(
                 Icons.check_circle,
-                color: _agree
+                color: _model.agree
                     ? ThemeColor.primaryColor
                     : ThemeColor.secondaryGeryColor,
-                size: 15,
+                size: 16,
                 textDirection: TextDirection.ltr,
               ),
             ),

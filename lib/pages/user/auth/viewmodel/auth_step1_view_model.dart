@@ -15,12 +15,18 @@ class AuthenticationViewModel extends ViewStateModel {
 
   var _showIdCardInfo = false;
   var _canNext = false;
+  bool _agree = false;
 
   bool get needShowIdCardInfo => _showIdCardInfo;
 
   AuthBasicInfoEntity get data => _entity;
 
   bool get canNext => _canNext;
+
+  bool get agree => _agree;
+  void changeAgreeState(bool value) {
+    _agree = value;
+  }
 
   // 身份证反面
   setIdCardFaceSide(imgPath) {
@@ -91,6 +97,9 @@ class AuthenticationViewModel extends ViewStateModel {
       if(needToast) {
         EasyLoading.showToast("请输入正确的银行卡号");
       }
+      return;
+    }
+    if(!_agree){
       return;
     }
     _canNext = true;
