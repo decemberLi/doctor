@@ -7,6 +7,8 @@ import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/utils/upload_file_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:doctor/http/ucenter.dart';
+import 'package:http_manager/api.dart';
 
 import '../entity/auth_basic_info.dart';
 
@@ -24,6 +26,7 @@ class AuthenticationViewModel extends ViewStateModel {
   bool get canNext => _canNext;
 
   bool get agree => _agree;
+
   void changeAgreeState(bool value) {
     _agree = value;
   }
@@ -41,7 +44,7 @@ class AuthenticationViewModel extends ViewStateModel {
       ..identityAddress = null
       ..idCardLicenseFront = null;
     _showIdCardInfo = false;
-    checkDataIntegrity(needToast: false);
+    checkDataIntegrity();
     notifyListeners();
   }
 
@@ -51,56 +54,65 @@ class AuthenticationViewModel extends ViewStateModel {
     _entity
       ..identityValidityStart = null
       ..idCardLicenseBehind = null;
-    checkDataIntegrity(needToast: false);
+    checkDataIntegrity();
     notifyListeners();
   }
 
   // 设置银行卡号
   setBankCard(String val) {
-    print("setBankCard ---------> $val}");
+    debugPrint("setBankCard ---------> $val}");
     _entity.bankCard = val;
-    checkDataIntegrity(needToast: false);
+    checkDataIntegrity();
     notifyListeners();
   }
 
   // 设置签约号码
   setSignaturePhoneNumber(String val) {
-    print("setSignaturePhoneNumber ---------> $val}");
+    debugPrint("setSignaturePhoneNumber ---------> $val}");
     _entity.bankSignMobile = val;
-    checkDataIntegrity(needToast: false);
+    checkDataIntegrity();
     notifyListeners();
   }
 
   commitAuthenticationData() {
-    print("commitAuthenticationData");
-    checkDataIntegrity(needToast: true);
+    debugPrint("commitAuthenticationData");
+    if (checkDataIntegrity()) {
+      API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
+        (value) => {
+          // TODO 弹框提示
+        },
+        onError: (error, msg) {
+          // TODO 弹框提示
+        },
+      );
+    }
   }
 
   checkDataIntegrity({bool needToast = false}) {
     _canNext = false;
     if (TextUtil.isEmpty(data.identityNo)) {
-      return;
+      return false;
     }
     if (TextUtil.isEmpty(data.identityName)) {
-      return;
+      return false;
     }
-    if(data.idCardLicenseBehind == null){
-      return;
+    if (data.idCardLicenseBehind == null) {
+      return false;
     }
     if (TextUtil.isEmpty(data.bankSignMobile)) {
-      if(needToast ) {
+      if (needToast) {
         EasyLoading.showToast("请输入正确的手机号");
       }
-      return;
+      return false;
     }
     if (TextUtil.isEmpty(data.bankCard)) {
-      if(needToast) {
+      if (needToast) {
         EasyLoading.showToast("请输入正确的银行卡号");
       }
-      return;
+      return false;
     }
-    if(!_agree){
-      return;
+    if (!_agree) {
+      return false;
     }
     _canNext = true;
   }
@@ -116,7 +128,7 @@ class AuthenticationViewModel extends ViewStateModel {
     _entity
       ..identityValidityStart = json['CardNo']
       ..idCardLicenseBehind = img;
-    checkDataIntegrity(needToast: false);
+    checkDataIntegrity();
     notifyListeners();
   }
 
@@ -136,7 +148,7 @@ class AuthenticationViewModel extends ViewStateModel {
       ..identityAddress = json['Address']
       ..idCardLicenseFront = img;
     _showIdCardInfo = true;
-    checkDataIntegrity(needToast: false);
+    checkDataIntegrity();
     notifyListeners();
   }
 
@@ -155,7 +167,7 @@ class AuthenticationViewModel extends ViewStateModel {
       ..identityValidityStart = json['Authority']
       ..identityValidityEnd = json['ValidDate']
       ..idCardLicenseBehind = img;
-    checkDataIntegrity(needToast: false);
+    checkDataIntegrity();
     notifyListeners();
   }
 

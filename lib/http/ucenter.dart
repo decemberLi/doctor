@@ -66,4 +66,8 @@ class UCenter extends SubAPI {
     return normalPost('/personal/change-head-pic',
         params: params, );
   }
+
+  Future postDoctorIdentityInfo(params) async{
+    return normalPost('/personal/commit-doctor-identity-info',params: params);
+  }
 }
