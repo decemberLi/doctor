@@ -14,11 +14,10 @@ import com.emedclouds.doctor.common.web.WebActivity
 import com.emedclouds.doctor.common.web.pluginwebview.X5WebViewPlugin
 import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
-import com.emedclouds.doctor.utils.ChannelManager
-import com.emedclouds.doctor.utils.MethodChannelResultAdapter
-import com.emedclouds.doctor.utils.NotificationUtil
-import com.emedclouds.doctor.utils.OnFlutterCall
+import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.utils.OnFlutterCall.Companion.CHANNEL_RESULT_OK
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tencent.ocr.sdk.common.CustomConfigUi
 import com.tencent.ocr.sdk.common.ISDKKitResultListener
 import com.tencent.ocr.sdk.common.OcrSDKKit
@@ -115,6 +114,8 @@ class MainActivity : FlutterActivity() {
                         }, object : ISDKKitResultListener {
                     override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
                         Log.d(tag, "onProcessSucceed: $response")
+                        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, "id_card_face_side")
+                        ocrCallback("ocrIdCardFaceSide", srcBase64Image, response)
                     }
 
                     override fun onProcessFailed(errorCode: String, message: String, requestId: String) {
@@ -133,6 +134,8 @@ class MainActivity : FlutterActivity() {
                         }, object : ISDKKitResultListener {
                     override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
                         Log.d(tag, "onProcessSucceed: $response")
+                        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, "bank_card")
+                        ocrCallback("ocrBankCard", srcBase64Image, response)
                     }
 
                     override fun onProcessFailed(errorCode: String, message: String, requestId: String) {
@@ -151,6 +154,7 @@ class MainActivity : FlutterActivity() {
                         }, object : ISDKKitResultListener {
                     override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
                         Log.d(tag, "onProcessSucceed: $response")
+                        ocrCallback("ocrIdCardBackSide", srcBase64Image, response)
                     }
 
                     override fun onProcessFailed(errorCode: String, message: String, requestId: String) {
@@ -161,6 +165,15 @@ class MainActivity : FlutterActivity() {
             }
         });
 //        CommonWebActivity.start(this@MainActivity, "", "http://192.168.1.27:9000/#/detail?id=283")
+    }
+
+    fun ocrCallback(type: String, srcBase64Image: String, response: String) {
+        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, type)
+        val json = JSONObject().apply {
+            put("imgPath", filePath?.absolutePath)
+            put("data", response)
+        }
+        ChannelManager.instance.callFlutter(type, json.toString(), MethodChannelResultAdapter())
     }
 
 
