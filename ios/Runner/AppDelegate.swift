@@ -248,7 +248,7 @@ extension AppDelegate {
     
     func launchEvent(type:Int){
         let isfirst = UserDefaults.standard.bool(forKey: "isFirst")
-        MobClick.event("app_launch", attributes: ["launch_sourse":type,"is_first":isfirst])
+        MobClick.event("app_launch", attributes: ["launch_sourse":type,"is_first":!isfirst])
         UserDefaults.standard.setValue(true, forKey: "isFirst")
     }
 }
