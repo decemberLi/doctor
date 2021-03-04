@@ -81,6 +81,16 @@ class MedcloudsNativeApi {
     return await _channel.invokeMethod("openWebPage", arguments);
   }
 
+  Future ocrIdCardFaceSide() async{
+    return await _channel.invokeMethod("ocrIdCardFaceSide");
+  }
+  Future ocrIdCardBackSide() async{
+    return await _channel.invokeMethod("ocrIdCardBackSide");
+  }
+  Future ocrBankCard() async{
+    return await _channel.invokeMethod("ocrBankCard");
+  }
+
   Future uploadDeviceInfo(args) async {
     try {
       var ids = json.decode(args);

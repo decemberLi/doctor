@@ -68,3 +68,10 @@ public static final int *;
 
 -dontwarn cn.jiguang.**
 -keep class cn.jiguang.** { *; }
+
+#保留自定义的 OcrSDKKit 类和类成员不被混淆
+-keep class com.tencent.ocr.sdk.** {*;}
+
+#第三方 jar 包不被混淆
+-keep class com.tencent.youtu.** {*;}
+-keep class com.tencent.mars.xlog.** {*;}

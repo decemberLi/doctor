@@ -13,17 +13,18 @@ import com.emedclouds.doctor.common.web.WebActivity
 import com.emedclouds.doctor.common.web.pluginwebview.X5WebViewPlugin
 import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
-import com.emedclouds.doctor.utils.ChannelManager
-import com.emedclouds.doctor.utils.MethodChannelResultAdapter
-import com.emedclouds.doctor.utils.NotificationUtil
-import com.emedclouds.doctor.utils.OnFlutterCall
+import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.utils.OnFlutterCall.Companion.CHANNEL_RESULT_OK
+import com.tencent.ocr.sdk.common.CustomConfigUi
+import com.tencent.ocr.sdk.common.ISDKKitResultListener
+import com.tencent.ocr.sdk.common.OcrSDKKit
+import com.tencent.ocr.sdk.common.OcrType
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
-import java.lang.Exception
+
 
 class MainActivity : FlutterActivity() {
     private val tag = "MainActivity"
@@ -92,7 +93,7 @@ class MainActivity : FlutterActivity() {
                 Log.d("MainActivity", "onFlutterUiDisplayed")
                 mHandler.postDelayed({
                     postJPushRegisterId()
-                    openNotificationIfNeeded (intent)
+                    openNotificationIfNeeded(intent)
                 }, 2000)
             }
 
@@ -101,13 +102,81 @@ class MainActivity : FlutterActivity() {
             }
 
         })
+        ChannelManager.instance.on("ocrIdCardFaceSide", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                OcrSDKKit.getInstance().startProcessOcr(this@MainActivity,
+                        OcrType.IDCardOCR_FRONT,
+                        CustomConfigUi().apply {
+                            titleBarText = "扫描身份证"
+                        }, object : ISDKKitResultListener {
+                    override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
+                        Log.d(tag, "onProcessSucceed: $response")
+                        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, "id_card_face_side")
+                        ocrCallback("ocrIdCardFaceSide", srcBase64Image, response)
+                    }
+
+                    override fun onProcessFailed(errorCode: String, message: String, requestId: String) {
+                        Log.d(tag, "onProcessFailed: ")
+                    }
+                })
+                return "OK"
+            }
+        });
+        ChannelManager.instance.on("ocrBankCard", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                OcrSDKKit.getInstance().startProcessOcr(this@MainActivity,
+                        OcrType.BankCardOCR,
+                        CustomConfigUi().apply {
+                            titleBarText = "扫描银行卡"
+                        }, object : ISDKKitResultListener {
+                    override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
+                        Log.d(tag, "onProcessSucceed: $response")
+                        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, "bank_card")
+                        ocrCallback("ocrBankCard", srcBase64Image, response)
+                    }
+
+                    override fun onProcessFailed(errorCode: String, message: String, requestId: String) {
+                        Log.d(tag, "onProcessFailed: ")
+                    }
+                })
+                return "OK"
+            }
+        });
+        ChannelManager.instance.on("ocrIdCardBackSide", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                OcrSDKKit.getInstance().startProcessOcr(this@MainActivity,
+                        OcrType.IDCardOCR_BACK,
+                        CustomConfigUi().apply {
+                            titleBarText = "扫描身份证"
+                        }, object : ISDKKitResultListener {
+                    override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
+                        Log.d(tag, "onProcessSucceed: $response")
+                        ocrCallback("ocrIdCardBackSide", srcBase64Image, response)
+                    }
+
+                    override fun onProcessFailed(errorCode: String, message: String, requestId: String) {
+                        Log.d(tag, "onProcessFailed: ")
+                    }
+                })
+                return "OK"
+            }
+        });
 //        CommonWebActivity.start(this@MainActivity, "", "http://192.168.1.27:9000/#/detail?id=283")
+    }
+
+    fun ocrCallback(type: String, srcBase64Image: String, response: String) {
+        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, type)
+        val json = JSONObject(response).apply {
+            put("imgPath", filePath?.absolutePath)
+        }
+        ChannelManager.instance.callFlutter(type, json.toString(), MethodChannelResultAdapter())
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
     }
+
     private fun postJPushRegisterId() {
         val json = JSONObject()
         json.put("registerId", JPushInterface.getRegistrationID(application))
