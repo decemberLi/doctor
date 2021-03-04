@@ -81,6 +81,10 @@ class MedcloudsNativeApi {
     return await _channel.invokeMethod("openWebPage", arguments);
   }
 
+  Future eventTracker(String eventName,dynamic arguments) async {
+    return await _channel.invokeMethod("eventTracker", arguments);
+  }
+
   Future uploadDeviceInfo(args) async {
     try {
       var ids = json.decode(args);

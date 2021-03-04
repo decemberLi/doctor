@@ -85,6 +85,26 @@ class MainActivity : FlutterActivity() {
                 return CHANNEL_RESULT_OK
             }
         })
+        ChannelManager.instance.on("eventTracker", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                if (TextUtils.isEmpty(arguments)) {
+                    return CHANNEL_RESULT_OK
+                }
+                JSONObject(arguments).apply {
+                    val event = getString("eventName")
+                    val ext = optString("ext")
+                    val extMap: MutableMap<String, String> = HashMap<String, String>()
+                    if (!TextUtils.isEmpty(ext)) {
+                        val extJson = JSONObject(ext)
+                        extJson.keys().forEach {
+                            extMap[it] = "${extJson.get(it)}"
+                        }
+                    }
+                    MobclickAgent.onEvent(application, event, extMap)
+                }
+                return CHANNEL_RESULT_OK
+            }
+        })
         goWebIfNeeded(intent)
         openNotificationIfNeeded(intent)
         flutterEngine?.renderer?.addIsDisplayingFlutterUiListener(object : FlutterUiDisplayListener {
@@ -92,7 +112,7 @@ class MainActivity : FlutterActivity() {
                 Log.d("MainActivity", "onFlutterUiDisplayed")
                 mHandler.postDelayed({
                     postJPushRegisterId()
-                    openNotificationIfNeeded (intent)
+                    openNotificationIfNeeded(intent)
                 }, 2000)
             }
 
@@ -108,6 +128,7 @@ class MainActivity : FlutterActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
+
     private fun postJPushRegisterId() {
         val json = JSONObject()
         json.put("registerId", JPushInterface.getRegistrationID(application))

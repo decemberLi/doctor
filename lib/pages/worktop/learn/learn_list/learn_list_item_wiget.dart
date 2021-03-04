@@ -1,4 +1,6 @@
 import 'package:common_utils/common_utils.dart';
+import 'package:doctor/common/statistics/biz_tracker.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -10,6 +12,7 @@ import 'package:http_manager/api.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/http/server.dart';
+import 'package:provider/provider.dart';
 
 /// 渲染资源列表
 class ResourceTypeListWiget extends StatelessWidget {
@@ -87,7 +90,7 @@ class LearnListItemWiget extends StatelessWidget {
     return '截止日期：${DateUtil.formatDateMs(item.planImplementEndTime, format: 'yyyy年MM月dd日')}';
   }
 
-  Widget circleRender() {
+  Widget circleRender(context) {
     double percent = 0;
     String text = '开始学习';
     if (this.item.learnProgress >= 100 &&
@@ -121,6 +124,7 @@ class LearnListItemWiget extends StatelessWidget {
     if (text == "立即提交") {
       learn = FlatButton(
         onPressed: () {
+
           EasyLoading.instance.flash(
             () async {
               await API.shared.server.learnSubmit(
@@ -128,6 +132,11 @@ class LearnListItemWiget extends StatelessWidget {
                   'learnPlanId': item.learnPlanId,
                 },
               );
+              UserInfoViewModel model = Provider.of<UserInfoViewModel>(context, listen: false);
+              eventTracker(Event.PLAN_SUBMIT, {
+                "learn_plan_id":"${item?.learnPlanId}",
+                "user_id":"${model?.data?.doctorUserId}"
+              });
               if (this.onSubmit != null) {
                 this.onSubmit();
               }
@@ -185,7 +194,7 @@ class LearnListItemWiget extends StatelessWidget {
     );
   }
 
-  Widget _buildItem() {
+  Widget _buildItem(context) {
     Widget taskTemplateWidget = Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(bottom: 10),
@@ -236,7 +245,7 @@ class LearnListItemWiget extends StatelessWidget {
           ),
           Container(
             width: 108,
-            child: circleRender(),
+            child: circleRender(context),
           ),
         ],
       );
@@ -303,7 +312,7 @@ class LearnListItemWiget extends StatelessWidget {
             ),
             Container(
               width: 108,
-              child: circleRender(),
+              child: circleRender(context),
             ),
           ],
         )
@@ -321,7 +330,7 @@ class LearnListItemWiget extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
-      child: _buildItem(),
+      child: _buildItem(context),
     );
   }
 }

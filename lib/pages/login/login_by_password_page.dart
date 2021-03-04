@@ -1,24 +1,22 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:device_info/device_info.dart';
-import 'package:dio/dio.dart';
+import 'package:doctor/common/statistics/biz_tracker.dart';
+import 'package:doctor/http/Sso.dart';
+import 'package:doctor/http/foundation.dart';
 import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
-import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/provider/GlobalData.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/utils/adapt.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/platform_utils.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:doctor/http/Sso.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
-import 'package:doctor/http/foundation.dart';
 
 import 'common_style.dart';
 
@@ -47,6 +45,10 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
         var response = await API.shared.sso.loginByPassword(
             {'mobile': _mobile, 'password': _password, 'system': 'DOCTOR'});
         LoginInfoModel infoModel = LoginInfoModel.fromJson(response);
+        eventTracker(Event.LOGIN, {
+          'user_id':'${infoModel?.userId}',
+          'login_type':'2'
+        });
         SessionManager.shared.session = infoModel.ticket;
         var sp = await SharedPreferences.getInstance();
         sp.setBool(
