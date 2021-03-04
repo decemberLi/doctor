@@ -93,6 +93,8 @@ import UserNotificationsUI
             if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
                 || url.scheme == "com.emedclouds.doctor" {
                 launchEvent(type: 1)
+            }else{
+                WXApi.handleOpen(url, delegate: self)
             }
             
         }else if launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification] != nil {
