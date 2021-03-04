@@ -1,4 +1,5 @@
 import 'package:common_utils/common_utils.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -10,6 +11,7 @@ import 'package:http_manager/api.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/http/server.dart';
+import 'package:provider/provider.dart';
 
 /// 渲染资源列表
 class ResourceTypeListWiget extends StatelessWidget {
@@ -87,7 +89,7 @@ class LearnListItemWiget extends StatelessWidget {
     return '截止日期：${DateUtil.formatDateMs(item.planImplementEndTime, format: 'yyyy年MM月dd日')}';
   }
 
-  Widget circleRender() {
+  Widget circleRender(bool isAuth) {
     double percent = 0;
     String text = '开始学习';
     if (this.item.learnProgress >= 100 &&
@@ -103,12 +105,26 @@ class LearnListItemWiget extends StatelessWidget {
       style: TextStyle(color: ThemeColor.primaryColor, fontSize: 14.0),
     );
     if (listStatus == 'HISTORY') {
-      percent = 1;
+      percent = 0;
       text = '查看学习内容';
-      centerText = Icon(
-        Icons.done,
-        size: 40,
-        color: ThemeColor.primaryColor,
+      centerText = Container(
+        margin: EdgeInsets.only(bottom: 10),
+        child: Icon(
+          Icons.check_circle_outline_rounded,
+          size: 20,
+          color: ThemeColor.primaryColor,
+        ),
+      );
+    } else if (isAuth) {
+      percent = 0;
+      text = "认证解锁";
+      centerText = Container(
+        margin: EdgeInsets.only(bottom: 15),
+        child: Icon(
+          Icons.lock,
+          size: 40,
+          color: ThemeColor.primaryColor,
+        ),
       );
     }
     Widget learn = Text(
@@ -141,21 +157,23 @@ class LearnListItemWiget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 66,
-          height: 70,
-          margin: EdgeInsets.only(bottom: 2),
-          child: CircularPercentIndicator(
-            radius: 60.0,
-            lineWidth: listStatus == 'HISTORY' ? 5 : 8.0,
-            animation: false,
-            percent: percent,
-            center: centerText,
-            circularStrokeCap: CircularStrokeCap.round,
-            backgroundColor: Color(0xFFDEDEE1),
-            progressColor: ThemeColor.primaryColor,
-          ),
-        ),
+        isAuth || listStatus == "HISTORY"
+            ? centerText
+            : Container(
+                width: 66,
+                height: 70,
+                margin: EdgeInsets.only(bottom: 2),
+                child: CircularPercentIndicator(
+                  radius: 60.0,
+                  lineWidth: listStatus == 'HISTORY' ? 5 : 8.0,
+                  animation: false,
+                  percent: percent,
+                  center: centerText,
+                  circularStrokeCap: CircularStrokeCap.round,
+                  backgroundColor: Color(0xFFDEDEE1),
+                  progressColor: ThemeColor.primaryColor,
+                ),
+              ),
         learn,
       ],
     );
@@ -211,51 +229,38 @@ class LearnListItemWiget extends StatelessWidget {
       '医学信息推广专员：${item.representName}',
       style: TextStyle(color: Color(0xFF666666), fontSize: 12),
     );
-    if (listStatus == 'HISTORY') {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                taskTemplateWidget,
-                resourceTypeListWiget,
-                SizedBox(
-                  height: 6,
-                ),
-                taskNameWidget,
-                SizedBox(
-                  height: 6,
-                ),
-                representNameWidget,
-              ],
-            ),
-          ),
-          Container(
-            width: 108,
-            child: circleRender(),
-          ),
-        ],
-      );
-    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          taskTemplateWidget,
-          if (item.reLearn)
-            LearnTextIcon(
-              text: item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
-              color: Color(0xffF6A419),
-            ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            taskTemplateWidget,
+            if (item.reLearn)
+              LearnTextIcon(
+                text: item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
+                color: Color(0xffF6A419),
+              ),
 
-          // 新
-          if (item.status == 'WAIT_LEARN') LearnTextIcon(),
-        ]),
+            // 新
+            if (item.status == 'WAIT_LEARN') LearnTextIcon(),
+            Expanded(child: Container()),
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(bottom: 10),
+              width: 108,
+              child: Text(
+                "男|98|123",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Color(0xff444444),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            )
+          ],
+        ),
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -303,7 +308,11 @@ class LearnListItemWiget extends StatelessWidget {
             ),
             Container(
               width: 108,
-              child: circleRender(),
+              child: Consumer<UserInfoViewModel>(
+                builder: (_, model, __) {
+                  return circleRender(model.data.authStatus == 'PASS');
+                },
+              ),
             ),
           ],
         )
