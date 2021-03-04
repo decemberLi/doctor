@@ -93,8 +93,6 @@ import UserNotificationsUI
             if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
                 || url.scheme == "com.emedclouds.doctor" {
                 launchEvent(type: 1)
-            }else{
-                WXApi.handleOpen(url, delegate: self)
             }
             
         }else if launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification] != nil {
@@ -247,6 +245,7 @@ extension AppDelegate {
     }
     
     func launchEvent(type:Int){
+        print("----the type is --- \(type)")
         let isfirst = UserDefaults.standard.bool(forKey: "isFirst")
         MobClick.event("app_launch", attributes: ["launch_sourse":type,"is_first":!isfirst])
         UserDefaults.standard.setValue(true, forKey: "isFirst")
@@ -263,6 +262,7 @@ extension AppDelegate : WXApiDelegate {
             }else{
                 gotoURL = msg
             }
+            launchEvent(type: 1)
         }
         
     }
