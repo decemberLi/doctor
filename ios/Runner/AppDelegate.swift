@@ -227,11 +227,11 @@ extension AppDelegate {
     }
     
     func openWebView(map : [String:Any]){
-//        let vc = WebVC()
-//        vc.initData = map
-//        navi?.pushViewController(vc, animated: true)
-        let vc = OCRVC()
+        let vc = WebVC()
+        vc.initData = map
         navi?.pushViewController(vc, animated: true)
+//        let vc = OCRVC()
+//        navi?.pushViewController(vc, animated: true)
     }
 }
 
