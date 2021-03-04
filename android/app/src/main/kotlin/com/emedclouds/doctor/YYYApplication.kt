@@ -6,6 +6,7 @@ import androidx.multidex.MultiDex
 import com.emedclouds.doctor.common.thirdpart.apm.APM
 import com.emedclouds.doctor.common.thirdpart.push.receiver.PushSdk
 import com.emedclouds.doctor.common.thirdpart.report.Reporter
+import com.emedclouds.doctor.common.thirdpart.report.appLaunch
 import io.flutter.app.FlutterApplication
 
 class YYYApplication : FlutterApplication() {
@@ -26,5 +27,6 @@ class YYYApplication : FlutterApplication() {
         APM.init(applicationContext, resources.getString(R.string.bugly_app_id))
         Reporter.init(applicationContext, "developer")
         PushSdk.init(this)
+        appLaunch(this, -1)
     }
 }

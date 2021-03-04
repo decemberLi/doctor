@@ -6,24 +6,23 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.util.lruCache
 import cn.jpush.android.api.JPushInterface
 import com.emedclouds.doctor.common.constants.keyLaunchParam
 import com.emedclouds.doctor.common.thirdpart.push.receiver.MessagePushReceiver
+import com.emedclouds.doctor.common.thirdpart.report.EVENT_APP_LAUNCH
+import com.emedclouds.doctor.common.thirdpart.report.appLaunch
 import com.emedclouds.doctor.common.web.WebActivity
 import com.emedclouds.doctor.common.web.pluginwebview.X5WebViewPlugin
 import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
-import com.emedclouds.doctor.utils.ChannelManager
-import com.emedclouds.doctor.utils.MethodChannelResultAdapter
-import com.emedclouds.doctor.utils.NotificationUtil
-import com.emedclouds.doctor.utils.OnFlutterCall
+import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.utils.OnFlutterCall.Companion.CHANNEL_RESULT_OK
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
-import java.lang.Exception
 
 class MainActivity : FlutterActivity() {
     private val tag = "MainActivity"
@@ -87,6 +86,7 @@ class MainActivity : FlutterActivity() {
         })
         ChannelManager.instance.on("eventTracker", object : OnFlutterCall {
             override fun call(arguments: String?, channel: MethodChannel): Any {
+                Log.d("Tracker.onEvent", "call: argument ->  $arguments")
                 if (TextUtils.isEmpty(arguments)) {
                     return CHANNEL_RESULT_OK
                 }
@@ -102,6 +102,26 @@ class MainActivity : FlutterActivity() {
                     }
                     MobclickAgent.onEvent(application, event, extMap)
                 }
+                return CHANNEL_RESULT_OK
+            }
+        })
+        ChannelManager.instance.on("login", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                refs(context).edit().apply {
+                    putString(KEY_REFS_USER_ID, "$arguments")
+                    apply()
+                }
+                MobclickAgent.onProfileSignIn("$arguments")
+                return CHANNEL_RESULT_OK
+            }
+        })
+        ChannelManager.instance.on("logout", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                refs(context).edit().apply {
+                    remove(KEY_REFS_USER_ID)
+                    apply()
+                }
+                MobclickAgent.onProfileSignOff()
                 return CHANNEL_RESULT_OK
             }
         })
@@ -155,7 +175,7 @@ class MainActivity : FlutterActivity() {
         if (ext == null) {
             return
         }
-
+        appLaunch(context, 1)
         val parse = Uri.parse(ext)
         val extValue = parse.getQueryParameter("ext")
         if (extValue != null) {
@@ -181,11 +201,13 @@ class MainActivity : FlutterActivity() {
             return
         }
         val extra = intent.getStringExtra("extras")
-//        intent.removeExtra("extras")
         if (extra == null) {
             return
         }
         try {
+            if(!SystemUtil.isForeground(context)) {
+                appLaunch(context, 0)
+            }
             ChannelManager.instance.callFlutter("receiveNotification", extra,
                     object : MethodChannelResultAdapter() {
                         override fun success(result: Any?) {
