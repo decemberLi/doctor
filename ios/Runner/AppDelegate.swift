@@ -49,6 +49,22 @@ import UserNotificationsUI
                 guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
                 self.openWebView(map: obj)
                 result(true)
+            }else if call.method == "eventTracker" {
+                guard let value = call.arguments as? String else {return}
+                guard let data = value.data(using: .utf8) else {return}
+                guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
+                guard let name = obj["eventName"] as? String else {return}
+                var ext = ""
+                if let temp = obj["ext"] as? String {
+                    ext = temp
+                }
+                self.statistics(name: name, ext: ext)
+                result(true)
+            }else if call.method == "login" {
+                guard let value = call.arguments as? String else {return}
+                MobClick.profileSignIn(withPUID: value)
+            }else if call.method == "logout" {
+                MobClick.profileSignOff()
             }
         }
         vc.setFlutterViewDidRenderCallback {
@@ -76,11 +92,13 @@ import UserNotificationsUI
         if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
             if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
                 || url.scheme == "com.emedclouds.doctor" {
-                
+                launchEvent(type: 1)
             }else{
                 WXApi.handleOpen(url, delegate: self)
             }
             
+        }else if launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification] != nil {
+            launchEvent(type: 2)
         }
         
         GeneratedPluginRegistrant.register(with: self)
@@ -94,6 +112,9 @@ import UserNotificationsUI
     
     override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         JPUSHService.handleRemoteNotification(userInfo)
+        if application.applicationState == .inactive {
+            launchEvent(type: 2)
+        }
         completionHandler(.newData)
     }
     
@@ -101,6 +122,7 @@ import UserNotificationsUI
         if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
             || url.scheme == "com.emedclouds.doctor" {
             self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
+            launchEvent(type: 1)
             return true
         }
         return WXApi.handleOpen(url, delegate: self)
@@ -110,6 +132,7 @@ import UserNotificationsUI
         if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com") ||
             url.scheme == "com.emedclouds.doctor"{
             self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
+            launchEvent(type: 1)
             return true
         }
         return  WXApi.handleOpen(url, delegate: self)
@@ -122,6 +145,9 @@ import UserNotificationsUI
     override func applicationDidEnterBackground(_ application: UIApplication) {
         application.applicationIconBadgeNumber = 0;
         JPUSHService.setBadge(0);
+    }
+    override func applicationDidBecomeActive(_ application: UIApplication) {
+        launchEvent(type: -1)
     }
     
 }
@@ -207,6 +233,23 @@ extension AppDelegate {
         vc.initData = map
         vc.modalPresentationStyle = .fullScreen
         window.rootViewController?.present(vc, animated: false, completion: nil)
+    }
+    
+    func statistics(name:String,ext:String){
+        var attributes : [AnyHashable:Any] = [:]
+        if let data = ext.data(using: .utf8) {
+            let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments)
+            if let temp = obj as? [AnyHashable:Any] {
+                attributes = temp
+            }
+        }
+        MobClick.event(name, attributes: attributes)
+    }
+    
+    func launchEvent(type:Int){
+        let isfirst = UserDefaults.standard.bool(forKey: "isFirst")
+        MobClick.event("app_launch", attributes: ["launch_sourse":type,"is_first":isfirst])
+        UserDefaults.standard.setValue(true, forKey: "isFirst")
     }
 }
 
