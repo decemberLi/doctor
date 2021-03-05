@@ -1,4 +1,5 @@
 import 'package:common_utils/common_utils.dart';
+import 'package:doctor/main.dart';
 import 'package:doctor/pages/qualification/image_choose_widget.dart';
 import 'package:doctor/pages/user/auth/viewmodel/auth_step1_view_model.dart';
 import 'package:doctor/route/fade_route.dart';
@@ -93,9 +94,24 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                           text: "下一步",
                           onPressed: () async {
                             if (model.canNext) {
-                              await model.commitAuthenticationData();
-                              Navigator.pushNamed(context,
-                                  RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+                              model
+                                  .commitAuthenticationData()
+                                  .then((data) async {
+                                debugPrint("success -> $data");
+                                if (data is String) {
+                                  if (TextUtil.isEmpty(data)) {
+                                    _goNextStep();
+                                    return;
+                                  }
+
+                                  await showNoticeDialog(data);
+                                  _goNextStep();
+                                }
+                              }).catchError((error) {
+                                showNoticeDialog(error.error,
+                                    number: "028-XXXXXXXX");
+                                debugPrint("error -> $error");
+                              });
                             }
                           },
                         ),
@@ -109,6 +125,78 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
         ),
       ),
     ));
+  }
+
+  _goNextStep() {
+    Navigator.pushNamed(context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+  }
+
+  showNoticeDialog(String content, {String number = null}) async {
+    _contentTextStyle(color) {
+      return TextStyle(fontSize: 14, color: color, height: 1.6);
+    }
+
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Column(
+              children: [
+                if (!TextUtil.isEmpty(number))
+                  Text("温馨提示：", style: _contentTextStyle(Color(0xFF444444)))
+              ],
+            ),
+            content: Container(
+              padding:
+                  EdgeInsets.only(top: 18, bottom: 18, right: 14, left: 14),
+              child: Column(
+                children: [
+                  Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                              text: content,
+                              style: _contentTextStyle(Color(0xFF444444)),
+                              recognizer: TapGestureRecognizer()),
+                          if (!TextUtil.isEmpty(number))
+                            TextSpan(
+                              text: "028-XXXXXXXX",
+                              style: _contentTextStyle(ThemeColor.primaryColor),
+                              recognizer: _agreementTap
+                                ..onTap = () {
+                                  MedcloudsNativeApi.instance().openWebPage(
+                                      'https://static.e-medclouds.com/web/other/protocols/license_partner.html');
+                                },
+                            ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                      textWidthBasis: TextWidthBasis.parent)
+                ],
+              ),
+            ),
+            actions: [
+              GestureDetector(
+                child: Container(
+                  width: double.infinity,
+                  height: 44,
+                  alignment: Alignment.center,
+                  child: Text(
+                    TextUtil.isEmpty(number) ? "继续" : "确定",
+                    style: _contentTextStyle(ThemeColor.primaryColor),
+                  ),
+                ),
+                onTap: () {
+                  if (!TextUtil.isEmpty(number)) {
+                    Navigator.of(context).pop(true);
+                  } else {
+                    _goNextStep();
+                  }
+                },
+              )
+            ],
+          );
+        });
   }
 
   final _noneBorder = UnderlineInputBorder(
@@ -178,6 +266,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
         ),
       ],
     );
+    _bankCardController.text = model.data.bankCard;
     return bankWidget;
   }
 
@@ -351,12 +440,6 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                           ..onTap = () {
                             MedcloudsNativeApi.instance().openWebPage(
                                 'https://static.e-medclouds.com/web/other/protocols/license_partner.html');
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (context) {
-                            //   return CommonWebView(
-                            //       'https://static.e-medclouds.com/web/other/protocols/license_partner.html',
-                            //       '共享经济合作伙伴协议');
-                            // }));
                           },
                       ),
                     ],

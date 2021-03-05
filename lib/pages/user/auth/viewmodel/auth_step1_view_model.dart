@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:common_utils/common_utils.dart';
@@ -29,6 +30,8 @@ class AuthenticationViewModel extends ViewStateModel {
 
   void changeAgreeState(bool value) {
     _agree = value;
+    checkDataIntegrity();
+    notifyListeners();
   }
 
   // 身份证反面
@@ -74,18 +77,23 @@ class AuthenticationViewModel extends ViewStateModel {
     notifyListeners();
   }
 
-  commitAuthenticationData() {
+  Future commitAuthenticationData() async {
     debugPrint("commitAuthenticationData");
+    var completer = Completer();
     if (checkDataIntegrity()) {
-      API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
-        (value) => {
-          // TODO 弹框提示
+      await API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
+        (value) {
+          debugPrint(value);
+          completer.complete(true);
         },
         onError: (error, msg) {
-          // TODO 弹框提示
+          debugPrint("errorCode: $error");
+          completer.completeError(error);
         },
       );
     }
+
+    return completer.future;
   }
 
   checkDataIntegrity({bool needToast = false}) {
@@ -115,6 +123,7 @@ class AuthenticationViewModel extends ViewStateModel {
       return false;
     }
     _canNext = true;
+    return true;
   }
 
   void processBankCardResult(String args) async {
@@ -126,8 +135,8 @@ class AuthenticationViewModel extends ViewStateModel {
     debugPrint("Upload bank card success");
     // 3、本地保存数据
     _entity
-      ..identityValidityStart = json['CardNo']
-      ..idCardLicenseBehind = img;
+      ..bankCard = json['CardNo']
+      ..bankCardCertificates = img;
     checkDataIntegrity();
     notifyListeners();
   }
@@ -163,9 +172,11 @@ class AuthenticationViewModel extends ViewStateModel {
     FacePhoto img = await _uploadImg(json['imgPath']);
     debugPrint("Upload id card back side success");
     // 3、本地保存数据
+    String endDate = json['ValidDate'];
+    var split = endDate.split('-');
     _entity
-      ..identityValidityStart = json['Authority']
-      ..identityValidityEnd = json['ValidDate']
+      ..identityValidityStart = split[0]
+      ..identityValidityEnd = split[1]
       ..idCardLicenseBehind = img;
     checkDataIntegrity();
     notifyListeners();

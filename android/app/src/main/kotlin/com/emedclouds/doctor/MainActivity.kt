@@ -111,7 +111,6 @@ class MainActivity : FlutterActivity() {
                         }, object : ISDKKitResultListener {
                     override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
                         Log.d(tag, "onProcessSucceed: $response")
-                        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, "id_card_face_side")
                         ocrCallback("ocrIdCardFaceSide", srcBase64Image, response)
                     }
 
@@ -131,7 +130,6 @@ class MainActivity : FlutterActivity() {
                         }, object : ISDKKitResultListener {
                     override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
                         Log.d(tag, "onProcessSucceed: $response")
-                        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, "bank_card")
                         ocrCallback("ocrBankCard", srcBase64Image, response)
                     }
 
