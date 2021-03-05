@@ -97,8 +97,6 @@ import UserNotificationsUI
                 WXApi.handleOpen(url, delegate: self)
             }
             
-        }else if launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification] != nil {
-            launchEvent(type: 2)
         }
         
         GeneratedPluginRegistrant.register(with: self)
@@ -112,9 +110,6 @@ import UserNotificationsUI
     
     override func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         JPUSHService.handleRemoteNotification(userInfo)
-        if application.applicationState == .inactive {
-            launchEvent(type: 2)
-        }
         completionHandler(.newData)
     }
     
@@ -146,7 +141,7 @@ import UserNotificationsUI
         application.applicationIconBadgeNumber = 0;
         JPUSHService.setBadge(0);
     }
-    override func applicationDidBecomeActive(_ application: UIApplication) {
+    override func applicationWillEnterForeground(_ application: UIApplication) {
         launchEvent(type: -1)
     }
     
@@ -177,7 +172,7 @@ extension AppDelegate {
                             UNAuthorizationOptions.sound.rawValue)
         JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
         #if DEBUG
-        UMConfigure.initWithAppkey("6007995f6a2a470e8f822118", channel: "App Store")
+        UMConfigure.initWithAppkey("6007995f6a2a470e8f822118", channel: "App Store developer")//
         JPUSHService.setup(withOption: launchOptions, appKey: "05de7d1b7c21f44388f972b6", channel: "App Store", apsForProduction: false)
         #else
         UMConfigure.initWithAppkey("60079989f1eb4f3f9b67973b", channel: "App Store")
@@ -303,6 +298,10 @@ extension AppDelegate : JPUSHRegisterDelegate {
         JPUSHService.handleRemoteNotification(info)
         completionHandler()
         print("the recevie notification is ---- \(info)")
+        let application = UIApplication.shared
+        if application.applicationState == .inactive || application.applicationState == .background {
+            launchEvent(type: 2)
+        }
         doNoti(info: info)
     }
     
