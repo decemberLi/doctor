@@ -1,6 +1,8 @@
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
+import 'package:doctor/pages/worktop/learn/research_detail/case_detail.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -161,6 +163,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
                 ),
               ),
             ),
+            buildCaseItem(),
             buildPlanItem(false),
             buildPlanItem(true),
             Container(
@@ -240,6 +243,91 @@ class _ResearchDetailState extends State<ResearchDetail> {
         ),
       ],
     ));
+  }
+
+  Widget buildCaseItem() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 0, 25, 0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 50,
+                alignment: Alignment.center,
+                child: Text(
+                  "10%",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff52C41A),
+                  ),
+                ),
+              ),
+              Text(
+                "填写病例信息",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
+                decoration: BoxDecoration(
+                  color: Color(0xff52C41A),
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                ),
+                child: Text(
+                  "已完成",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              Expanded(child: Container()),
+              Text(
+                "12月11日完成",
+                style: TextStyle(
+                  color: Color(0xff888888),
+                  fontSize: 10,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(25, 0, 0, 0),
+            padding: EdgeInsets.fromLTRB(25, 5, 0, 20),
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(
+                  color: Color(0xff52C41A),
+                ),
+              ),
+            ),
+            child: GestureDetector(
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) => CaseDetail(),
+                ));
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 12),
+                alignment: Alignment.center,
+                height: 30,
+                width: double.infinity,
+                decoration: DashedDecoration(dashedColor: Color(0xff9BCDF4)),
+                child: Text(
+                  "点击此处去编辑",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color(0xff489DFE),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildPlanItem(bool isEnd) {

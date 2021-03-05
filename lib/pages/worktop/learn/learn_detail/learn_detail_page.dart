@@ -7,6 +7,7 @@ import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
+import 'package:doctor/pages/worktop/learn/research_detail/research_detail.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
@@ -516,6 +517,15 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
     _model = LearnDetailViewModel(arguments['learnPlanId']);
+    if (true) {//_model?.data?.taskTemplate == "MEDICAL_SURVEY"
+      return ProviderWidget<LearnDetailViewModel>(
+        model: _model,
+        onModelReady: (model) => model.initData(),
+        builder: (context, model, child){
+          return ResearchDetail();
+        },
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
