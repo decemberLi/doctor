@@ -62,12 +62,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     updateDoctorInfo();
   }
 
-  @override
-  void dispose() {
-    _model?.dispose();
-    super.dispose();
-  }
-
   updateDoctorInfo() {
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
@@ -513,19 +507,17 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildDetail(LearnDetailViewModel model) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
-    _model = LearnDetailViewModel(arguments['learnPlanId']);
-    if (true) {//_model?.data?.taskTemplate == "MEDICAL_SURVEY"
-      return ProviderWidget<LearnDetailViewModel>(
-        model: _model,
-        onModelReady: (model) => model.initData(),
-        builder: (context, model, child){
-          return ResearchDetail();
-        },
-      );
+    if (model.isBusy) {
+      return Container();
     }
+    if (model.isError || model.isEmpty) {
+      return ViewStateEmptyWidget(onPressed: model.initData);
+    }
+    var data = model.data;
+    Map dataMap = data.toJson();
+    List learnListFields = LEARN_LIST[data.taskTemplate];
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -538,209 +530,200 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           ),
         ),
       ),
-      body: ProviderWidget<LearnDetailViewModel>(
-        model: _model,
-        onModelReady: (model) => model.initData(),
-        builder: (context, model, child) {
-          if (model.isBusy) {
-            return Container();
-          }
-          if (model.isError || model.isEmpty) {
-            return ViewStateEmptyWidget(onPressed: model.initData);
-          }
-          var data = model.data;
-          Map dataMap = data.toJson();
-          List learnListFields = LEARN_LIST[data.taskTemplate];
-          return Container(
-            color: ThemeColor.colorFFF3F5F8,
-            alignment: Alignment.topCenter,
-            child: Flex(
-              direction: Axis.vertical,
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Flexible(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              if (data.taskTemplate == 'DOCTOR_LECTURE' &&
-                                  data.reLearnReason != null &&
-                                  data.status != 'SUBMIT_LEARN' &&
-                                  data.status != 'ACCEPTED')
+      body: Container(
+        color: ThemeColor.colorFFF3F5F8,
+        alignment: Alignment.topCenter,
+        child: Flex(
+          direction: Axis.vertical,
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                children: <Widget>[
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          if (data.taskTemplate == 'DOCTOR_LECTURE' &&
+                              data.reLearnReason != null &&
+                              data.status != 'SUBMIT_LEARN' &&
+                              data.status != 'ACCEPTED')
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                              padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text('${data.representName}推广员给您留言了：',
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18,
+                                              color: ThemeColor.colorFFfece35,
+                                            )),
+                                      ]),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          '${data.reLearnReason}',
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14,
+                                            color: ThemeColor.colorFFfece35,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                            // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
+                            child: Column(
+                              children: [
                                 Container(
                                   alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                                  padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                  margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                                  padding: EdgeInsets.fromLTRB(0, 14, 0, 0),
+                                  child: GestureDetector(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Row(
                                           children: [
-                                            Text(
-                                                '${data.representName}推广员给您留言了：',
-                                                textAlign: TextAlign.left,
+                                            Text('学习计划信息',
+                                                textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 18,
                                                   color:
-                                                      ThemeColor.colorFFfece35,
+                                                      ThemeColor.primaryColor,
                                                 )),
-                                          ]),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              '${data.reLearnReason}',
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 14,
-                                                color: ThemeColor.colorFFfece35,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                                // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8)),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                                      padding: EdgeInsets.fromLTRB(0, 14, 0, 0),
-                                      child: GestureDetector(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text('学习计划信息',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 18,
-                                                      color: ThemeColor
-                                                          .primaryColor,
-                                                    )),
-                                                // 新
-                                                if (data.taskTemplate ==
-                                                        'SALON' ||
-                                                    data.taskTemplate ==
-                                                        'DEPART')
-                                                  _meetingStatus(
-                                                      data.meetingStartTime,
-                                                      data.meetingEndTime)
-                                              ],
-                                            ),
-                                            Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    model.collapsed
-                                                        ? Icons
-                                                            .keyboard_arrow_down
-                                                        : Icons
-                                                            .keyboard_arrow_up,
-                                                    color:
-                                                        ThemeColor.primaryColor,
-                                                  ),
-                                                ]),
+                                            // 新
+                                            if (data.taskTemplate == 'SALON' ||
+                                                data.taskTemplate == 'DEPART')
+                                              _meetingStatus(
+                                                  data.meetingStartTime,
+                                                  data.meetingEndTime)
                                           ],
                                         ),
-                                        onTap: () {
-                                          model.toggleCollapsed();
-                                        },
-                                      ),
+                                        Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                model.collapsed
+                                                    ? Icons.keyboard_arrow_down
+                                                    : Icons.keyboard_arrow_up,
+                                                color: ThemeColor.primaryColor,
+                                              ),
+                                            ]),
+                                      ],
                                     ),
-                                    ...learnListFields.map((e) {
-                                      if (model.collapsed &&
-                                          e['notCollapse'] == null) {
-                                        return Container();
-                                      }
-                                      return _buildListItem(
-                                          label: e['label'],
-                                          value: dataMap[e['field']],
-                                          format: e['format']);
-                                    }).toList(),
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      margin:
-                                          EdgeInsets.fromLTRB(30, 10, 30, 10),
-                                      padding:
-                                          EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                      child: Column(children: [
-                                        _buildLookCourse(data),
-                                      ]),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                  alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                                  padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
+                                    onTap: () {
+                                      model.toggleCollapsed();
+                                    },
                                   ),
-                                  child: Text('资料列表',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                        color: ThemeColor.primaryColor,
-                                      ))),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                                child: PlanDetailList(data),
-                              ),
-                            ],
+                                ),
+                                ...learnListFields.map((e) {
+                                  if (model.collapsed &&
+                                      e['notCollapse'] == null) {
+                                    return Container();
+                                  }
+                                  return _buildListItem(
+                                      label: e['label'],
+                                      value: dataMap[e['field']],
+                                      format: e['format']);
+                                }).toList(),
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                  child: Column(children: [
+                                    _buildLookCourse(data),
+                                  ]),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
+                          Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                              padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                              ),
+                              child: Text('资料列表',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                    color: ThemeColor.primaryColor,
+                                  ))),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                            child: PlanDetailList(data),
+                          ),
+                        ],
                       ),
-                      _renderLookRecording(data),
-                      if (data.status != 'SUBMIT_LEARN' &&
-                          data.status != 'ACCEPTED')
-                        _renderUploadButton(model, arguments, data),
-                    ],
+                    ),
                   ),
-                )
-              ],
-            ),
-          );
-        },
+                  _renderLookRecording(data),
+                  if (data.status != 'SUBMIT_LEARN' &&
+                      data.status != 'ACCEPTED')
+                    _renderUploadButton(model, arguments, data),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    dynamic arguments = ModalRoute.of(context).settings.arguments;
+    _model = LearnDetailViewModel(arguments['learnPlanId']);
+    return ProviderWidget<LearnDetailViewModel>(
+      model: _model,
+      onModelReady: (model) => model.initData(),
+      builder: (context, model, child) {
+        if (model.data?.taskTemplate == 'MEDICAL_SURVEY') {
+          return ResearchDetail();
+        } else {
+          return buildDetail(model);
+        }
+      },
     );
   }
 }

@@ -27,6 +27,11 @@ class ResourceTypeListWiget extends StatelessWidget {
       icon = Icons.done;
       decorationColor = Color(0xFF25CDA1);
     }
+    var type = MAP_RESOURCE_TYPE[resource.resourceType];
+    if (type == null){
+      type = "问卷";
+      print("the type is ${resource.resourceType}");
+    }
     return Container(
       decoration: BoxDecoration(
         color: decorationColor,
@@ -45,7 +50,7 @@ class ResourceTypeListWiget extends StatelessWidget {
             width: 3,
           ),
           Text(
-            MAP_RESOURCE_TYPE[resource.resourceType],
+           type,
             style: TextStyle(
               color: textColor,
               fontSize: 12,
@@ -89,7 +94,7 @@ class LearnListItemWiget extends StatelessWidget {
     return '截止日期：${DateUtil.formatDateMs(item.planImplementEndTime, format: 'yyyy年MM月dd日')}';
   }
 
-  Widget circleRender(bool isAuth) {
+  Widget circleRender(BuildContext context, bool needAuth) {
     double percent = 0;
     String text = '开始学习';
     if (this.item.learnProgress >= 100 &&
@@ -104,6 +109,10 @@ class LearnListItemWiget extends StatelessWidget {
       "${this.item.learnProgress}%",
       style: TextStyle(color: ThemeColor.primaryColor, fontSize: 14.0),
     );
+    var gotoAuth = () {
+      Navigator.pushNamed(
+          context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+    };
     if (listStatus == 'HISTORY') {
       percent = 0;
       text = '查看学习内容';
@@ -115,15 +124,18 @@ class LearnListItemWiget extends StatelessWidget {
           color: ThemeColor.primaryColor,
         ),
       );
-    } else if (isAuth) {
+    } else if (needAuth && item.taskTemplate == "MEDICAL_SURVEY") {
       percent = 0;
       text = "认证解锁";
-      centerText = Container(
-        margin: EdgeInsets.only(bottom: 15),
-        child: Icon(
-          Icons.lock,
-          size: 40,
-          color: ThemeColor.primaryColor,
+      centerText = GestureDetector(
+        onTap: gotoAuth,
+        child: Container(
+          margin: EdgeInsets.only(bottom: 15),
+          child: Icon(
+            Icons.lock,
+            size: 40,
+            color: ThemeColor.primaryColor,
+          ),
         ),
       );
     }
@@ -153,11 +165,14 @@ class LearnListItemWiget extends StatelessWidget {
         },
         child: learn,
       );
+    } else if (text == "认证解锁") {
+      learn = GestureDetector(onTap: gotoAuth,child: learn);
     }
+    var showAuth = needAuth && item.taskTemplate == "MEDICAL_SURVEY";
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        isAuth || listStatus == "HISTORY"
+        showAuth || listStatus == "HISTORY"
             ? centerText
             : Container(
                 width: 66,
@@ -203,7 +218,7 @@ class LearnListItemWiget extends StatelessWidget {
     );
   }
 
-  Widget _buildItem() {
+  Widget _buildItem(BuildContext context) {
     Widget taskTemplateWidget = Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(bottom: 10),
@@ -229,6 +244,18 @@ class LearnListItemWiget extends StatelessWidget {
       '医学信息推广专员：${item.representName}',
       style: TextStyle(color: Color(0xFF666666), fontSize: 12),
     );
+    var info = "";
+    if (item?.illnessCase?.sex?.length ?? 0 > 0){
+      info += item.illnessCase.sex;
+    }
+    if (item?.illnessCase?.age?.length ?? 0 > 0) {
+      if (info.length > 0) info += "|";
+      info += item.illnessCase.age;
+    }
+    if (item?.illnessCase?.patientName?.length ?? 0 > 0) {
+      if (info.length > 0) info += "|";
+      info += item.illnessCase.patientName;
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,12 +273,13 @@ class LearnListItemWiget extends StatelessWidget {
             // 新
             if (item.status == 'WAIT_LEARN') LearnTextIcon(),
             Expanded(child: Container()),
+            if (item.taskTemplate == 'MEDICAL_SURVEY')
             Container(
               alignment: Alignment.center,
               margin: EdgeInsets.only(bottom: 10),
               width: 108,
               child: Text(
-                "男|98|123",
+                info,
                 style: TextStyle(
                   fontSize: 12,
                   color: Color(0xff444444),
@@ -310,7 +338,7 @@ class LearnListItemWiget extends StatelessWidget {
               width: 108,
               child: Consumer<UserInfoViewModel>(
                 builder: (_, model, __) {
-                  return circleRender(model.data.authStatus == 'PASS');
+                  return circleRender(context, model?.data?.authStatus != 'PASS');
                 },
               ),
             ),
@@ -330,7 +358,7 @@ class LearnListItemWiget extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
-      child: _buildItem(),
+      child: _buildItem(context),
     );
   }
 }

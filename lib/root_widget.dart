@@ -126,7 +126,7 @@ class RootWidget extends StatelessWidget {
       debugPrint("ticket:${SessionManager.shared.session}");
       options.headers["_ticketObject"] = SessionManager.shared.session;
       options.headers["_appVersion"] = await PlatformUtils.getAppVersion();
-
+      options.headers["_appVersionCode"] = await PlatformUtils.getBuildNum();
       return options;
     };
   }

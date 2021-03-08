@@ -2,6 +2,34 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'learn_detail_model.g.dart';
 
+@JsonSerializable()
+class Questionnaires {
+  int questionnaireId;
+  String title;
+  String summary;
+  String desc;
+  int showIndex;
+  int schedule;
+  String status;
+  int sort;
+
+  Questionnaires(
+    this.questionnaireId,
+    this.title,
+    this.summary,
+    this.desc,
+    this.showIndex,
+    this.schedule,
+    this.status,
+    this.sort,
+  );
+
+  factory Questionnaires.fromJson(Map<String, dynamic> json) =>
+      _$QuestionnairesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestionnairesToJson(this);
+}
+
 // /// 资源类型
 @JsonSerializable()
 class Resources {
@@ -17,6 +45,8 @@ class Resources {
   String thumbnailUrl;
   String feedback;
   Info info;
+  List<Questionnaires> questionnaires;
+
   Resources(
     this.resourceType,
     this.contentType,
@@ -30,7 +60,9 @@ class Resources {
     this.thumbnailUrl,
     this.feedback,
     this.info,
+    this.questionnaires,
   );
+
   factory Resources.fromJson(Map<String, dynamic> json) =>
       _$ResourcesFromJson(json);
 
@@ -42,7 +74,9 @@ class Info {
   int duration;
   String presenter;
   String summary;
+
   Info(this.duration, this.presenter, this.summary);
+
   factory Info.fromJson(Map<String, dynamic> json) => _$InfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$InfoToJson(this);
@@ -71,27 +105,28 @@ class LearnDetailItem {
   String status;
   bool reLearn;
   String reLearnReason;
+
   LearnDetailItem(
-      this.learnPlanId,
-      this.taskDetailId,
-      this.taskTemplate,
-      this.taskName,
-      this.doctorName,
-      this.doctorUserId,
-      this.resources,
-      this.companyName,
-      this.representId,
-      this.representName,
-      this.createTime,
-      this.meetingStartTime,
-      this.meetingEndTime,
-      this.learnProgress,
-      this.planImplementStartTime,
-      this.planImplementEndTime,
-      this.status,
-      this.reLearn,
-      this.reLearnReason,
-      );
+    this.learnPlanId,
+    this.taskDetailId,
+    this.taskTemplate,
+    this.taskName,
+    this.doctorName,
+    this.doctorUserId,
+    this.resources,
+    this.companyName,
+    this.representId,
+    this.representName,
+    this.createTime,
+    this.meetingStartTime,
+    this.meetingEndTime,
+    this.learnProgress,
+    this.planImplementStartTime,
+    this.planImplementEndTime,
+    this.status,
+    this.reLearn,
+    this.reLearnReason,
+  );
 
   factory LearnDetailItem.fromJson(Map<String, dynamic> json) =>
       _$LearnDetailItemFromJson(json);

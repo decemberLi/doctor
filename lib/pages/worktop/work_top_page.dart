@@ -107,25 +107,24 @@ class _WorktopPageState extends State<WorktopPage>
           color: Color(0xFFF3F5F8),
           child: GestureDetector(
             onTap: () async {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context){
-                  return ResearchDetail();
-                }
-              ));
-              // await Navigator.of(context).pushNamed(
-              //   RouteManager.LEARN_DETAIL,
-              //   arguments: {
-              //     'learnPlanId': item.learnPlanId,
-              //     'listStatus': 'LEARNING',
-              //     'from': 'work_top',
-              //   },
-              // );
+              await Navigator.of(context).pushNamed(
+                RouteManager.LEARN_DETAIL,
+                arguments: {
+                  'learnPlanId': item.learnPlanId,
+                  'listStatus': 'LEARNING',
+                  'from': 'work_top',
+                },
+              );
               // 从详情页回来后刷新数据
               _model.initData();
             },
-            child: LearnListItemWiget(item, 'LEARNING',(){
-              _model.initData();
-            },),
+            child: LearnListItemWiget(
+              item,
+              'LEARNING',
+              () {
+                _model.initData();
+              },
+            ),
           ),
         );
       }, childCount: entity?.learnPlanList?.length ?? 0);
@@ -197,7 +196,7 @@ class _WorktopPageState extends State<WorktopPage>
     }
     // 医生个人信息部分
     var doctorName = doctorInfoEntity?.doctorName ?? '';
-    if(doctorInfoEntity?.basicInfoAuthStatus == 'NOT_COMPLETE'){
+    if (doctorInfoEntity?.basicInfoAuthStatus == 'NOT_COMPLETE') {
       doctorName = '待完善';
     }
     return GestureDetector(
@@ -209,20 +208,24 @@ class _WorktopPageState extends State<WorktopPage>
             height: 70,
             alignment: Alignment.center,
             child: doctorInfoEntity?.fullFacePhoto == null
-                ? Image.asset("assets/images/doctorHeader.png",width: 40,height: 40,)
-                :Container(
-              width: 68,
-              height: 68,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  fit: BoxFit.fitWidth,
-                  image: NetworkImage(
-                      '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}'),
-                ),
-              ),
-            ),
+                ? Image.asset(
+                    "assets/images/doctorHeader.png",
+                    width: 40,
+                    height: 40,
+                  )
+                : Container(
+                    width: 68,
+                    height: 68,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: NetworkImage(
+                            '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}'),
+                      ),
+                    ),
+                  ),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -486,26 +489,38 @@ class _WorktopPageState extends State<WorktopPage>
           topRight: Radius.circular(28),
         ),
       ),
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          children: [
-            if (doctorInfoEntity?.authStatus == 'PASS')
-              WidgetSpan(
-                child: Image.asset(
-                  "assets/images/rz.png",
-                  width: 14,
-                  height: 14,
+      child: FlatButton(
+        onPressed: () {
+          if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY') {
+            Navigator.pushNamed(
+                context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+          }else if (doctorInfoEntity.authStatus == 'VERIFYING') {
+
+          }else if (doctorInfoEntity.authStatus == 'FAIL') {
+
+          }
+        },
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            children: [
+              if (doctorInfoEntity?.authStatus == 'PASS')
+                WidgetSpan(
+                  child: Image.asset(
+                    "assets/images/rz.png",
+                    width: 14,
+                    height: 14,
+                  ),
                 ),
+              TextSpan(
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+                text: doctorInfoEntity?.authStatus == 'PASS' ? '已认证' : '未认证',
               ),
-            TextSpan(
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white,
-              ),
-              text: doctorInfoEntity?.authStatus == 'PASS' ? '已认证' : '未认证',
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

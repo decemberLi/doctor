@@ -14,6 +14,21 @@ class ResourceTypeResult {
   Map<String, dynamic> toJson() => _$ResourceTypeResultToJson(this);
 }
 
+@JsonSerializable()
+class IllnessCase {
+  String illnessCaseId;
+  String patientCode;
+  String patientName;
+  String hospital;
+  String status;
+  String showIndex;
+  String age;
+  String sex;
+  IllnessCase(this.patientName,this.age,this.sex);
+  factory IllnessCase.fromJson(Map<String,dynamic> json) => _IllnessCaseFromJson(json);
+  Map<String, dynamic> toJson() => _IllnessCaseToJson(this);
+}
+
 /// 学习计划列表项
 @JsonSerializable(explicitToJson: true)
 class LearnListItem {
@@ -32,6 +47,7 @@ class LearnListItem {
   int learnProgress;
   String status;
   bool reLearn;
+  IllnessCase illnessCase;
   LearnListItem({
     this.learnPlanId,
     this.taskDetailId,
@@ -47,6 +63,7 @@ class LearnListItem {
     this.status,
     this.reLearn,
     this.planImplementEndTime,
+    this.illnessCase,
   });
 
   factory LearnListItem.fromJson(Map<String, dynamic> json) =>

@@ -5,6 +5,30 @@ part of 'learn_detail_model.dart';
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
+_$QuestionnairesFromJson(Map<String, dynamic> json) {
+  return Questionnaires(
+    json['questionnaireId'] as int,
+    json['title'] as String,
+    json['summary'] as String,
+    json['desc'] as String,
+    json['showIndex'] as int,
+    json['schedule'] as int,
+    json['status'] as String,
+    json['sort'] as int,
+  );
+}
+
+Map<String, dynamic> _$QuestionnairesToJson(Questionnaires instance) =>
+    <String, dynamic>{
+      'questionnaireId': instance.questionnaireId,
+      'title': instance.title,
+      'summary': instance.summary,
+      'desc': instance.desc,
+      'showIndex': instance.showIndex,
+      'schedule': instance.schedule,
+      'status': instance.status,
+      'sort': instance.sort,
+    };
 
 Resources _$ResourcesFromJson(Map<String, dynamic> json) {
   return Resources(
@@ -22,6 +46,11 @@ Resources _$ResourcesFromJson(Map<String, dynamic> json) {
     json['info'] == null
         ? null
         : Info.fromJson(json['info'] as Map<String, dynamic>),
+    json['questionnaires'] == null
+        ? null
+        : (json['questionnaires'] as List)
+            .map((e) => Questionnaires.fromJson(e))
+            .toList(),
   );
 }
 

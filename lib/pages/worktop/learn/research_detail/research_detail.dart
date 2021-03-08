@@ -1,11 +1,15 @@
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
+import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/research_detail/case_detail.dart';
+import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ResearchDetail extends StatefulWidget {
   @override
@@ -15,7 +19,7 @@ class ResearchDetail extends StatefulWidget {
 }
 
 class _ResearchDetailState extends State<ResearchDetail> {
-  bool collapsed = false;
+  bool collapsed = true;
 
   Widget item(Widget content) {
     return Container(
@@ -30,7 +34,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
     );
   }
 
-  Widget message() {
+  Widget message(LearnDetailItem data) {
     return item(
       Column(
         children: [
@@ -70,7 +74,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
     );
   }
 
-  Widget info() {
+  Widget info(LearnDetailItem data) {
     List learnListFields = LEARN_LIST['DOCTOR_LECTURE'];
     List<Widget> infoList = [];
     for (int i = 0; i < learnListFields.length; i++) {
@@ -139,7 +143,15 @@ class _ResearchDetailState extends State<ResearchDetail> {
     );
   }
 
-  Widget plans() {
+  Widget plans(LearnDetailItem data) {
+    var template = data.resources.first;
+    if (template == null || template.questionnaires == null) return Container();
+    List<Widget> sources  = [];
+    for (int i=0;i<template.questionnaires.length;i++){
+      var item = template.questionnaires[i];
+      var cell = buildPlanItem(data,template.resourceId,item,i == template.questionnaires.length - 1);
+      sources.add(cell);
+    }
     return Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -164,8 +176,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
               ),
             ),
             buildCaseItem(),
-            buildPlanItem(false),
-            buildPlanItem(true),
+            ...sources,
             Container(
               width: double.infinity,
               height: 44,
@@ -330,7 +341,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
     );
   }
 
-  Widget buildPlanItem(bool isEnd) {
+  Widget buildPlanItem(LearnDetailItem data ,int resourceID, Questionnaires item,bool isEnd) {
     var content = Stack(
       children: [
         Container(
@@ -344,14 +355,14 @@ class _ResearchDetailState extends State<ResearchDetail> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "this is title",
+                item.title,
                 style: TextStyle(
                   color: Color(0xff222222),
                   fontSize: 14,
                 ),
               ),
               Text(
-                "this is content，1211111111123123122222222222222222222",
+                item.summary,
                 style: TextStyle(
                   fontSize: 12,
                   color: Color(0xff444444),
@@ -371,13 +382,13 @@ class _ResearchDetailState extends State<ResearchDetail> {
               //设置扭转值
               transform: Matrix4.rotationZ(-0.9),
               //设置被旋转的容器
-              child: typeDecoratedBox("VIDEO"),
+              child: typeDecoratedBox("MEDICAL_TEMPLATE"),
             ),
           ),
         ),
       ],
     );
-    return Container(
+    var all = Container(
       margin: EdgeInsets.fromLTRB(0, 0, 25, 0),
       child: Column(
         children: [
@@ -441,6 +452,14 @@ class _ResearchDetailState extends State<ResearchDetail> {
         ],
       ),
     );
+    return GestureDetector(
+      onTap: (){
+        var url = "https://m-dev.e-medclouds.com/mpost/#/questionnaire?learnPlanId=${data.learnPlanId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}";
+        MedcloudsNativeApi.instance().openWebPage(url);
+        print("on tap");
+      },
+      child: all,
+    );
   }
 
   Widget typeDecoratedBox(String type) {
@@ -470,6 +489,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
 
   @override
   Widget build(BuildContext context) {
+    var model = Provider.of<LearnDetailViewModel>(context,listen:true);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -481,9 +501,9 @@ class _ResearchDetailState extends State<ResearchDetail> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              message(),
-              info(),
-              plans(),
+              message(model.data),
+              info(model.data),
+              plans(model.data),
               Container(
                 height: 20,
               )

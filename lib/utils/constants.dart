@@ -17,7 +17,8 @@ const Map<String, String> TASK_TEMPLATE = {
   'DEPART': '会议',
   'SURVEY': '调研',
   'DOCTOR_LECTURE': '讲课邀请',
-  'VISIT': '拜访'
+  'VISIT': '拜访',
+  'MEDICAL_SURVEY':'医学调研',
 };
 
 // 资源类型
@@ -25,6 +26,7 @@ const Map<String, String> MAP_RESOURCE_TYPE = {
   'ARTICLE': '文章',
   'VIDEO': '视频',
   'QUESTIONNAIRE': '问卷',
+  'MEDICAL_TEMPLATE':'问卷',
 };
 
 const TASK_TYPE_MAP = [
