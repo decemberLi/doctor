@@ -1,3 +1,4 @@
+import 'package:doctor/common/event/event_home_tab.dart';
 import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/message/message_page.dart';
@@ -317,6 +318,12 @@ class _HomePageState extends State<HomePage>
     initData();
     // showWeekIfNeededReporter(context);
     WidgetsBinding.instance.addObserver(this);
+    eventBus.on().listen((event) {
+      if(event is EventHomeTab){
+        debugPrint("index ------------------> ${event.index}");
+        onTabTapped(event.index);
+      }
+    });
   }
 
   @override

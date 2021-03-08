@@ -1,3 +1,6 @@
+import 'package:doctor/common/event/event_home_tab.dart';
+import 'package:doctor/root_widget.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -72,7 +75,9 @@ class AuthStatusVerifyingPage extends StatelessWidget {
                               type: AceButtonType.primary,
                               text: "返回工作台",
                               onPressed: () async {
-                                Navigator.pop(context);
+                                eventBus.fire(EventHomeTab.createWorkTopEvent());
+                                Navigator.popUntil(context,
+                                    ModalRoute.withName(RouteManager.HOME));
                               },
                             ),
                           ),
@@ -86,7 +91,9 @@ class AuthStatusVerifyingPage extends StatelessWidget {
                               type: AceButtonType.primary,
                               text: "去逛逛",
                               onPressed: () async {
-                                Navigator.pop(context);
+                                eventBus.fire(EventHomeTab.createDoctorCircleEvent());
+                                Navigator.popUntil(context,
+                                    ModalRoute.withName(RouteManager.HOME));
                               },
                             ),
                           ),
