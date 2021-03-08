@@ -7,5 +7,9 @@
 #import <UIKit/UIKit.h>
 
 @interface OCRManager : NSObject
-+(void)show;
++(instancetype)shared;
+- (void) startProcessOcrFRONT:(void(^)(NSString *result))finish ;
+- (void) startProcessOcrBack:(void(^)(NSString *result))finish ;
+- (void) startBankCardOcrProcess:(void(^)(NSString *result))finish ;
+- (void)initSDK;
 @end

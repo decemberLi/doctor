@@ -24,6 +24,8 @@ class WebVC: UIViewController {
     var initData : [String:Any]?
     
     fileprivate var commentData : [AnyHashable:Any]?
+    fileprivate var needHook = false
+    fileprivate var bizType = ""
     @available(iOS 13.0 , *)
     override var overrideUserInterfaceStyle: UIUserInterfaceStyle {
         get{.light}
@@ -202,7 +204,12 @@ private extension WebVC {
     }
     
     @IBAction func onBack(){
-        navigationController?.popViewController(animated: true)
+        if needHook {
+            let params = #"{"bizType":"\#(bizType)","param":{}}"#
+            webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+        }else{
+            navigationController?.popViewController(animated: true)
+        }
     }
     
     @IBAction func onRefreash() {
@@ -254,7 +261,8 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
             }
         }else if dispatchType == "hookBackBtn" {
             let bizType = json["bizType"] as? String ?? ""
-            needHook = json["needHook"] as? Bool ?? false
+                inVC?.needHook = json["needHook"] as? Bool ?? false
+            inVC?.bizType = bizType
         }
     }
 }

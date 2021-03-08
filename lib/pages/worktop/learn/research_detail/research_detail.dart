@@ -24,8 +24,34 @@ class ResearchDetail extends StatefulWidget {
   }
 }
 
-class _ResearchDetailState extends State<ResearchDetail> {
+class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObserver {
   bool collapsed = true;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    var model = Provider.of<LearnDetailViewModel>(context, listen: false);
+    if (state == AppLifecycleState.resumed) {
+      freshData();
+    }
+  }
+
+  void freshData() async {
+    await model.initData();
+    setState(() {
+
+    });
+  }
 
   Widget item(Widget content) {
     return Container(

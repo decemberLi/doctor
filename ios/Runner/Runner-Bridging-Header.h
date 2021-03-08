@@ -4,3 +4,4 @@
 #import <UMCommon/UMCommon.h>
 #import <UMCommon/MobClick.h>
 #import "JPUSHService.h"
+#import "OCRManager.h"

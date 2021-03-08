@@ -19,6 +19,14 @@ static NSString* const SECRET_KEY    = @"BLFuJeIXIwHVsqjBOt4Cm7B9VihQt6SZ"; // S
 @end
 
 @implementation OCRManager : NSObject
++(instancetype)shared{
+    static OCRManager *shared;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shared = [[OCRManager alloc] init];
+    });
+    return shared;
+}
 
 - (void)initSDK {
     /*！
@@ -27,6 +35,8 @@ static NSString* const SECRET_KEY    = @"BLFuJeIXIwHVsqjBOt4Cm7B9VihQt6SZ"; // S
      */
     OcrSDKConfig *ocrSDKConfig = [[OcrSDKConfig alloc] init];
     ocrSDKConfig.ocrModeType = OCR_DETECT_AUTO_MANUAL;
+    ocrSDKConfig.copyWarn = YES;
+    ocrSDKConfig.quality = YES;
     ocrSDKKit = [OcrSDKKit sharedInstance];
     /// SDKKIt 加载 OCR 配置信息
     /// @param secretId  Secret id
@@ -35,68 +45,62 @@ static NSString* const SECRET_KEY    = @"BLFuJeIXIwHVsqjBOt4Cm7B9VihQt6SZ"; // S
     [ocrSDKKit loadSDKConfigWithSecretId:SECRET_ID withSecretKey:SECRET_KEY withConfig:ocrSDKConfig];
 }
 
-- (void)show{
-    
-}
-
-- (void) startProcessOcrFRONT {
+- (void) startProcessOcrFRONT:(void(^)(NSString *result))finish {
 
     CustomConfigUI *ocrUIConfig = [[CustomConfigUI alloc] init];
     ocrUIConfig.remindConfirmColor = [UIColor blueColor];
-    ocrUIConfig.isShowAlbumBtn = NO;
+    ocrUIConfig.isShowAlbumBtn = true;
     [ocrSDKKit startProcessOcr:IDCardOCR_FRONT withSDKUIConfig:ocrUIConfig withProcessSucceedBlock:^(id  _Nonnull resultInfo, UIImage *resultImage, id  _Nonnull reserved) {
-//        [self->resultImageArr replaceObjectAtIndex:0 withObject:resultImage];
-//        NSMutableArray *afterArr = [NSMutableArray array];
-//        NSDictionary *item0Dict = self->dataArr[0];
-//        NSDictionary *item1Dict = self->dataArr[1];
-//        NSMutableDictionary *mutableItem = [NSMutableDictionary dictionaryWithDictionary:item0Dict];
-//        [mutableItem setObject:[NSNumber numberWithInt:1] forKey:@"idCardState"];
-//        [afterArr addObject:mutableItem];
-//        [afterArr addObject:item1Dict];
-//        self->dataArr = afterArr;
-//        NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:0];
-//        [self->_idCardTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationFade];
-//
-//        self->frontDict = resultInfo;
-//        [self addShowContentView];
+        NSString *path = [NSString stringWithFormat:@"%@/Documents/front.png",NSHomeDirectory()];
+        NSData *data = UIImagePNGRepresentation(resultImage);
+        [data writeToFile:path atomically:true];
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:resultInfo];
+        dic[@"imgPath"] = path;
+        NSData *obj = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingFragmentsAllowed error:nil];
+        NSString *string = [[NSString alloc] initWithData:obj encoding:NSUTF8StringEncoding];
+        if (finish) {
+            finish(string);
+        }
     } withProcessFailedBlock:^(NSError * _Nonnull error, id  _Nullable reserved) {
 //        [self showAlert:error.domain withMessage:[error.userInfo objectForKey:NSLocalizedDescriptionKey]];
     }];
 }
 
-- (void) startProcessOcrBack {
-    [ocrSDKKit startProcessOcr:IDCardOCR_BACK  withSDKUIConfig:nil withProcessSucceedBlock:^(id  _Nonnull resultInfo, UIImage *resultImage, id  _Nonnull reserved) {
-//        [self->resultImageArr replaceObjectAtIndex:1 withObject:resultImage];
-//
-//        NSMutableArray *afterArr = [NSMutableArray array];
-//        NSDictionary *item0Dict = self->dataArr[0];
-//        NSDictionary *item1Dict = self->dataArr[1];
-//        NSMutableDictionary *mutableItem = [NSMutableDictionary dictionaryWithDictionary:item1Dict];
-//        [mutableItem setObject:[NSNumber numberWithInt:1] forKey:@"idCardState"];
-//        [afterArr addObject:item0Dict];
-//        [afterArr addObject:mutableItem];
-//        self->dataArr = afterArr;
-//        NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:0];
-//        [self->_idCardTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationFade];
-//
-//        self->backDict = resultInfo;
-//        [self addShowContentView];
+- (void) startProcessOcrBack:(void(^)(NSString * result))finish  {
+    CustomConfigUI *ocrUIConfig = [[CustomConfigUI alloc] init];
+    ocrUIConfig.remindConfirmColor = [UIColor blueColor];
+    ocrUIConfig.isShowAlbumBtn = true;
+    [ocrSDKKit startProcessOcr:IDCardOCR_BACK  withSDKUIConfig:ocrUIConfig withProcessSucceedBlock:^(id  _Nonnull resultInfo, UIImage *resultImage, id  _Nonnull reserved) {
+        NSString *path = [NSString stringWithFormat:@"%@/Documents/front.png",NSHomeDirectory()];
+        NSData *data = UIImagePNGRepresentation(resultImage);
+        [data writeToFile:path atomically:true];
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:resultInfo];
+        dic[@"imgPath"] = path;
+        NSData *obj = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingFragmentsAllowed error:nil];
+        NSString *string = [[NSString alloc] initWithData:obj encoding:NSUTF8StringEncoding];
+        if (finish) {
+            finish(string);
+        }
     } withProcessFailedBlock:^(NSError * _Nonnull error, id  _Nullable reserved) {
 //        [self showAlert:error.domain withMessage:[error.userInfo objectForKey:NSLocalizedDescriptionKey]];
     }];
 }
 
-- (void) startBankCardOcrProcess{
+- (void) startBankCardOcrProcess:(void(^)(NSString *result))finish {
     CustomConfigUI *ocrSDKUIConfig = [[CustomConfigUI alloc] init];
     ocrSDKUIConfig.isShowTips = YES;
     ocrSDKUIConfig.remindConfirmColor = [UIColor magentaColor];
     [ocrSDKKit startProcessOcr:BankCardOCR withSDKUIConfig:ocrSDKUIConfig withProcessSucceedBlock:^(id  _Nonnull resultInfo, UIImage *resultImage, id  _Nonnull reserved) {
-//        ResultViewController *resultViewController = [[ResultViewController alloc] initWithNibName:NSStringFromClass([ResultViewController class]) bundle:nil];
-//        resultViewController.cardType = @"BankCard";
-//        resultViewController.resultImage = resultImage;
-//        resultViewController.resultDict = resultInfo;
-//
-//        [self.navigationController pushViewController:resultViewController animated:YES];
+        NSString *path = [NSString stringWithFormat:@"%@/Documents/front.png",NSHomeDirectory()];
+        NSData *data = UIImagePNGRepresentation(resultImage);
+        [data writeToFile:path atomically:true];
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:resultInfo];
+        dic[@"imgPath"] = path;
+        NSData *obj = [NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingFragmentsAllowed error:nil];
+        NSString *string = [[NSString alloc] initWithData:obj encoding:NSUTF8StringEncoding];
+        if (finish) {
+            finish(string);
+        }
     } withProcessFailedBlock:^(NSError * _Nonnull error, id  _Nullable reserved) {
         NSLog(@"requestId:%@",reserved);
 //        [self showAlert:error.domain withMessage:[error.userInfo objectForKey:NSLocalizedDescriptionKey]];

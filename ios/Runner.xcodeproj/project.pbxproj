@@ -14,11 +14,11 @@
 		6A0B7C762593219E0018D252 /* ShareVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A0B7C752593219E0018D252 /* ShareVC.xib */; };
 		6A0B7CCA25934D3C0018D252 /* color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0B7CC925934D3C0018D252 /* color.swift */; };
 		6A3A470925A86FFF0025C014 /* UIViewCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3A470825A86FFF0025C014 /* UIViewCorner.swift */; };
+		6A612F3425F636BC00D14E55 /* modelType.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A612F3125F636BC00D14E55 /* modelType.plist */; };
+		6A612F3525F636BC00D14E55 /* ocrType.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A612F3225F636BC00D14E55 /* ocrType.plist */; };
+		6A612F3625F636BC00D14E55 /* idCardType.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A612F3325F636BC00D14E55 /* idCardType.plist */; };
 		6A655EB325A461F6003251FB /* RecordsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A655EB125A461F6003251FB /* RecordsVC.swift */; };
 		6A655EB425A461F6003251FB /* RecordsVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A655EB225A461F6003251FB /* RecordsVC.xib */; };
-		6A7CA92625E784E300D43F6B /* OCRVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7CA92425E784E300D43F6B /* OCRVC.swift */; };
-		6A7CA92725E784E300D43F6B /* OCRVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A7CA92525E784E300D43F6B /* OCRVC.xib */; };
-		6A7CA92925E7851F00D43F6B /* OCRCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7CA92825E7851F00D43F6B /* OCRCoverView.swift */; };
 		6A84B1BD259B0E42000C1870 /* HUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A84B1BC259B0E42000C1870 /* HUD.swift */; };
 		6A8CE76C25EE286F00BFE666 /* YtSDKKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A8CE76625EE286F00BFE666 /* YtSDKKit.framework */; };
 		6A8CE76D25EE286F00BFE666 /* OcrSDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6A8CE76725EE286F00BFE666 /* OcrSDK.bundle */; };
@@ -56,11 +56,11 @@
 		6A0B7CC925934D3C0018D252 /* color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = color.swift; sourceTree = "<group>"; };
 		6A3A470825A86FFF0025C014 /* UIViewCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewCorner.swift; sourceTree = "<group>"; };
 		6A48EB212599C8E00086F5F2 /* RunnerApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerApp.entitlements; sourceTree = "<group>"; };
+		6A612F3125F636BC00D14E55 /* modelType.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = modelType.plist; sourceTree = "<group>"; };
+		6A612F3225F636BC00D14E55 /* ocrType.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ocrType.plist; sourceTree = "<group>"; };
+		6A612F3325F636BC00D14E55 /* idCardType.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = idCardType.plist; sourceTree = "<group>"; };
 		6A655EB125A461F6003251FB /* RecordsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsVC.swift; sourceTree = "<group>"; };
 		6A655EB225A461F6003251FB /* RecordsVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RecordsVC.xib; sourceTree = "<group>"; };
-		6A7CA92425E784E300D43F6B /* OCRVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRVC.swift; sourceTree = "<group>"; };
-		6A7CA92525E784E300D43F6B /* OCRVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OCRVC.xib; sourceTree = "<group>"; };
-		6A7CA92825E7851F00D43F6B /* OCRCoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRCoverView.swift; sourceTree = "<group>"; };
 		6A84B1BC259B0E42000C1870 /* HUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUD.swift; sourceTree = "<group>"; };
 		6A8CE76625EE286F00BFE666 /* YtSDKKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = YtSDKKit.framework; sourceTree = "<group>"; };
 		6A8CE76725EE286F00BFE666 /* OcrSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = OcrSDK.bundle; sourceTree = "<group>"; };
@@ -116,6 +116,9 @@
 		6A8CE76525EE286F00BFE666 /* ocr */ = {
 			isa = PBXGroup;
 			children = (
+				6A612F3325F636BC00D14E55 /* idCardType.plist */,
+				6A612F3125F636BC00D14E55 /* modelType.plist */,
+				6A612F3225F636BC00D14E55 /* ocrType.plist */,
 				6A8CE76625EE286F00BFE666 /* YtSDKKit.framework */,
 				6A8CE76725EE286F00BFE666 /* OcrSDK.bundle */,
 				6A8CE76825EE286F00BFE666 /* TXYComm.framework */,
@@ -198,9 +201,6 @@
 				6A3A470825A86FFF0025C014 /* UIViewCorner.swift */,
 				6ABA8A8825C79DFC0090BC4C /* WebVC.swift */,
 				6ABA8A8925C79DFC0090BC4C /* WebVC.xib */,
-				6A7CA92425E784E300D43F6B /* OCRVC.swift */,
-				6A7CA92525E784E300D43F6B /* OCRVC.xib */,
-				6A7CA92825E7851F00D43F6B /* OCRCoverView.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -271,11 +271,13 @@
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				6A655EB425A461F6003251FB /* RecordsVC.xib in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
+				6A612F3625F636BC00D14E55 /* idCardType.plist in Resources */,
 				6A8CE76D25EE286F00BFE666 /* OcrSDK.bundle in Resources */,
-				6A7CA92725E784E300D43F6B /* OCRVC.xib in Resources */,
+				6A612F3425F636BC00D14E55 /* modelType.plist in Resources */,
 				6ABA8A8B25C79DFC0090BC4C /* WebVC.xib in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				6A0B7C762593219E0018D252 /* ShareVC.xib in Resources */,
+				6A612F3525F636BC00D14E55 /* ocrType.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,8 +358,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A7CA92625E784E300D43F6B /* OCRVC.swift in Sources */,
-				6A7CA92925E7851F00D43F6B /* OCRCoverView.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				6A8CE77425EE293400BFE666 /* OCRManager.mm in Sources */,
 				6A84B1BD259B0E42000C1870 /* HUD.swift in Sources */,
@@ -463,6 +463,12 @@
 					"$(PROJECT_DIR)/Flutter",
 				);
 				MARKETING_VERSION = 2.4.6;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Flutter,
+					"-ObjC",
+				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emedclouds.doctor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -611,6 +617,12 @@
 					"$(PROJECT_DIR)/Flutter",
 				);
 				MARKETING_VERSION = 2.4.6;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Flutter,
+					"-ObjC",
+				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emedclouds.doctor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -651,6 +663,12 @@
 					"$(PROJECT_DIR)/Flutter",
 				);
 				MARKETING_VERSION = 2.4.6;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Flutter,
+					"-ObjC",
+				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS";
 				PRODUCT_BUNDLE_IDENTIFIER = com.emedclouds.doctor;
 				PRODUCT_NAME = "$(TARGET_NAME)";

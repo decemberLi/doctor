@@ -72,6 +72,21 @@ import UserNotificationsUI
                 MobClick.profileSignIn(withPUID: value)
             }else if call.method == "logout" {
                 MobClick.profileSignOff()
+            }else if call.method == "ocrIdCardBackSide" {
+                OCRManager.shared()?.startProcessOcrBack{ obj in
+                    self.naviChannel.invokeMethod("ocrIdCardBackSide", arguments: obj)
+                }
+                result(true)
+            }else if call.method == "ocrBankCard" {
+                OCRManager.shared()?.startBankCardOcrProcess{ obj in
+                    self.naviChannel.invokeMethod("ocrBankCard", arguments: obj)
+                }
+                result(true)
+            }else if call.method == "ocrIdCardFaceSide" {
+                OCRManager.shared()?.startProcessOcrFRONT{ obj in
+                    self.naviChannel.invokeMethod("ocrIdCardFaceSide", arguments: obj)
+                }
+                result(true)
             }
         }
         vc.setFlutterViewDidRenderCallback {
@@ -202,6 +217,7 @@ extension AppDelegate {
         UMConfigure.initWithAppkey("60079989f1eb4f3f9b67973b", channel: "App Store")
         JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: true)
         #endif
+        OCRManager.shared()?.initSDK()
         
     }
     
@@ -251,8 +267,6 @@ extension AppDelegate {
         let vc = WebVC()
         vc.initData = map
         navi?.pushViewController(vc, animated: true)
-//        let vc = OCRVC()
-//        navi?.pushViewController(vc, animated: true)
     }
 }
 
