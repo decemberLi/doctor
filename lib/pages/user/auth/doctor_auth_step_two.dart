@@ -112,12 +112,18 @@ class DoctorAuthenticationStepTwoPageState
                                 ? "提交"
                                 : "重新提交",
                             onPressed: () async {
+                              if(model.isCommitting){
+                                return;
+                              }
                               model.commitAuthenticationData().then((success) {
+                                model.setIsCommitting(true);
                                 Navigator.pushNamed(
                                   context,
                                   RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE,
                                 );
                                 // Navigator.pop(context, true);
+                              },onError: (error){
+                                model.setIsCommitting(false);
                               });
                               // Navigator.pushNamed(context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
                             },

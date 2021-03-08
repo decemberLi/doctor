@@ -98,6 +98,9 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                 : AceButtonType.grey,
                             text: "下一步",
                             onPressed: () async {
+                              if (model.isCommitting) {
+                                return;
+                              }
                               if (model.canNext) {
                                 model
                                     .commitAuthenticationData()
@@ -143,14 +146,16 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
       ),
     );
   }
+
   void _resetFocus() {
-    if(_mobileFocusNode != null) {
+    if (_mobileFocusNode != null) {
       _mobileFocusNode.unfocus();
     }
-    if(_bankCardFocusNode != null) {
+    if (_bankCardFocusNode != null) {
       _bankCardFocusNode.unfocus();
     }
   }
+
   _goNextStep() async {
     var result = await Navigator.pushNamed(
         context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
