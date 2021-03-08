@@ -124,10 +124,9 @@ open class WebActivity : ComponentActivity() {
                 }
                 val json = JSONObject(param)
                 val hookBackBtn = json.getBoolean("needHook")
-                val hookedJsMethod = json.getString("method")
                 mBackBtnListener = object : OnBackBtnListener {
                     override fun onBack() {
-                        successCallJavaScript(hookedJsMethod, "")
+                        successCallJavaScript(bizType, "")
                     }
 
                     override fun needBack(): Boolean {
@@ -196,6 +195,9 @@ open class WebActivity : ComponentActivity() {
                 mWebView.goBack()
                 return@setOnClickListener
             }
+            if(dispatchBackBtnIfNeeded()){
+                return@setOnClickListener
+            }
             finish()
         }
     }
@@ -226,8 +228,7 @@ open class WebActivity : ComponentActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             // 返回键
-            if (this::mBackBtnListener.isInitialized && mBackBtnListener.needBack()) {
-                mBackBtnListener.onBack()
+            if (dispatchBackBtnIfNeeded()){
                 return true
             }
             if (mWebView.canGoBack()) {
@@ -236,6 +237,14 @@ open class WebActivity : ComponentActivity() {
             }
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    private fun dispatchBackBtnIfNeeded(): Boolean {
+        if (this::mBackBtnListener.isInitialized && mBackBtnListener.needBack()) {
+            mBackBtnListener.onBack()
+            return true
+        }
+        return false
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
