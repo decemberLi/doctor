@@ -51,6 +51,7 @@ Resources _$ResourcesFromJson(Map<String, dynamic> json) {
         : (json['questionnaires'] as List)
             .map((e) => Questionnaires.fromJson(e))
             .toList(),
+    json['illnessCase'] != null ? IllnessCase.fromJson(json['illnessCase']) : null
   );
 }
 
@@ -67,6 +68,7 @@ Map<String, dynamic> _$ResourcesToJson(Resources instance) => <String, dynamic>{
       'thumbnailUrl': instance.thumbnailUrl,
       'feedback': instance.feedback,
       'info': instance.info,
+  'illnessCase':instance.illnessCase?.toJson(),
     };
 
 Info _$InfoFromJson(Map<String, dynamic> json) {

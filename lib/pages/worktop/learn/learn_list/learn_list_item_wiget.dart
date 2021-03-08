@@ -245,14 +245,19 @@ class LearnListItemWiget extends StatelessWidget {
       style: TextStyle(color: Color(0xFF666666), fontSize: 12),
     );
     var info = "";
-    if (item?.illnessCase?.sex?.length ?? 0 > 0){
-      info += item.illnessCase.sex;
+    var sexValue = item?.illnessCase?.sex ?? 0;
+    if (sexValue > 0 ){//
+      var sex = "男";
+      // if (item.illnessCase.sex == false) sex = "女";
+      info += sex;
     }
-    if (item?.illnessCase?.age?.length ?? 0 > 0) {
+    var age = item?.illnessCase?.age ?? 0;
+    if (age > 0) {
       if (info.length > 0) info += "|";
-      info += item.illnessCase.age;
+      info += "${item.illnessCase.age}";
     }
-    if (item?.illnessCase?.patientName?.length ?? 0 > 0) {
+    var nameLength = item?.illnessCase?.patientName?.length ?? 0;
+    if ( nameLength > 0) {
       if (info.length > 0) info += "|";
       info += item.illnessCase.patientName;
     }

@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'learn_list_model.dart';
+
 part 'learn_detail_model.g.dart';
 
 @JsonSerializable()
@@ -46,6 +48,7 @@ class Resources {
   String feedback;
   Info info;
   List<Questionnaires> questionnaires;
+  IllnessCase illnessCase;
 
   Resources(
     this.resourceType,
@@ -61,6 +64,7 @@ class Resources {
     this.feedback,
     this.info,
     this.questionnaires,
+    this.illnessCase,
   );
 
   factory Resources.fromJson(Map<String, dynamic> json) =>

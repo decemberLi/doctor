@@ -20,10 +20,17 @@ Map<String, dynamic> _$ResourceTypeResultToJson(ResourceTypeResult instance) =>
     };
 
 IllnessCase _IllnessCaseFromJson(Map<String, dynamic> json) {
+  print("the json is ${json}");
   return IllnessCase(
     json['patientName'] as String,
-    json['age'] as String,
-    json['sex'] as String,
+    json['age'] as int,
+    json['sex'] as int,
+    json['illnessCaseId'] as int,
+    json['hospital'] as String,
+    json['status'] as String,
+    json['showIndex'] as int,
+    json['patientCode'] as int,
+    json['needFields'] as List<dynamic>,
   );
 }
 
@@ -31,7 +38,13 @@ Map<String, dynamic> _IllnessCaseToJson(IllnessCase instance) =>
     <String, dynamic>{
       'patientName': instance.patientName,
       'age': instance.age,
-      'sex':instance.sex,
+      'sex': instance.sex,
+      'illnessCaseId':instance.illnessCaseId,
+      'hospital':instance.hospital,
+      'status':instance.status,
+      'showIndex':instance.showIndex,
+      'patientCode':instance.patientCode,
+      'needFields':instance.showFields,
     };
 
 LearnListItem _$LearnListItemFromJson(Map<String, dynamic> json) {
@@ -54,8 +67,9 @@ LearnListItem _$LearnListItemFromJson(Map<String, dynamic> json) {
     status: json['status'] as String,
     reLearn: json['reLearn'] as bool,
     planImplementEndTime: json['planImplementEndTime'] as int,
-    illnessCase: json['illnessCase'] != null ?
-     IllnessCase.fromJson(json['illnessCase']) : null,
+    illnessCase: json['illnessCase'] != null
+        ? IllnessCase.fromJson(json['illnessCase'])
+        : null,
   );
 }
 
@@ -76,5 +90,5 @@ Map<String, dynamic> _$LearnListItemToJson(LearnListItem instance) =>
       'learnProgress': instance.learnProgress,
       'status': instance.status,
       'reLearn': instance.reLearn,
-      'illnessCase':instance.illnessCase.toJson(),
+      'illnessCase': instance.illnessCase.toJson(),
     };

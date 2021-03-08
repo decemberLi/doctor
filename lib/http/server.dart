@@ -107,4 +107,5 @@ class Server extends SubAPI {
   commentList(params) async => normalPost('/comment/list',params: params);
 
   doctorLectureSharePic(lectureId) => normalPost('/doctor-lecture/share-pic',params:{'lectureId':lectureId});
+  updateIllnessCase(params) async => await normalPost('/learn-resource/illness-case/update',params: params);
 }
