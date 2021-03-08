@@ -12,6 +12,7 @@ import 'package:doctor/widgets/photo_view_gallery_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -129,6 +130,8 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                       showNoticeDialog(errorMsg,
                                           number: model.customServicePhone);
                                     }
+                                  } else if(error?.error != null && error.error is String){
+                                    EasyLoading.showToast(error?.error);
                                   }
                                 });
                               }
@@ -156,11 +159,11 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     }
   }
 
-  _goNextStep() async {
+  _goNextStep()async  {
     var result = await Navigator.pushNamed(
         context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-    if (result != null && result) {
-      Navigator.pop(context, true);
+    if(result != null && result is bool){
+      Navigator.pop(context);
     }
   }
 
@@ -223,6 +226,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                   if (!TextUtil.isEmpty(number)) {
                     Navigator.of(context).pop(true);
                   } else {
+                    Navigator.pop(context);
                     _goNextStep();
                   }
                 },

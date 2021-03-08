@@ -115,17 +115,17 @@ class DoctorAuthenticationStepTwoPageState
                               if(model.isCommitting){
                                 return;
                               }
-                              model.commitAuthenticationData().then((success) {
-                                model.setIsCommitting(true);
-                                Navigator.pushNamed(
-                                  context,
-                                  RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE,
-                                );
-                                // Navigator.pop(context, true);
+                              model.setIsCommitting(true);
+                              model.commitAuthenticationData().then((success)async {
+                                model.setIsCommitting(false);
+                                await Navigator.pushNamed(
+                                    context,
+                                    RouteManager
+                                        .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                                Navigator.pop(context, true);
                               },onError: (error){
                                 model.setIsCommitting(false);
                               });
-                              // Navigator.pushNamed(context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
                             },
                           ),
                         ))
