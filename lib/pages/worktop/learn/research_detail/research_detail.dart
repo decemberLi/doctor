@@ -40,13 +40,14 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    var model = Provider.of<LearnDetailViewModel>(context, listen: false);
+
     if (state == AppLifecycleState.resumed) {
       freshData();
     }
   }
 
   void freshData() async {
+    var model = Provider.of<LearnDetailViewModel>(context, listen: false);
     await model.initData();
     setState(() {
 
