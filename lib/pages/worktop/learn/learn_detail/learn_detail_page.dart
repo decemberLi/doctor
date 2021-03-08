@@ -72,52 +72,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     }
   }
 
-  //确认弹窗
-  Future<bool> confirmDialog(int learnProgress) {
-    return showCupertinoDialog<bool>(
-      context: context,
-      builder: (context) {
-        print(learnProgress);
-        String _text = '当前的学习计划已完成确认提交吗?';
-        if (learnProgress == 0) {
-          _text = '当前学习计划尚未学习，请在学习后提交';
-        } else if (learnProgress != 100) {
-          // 学习进度未完成
-          _text = '当前学习计划尚未完成，完成度$learnProgress%，确认提交吗？';
-        }
-        return CupertinoAlertDialog(
-          title: Text("提示"),
-          content: Container(
-            padding: EdgeInsets.only(top: 12),
-            child: Text(_text),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("取消"),
-              onPressed: () => Navigator.of(context).pop(false), // 关闭对话框
-            ),
-            FlatButton(
-              child: Text(
-                "确定",
-                style: TextStyle(
-                  color: ThemeColor.primaryColor,
-                ),
-              ),
-              onPressed: () {
-                //关闭对话框并返回true
-                if (learnProgress == 0) {
-                  Navigator.of(context).pop(false);
-                } else {
-                  Navigator.of(context).pop(true);
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Widget _buildListItem({
     String label,
     dynamic value,

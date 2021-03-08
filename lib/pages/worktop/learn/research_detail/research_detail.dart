@@ -154,11 +154,19 @@ class _ResearchDetailState extends State<ResearchDetail> {
     var template = data.resources.first;
     if (template == null || template.questionnaires == null) return Container();
     List<Widget> sources = [];
+    var canUp = false;
     for (int i = 0; i < template.questionnaires.length; i++) {
       var item = template.questionnaires[i];
       var cell = buildPlanItem(data, template.resourceId, item,
           i == template.questionnaires.length - 1);
       sources.add(cell);
+      canUp = canUp || item.status == "COMPLETE";
+    }
+    var upColor = Color(0xFFBCBCBC);
+    var shadowColor = Color(0xFFBCBCBC).withOpacity(0.4);
+    if (canUp) {
+      upColor = Color(0xff489DFE).withOpacity(0.85);
+      shadowColor = Color(0xff489DFE).withOpacity(0.4);
     }
     return Container(
       alignment: Alignment.centerLeft,
@@ -208,11 +216,11 @@ class _ResearchDetailState extends State<ResearchDetail> {
                   ),
                 ),
                 decoration: BoxDecoration(
-                  color: Color(0xff489DFE).withOpacity(0.85),
+                  color: upColor,
                   borderRadius: BorderRadius.all(Radius.circular(22)),
                   boxShadow: [
                     BoxShadow(
-                      color: Color(0xff489DFE).withOpacity(0.4),
+                      color: shadowColor,
                       offset: Offset(0, 4),
                       blurRadius: 10,
                     ),
