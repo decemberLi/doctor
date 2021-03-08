@@ -6,6 +6,7 @@ import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/utils/time_text.dart';
 import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,7 +49,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  '${"123"}推广员给您留言了：', //data.representName
+                  '${data.representName}推广员给您留言了：', //data.representName
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
@@ -63,7 +64,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
             children: [
               Expanded(
                 child: Text(
-                  '${"原因"}', //data.reLearnReason
+                  '${data.reLearnReason}', //data.reLearnReason
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
@@ -82,6 +83,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
   Widget info(LearnDetailItem data) {
     List learnListFields = LEARN_LIST['DOCTOR_LECTURE'];
     List<Widget> infoList = [];
+    Map dataMap = data.toJson();
     for (int i = 0; i < learnListFields.length; i++) {
       var fields = learnListFields[i];
       if (collapsed && fields['notCollapse'] == null) {
@@ -89,8 +91,8 @@ class _ResearchDetailState extends State<ResearchDetail> {
       }
       var infoItem = _buildListItem(
           label: fields['label'],
-          value: '123',
-          format: null,
+          value: dataMap[fields['field']],
+          format: fields['format'],
           needBorder: infoList.length != 0);
       infoList.add(infoItem);
     }
@@ -114,11 +116,11 @@ class _ResearchDetailState extends State<ResearchDetail> {
                           color: Color(0xFF107BFD),
                         ),
                       ),
-                      LearnTextIcon(
-                        text: "继续调研",
-                        color: Color(0xffF6A419),
-                        margin: EdgeInsets.only(left: 10),
-                      ),
+                      // LearnTextIcon(
+                      //   text: "继续调研",
+                      //   color: Color(0xffF6A419),
+                      //   margin: EdgeInsets.only(left: 10),
+                      // ),
                     ],
                   ),
                   Row(
@@ -275,6 +277,16 @@ class _ResearchDetailState extends State<ResearchDetail> {
   }
 
   Widget buildCaseItem(IllnessCase item) {
+    var buttonText = "点击此处去编辑";
+    var statusText = "待完成";
+    var statusColor = Color(0xff489DFE);
+    var borderColor = Color(0xff888888);
+    if (item.status == "COMPLETE") {
+      buttonText = "点击此处去重新编辑";
+      statusText = "已完成";
+      statusColor = Color(0xff52C41A);
+      borderColor = Color(0xff52C41A);
+    }
     return Container(
       margin: EdgeInsets.fromLTRB(0, 0, 25, 0),
       child: Column(
@@ -285,11 +297,11 @@ class _ResearchDetailState extends State<ResearchDetail> {
                 width: 50,
                 alignment: Alignment.center,
                 child: Text(
-                  "10%",
+                  "${item.schedule}%",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xff52C41A),
+                    color: borderColor,
                   ),
                 ),
               ),
@@ -301,25 +313,25 @@ class _ResearchDetailState extends State<ResearchDetail> {
                 margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                 padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
                 decoration: BoxDecoration(
-                  color: Color(0xff52C41A),
+                  color: statusColor,
                   borderRadius: BorderRadius.all(Radius.circular(4)),
                 ),
                 child: Text(
-                  "已完成",
+                  statusText,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
                   ),
                 ),
               ),
-              Expanded(child: Container()),
-              Text(
-                "12月11日完成",
-                style: TextStyle(
-                  color: Color(0xff888888),
-                  fontSize: 10,
-                ),
-              ),
+              // Expanded(child: Container()),
+              // Text(
+              //   "12月11日完成",
+              //   style: TextStyle(
+              //     color: Color(0xff888888),
+              //     fontSize: 10,
+              //   ),
+              // ),
             ],
           ),
           Container(
@@ -328,7 +340,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
             decoration: BoxDecoration(
               border: Border(
                 left: BorderSide(
-                  color: Color(0xff52C41A),
+                  color: borderColor,
                 ),
               ),
             ),
@@ -345,7 +357,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
                 width: double.infinity,
                 decoration: DashedDecoration(dashedColor: Color(0xff9BCDF4)),
                 child: Text(
-                  "点击此处去编辑",
+                  buttonText,
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xff489DFE),
@@ -361,6 +373,23 @@ class _ResearchDetailState extends State<ResearchDetail> {
 
   Widget buildPlanItem(
       LearnDetailItem data, int resourceID, Questionnaires item, bool isEnd) {
+    var statusText = "未开启";
+    var statusColor = Color(0xffDEDEE1);
+    var borderColor = Color(0xff888888);
+    if (item.status == "PROCEEDING") {
+      statusText = "待完成";
+      statusColor = Color(0xff489DFE);
+      borderColor = Color(0xff888888);
+    }else if (item.status == "COMPLETE") {
+      statusText = "已完成";
+      statusColor = Color(0xff52C41A);
+      borderColor = Color(0xff52C41A);
+    }
+    var timeText = "";
+    if (item.completeTime != null) {
+      timeText = "${RelativeDateFormat.format(item.completeTime)}完成";
+    }
+
     var content = Stack(
       children: [
         Container(
@@ -417,11 +446,11 @@ class _ResearchDetailState extends State<ResearchDetail> {
                 width: 50,
                 alignment: Alignment.center,
                 child: Text(
-                  "10%",
+                  "${item.schedule}%",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xff52C41A),
+                    color: borderColor,
                   ),
                 ),
               ),
@@ -433,11 +462,11 @@ class _ResearchDetailState extends State<ResearchDetail> {
                 margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                 padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
                 decoration: BoxDecoration(
-                  color: Color(0xff52C41A),
+                  color: statusColor,
                   borderRadius: BorderRadius.all(Radius.circular(4)),
                 ),
                 child: Text(
-                  "已完成",
+                  statusText,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
@@ -446,7 +475,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
               ),
               Expanded(child: Container()),
               Text(
-                "12月11日完成",
+                timeText,
                 style: TextStyle(
                   color: Color(0xff888888),
                   fontSize: 10,
@@ -462,7 +491,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
                 : BoxDecoration(
                     border: Border(
                       left: BorderSide(
-                        color: Color(0xff52C41A),
+                        color: borderColor,
                       ),
                     ),
                   ),
@@ -510,6 +539,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<LearnDetailViewModel>(context, listen: true);
+    var data = model.data;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -521,6 +551,9 @@ class _ResearchDetailState extends State<ResearchDetail> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              if (data.reLearnReason != null &&
+                  data.status != 'SUBMIT_LEARN' &&
+                  data.status != 'ACCEPTED')
               message(model.data),
               info(model.data),
               plans(model.data),

@@ -28,6 +28,7 @@ class IllnessCase {
   int showIndex;
   int age;
   int sex;
+  int schedule;
   List<dynamic> showFields;
 
   IllnessCase(
@@ -39,6 +40,7 @@ class IllnessCase {
     this.status,
     this.showIndex,
     this.patientCode,
+    this.schedule,
     this.showFields,
   );
 

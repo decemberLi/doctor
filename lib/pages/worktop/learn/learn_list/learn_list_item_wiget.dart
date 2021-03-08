@@ -269,6 +269,14 @@ class LearnListItemWiget extends StatelessWidget {
       if (info.length > 0) info += "|";
       info += item.illnessCase.patientName;
     }
+    var taskText = "";
+    if (item.taskTemplate == "DOCTOR_LECTURE") {
+      taskText = '需重新上传';
+    }else if (item.taskTemplate == "MEDICAL_SURVEY") {
+      taskText = '继续调研';
+    }else{
+      taskText = '再次拜访';
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,7 +287,7 @@ class LearnListItemWiget extends StatelessWidget {
             taskTemplateWidget,
             if (item.reLearn)
               LearnTextIcon(
-                text: item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
+                text: taskText,
                 color: Color(0xffF6A419),
               ),
 

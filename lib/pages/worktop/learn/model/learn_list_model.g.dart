@@ -30,6 +30,7 @@ IllnessCase _IllnessCaseFromJson(Map<String, dynamic> json) {
     json['status'] as String,
     json['showIndex'] as int,
     json['patientCode'] as int,
+    json['schedule'] as int,
     json['needFields'] as List<dynamic>,
   );
 }
@@ -44,6 +45,7 @@ Map<String, dynamic> _IllnessCaseToJson(IllnessCase instance) =>
       'status':instance.status,
       'showIndex':instance.showIndex,
       'patientCode':instance.patientCode,
+      'schedule':instance.schedule,
       'needFields':instance.showFields,
     };
 

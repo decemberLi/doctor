@@ -14,6 +14,7 @@ class Questionnaires {
   int schedule;
   String status;
   int sort;
+  int completeTime;
 
   Questionnaires(
     this.questionnaireId,
@@ -24,6 +25,7 @@ class Questionnaires {
     this.schedule,
     this.status,
     this.sort,
+    this.completeTime,
   );
 
   factory Questionnaires.fromJson(Map<String, dynamic> json) =>
