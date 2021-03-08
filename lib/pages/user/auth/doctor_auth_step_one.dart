@@ -162,7 +162,8 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   _goNextStep()async  {
     var result = await Navigator.pushNamed(
         context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-    if(result != null && result is bool){
+    debugPrint("page poped , & value is $result");
+    if(result != null && (result is bool) && result){
       Navigator.pop(context);
     }
   }
@@ -227,7 +228,6 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                     Navigator.of(context).pop(true);
                   } else {
                     Navigator.pop(context);
-                    _goNextStep();
                   }
                 },
               )
