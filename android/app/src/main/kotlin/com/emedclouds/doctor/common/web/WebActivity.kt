@@ -40,6 +40,8 @@ open class WebActivity : ComponentActivity() {
     private lateinit var mWebView: YWebView
     private lateinit var mContainer: FrameLayout
 
+    private lateinit var mBackBtnListener: OnBackBtnListener
+
     companion object {
         const val TAG = "YWeb.WebActivity"
     }
@@ -115,6 +117,26 @@ open class WebActivity : ComponentActivity() {
                         }
                     }
                 })
+        ApiManager.instance.addApi("hookBackBtn", object : BaseApi(apiCaller) {
+            override fun doAction(bizType: String, param: String?) {
+                if (param == null) {
+                    return
+                }
+                val json = JSONObject(param)
+                val hookBackBtn = json.getBoolean("needHook")
+                val hookedJsMethod = json.getString("method")
+                mBackBtnListener = object : OnBackBtnListener {
+                    override fun onBack() {
+                        successCallJavaScript(hookedJsMethod, "")
+                    }
+
+                    override fun needBack(): Boolean {
+                        return hookBackBtn
+                    }
+
+                }
+            }
+        })
         ApiManager.instance.addApi(
                 "showInputBar",
                 object : BaseApi(apiCaller) {
@@ -201,9 +223,13 @@ open class WebActivity : ComponentActivity() {
         super.onDestroy()
     }
 
-
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // 返回键
+            if (this::mBackBtnListener.isInitialized && mBackBtnListener.needBack()) {
+                mBackBtnListener.onBack()
+                return true
+            }
             if (mWebView.canGoBack()) {
                 mWebView.goBack()
                 return true
@@ -339,4 +365,9 @@ open class WebActivity : ComponentActivity() {
 
     }
 
+    interface OnBackBtnListener {
+        fun onBack(): Unit
+
+        fun needBack(): Boolean
+    }
 }

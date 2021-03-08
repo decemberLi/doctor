@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:common_utils/common_utils.dart';
@@ -11,6 +12,7 @@ import 'package:doctor/http/ucenter.dart';
 import 'package:http_manager/api.dart';
 
 import '../entity/auth_basic_info.dart';
+import 'package:doctor/http/developer.dart';
 
 class AuthenticationViewModel extends ViewStateModel {
   AuthBasicInfoEntity _entity = new AuthBasicInfoEntity();
@@ -18,6 +20,7 @@ class AuthenticationViewModel extends ViewStateModel {
   var _showIdCardInfo = false;
   var _canNext = false;
   bool _agree = false;
+  var _customerServicePhone = '028-XXXXXXXX';
 
   bool get needShowIdCardInfo => _showIdCardInfo;
 
@@ -27,8 +30,27 @@ class AuthenticationViewModel extends ViewStateModel {
 
   bool get agree => _agree;
 
+  String get customServicePhone => _customerServicePhone;
+
   void changeAgreeState(bool value) {
     _agree = value;
+    checkDataIntegrity();
+    notifyListeners();
+  }
+
+  void initData() async {
+    try {
+      var data = await API.shared.developer.customServicePhone();
+      var records = data["records"] as List;
+      var item = records[0];
+      var phone = item["value"];
+      if (TextUtil.isEmpty(phone)) {
+        return;
+      }
+      _customerServicePhone = phone;
+    } catch (e) {
+      debugPrint(e);
+    }
   }
 
   // 身份证反面
@@ -74,18 +96,23 @@ class AuthenticationViewModel extends ViewStateModel {
     notifyListeners();
   }
 
-  commitAuthenticationData() {
+  Future commitAuthenticationData() async {
     debugPrint("commitAuthenticationData");
+    var completer = Completer();
     if (checkDataIntegrity()) {
-      API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
-        (value) => {
-          // TODO 弹框提示
+      await API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
+        (value) {
+          debugPrint(value);
+          completer.complete(value);
         },
         onError: (error, msg) {
-          // TODO 弹框提示
+          debugPrint("errorCode: $error");
+          completer.completeError(error);
         },
       );
     }
+
+    return completer.future;
   }
 
   checkDataIntegrity({bool needToast = false}) {
@@ -115,6 +142,7 @@ class AuthenticationViewModel extends ViewStateModel {
       return false;
     }
     _canNext = true;
+    return true;
   }
 
   void processBankCardResult(String args) async {
@@ -126,8 +154,8 @@ class AuthenticationViewModel extends ViewStateModel {
     debugPrint("Upload bank card success");
     // 3、本地保存数据
     _entity
-      ..identityValidityStart = json['CardNo']
-      ..idCardLicenseBehind = img;
+      ..bankCard = json['CardNo']
+      ..bankCardCertificates = img;
     checkDataIntegrity();
     notifyListeners();
   }
@@ -163,9 +191,11 @@ class AuthenticationViewModel extends ViewStateModel {
     FacePhoto img = await _uploadImg(json['imgPath']);
     debugPrint("Upload id card back side success");
     // 3、本地保存数据
+    String endDate = json['ValidDate'];
+    var split = endDate.split('-');
     _entity
-      ..identityValidityStart = json['Authority']
-      ..identityValidityEnd = json['ValidDate']
+      ..identityValidityStart = split[0]
+      ..identityValidityEnd = split[1]
       ..idCardLicenseBehind = img;
     checkDataIntegrity();
     notifyListeners();

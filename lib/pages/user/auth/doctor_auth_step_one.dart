@@ -1,4 +1,6 @@
 import 'package:common_utils/common_utils.dart';
+import 'package:dio/dio.dart';
+import 'package:doctor/main.dart';
 import 'package:doctor/pages/qualification/image_choose_widget.dart';
 import 'package:doctor/pages/user/auth/viewmodel/auth_step1_view_model.dart';
 import 'package:doctor/route/fade_route.dart';
@@ -11,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'crude_progress_widget.dart';
 
@@ -24,91 +27,204 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
 
   var _bankCardController = TextEditingController();
   var _phoneNumberController = TextEditingController();
+  final FocusNode _mobileFocusNode = FocusNode();
+  final FocusNode _bankCardFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      backgroundColor: ThemeColor.colorFFF3F5F8,
-      appBar: AppBar(
-        title: Text('医师身份认证'),
-        elevation: 0,
-      ),
-      body: ChangeNotifierProvider<AuthenticationViewModel>.value(
-        value: _model,
-        child: Consumer<AuthenticationViewModel>(
-          builder: (context, model, child) {
-            return SingleChildScrollView(
-              child: Container(
-                color: const Color(0xFFF3F5F8),
-                height: MediaQuery.of(context).size.height - 100,
-                child: Stack(
-                  children: [
-                    Column(
-                      children: [
-                        commonTips(),
-                        CrudeProgressWidget(1),
-                        Container(
-                            margin: EdgeInsets.symmetric(horizontal: 16),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 16, horizontal: 18),
-                              child: Column(
-                                children: [
-                                  _buildIdCardWidget(model),
-                                  if (model.needShowIdCardInfo)
-                                    _buildItemWidget(
-                                        "姓名：", model.data.identityName ?? ''),
-                                  if (model.needShowIdCardInfo)
-                                    _buildItemWidget(
-                                        "身份证号：", model.data.identityNo ?? ''),
-                                  _underLineContainer(
-                                      _phoneNumberWidget(model)),
-                                  _underLineContainer(_bankCardWidget(model))
-                                ],
-                              ),
-                            )),
-                        Container(
-                          margin: EdgeInsets.only(left: 76, right: 76, top: 12),
-                          child: agreement(),
-                        ),
-                      ],
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        margin:
-                            EdgeInsets.only(left: 30, right: 30, bottom: 26),
-                        child: AceButton(
-                          width: double.infinity,
-                          type: model.canNext
-                              ? AceButtonType.primary
-                              : AceButtonType.grey,
-                          text: "下一步",
-                          onPressed: () async {
-                            if (model.canNext) {
-                              await model.commitAuthenticationData();
-                              Navigator.pushNamed(context,
-                                  RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-                            }
-                          },
-                        ),
+      child: Scaffold(
+        backgroundColor: ThemeColor.colorFFF3F5F8,
+        appBar: AppBar(
+          title: Text('医师身份认证'),
+          elevation: 0,
+        ),
+        body: ChangeNotifierProvider<AuthenticationViewModel>.value(
+          value: _model,
+          child: Consumer<AuthenticationViewModel>(
+            builder: (context, model, child) {
+              return SingleChildScrollView(
+                child: Container(
+                  color: const Color(0xFFF3F5F8),
+                  height: MediaQuery.of(context).size.height - 100,
+                  child: Stack(
+                    children: [
+                      Column(
+                        children: [
+                          commonTips(),
+                          CrudeProgressWidget(1),
+                          Container(
+                              margin: EdgeInsets.symmetric(horizontal: 16),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 18),
+                                child: Column(
+                                  children: [
+                                    _buildIdCardWidget(model),
+                                    if (model.needShowIdCardInfo)
+                                      _buildItemWidget(
+                                          "姓名：", model.data.identityName ?? ''),
+                                    if (model.needShowIdCardInfo)
+                                      _buildItemWidget(
+                                          "身份证号：", model.data.identityNo ?? ''),
+                                    _underLineContainer(
+                                        _phoneNumberWidget(model)),
+                                    _underLineContainer(_bankCardWidget(model))
+                                  ],
+                                ),
+                              )),
+                          Container(
+                            margin:
+                                EdgeInsets.only(left: 76, right: 76, top: 12),
+                            child: agreement(),
+                          ),
+                        ],
                       ),
-                    )
-                  ],
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          margin:
+                              EdgeInsets.only(left: 30, right: 30, bottom: 26),
+                          child: AceButton(
+                            width: double.infinity,
+                            type: model.canNext
+                                ? AceButtonType.primary
+                                : AceButtonType.grey,
+                            text: "下一步",
+                            onPressed: () async {
+                              if (model.canNext) {
+                                model
+                                    .commitAuthenticationData()
+                                    .then((data) async {
+                                  debugPrint("success -> $data");
+                                  if (data is String) {
+                                    _resetFocus();
+                                    if (TextUtil.isEmpty(data)) {
+                                      _goNextStep();
+                                      return;
+                                    }
+
+                                    await showNoticeDialog(data);
+                                    _goNextStep();
+                                  }
+                                }).catchError((error) {
+                                  debugPrint("error -> $error");
+                                  if (error is DioError && error.error is Map) {
+                                    var errorCode =
+                                        (error.error as Map)['errorCode'];
+                                    var errorMsg =
+                                        (error.error as Map)['errorMsg'];
+                                    if ('00010010' == errorCode) {
+                                      showNoticeDialog(errorMsg);
+                                    } else if ('00010009' == errorCode) {
+                                      showNoticeDialog(errorMsg,
+                                          number: model.customServicePhone);
+                                    }
+                                  }
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
-    ));
+    );
+  }
+  void _resetFocus() {
+    if(_mobileFocusNode != null) {
+      _mobileFocusNode.unfocus();
+    }
+    if(_bankCardFocusNode != null) {
+      _bankCardFocusNode.unfocus();
+    }
+  }
+  _goNextStep() async {
+    var result = await Navigator.pushNamed(
+        context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+    if (result != null && result) {
+      Navigator.pop(context, true);
+    }
+  }
+
+  showNoticeDialog(String content, {String number = null}) async {
+    _contentTextStyle(color) {
+      return TextStyle(fontSize: 14, color: color, height: 1.6);
+    }
+
+    return await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Column(
+              children: [
+                if (!TextUtil.isEmpty(number))
+                  Text("温馨提示：", style: _contentTextStyle(Color(0xFF444444)))
+              ],
+            ),
+            content: Container(
+              padding:
+                  EdgeInsets.only(top: 18, bottom: 18, right: 14, left: 14),
+              child: Column(
+                children: [
+                  Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                              text: content,
+                              style: _contentTextStyle(Color(0xFF444444)),
+                              recognizer: TapGestureRecognizer()),
+                          if (!TextUtil.isEmpty(number))
+                            TextSpan(
+                              text: number,
+                              style: _contentTextStyle(ThemeColor.primaryColor),
+                              recognizer: _agreementTap
+                                ..onTap = () async {
+                                  await launch(number);
+                                },
+                            ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                      textWidthBasis: TextWidthBasis.parent)
+                ],
+              ),
+            ),
+            actions: [
+              GestureDetector(
+                child: Container(
+                  width: double.infinity,
+                  height: 44,
+                  alignment: Alignment.center,
+                  child: Text(
+                    TextUtil.isEmpty(number) ? "继续" : "确定",
+                    style: _contentTextStyle(ThemeColor.primaryColor),
+                  ),
+                ),
+                onTap: () {
+                  if (!TextUtil.isEmpty(number)) {
+                    Navigator.of(context).pop(true);
+                  } else {
+                    _goNextStep();
+                  }
+                },
+              )
+            ],
+          );
+        });
   }
 
   final _noneBorder = UnderlineInputBorder(
@@ -132,6 +248,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             enabledBorder: _noneBorder,
             border: _noneBorder,
           ),
+          focusNode: _mobileFocusNode,
           obscureText: false,
           keyboardType: TextInputType.number,
           style: _style,
@@ -161,6 +278,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             enabledBorder: _noneBorder,
             border: _noneBorder,
           ),
+          focusNode: _bankCardFocusNode,
           obscureText: false,
           keyboardType: TextInputType.number,
           style: _style,
@@ -178,6 +296,9 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
         ),
       ],
     );
+    _bankCardController.text = model.data.bankCard;
+    _bankCardController.selection = TextSelection.fromPosition(
+        TextPosition(offset: (_bankCardController.text ?? '').length));
     return bankWidget;
   }
 
@@ -292,6 +413,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   @override
   void dispose() {
     _agreementTap.dispose();
+    _resetFocus();
     super.dispose();
   }
 
@@ -351,12 +473,6 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                           ..onTap = () {
                             MedcloudsNativeApi.instance().openWebPage(
                                 'https://static.e-medclouds.com/web/other/protocols/license_partner.html');
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (context) {
-                            //   return CommonWebView(
-                            //       'https://static.e-medclouds.com/web/other/protocols/license_partner.html',
-                            //       '共享经济合作伙伴协议');
-                            // }));
                           },
                       ),
                     ],

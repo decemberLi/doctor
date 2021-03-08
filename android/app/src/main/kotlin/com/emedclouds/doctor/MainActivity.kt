@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.util.lruCache
 import cn.jpush.android.api.JPushInterface
 import com.emedclouds.doctor.common.constants.keyLaunchParam
 import com.emedclouds.doctor.common.thirdpart.push.receiver.MessagePushReceiver
+import com.emedclouds.doctor.common.thirdpart.report.EVENT_APP_LAUNCH
+import com.emedclouds.doctor.common.thirdpart.report.appLaunch
 import com.emedclouds.doctor.common.web.WebActivity
 import com.emedclouds.doctor.common.web.pluginwebview.X5WebViewPlugin
 import com.emedclouds.doctor.pages.ShareActivity
@@ -86,6 +89,47 @@ class MainActivity : FlutterActivity() {
                 return CHANNEL_RESULT_OK
             }
         })
+        ChannelManager.instance.on("eventTracker", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                Log.d("Tracker.onEvent", "call: argument ->  $arguments")
+                if (TextUtils.isEmpty(arguments)) {
+                    return CHANNEL_RESULT_OK
+                }
+                JSONObject(arguments).apply {
+                    val event = getString("eventName")
+                    val ext = optString("ext")
+                    val extMap: MutableMap<String, String> = HashMap<String, String>()
+                    if (!TextUtils.isEmpty(ext)) {
+                        val extJson = JSONObject(ext)
+                        extJson.keys().forEach {
+                            extMap[it] = "${extJson.get(it)}"
+                        }
+                    }
+                    MobclickAgent.onEvent(application, event, extMap)
+                }
+                return CHANNEL_RESULT_OK
+            }
+        })
+        ChannelManager.instance.on("login", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                refs(context).edit().apply {
+                    putString(KEY_REFS_USER_ID, "$arguments")
+                    apply()
+                }
+                MobclickAgent.onProfileSignIn("$arguments")
+                return CHANNEL_RESULT_OK
+            }
+        })
+        ChannelManager.instance.on("logout", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                refs(context).edit().apply {
+                    remove(KEY_REFS_USER_ID)
+                    apply()
+                }
+                MobclickAgent.onProfileSignOff()
+                return CHANNEL_RESULT_OK
+            }
+        })
         goWebIfNeeded(intent)
         openNotificationIfNeeded(intent)
         flutterEngine?.renderer?.addIsDisplayingFlutterUiListener(object : FlutterUiDisplayListener {
@@ -111,7 +155,6 @@ class MainActivity : FlutterActivity() {
                         }, object : ISDKKitResultListener {
                     override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
                         Log.d(tag, "onProcessSucceed: $response")
-                        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, "id_card_face_side")
                         ocrCallback("ocrIdCardFaceSide", srcBase64Image, response)
                     }
 
@@ -131,7 +174,6 @@ class MainActivity : FlutterActivity() {
                         }, object : ISDKKitResultListener {
                     override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
                         Log.d(tag, "onProcessSucceed: $response")
-                        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, "bank_card")
                         ocrCallback("ocrBankCard", srcBase64Image, response)
                     }
 
@@ -203,7 +245,7 @@ class MainActivity : FlutterActivity() {
         if (ext == null) {
             return
         }
-
+        appLaunch(context, 1)
         val parse = Uri.parse(ext)
         val extValue = parse.getQueryParameter("ext")
         if (extValue != null) {
@@ -229,11 +271,13 @@ class MainActivity : FlutterActivity() {
             return
         }
         val extra = intent.getStringExtra("extras")
-//        intent.removeExtra("extras")
         if (extra == null) {
             return
         }
         try {
+            if(!SystemUtil.isForeground(context)) {
+                appLaunch(context, 0)
+            }
             ChannelManager.instance.callFlutter("receiveNotification", extra,
                     object : MethodChannelResultAdapter() {
                         override fun success(result: Any?) {

@@ -22,6 +22,8 @@ import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
+import 'package:doctor/pages/user/auth/auth_status_pass_page.dart';
+import 'package:doctor/pages/user/auth/auth_status_verifying_page.dart';
 import 'package:doctor/pages/user/auth/doctor_auth_step_one.dart';
 import 'package:doctor/pages/user/auth/doctor_auth_step_two.dart';
 import 'package:doctor/pages/user/collect/collect_list.dart';
@@ -82,6 +84,8 @@ class RouteManager {
   static const String DOCTOR_LIST2 = '/DoctorList2';
   static const String DOCTOR_AUTHENTICATION_INFO_PAGE = '/DoctorAuthenticationInfoPage';
   static const String DOCTOR_AUTHENTICATION_PAGE = '/DoctorAuthenticationPage';
+  static const String DOCTOR_AUTH_STATUS_VERIFYING_PAGE = '/AuthStatusPageVerifying';
+  static const String DOCTOR_AUTH_STATUS_PASS_PAGE = '/AuthStatusPagePass';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN: (context) => LoginPage(),
@@ -178,7 +182,9 @@ class RouteManager {
     },
     DOCTOR_AUTHENTICATION_PAGE:(context){
       return DoctorAuthenticationStepTwoPage();
-    }
+    },
+    DOCTOR_AUTH_STATUS_VERIFYING_PAGE: (context) => AuthStatusVerifyingPage(),
+    DOCTOR_AUTH_STATUS_PASS_PAGE: (context) => AuthStatusPassPage()
   };
 
   static openDoctorsDetail(postId, {String from = "list"}) {

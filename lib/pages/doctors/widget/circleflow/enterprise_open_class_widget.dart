@@ -333,7 +333,6 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     if(_countDownTimer == null) {
       _countDownTimer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
         setState(() {
-          print("time被调度");
           var tim = Duration(milliseconds: _residueTime) -
               _oneMillSecondsDuration;
           _formatTime(tim);

@@ -5,6 +5,7 @@ import 'package:doctor/model/face_photo.dart';
 import 'package:doctor/pages/qualification/image_choose_widget.dart';
 import 'package:doctor/pages/user/auth/viewmodel/auth_step2_view_model.dart';
 import 'package:doctor/route/fade_route.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
@@ -30,7 +31,7 @@ class DoctorAuthenticationStepTwoPageState
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    Widget rootWidget = SafeArea(
       child: Scaffold(
         backgroundColor: ThemeColor.colorFFF3F5F8,
         appBar: AppBar(
@@ -56,7 +57,7 @@ class DoctorAuthenticationStepTwoPageState
                           CrudeProgressWidget(2),
                           Container(
                             margin:
-                            EdgeInsets.only(top: 12, left: 16, right: 16),
+                                EdgeInsets.only(top: 12, left: 16, right: 16),
                             width: double.infinity,
                             decoration: BoxDecoration(
                                 color: Colors.white,
@@ -80,7 +81,7 @@ class DoctorAuthenticationStepTwoPageState
                                 ),
                                 Padding(
                                   padding:
-                                  EdgeInsets.only(bottom: 40, left: 18),
+                                      EdgeInsets.only(bottom: 40, left: 18),
                                   child: Text(
                                     "*支持执业证、资格证或者医师工作证等",
                                     style: const TextStyle(
@@ -98,24 +99,30 @@ class DoctorAuthenticationStepTwoPageState
                     Positioned(
                         left: 0,
                         right: 0,
-                        bottom:0,
+                        bottom: 0,
                         child: Container(
-                      margin: EdgeInsets.only(left: 30, right: 30, bottom: 26),
-                      child: AceButton(
-                        width: double.infinity,
-                        type: model.canNext
-                            ? AceButtonType.primary
-                            : AceButtonType.grey,
-                        text: TextUtil.isEmpty(model.data.rejectReson)
-                            ? "提交"
-                            : "重新提交",
-                        onPressed: () async {
-                          await model.commitAuthenticationData();
-                          // TODO ...
-                          // Navigator.pushNamed(context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-                        },
-                      ),
-                    ))
+                          margin:
+                              EdgeInsets.only(left: 30, right: 30, bottom: 26),
+                          child: AceButton(
+                            width: double.infinity,
+                            type: model.canNext
+                                ? AceButtonType.primary
+                                : AceButtonType.grey,
+                            text: TextUtil.isEmpty(model.data.rejectReson)
+                                ? "提交"
+                                : "重新提交",
+                            onPressed: () async {
+                              model.commitAuthenticationData().then((success) {
+                                Navigator.pushNamed(
+                                  context,
+                                  RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE,
+                                );
+                                // Navigator.pop(context, true);
+                              });
+                              // Navigator.pushNamed(context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+                            },
+                          ),
+                        ))
                   ],
                 ),
               );
@@ -124,6 +131,8 @@ class DoctorAuthenticationStepTwoPageState
         ),
       ),
     );
+    _model.refreshData();
+    return rootWidget;
   }
 
   commonTips() {

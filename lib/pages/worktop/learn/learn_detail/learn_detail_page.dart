@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:doctor/common/statistics/biz_tracker.dart';
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
@@ -300,6 +301,11 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           learnPlanId: data.learnPlanId,
         );
         if (success) {
+          UserInfoViewModel model = Provider.of<UserInfoViewModel>(context, listen: false);
+          eventTracker(Event.PLAN_SUBMIT, {
+            "learn_plan_id":"${data?.learnPlanId}",
+            "user_id":"${model?.data?.doctorUserId}"
+          });
           EasyLoading.showToast('提交成功');
           // 延时1s执行返回
           Future.delayed(

@@ -1,11 +1,13 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
+import 'package:doctor/common/statistics/biz_tracker.dart';
 import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
 import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/provider/GlobalData.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/adapt.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
@@ -49,6 +51,11 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
         var response = await API.shared.sso.loginByCaptCha(
             {'mobile': _mobile, 'code': _captcha, 'system': 'DOCTOR'});
         LoginInfoModel infoModel = LoginInfoModel.fromJson(response);
+        eventTracker(Event.LOGIN, {
+          'user_id':'${infoModel?.userId}',
+          'login_type':'1'
+        });
+        MedcloudsNativeApi.instance().login('${infoModel?.userId}');
         SessionManager.shared.session = infoModel.ticket;
         var sp = await SharedPreferences.getInstance();
         sp.setString(LAST_PHONE, _mobile);

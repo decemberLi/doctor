@@ -30,6 +30,7 @@ import 'utils/app_utils.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final EventBus eventBus = EventBus();
+Set<String> userAuthCode = {'00010009', '00010010'};
 
 class RootWidget extends StatelessWidget {
   final showGuide;
@@ -129,6 +130,25 @@ class RootWidget extends StatelessWidget {
       options.headers["_appVersionCode"] = await PlatformUtils.getBuildNum();
       return options;
     };
+    HttpManager.shared.onResponse = (response) async {
+      debugPrint("url - ${response.request.baseUrl} data - ${response.data}");
+      Map<String, dynamic> data = response.data;
+      String status = data["status"];
+      if (status.toUpperCase() == "ERROR") {
+        String errorCode = data["errorCode"];
+        if (outLoginCodes.contains(errorCode) ||
+            authFailCodes.contains(errorCode)) {
+          SessionManager.shared.session = null;
+        }
+        if(userAuthCode.contains(errorCode)){
+          throw data;
+        }
+        throw data["errorMsg"] ?? "请求错误";
+      }
+      response.data = response.data["content"] ?? response.data;
+      return response;
+    };
+
   }
 
   @override
