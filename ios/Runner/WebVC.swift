@@ -217,7 +217,7 @@ private extension WebVC {
 
 private class MessageHander : NSObject,WKScriptMessageHandler {
     weak var inVC : WebVC?
-    
+    var needHook = false
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == "jsCall" else {return}
         guard let body = message.body as? String else {return}
@@ -235,7 +235,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
             }
             
         }else if dispatchType == "closeWindow" {
-            inVC?.dismiss(animated: true, completion: nil)
+            inVC?.navigationController?.popViewController(animated: true)
         }else if dispatchType == "setTitle" {
             let param = json["param"] as? String
             inVC?.titleLbl.text = param
@@ -252,6 +252,9 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
 //                print("the params is -- \(params)")
                 self.inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
             }
+        }else if dispatchType == "hookBackBtn" {
+            let bizType = json["bizType"] as? String ?? ""
+            needHook = json["needHook"] as? Bool ?? false
         }
     }
 }

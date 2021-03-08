@@ -495,9 +495,14 @@ class _WorktopPageState extends State<WorktopPage>
             Navigator.pushNamed(
                 context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
           }else if (doctorInfoEntity.authStatus == 'VERIFYING') {
-
+            Navigator.pushNamed(
+                context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
           }else if (doctorInfoEntity.authStatus == 'FAIL') {
-
+            Navigator.pushNamed(
+                context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+          }else if (doctorInfoEntity.authStatus == 'PASS') {
+            Navigator.pushNamed(
+                context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
           }
         },
         child: RichText(

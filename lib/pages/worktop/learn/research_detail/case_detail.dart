@@ -119,6 +119,7 @@ class CaseDetailState extends State<CaseDetail> {
 
                   print("the data is ${data.toJson()}");
                   await API.shared.server.updateIllnessCase(data.toJson());
+                  data.status = "COMPLETE";
                   Navigator.of(context).pop();
                 });
 

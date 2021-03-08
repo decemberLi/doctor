@@ -150,14 +150,15 @@ class _ResearchDetailState extends State<ResearchDetail> {
     );
   }
 
-  Widget plans(LearnDetailItem data) {
+  Widget plans (LearnDetailViewModel model) {
+    LearnDetailItem data = model.data;
     var template = data.resources.first;
     if (template == null || template.questionnaires == null) return Container();
     List<Widget> sources = [];
     var canUp = false;
     for (int i = 0; i < template.questionnaires.length; i++) {
       var item = template.questionnaires[i];
-      var cell = buildPlanItem(data, template.resourceId, item,
+      var cell = buildPlanItem(model, template.resourceId, item,
           i == template.questionnaires.length - 1);
       sources.add(cell);
       canUp = canUp || item.status == "COMPLETE";
@@ -191,7 +192,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
                 ),
               ),
             ),
-            buildCaseItem(template.illnessCase),
+            buildCaseItem(model,template.illnessCase),
             ...sources,
             GestureDetector(
               onTap: () {
@@ -202,6 +203,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
                     },
                   );
                   EasyLoading.showToast('提交成功');
+                  Navigator.of(context).pop();
                 });
               },
               child: Container(
@@ -284,7 +286,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
     ));
   }
 
-  Widget buildCaseItem(IllnessCase item) {
+  Widget buildCaseItem(LearnDetailViewModel model,IllnessCase item) {
     var buttonText = "点击此处去编辑";
     var statusText = "待完成";
     var statusColor = Color(0xff489DFE);
@@ -353,10 +355,14 @@ class _ResearchDetailState extends State<ResearchDetail> {
               ),
             ),
             child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
+              onTap: () async{
+                await Navigator.of(context).push(MaterialPageRoute(
                   builder: (ctx) => CaseDetail(item),
                 ));
+                await model.initData();
+                setState(() {
+
+                });
               },
               child: Container(
                 margin: EdgeInsets.only(top: 12),
@@ -379,8 +385,9 @@ class _ResearchDetailState extends State<ResearchDetail> {
     );
   }
 
-  Widget buildPlanItem(
-      LearnDetailItem data, int resourceID, Questionnaires item, bool isEnd) {
+  Widget buildPlanItem(LearnDetailViewModel
+      model, int resourceID, Questionnaires item, bool isEnd) {
+    LearnDetailItem data = model.data;
     var statusText = "未开启";
     var statusColor = Color(0xffDEDEE1);
     var borderColor = Color(0xff888888);
@@ -564,7 +571,7 @@ class _ResearchDetailState extends State<ResearchDetail> {
                   data.status != 'ACCEPTED')
               message(model.data),
               info(model.data),
-              plans(model.data),
+              plans(model),
               Container(
                 height: 20,
               )
