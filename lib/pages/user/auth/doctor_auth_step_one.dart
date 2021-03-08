@@ -1,4 +1,5 @@
 import 'package:common_utils/common_utils.dart';
+import 'package:dio/dio.dart';
 import 'package:doctor/main.dart';
 import 'package:doctor/pages/qualification/image_choose_widget.dart';
 import 'package:doctor/pages/user/auth/viewmodel/auth_step1_view_model.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'crude_progress_widget.dart';
 
@@ -108,9 +110,19 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                   _goNextStep();
                                 }
                               }).catchError((error) {
-                                showNoticeDialog(error.error,
-                                    number: "028-XXXXXXXX");
                                 debugPrint("error -> $error");
+                                if (error is DioError && error.error is Map) {
+                                  var errorCode =
+                                      (error.error as Map)['errorCode'];
+                                  var errorMsg =
+                                      (error.error as Map)['errorMsg'];
+                                  if ('00010010' == errorCode) {
+                                    showNoticeDialog(errorMsg);
+                                  } else if ('00010009' == errorCode) {
+                                    showNoticeDialog(errorMsg,
+                                        number: model.customServicePhone);
+                                  }
+                                }
                               });
                             }
                           },
@@ -160,12 +172,11 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                               recognizer: TapGestureRecognizer()),
                           if (!TextUtil.isEmpty(number))
                             TextSpan(
-                              text: "028-XXXXXXXX",
+                              text: number,
                               style: _contentTextStyle(ThemeColor.primaryColor),
                               recognizer: _agreementTap
-                                ..onTap = () {
-                                  MedcloudsNativeApi.instance().openWebPage(
-                                      'https://static.e-medclouds.com/web/other/protocols/license_partner.html');
+                                ..onTap = () async {
+                                  await launch(number);
                                 },
                             ),
                         ],

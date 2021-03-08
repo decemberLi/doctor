@@ -365,6 +365,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 Navigator.pushNamed(context, RouteManager.ABOUT_US);
               }),
               messageItem('关于我们1', 'assets/images/aboutus.png', () {
+                // Navigator.pushNamed(context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
                 Navigator.pushNamed(context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
               }),
             ],

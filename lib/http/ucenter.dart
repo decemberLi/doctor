@@ -70,4 +70,8 @@ class UCenter extends SubAPI {
   Future postDoctorIdentityInfo(params) async{
     return normalPost('/personal/commit-doctor-identity-info',params: params);
   }
+
+  postAuthData(params) async{
+    return await normalPost('/personal/commit-doctor-certification-info',params: params);
+  }
 }

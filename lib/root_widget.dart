@@ -30,7 +30,7 @@ import 'utils/app_utils.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final EventBus eventBus = EventBus();
-Set<String> userAuthCode = {'00010009'};
+Set<String> userAuthCode = {'00010009', '00010010'};
 
 class RootWidget extends StatelessWidget {
   final showGuide;

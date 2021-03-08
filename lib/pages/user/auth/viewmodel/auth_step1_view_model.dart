@@ -12,6 +12,7 @@ import 'package:doctor/http/ucenter.dart';
 import 'package:http_manager/api.dart';
 
 import '../entity/auth_basic_info.dart';
+import 'package:doctor/http/developer.dart';
 
 class AuthenticationViewModel extends ViewStateModel {
   AuthBasicInfoEntity _entity = new AuthBasicInfoEntity();
@@ -19,6 +20,7 @@ class AuthenticationViewModel extends ViewStateModel {
   var _showIdCardInfo = false;
   var _canNext = false;
   bool _agree = false;
+  var _customerServicePhone = '028-XXXXXXXX';
 
   bool get needShowIdCardInfo => _showIdCardInfo;
 
@@ -28,10 +30,27 @@ class AuthenticationViewModel extends ViewStateModel {
 
   bool get agree => _agree;
 
+  String get customServicePhone => _customerServicePhone;
+
   void changeAgreeState(bool value) {
     _agree = value;
     checkDataIntegrity();
     notifyListeners();
+  }
+
+  void initData() async {
+    try {
+      var data = await API.shared.developer.customServicePhone();
+      var records = data["records"] as List;
+      var item = records[0];
+      var phone = item["value"];
+      if (TextUtil.isEmpty(phone)) {
+        return;
+      }
+      _customerServicePhone = phone;
+    } catch (e) {
+      debugPrint(e);
+    }
   }
 
   // 身份证反面
@@ -84,7 +103,7 @@ class AuthenticationViewModel extends ViewStateModel {
       await API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
         (value) {
           debugPrint(value);
-          completer.complete(true);
+          completer.complete(value);
         },
         onError: (error, msg) {
           debugPrint("errorCode: $error");

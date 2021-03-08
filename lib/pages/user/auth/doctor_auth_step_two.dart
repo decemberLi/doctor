@@ -30,7 +30,7 @@ class DoctorAuthenticationStepTwoPageState
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    Widget rootWidget = SafeArea(
       child: Scaffold(
         backgroundColor: ThemeColor.colorFFF3F5F8,
         appBar: AppBar(
@@ -124,6 +124,8 @@ class DoctorAuthenticationStepTwoPageState
         ),
       ),
     );
+    _model.refreshData();
+    return rootWidget;
   }
 
   commonTips() {
