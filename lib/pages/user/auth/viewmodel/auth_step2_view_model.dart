@@ -15,6 +15,14 @@ class AuthenticationStep2ViewModel extends ViewStateModel {
 
   AutQualificationEntity get data => _data;
 
+  var _isCommitting = false;
+
+  bool get isCommitting => _isCommitting;
+
+  void setIsCommitting(bool commit) {
+    _isCommitting = commit;
+  }
+
   get canNext => (_data.qualifications?.length ?? 0) != 0;
 
   void addImage(File path, FacePhoto value, int index) async {
@@ -46,7 +54,7 @@ class AuthenticationStep2ViewModel extends ViewStateModel {
     }
   }
 
-  Future commitAuthenticationData()async {
+  Future commitAuthenticationData() async {
     return await API.shared.ucenter.postAuthData(data.toJson());
   }
 

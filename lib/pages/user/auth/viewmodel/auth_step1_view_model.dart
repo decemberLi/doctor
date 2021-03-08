@@ -21,6 +21,7 @@ class AuthenticationViewModel extends ViewStateModel {
   var _canNext = false;
   bool _agree = false;
   var _customerServicePhone = '028-XXXXXXXX';
+  var _isCommitting = false;
 
   bool get needShowIdCardInfo => _showIdCardInfo;
 
@@ -29,6 +30,8 @@ class AuthenticationViewModel extends ViewStateModel {
   bool get canNext => _canNext;
 
   bool get agree => _agree;
+
+  bool get isCommitting =>_isCommitting;
 
   String get customServicePhone => _customerServicePhone;
 
@@ -97,15 +100,18 @@ class AuthenticationViewModel extends ViewStateModel {
   }
 
   Future commitAuthenticationData() async {
+    _isCommitting = true;
     debugPrint("commitAuthenticationData");
     var completer = Completer();
     if (checkDataIntegrity()) {
       await API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
         (value) {
+          _isCommitting = false;
           debugPrint(value);
           completer.complete(value);
         },
         onError: (error, msg) {
+          _isCommitting = false;
           debugPrint("errorCode: $error");
           completer.completeError(error);
         },

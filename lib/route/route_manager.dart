@@ -82,9 +82,13 @@ class RouteManager {
   static const String COMMON_WEB = '/commonWeb';
   static const String DOCTOR_LIST1 = '/DoctorList1';
   static const String DOCTOR_LIST2 = '/DoctorList2';
+  // 未认证
   static const String DOCTOR_AUTHENTICATION_INFO_PAGE = '/DoctorAuthenticationInfoPage';
+  // 认证失败
   static const String DOCTOR_AUTHENTICATION_PAGE = '/DoctorAuthenticationPage';
+  // 认证中
   static const String DOCTOR_AUTH_STATUS_VERIFYING_PAGE = '/AuthStatusPageVerifying';
+  // 认证成功
   static const String DOCTOR_AUTH_STATUS_PASS_PAGE = '/AuthStatusPagePass';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
