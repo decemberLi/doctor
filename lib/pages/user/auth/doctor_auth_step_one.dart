@@ -27,6 +27,8 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
 
   var _bankCardController = TextEditingController();
   var _phoneNumberController = TextEditingController();
+  final FocusNode _mobileFocusNode = FocusNode();
+  final FocusNode _bankCardFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +104,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                     .then((data) async {
                                   debugPrint("success -> $data");
                                   if (data is String) {
+                                    _resetFocus();
                                     if (TextUtil.isEmpty(data)) {
                                       _goNextStep();
                                       return;
@@ -140,7 +143,14 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
       ),
     );
   }
-
+  void _resetFocus() {
+    if(_mobileFocusNode != null) {
+      _mobileFocusNode.unfocus();
+    }
+    if(_bankCardFocusNode != null) {
+      _bankCardFocusNode.unfocus();
+    }
+  }
   _goNextStep() async {
     var result = await Navigator.pushNamed(
         context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
@@ -156,6 +166,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
 
     return await showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (context) {
           return CupertinoAlertDialog(
             title: Column(
@@ -237,6 +248,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             enabledBorder: _noneBorder,
             border: _noneBorder,
           ),
+          focusNode: _mobileFocusNode,
           obscureText: false,
           keyboardType: TextInputType.number,
           style: _style,
@@ -266,6 +278,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             enabledBorder: _noneBorder,
             border: _noneBorder,
           ),
+          focusNode: _bankCardFocusNode,
           obscureText: false,
           keyboardType: TextInputType.number,
           style: _style,
@@ -284,6 +297,8 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
       ],
     );
     _bankCardController.text = model.data.bankCard;
+    _bankCardController.selection = TextSelection.fromPosition(
+        TextPosition(offset: (_bankCardController.text ?? '').length));
     return bankWidget;
   }
 
@@ -398,6 +413,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   @override
   void dispose() {
     _agreementTap.dispose();
+    _resetFocus();
     super.dispose();
   }
 
