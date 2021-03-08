@@ -7,7 +7,7 @@ import 'package:doctor/pages/user/auth/entity/auth_qualification.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/utils/upload_file_helper.dart';
 import 'package:doctor/http/ucenter.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http_manager/api.dart';
 
 class AuthenticationStep2ViewModel extends ViewStateModel {
@@ -46,7 +46,7 @@ class AuthenticationStep2ViewModel extends ViewStateModel {
     }
   }
 
-  commitAuthenticationData()async {
+  Future commitAuthenticationData()async {
     return await API.shared.ucenter.postAuthData(data.toJson());
   }
 
@@ -56,6 +56,7 @@ class AuthenticationStep2ViewModel extends ViewStateModel {
       return;
     }
     _data = AutQualificationEntity.fromJson(result);
+    debugPrint('已提交过认证信息，被驳回： -> ${data?.toJson()}');
     notifyListeners();
   }
 }
