@@ -24,7 +24,7 @@ class WebVC: UIViewController {
     var initData : [String:Any]?
     
     fileprivate var commentData : [AnyHashable:Any]?
-    fileprivate var needHook = false
+    fileprivate var needHook = 0
     fileprivate var bizType = ""
     @available(iOS 13.0 , *)
     override var overrideUserInterfaceStyle: UIUserInterfaceStyle {
@@ -204,8 +204,8 @@ private extension WebVC {
     }
     
     @IBAction func onBack(){
-        if needHook {
-            let params = #"{"bizType":"\#(bizType)","param":{}}"#
+        if needHook == 1{
+            let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":{}}}"#
             webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
         }else{
             navigationController?.popViewController(animated: true)
@@ -224,7 +224,6 @@ private extension WebVC {
 
 private class MessageHander : NSObject,WKScriptMessageHandler {
     weak var inVC : WebVC?
-    var needHook = false
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == "jsCall" else {return}
         guard let body = message.body as? String else {return}
@@ -261,8 +260,12 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
             }
         }else if dispatchType == "hookBackBtn" {
             let bizType = json["bizType"] as? String ?? ""
-                inVC?.needHook = json["needHook"] as? Bool ?? false
-            inVC?.bizType = bizType
+            if let params = json["param"] as? [AnyHashable:Any] {
+                let need = params["needHook"] as? Int
+                inVC?.needHook = need ?? 0
+                inVC?.bizType = bizType
+            }
+            
         }
     }
 }
