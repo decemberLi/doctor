@@ -205,6 +205,7 @@ class _HomePageState extends State<HomePage>
               onPressed: () {
                 Navigator.of(context).pop();
                 SessionManager.shared.session = null;
+                MedcloudsNativeApi.instance().logout();
               },
             ),
             FlatButton(

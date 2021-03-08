@@ -91,6 +91,18 @@ class MedcloudsNativeApi {
     return await _channel.invokeMethod("ocrBankCard");
   }
 
+  Future eventTracker(String eventName,dynamic arguments) async {
+    return await _channel.invokeMethod("eventTracker", arguments);
+  }
+
+  Future login(String userId) async{
+    return await _channel.invokeMethod("login", userId);
+  }
+
+  Future logout() async{
+    return await _channel.invokeMethod("logout");
+  }
+
   Future uploadDeviceInfo(args) async {
     try {
       var ids = json.decode(args);

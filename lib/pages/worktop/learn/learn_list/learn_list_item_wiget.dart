@@ -1,4 +1,6 @@
 import 'package:common_utils/common_utils.dart';
+import 'package:doctor/common/statistics/biz_tracker.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
@@ -149,6 +151,7 @@ class LearnListItemWiget extends StatelessWidget {
     if (text == "立即提交") {
       learn = FlatButton(
         onPressed: () {
+
           EasyLoading.instance.flash(
             () async {
               await API.shared.server.learnSubmit(
@@ -156,6 +159,11 @@ class LearnListItemWiget extends StatelessWidget {
                   'learnPlanId': item.learnPlanId,
                 },
               );
+              UserInfoViewModel model = Provider.of<UserInfoViewModel>(context, listen: false);
+              eventTracker(Event.PLAN_SUBMIT, {
+                "learn_plan_id":"${item?.learnPlanId}",
+                "user_id":"${model?.data?.doctorUserId}"
+              });
               if (this.onSubmit != null) {
                 this.onSubmit();
               }

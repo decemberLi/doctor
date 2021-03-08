@@ -11,7 +11,7 @@ import UserNotificationsUI
     var notiInfo : [AnyHashable:Any]? = nil
     var navi : UINavigationController?
     var rootVC : FlutterViewController?
-    
+
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -56,6 +56,22 @@ import UserNotificationsUI
                 guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
                 self.openWebView(map: obj)
                 result(true)
+            }else if call.method == "eventTracker" {
+                guard let value = call.arguments as? String else {return}
+                guard let data = value.data(using: .utf8) else {return}
+                guard let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {return}
+                guard let name = obj["eventName"] as? String else {return}
+                var ext = ""
+                if let temp = obj["ext"] as? String {
+                    ext = temp
+                }
+                self.statistics(name: name, ext: ext)
+                result(true)
+            }else if call.method == "login" {
+                guard let value = call.arguments as? String else {return}
+                MobClick.profileSignIn(withPUID: value)
+            }else if call.method == "logout" {
+                MobClick.profileSignOff()
             }
         }
         vc.setFlutterViewDidRenderCallback {
@@ -83,7 +99,7 @@ import UserNotificationsUI
         if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
             if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
                 || url.scheme == "com.emedclouds.doctor" {
-                
+                launchEvent(type: 1)
             }else{
                 WXApi.handleOpen(url, delegate: self)
             }
@@ -108,6 +124,7 @@ import UserNotificationsUI
         if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
             || url.scheme == "com.emedclouds.doctor" {
             self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
+            launchEvent(type: 1)
             return true
         }
         return WXApi.handleOpen(url, delegate: self)
@@ -117,6 +134,7 @@ import UserNotificationsUI
         if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com") ||
             url.scheme == "com.emedclouds.doctor"{
             self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
+            launchEvent(type: 1)
             return true
         }
         return  WXApi.handleOpen(url, delegate: self)
@@ -133,21 +151,24 @@ import UserNotificationsUI
     @objc var rootFlutterViewController : FlutterViewController {
         return rootVC!
     }
-    
+
     //MARK - FlutterPluginRegistry methods. All delegating to the rootViewController
-    
+
     override func registrar(forPlugin pluginKey: String) -> FlutterPluginRegistrar? {
         rootVC?.pluginRegistry().registrar(forPlugin: pluginKey)
     }
-    
+
     override func hasPlugin(_ pluginKey: String) -> Bool {
         rootVC?.pluginRegistry().hasPlugin(pluginKey) ?? false
     }
-    
+
     override func valuePublished(byPlugin pluginKey: String) -> NSObject? {
         rootVC?.pluginRegistry().valuePublished(byPlugin: pluginKey)
     }
-    
+    override func applicationWillEnterForeground(_ application: UIApplication) {
+        launchEvent(type: -1)
+    }
+
 }
 
 extension AppDelegate {
@@ -239,6 +260,24 @@ extension AppDelegate : UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
+
+    func statistics(name:String,ext:String){
+        var attributes : [AnyHashable:Any] = [:]
+        if let data = ext.data(using: .utf8) {
+            let obj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments)
+            if let temp = obj as? [AnyHashable:Any] {
+                attributes = temp
+            }
+        }
+        MobClick.event(name, attributes: attributes)
+    }
+
+    func launchEvent(type:Int){
+        print("----the type is --- \(type)")
+        let isfirst = UserDefaults.standard.bool(forKey: "isFirst")
+        MobClick.event("app_launch", attributes: ["launch_sourse":type,"is_first":!isfirst])
+        UserDefaults.standard.setValue(true, forKey: "isFirst")
+    }
 }
 
 extension AppDelegate : WXApiDelegate {
@@ -251,6 +290,7 @@ extension AppDelegate : WXApiDelegate {
             }else{
                 gotoURL = msg
             }
+            launchEvent(type: 1)
         }
         
     }
@@ -289,6 +329,10 @@ extension AppDelegate : JPUSHRegisterDelegate {
         JPUSHService.handleRemoteNotification(info)
         completionHandler()
         print("the recevie notification is ---- \(info)")
+        let application = UIApplication.shared
+        if application.applicationState == .inactive || application.applicationState == .background {
+            launchEvent(type: 2)
+        }
         doNoti(info: info)
     }
     

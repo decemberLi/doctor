@@ -10,6 +10,7 @@ import com.tencent.ocr.sdk.common.OcrModeType
 import com.tencent.ocr.sdk.common.OcrSDKConfig
 import com.tencent.ocr.sdk.common.OcrSDKKit
 import com.tencent.ocr.sdk.common.OcrType
+import com.emedclouds.doctor.common.thirdpart.report.appLaunch
 import io.flutter.app.FlutterApplication
 
 class YYYApplication : FlutterApplication() {
@@ -44,5 +45,6 @@ class YYYApplication : FlutterApplication() {
                 .build()
         // 初始化 SDK
         OcrSDKKit.getInstance().initWithConfig(this.applicationContext, configBuilder)
+        appLaunch(this, -1)
     }
 }

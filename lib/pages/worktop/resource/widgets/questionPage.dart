@@ -1,3 +1,5 @@
+import 'package:doctor/common/statistics/biz_tracker.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/server.dart';
@@ -198,6 +201,11 @@ class _QuestionPageState extends State<QuestionPage> {
           'questions': questionsAll,
           'time': time
         }).then((res) {
+          UserInfoViewModel model = Provider.of<UserInfoViewModel>(context, listen: false);
+          eventTracker(Event.QUESTION_SUBMIT, {
+            "learn_plan_id":"${widget?.data?.learnPlanId}",
+            "user_id":"${model?.data?.doctorUserId}"
+          });
           EasyLoading.showToast('提交成功');
           // 延时1s执行返回
           Future.delayed(Duration(seconds: 1), () {
