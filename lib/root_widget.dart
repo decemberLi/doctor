@@ -25,6 +25,7 @@ import 'dart:io';
 
 import 'model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/http/ucenter.dart';
+import 'package:doctor/http/foundationSystem.dart';
 
 import 'utils/app_utils.dart';
 
@@ -63,65 +64,63 @@ class RootWidget extends StatelessWidget {
         return true;
       }
     });
-    MedcloudsNativeApi.instance().addProcessor("getTicket",(args) async {
+    MedcloudsNativeApi.instance().addProcessor("getTicket", (args) async {
       return SessionManager.shared.session;
     });
-    MedcloudsNativeApi.instance().addProcessor("receiveNotification",
-        (args) async {
-      print('Received push message process event, arguments - > [$args]');
-      var context = NavigationService().navigatorKey.currentContext;
-      try {
-        var obj = json.decode(args);
-        var userID = obj["userId"];
-        UserInfoViewModel model =
-        Provider.of<UserInfoViewModel>(context, listen: false);
-        if (userID != model.data.doctorUserId || !SessionManager.shared.isLogin) {
-          return ;
-        }
-        var type = obj["bizType"];
-        if (type == "QUALIFICATION_AUTH") {
-          // 资质认证
-          var authStatus = obj["authStatus"];
-          if (authStatus == "FAIL") {
-            var basicData = await API.shared.ucenter.getBasicData();
-            var doctorData = DoctorDetailInfoEntity.fromJson(basicData);
-            Navigator.pushNamed(
-              context,
-              RouteManager.USERINFO_DETAIL,
+    MedcloudsNativeApi.instance().addProcessor(
+      "receiveNotification",
+      (args) async {
+        print('Received push message process event, arguments - > [$args]');
+        var context = NavigationService().navigatorKey.currentContext;
+        try {
+          var obj = json.decode(args);
+          var userID = obj["userId"];
+          UserInfoViewModel model =
+              Provider.of<UserInfoViewModel>(context, listen: false);
+          if (userID != model.data.doctorUserId ||
+              !SessionManager.shared.isLogin) {
+            return;
+          }
+          var messageID = obj["messageId"];
+          if (messageID != null) {
+            API.shared.foundationSys.messageUpdateStatus({
+              'messageId':messageID
+            });
+          }
+          var type = obj["bizType"];
+          if (type == "QUALIFICATION_AUTH") {
+            // 资质认证
+            var authStatus = obj["authStatus"];
+            if (authStatus == "FAIL") {
+              Navigator.of(context).pushNamed('DOCTOR_AUTHENTICATION_PAGE');
+            } else {
+              Navigator.of(context).pushNamed('DOCTOR_AUTH_STATUS_PASS_PAGE');
+            }
+            Navigator.of(context).pushNamed("routeName");
+          } else if (type == "ASSIGN_STUDY_PLAN") {
+            // 学习计划详情
+            var learnPlanId = obj["learnPlanId"];
+            Navigator.of(context).pushNamed(
+              RouteManager.LEARN_DETAIL,
               arguments: {
-                'doctorData': doctorData.toJson(),
-                'qualification': true,
+                'learnPlanId': learnPlanId,
               },
             );
-          } else {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        DoctorPhysicianStatusPage(authStatus)));
+          } else if (type == "RELEARN") {
+            // 学习计划详情
+            var learnPlanId = obj["learnPlanId"];
+            Navigator.of(context).pushNamed(
+              RouteManager.LEARN_DETAIL,
+              arguments: {
+                'learnPlanId': learnPlanId,
+              },
+            );
+          }else if (type == ""){
+
           }
-          Navigator.of(context).pushNamed("routeName");
-        } else if (type == "ASSIGN_STUDY_PLAN") {
-          // 学习计划详情
-          var learnPlanId = obj["learnPlanId"];
-          Navigator.of(context).pushNamed(
-            RouteManager.LEARN_DETAIL,
-            arguments: {
-              'learnPlanId': learnPlanId,
-            },
-          );
-        } else if (type == "RELEARN") {
-          // 学习计划详情
-          var learnPlanId = obj["learnPlanId"];
-          Navigator.of(context).pushNamed(
-            RouteManager.LEARN_DETAIL,
-            arguments: {
-              'learnPlanId': learnPlanId,
-            },
-          );
-        }
-      } catch (e) {}
-    });
+        } catch (e) {}
+      },
+    );
     HttpManager.shared.onRequest = (options) async {
       debugPrint("$options");
       debugPrint("ticket:${SessionManager.shared.session}");
@@ -140,7 +139,7 @@ class RootWidget extends StatelessWidget {
             authFailCodes.contains(errorCode)) {
           SessionManager.shared.session = null;
         }
-        if(userAuthCode.contains(errorCode)){
+        if (userAuthCode.contains(errorCode)) {
           throw data;
         }
         throw data["errorMsg"] ?? "请求错误";
@@ -148,7 +147,6 @@ class RootWidget extends StatelessWidget {
       response.data = response.data["content"] ?? response.data;
       return response;
     };
-
   }
 
   @override
