@@ -491,10 +491,11 @@ class _WorktopPageState extends State<WorktopPage>
       ),
       child: FlatButton(
         onPressed: () {
+          print("the identityStatus is ${doctorInfoEntity?.identityStatus} - ${doctorInfoEntity?.authStatus} ");
           if (doctorInfoEntity?.identityStatus == 'PASS') {
             if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' || doctorInfoEntity.authStatus == 'FAIL') {
               Navigator.pushNamed(
-                  context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+                  context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
             }else if (doctorInfoEntity.authStatus == 'VERIFYING') {
               Navigator.pushNamed(
                   context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);

@@ -282,7 +282,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                 if (doctorData?.identityStatus == 'PASS') {
                                   if (doctorData?.authStatus == 'WAIT_VERIFY' || doctorData.authStatus == 'FAIL') {
                                     Navigator.pushNamed(
-                                        context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+                                        context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
                                   }else if (doctorData.authStatus == 'VERIFYING') {
                                     Navigator.pushNamed(
                                         context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
