@@ -279,18 +279,20 @@ class _UserPageState extends State<UserPage> with RouteAware {
                             ),
                             GestureDetector(
                               onTap: (){
-                                if (doctorData?.authStatus == 'WAIT_VERIFY') {
+                                if (doctorData?.identityStatus == 'PASS') {
+                                  if (doctorData?.authStatus == 'WAIT_VERIFY' || doctorData.authStatus == 'FAIL') {
+                                    Navigator.pushNamed(
+                                        context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+                                  }else if (doctorData.authStatus == 'VERIFYING') {
+                                    Navigator.pushNamed(
+                                        context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                                  }else if (doctorData.authStatus == 'PASS') {
+                                    Navigator.pushNamed(
+                                        context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+                                  }
+                                }else{
                                   Navigator.pushNamed(
                                       context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
-                                }else if (doctorData?.authStatus == 'VERIFYING') {
-                                  Navigator.pushNamed(
-                                      context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-                                }else if (doctorData?.authStatus == 'FAIL') {
-                                  Navigator.pushNamed(
-                                      context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-                                }else if (doctorData?.authStatus == 'PASS') {
-                                  Navigator.pushNamed(
-                                      context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
                                 }
                               },
                               child: Container(
