@@ -105,8 +105,13 @@ class _WorktopPageState extends State<WorktopPage>
         var item = entity.learnPlanList[index];
         return Container(
           color: Color(0xFFF3F5F8),
-          child: GestureDetector(
-            onTap: () async {
+          child: LearnListItemWiget(
+            item,
+            'LEARNING',
+            () {
+              _model.initData();
+            },
+            () async {
               await Navigator.of(context).pushNamed(
                 RouteManager.LEARN_DETAIL,
                 arguments: {
@@ -118,13 +123,6 @@ class _WorktopPageState extends State<WorktopPage>
               // 从详情页回来后刷新数据
               _model.initData();
             },
-            child: LearnListItemWiget(
-              item,
-              'LEARNING',
-              () {
-                _model.initData();
-              },
-            ),
           ),
         );
       }, childCount: entity?.learnPlanList?.length ?? 0);
@@ -491,23 +489,24 @@ class _WorktopPageState extends State<WorktopPage>
       ),
       child: FlatButton(
         onPressed: () {
-          print("the identityStatus is ${doctorInfoEntity?.identityStatus} - ${doctorInfoEntity?.authStatus} ");
+          print(
+              "the identityStatus is ${doctorInfoEntity?.identityStatus} - ${doctorInfoEntity?.authStatus} ");
           if (doctorInfoEntity?.identityStatus == 'PASS') {
-            if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' || doctorInfoEntity.authStatus == 'FAIL') {
+            if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' ||
+                doctorInfoEntity.authStatus == 'FAIL') {
               Navigator.pushNamed(
                   context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-            }else if (doctorInfoEntity.authStatus == 'VERIFYING') {
+            } else if (doctorInfoEntity.authStatus == 'VERIFYING') {
               Navigator.pushNamed(
                   context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-            }else if (doctorInfoEntity.authStatus == 'PASS') {
+            } else if (doctorInfoEntity.authStatus == 'PASS') {
               Navigator.pushNamed(
                   context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
             }
-          }else{
+          } else {
             Navigator.pushNamed(
                 context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
           }
-
         },
         child: RichText(
           textAlign: TextAlign.center,

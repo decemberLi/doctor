@@ -78,8 +78,9 @@ class LearnListItemWiget extends StatelessWidget {
   final LearnListItem item;
   final String listStatus;
   final Function onSubmit;
+  final Function gotoDetail;
 
-  LearnListItemWiget(this.item, this.listStatus, this.onSubmit);
+  LearnListItemWiget(this.item, this.listStatus, this.onSubmit,this.gotoDetail);
 
   String timeRender() {
     if (this.item.taskTemplate == 'SALON' ||
@@ -111,10 +112,6 @@ class LearnListItemWiget extends StatelessWidget {
       "${this.item.learnProgress}%",
       style: TextStyle(color: ThemeColor.primaryColor, fontSize: 14.0),
     );
-    var gotoAuth = () {
-      Navigator.pushNamed(
-          context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
-    };
     if (listStatus == 'HISTORY') {
       percent = 0;
       text = '查看学习内容';
@@ -129,15 +126,12 @@ class LearnListItemWiget extends StatelessWidget {
     } else if (needAuth && item.taskTemplate == "MEDICAL_SURVEY") {
       percent = 0;
       text = "认证解锁";
-      centerText = GestureDetector(
-        onTap: gotoAuth,
-        child: Container(
-          margin: EdgeInsets.only(bottom: 15),
-          child: Icon(
-            Icons.lock,
-            size: 40,
-            color: ThemeColor.primaryColor,
-          ),
+      centerText = Container(
+        margin: EdgeInsets.only(bottom: 15),
+        child: Icon(
+          Icons.lock,
+          size: 40,
+          color: ThemeColor.primaryColor,
         ),
       );
     }
@@ -173,8 +167,6 @@ class LearnListItemWiget extends StatelessWidget {
         },
         child: learn,
       );
-    } else if (text == "认证解锁") {
-      learn = GestureDetector(onTap: gotoAuth,child: learn);
     }
     var showAuth = needAuth && item.taskTemplate == "MEDICAL_SURVEY";
     return Column(
@@ -371,7 +363,7 @@ class LearnListItemWiget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    var content = Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
       padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
@@ -380,6 +372,33 @@ class LearnListItemWiget extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
       child: _buildItem(context),
+    );
+    return GestureDetector(
+      onTap: (){
+        UserInfoViewModel model = Provider.of<UserInfoViewModel>(context, listen: false);
+        bool needAuth = model?.data?.authStatus != 'PASS';
+        if (needAuth && item.taskTemplate == "MEDICAL_SURVEY") {
+          if (model?.data?.identityStatus == 'PASS') {
+            if (model?.data?.authStatus == 'WAIT_VERIFY' ||
+                model?.data?.authStatus == 'FAIL') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+            } else if (model?.data?.authStatus == 'VERIFYING') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+            } else if (model?.data?.authStatus == 'PASS') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+            }
+          } else {
+            Navigator.pushNamed(
+                context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+          }
+        }else if (this.gotoDetail != null){
+          this.gotoDetail();
+        }
+      },
+      child: content,
     );
   }
 }
