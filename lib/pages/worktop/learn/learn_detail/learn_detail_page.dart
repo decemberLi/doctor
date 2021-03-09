@@ -87,8 +87,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         ),
       ),
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(label,
                 textAlign: TextAlign.right,

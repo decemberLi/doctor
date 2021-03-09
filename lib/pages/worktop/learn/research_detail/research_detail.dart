@@ -24,7 +24,8 @@ class ResearchDetail extends StatefulWidget {
   }
 }
 
-class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObserver {
+class _ResearchDetailState extends State<ResearchDetail>
+    with WidgetsBindingObserver {
   bool collapsed = true;
 
   @override
@@ -32,6 +33,7 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -40,7 +42,6 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-
     if (state == AppLifecycleState.resumed) {
       freshData();
     }
@@ -49,9 +50,7 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
   void freshData() async {
     var model = Provider.of<LearnDetailViewModel>(context, listen: false);
     await model.initData();
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   Widget item(Widget content) {
@@ -177,7 +176,7 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
     );
   }
 
-  Widget plans (LearnDetailViewModel model) {
+  Widget plans(LearnDetailViewModel model) {
     LearnDetailItem data = model.data;
     var template = data.resources.first;
     if (template == null || template.questionnaires == null) return Container();
@@ -219,7 +218,7 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
                 ),
               ),
             ),
-            buildCaseItem(model,template.illnessCase),
+            buildCaseItem(model, template.illnessCase),
             ...sources,
             GestureDetector(
               onTap: () {
@@ -266,54 +265,54 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
   Widget _buildListItem(
       {String label, dynamic value, Function format, bool needBorder = false}) {
     return Container(
-        child: Column(
-      children: [
-        needBorder
-            ? Container(
-                height: 20,
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  height: 1,
-                  color: Color(0xFFF3F5F8),
+      child: Column(
+        children: [
+          needBorder
+              ? Container(
+                  height: 20,
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    height: 1,
+                    color: Color(0xFFF3F5F8),
+                  ),
+                )
+              : Container(
+                  height: 16,
                 ),
-              )
-            : Container(
-                height: 16,
-              ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              label,
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                color: Color(0xff444444),
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: Text(
-                format != null ? format(value) : value.toString(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
                 style: TextStyle(
-                  color: Color(0xff222222),
+                  color: Color(0xff444444),
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
                 ),
-                textAlign: TextAlign.right,
               ),
-            ),
-          ],
-        ),
-      ],
-    ));
+              SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                child: Text(
+                  format != null ? format(value) : value.toString(),
+                  style: TextStyle(
+                    color: Color(0xff222222),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.right,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget buildCaseItem(LearnDetailViewModel model,IllnessCase item) {
+  Widget buildCaseItem(LearnDetailViewModel model, IllnessCase item) {
     var buttonText = "点击此处去编辑";
     var statusText = "待完成";
     var statusColor = Color(0xff489DFE);
@@ -382,14 +381,12 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
               ),
             ),
             child: GestureDetector(
-              onTap: () async{
+              onTap: () async {
                 await Navigator.of(context).push(MaterialPageRoute(
                   builder: (ctx) => CaseDetail(item),
                 ));
                 await model.initData();
-                setState(() {
-
-                });
+                setState(() {});
               },
               child: Container(
                 margin: EdgeInsets.only(top: 12),
@@ -412,8 +409,8 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
     );
   }
 
-  Widget buildPlanItem(LearnDetailViewModel
-      model, int resourceID, Questionnaires item, bool isEnd) {
+  Widget buildPlanItem(LearnDetailViewModel model, int resourceID,
+      Questionnaires item, bool isEnd) {
     LearnDetailItem data = model.data;
     var statusText = "未开启";
     var statusColor = Color(0xffDEDEE1);
@@ -422,7 +419,7 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
       statusText = "待完成";
       statusColor = Color(0xff489DFE);
       borderColor = Color(0xff888888);
-    }else if (item.status == "COMPLETE") {
+    } else if (item.status == "COMPLETE") {
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
@@ -596,7 +593,7 @@ class _ResearchDetailState extends State<ResearchDetail> with WidgetsBindingObse
               if (data.reLearnReason != null &&
                   data.status != 'SUBMIT_LEARN' &&
                   data.status != 'ACCEPTED')
-              message(model.data),
+                message(model.data),
               info(model.data),
               plans(model),
               Container(
