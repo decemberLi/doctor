@@ -44,7 +44,7 @@ const TASK_TYPE_MAP = [
   },
   {
     'text': '调研',
-    'taskTemplate': ['SURVEY'],
+    'taskTemplate': ['SURVEY','MEDICAL_SURVEY'],
   },
 ];
 
