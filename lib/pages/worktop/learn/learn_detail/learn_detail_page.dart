@@ -255,10 +255,11 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           learnPlanId: data.learnPlanId,
         );
         if (success) {
-          UserInfoViewModel model = Provider.of<UserInfoViewModel>(context, listen: false);
+          UserInfoViewModel model =
+              Provider.of<UserInfoViewModel>(context, listen: false);
           eventTracker(Event.PLAN_SUBMIT, {
-            "learn_plan_id":"${data?.learnPlanId}",
-            "user_id":"${model?.data?.doctorUserId}"
+            "learn_plan_id": "${data?.learnPlanId}",
+            "user_id": "${model?.data?.doctorUserId}"
           });
           EasyLoading.showSuccess('提交成功');
           // 延时1s执行返回
@@ -470,10 +471,27 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   Widget buildDetail(LearnDetailViewModel model) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
     if (model.isBusy) {
-      return Container();
+      return Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+        ),
+        body: Container(
+          color: ThemeColor.colorFFF3F5F8,
+          alignment: Alignment.topCenter,
+        ),
+      );
     }
     if (model.isError || model.isEmpty) {
-      return ViewStateEmptyWidget(onPressed: model.initData);
+      return Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+        ),
+        body: Container(
+          color: ThemeColor.colorFFF3F5F8,
+          alignment: Alignment.topCenter,
+          child: ViewStateEmptyWidget(onPressed: model.initData) ,
+        ),
+      );
     }
     var data = model.data;
     Map dataMap = data.toJson();
