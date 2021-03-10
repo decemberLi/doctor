@@ -214,24 +214,37 @@ class _ResearchDetailState extends State<ResearchDetail>
       );
     };
     var showAlert = (int index) {
-      showDialog(
+      showCupertinoDialog<bool>(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            content: Text("您还未完成问卷$index,\n确定提交吗？"),
-            actions: [
-              TextButton(
-                onPressed: () {
+          return CupertinoAlertDialog(
+            content: Container(
+              padding: EdgeInsets.only(top: 12),
+              child: Text("您还未完成问卷$index,\n确定提交吗？"),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  "取消",
+                  style: TextStyle(
+                    color: ThemeColor.primaryColor,
+                  ),
+                ),
+                onPressed: () async{
                   Navigator.of(context).pop();
                 },
-                child: Text("确定"),
               ),
-              TextButton(
-                onPressed: () {
+              FlatButton(
+                child: Text(
+                  "提交",
+                  style: TextStyle(
+                    color: ThemeColor.primaryColor,
+                  ),
+                ),
+                onPressed: () async {
                   Navigator.of(context).pop();
                   submit();
                 },
-                child: Text("取消"),
               ),
             ],
           );
