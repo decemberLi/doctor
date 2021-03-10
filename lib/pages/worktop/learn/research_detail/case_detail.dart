@@ -208,7 +208,10 @@ class CaseDetailState extends State<CaseDetail> {
                   EasyLoading.instance.flash(() async {
                     data.hospital = _hospitalController.text;
                     data.patientName = _nameController.text;
-                    data.age = int.parse(_ageController.text);
+                    if (_ageController.text != null && _ageController.text.length > 0) {
+                      data.age = int.parse(_ageController.text);
+                    }
+
                     data.patientCode = _codeController.text;
                     print("the data is ${data.toJson()}");
                     await API.shared.server.updateIllnessCase(data.toJson());
