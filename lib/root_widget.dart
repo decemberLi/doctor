@@ -151,6 +151,7 @@ class RootWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    EasyLoading.instance.successWidget = Image.asset("assets/images/success.png");
     return RefreshConfiguration(
       hideFooterWhenNotFull: true, //列表数据不满一页,不触发加载更多
       child: MaterialApp(

@@ -21,7 +21,7 @@ class ResourceTypeResult {
 @JsonSerializable()
 class IllnessCase {
   int illnessCaseId;
-  int patientCode;
+  String patientCode;
   String patientName;
   String hospital;
   String status;

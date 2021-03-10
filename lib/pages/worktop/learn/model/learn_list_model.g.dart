@@ -29,7 +29,7 @@ IllnessCase _IllnessCaseFromJson(Map<String, dynamic> json) {
     json['hospital'] as String,
     json['status'] as String,
     json['showIndex'] as int,
-    json['patientCode'] as int,
+    json['patientCode'] as String,
     json['schedule'] as int,
     json['needFields'] as List<dynamic>,
   );

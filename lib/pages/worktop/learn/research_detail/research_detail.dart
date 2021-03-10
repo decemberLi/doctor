@@ -195,6 +195,50 @@ class _ResearchDetailState extends State<ResearchDetail>
       upColor = Color(0xff489DFE).withOpacity(0.85);
       shadowColor = Color(0xff489DFE).withOpacity(0.4);
     }
+    var submit = () {
+      EasyLoading.instance.flash(
+        () async {
+          await API.shared.server.learnSubmit(
+            {
+              'learnPlanId': data.learnPlanId,
+            },
+          );
+          EasyLoading.showSuccess("提交成功");
+          Future.delayed(
+            Duration(seconds: 1),
+            () {
+              Navigator.of(context).pop();
+            },
+          );
+        },
+      );
+    };
+    var showAlert = (int index) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text("您还未完成问卷$index,\n确定提交吗？"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("确定"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  submit();
+                },
+                child: Text("取消"),
+              ),
+            ],
+          );
+        },
+      );
+    };
+    var showSubmit = (data.status != "SUBMIT_LEARN" && data.status != "ACCEPTED");
     return Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -220,17 +264,21 @@ class _ResearchDetailState extends State<ResearchDetail>
             ),
             buildCaseItem(model, template.illnessCase),
             ...sources,
+            if (showSubmit)
             GestureDetector(
               onTap: () {
-                EasyLoading.instance.flash(() async {
-                  await API.shared.server.learnSubmit(
-                    {
-                      'learnPlanId': data.learnPlanId,
-                    },
-                  );
-                  EasyLoading.showToast('提交成功');
-                  Navigator.of(context).pop();
-                });
+                var first = template.questionnaires.first;
+                if (first.status != 'COMPLETE') {
+                  return;
+                }
+                for (int i = 1; i < template.questionnaires.length; i++) {
+                  var item = template.questionnaires[i];
+                  if (item.status != "COMPLETE") {
+                    showAlert(i);
+                    return;
+                  }
+                }
+                submit();
               },
               child: Container(
                 width: double.infinity,
@@ -313,7 +361,7 @@ class _ResearchDetailState extends State<ResearchDetail>
   }
 
   Widget buildCaseItem(LearnDetailViewModel model, IllnessCase item) {
-    var buttonText = "点击此处去编辑";
+    var buttonText = "点击此处去填写";
     var statusText = "待完成";
     var statusColor = Color(0xff489DFE);
     var borderColor = Color(0xff888888);
@@ -424,6 +472,24 @@ class _ResearchDetailState extends State<ResearchDetail>
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
     }
+    var statusWidget =Container();
+    if (statusText == "已完成" || (data.status != "SUBMIT_LEARN" && data.status != "ACCEPTED")){
+      statusWidget =  Container(
+        margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+        padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
+        decoration: BoxDecoration(
+          color: statusColor,
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        child: Text(
+          statusText,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+        ),
+      );
+    }
     var timeText = "";
     if (item.completeTime != null) {
       timeText = "${RelativeDateFormat.format(item.completeTime)}完成";
@@ -497,21 +563,7 @@ class _ResearchDetailState extends State<ResearchDetail>
                 "填写问卷",
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
-                decoration: BoxDecoration(
-                  color: statusColor,
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                ),
-                child: Text(
-                  statusText,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
+              statusWidget,
               Expanded(child: Container()),
               Text(
                 timeText,
@@ -544,7 +596,7 @@ class _ResearchDetailState extends State<ResearchDetail>
         var url =
             "https://m-dev.e-medclouds.com/mpost/#/questionnaire?learnPlanId=${data.learnPlanId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}";
         MedcloudsNativeApi.instance().openWebPage(url);
-        print("on tap");
+        print("on tap $url");
       },
       child: all,
     );

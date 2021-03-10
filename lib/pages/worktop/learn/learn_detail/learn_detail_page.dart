@@ -260,7 +260,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             "learn_plan_id":"${data?.learnPlanId}",
             "user_id":"${model?.data?.doctorUserId}"
           });
-          EasyLoading.showToast('提交成功');
+          EasyLoading.showSuccess('提交成功');
           // 延时1s执行返回
           Future.delayed(
             Duration(seconds: 1),

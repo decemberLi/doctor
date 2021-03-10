@@ -1,13 +1,18 @@
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/server.dart';
 import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 
 class CaseDetail extends StatefulWidget {
   final IllnessCase data;
+
   CaseDetail(this.data);
+
   @override
   State<StatefulWidget> createState() {
     return CaseDetailState(data);
@@ -17,22 +22,105 @@ class CaseDetail extends StatefulWidget {
 class CaseDetailState extends State<CaseDetail> {
   IllnessCase data;
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _codeController = TextEditingController();
   TextEditingController _ageController = TextEditingController();
-  TextEditingController _sexController = TextEditingController();
   TextEditingController _hospitalController = TextEditingController();
-  CaseDetailState(this.data){
+
+  CaseDetailState(this.data) {
     print("init data is ${data.toJson()}");
     _nameController.text = data.patientName;
     _ageController.text = data.age == null ? "" : "${data.age}";
-    var sex = "男";
-    if (data.sex == 1) sex = "女";
-    _sexController.text = sex;
     _hospitalController.text = data.hospital;
+    _codeController.text = data.patientCode;
   }
-  Widget buildItem(String name,TextEditingController controller) {
+
+  Widget buildText(TextEditingController controller, int maxLength,TextInputType keyboardType) {
     var noneBorder = UnderlineInputBorder(
       borderSide: BorderSide(width: 0, color: Colors.transparent),
     );
+    return TextField(
+      maxLength: maxLength,
+      controller: controller,
+      textAlign: TextAlign.end,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        hintText: "请输入",
+        hintStyle: TextStyle(
+          fontSize: 12,
+          color: Color(0xff888888),
+        ),
+        border: noneBorder,
+        focusedBorder: noneBorder,
+        enabledBorder: noneBorder,
+        counterText: "",
+      ),
+    );
+  }
+
+  Widget buildPicker() {
+    var sex = "请选择";
+    var textStyle = TextStyle(
+      fontSize: 12,
+      color: Color(0xff888888),
+    );
+    if (data?.sex != null) {
+      var sexValue = data?.sex;
+      if (sexValue == 0) {
+        sex = "女";
+      } else {
+        sex = "男";
+      }
+      textStyle = TextStyle(
+        fontSize: 14,
+        color:Colors.black,
+      );
+    }
+
+    return GestureDetector(
+      onTap: () {
+        var listData = [
+          PickerItem(
+            text: Text('女'),
+            value: 0,
+          ),
+          PickerItem(
+            text: Text('男'),
+            value: 1,
+          ),
+        ];
+        var picker = Picker(
+            title: Text(
+              '选择性别',
+              style: TextStyle(fontSize: 18),
+            ),
+            selecteds: [data?.sex ?? 0],
+            height: 200,
+            columnPadding: EdgeInsets.all(30),
+            itemExtent: 40,
+            adapter: PickerDataAdapter<int>(data: listData),
+            changeToFirst: true,
+            cancelText: '取消',
+            confirmText: '确认',
+            cancelTextStyle:
+                TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
+            confirmTextStyle:
+                TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
+            onConfirm: (picker, list) {
+              setState(() {
+                data.sex = listData[list.first].value;
+              });
+            });
+        picker.showModal(context);
+      },
+      child: Text(
+        sex,
+        textAlign: TextAlign.end,
+        style: textStyle,
+      ),
+    );
+  }
+
+  Widget buildItem(String name, Widget content) {
     return Container(
       child: Column(
         children: [
@@ -46,21 +134,8 @@ class CaseDetailState extends State<CaseDetail> {
                   width: 10,
                 ),
                 Expanded(
-                  child: TextField(
-                    controller: controller,
-                    textAlign: TextAlign.end,
-                    decoration: InputDecoration(
-                      hintText: "请输入",
-                      hintStyle: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xff888888),
-                      ),
-                      border: noneBorder,
-                      focusedBorder: noneBorder,
-                      enabledBorder: noneBorder,
-                    ),
-                  ),
-                )
+                  child: content,
+                ),
               ],
             ),
           ),
@@ -96,33 +171,28 @@ class CaseDetailState extends State<CaseDetail> {
               child: Container(
                 child: Column(
                   children: [
-                    buildItem("患者姓名/编码",_nameController),
-                    buildItem("年龄",_ageController),
-                    buildItem("性别",_sexController),
-                    buildItem("就诊医院",_hospitalController),
+                    buildItem("患者姓名", buildText(_nameController, 10,TextInputType.text)),
+                    buildItem("编码", buildText(_codeController, 20,TextInputType.number)),
+                    buildItem("年龄", buildText(_ageController, 5,TextInputType.number)),
+                    buildItem("性别", buildPicker()),
+                    buildItem("就诊医院", buildText(_hospitalController, 30,TextInputType.text)),
                   ],
                 ),
               ),
             ),
             Expanded(child: Container()),
             GestureDetector(
-              onTap: () async{
+              onTap: () async {
                 EasyLoading.instance.flash(() async {
                   data.hospital = _hospitalController.text;
                   data.patientName = _nameController.text;
                   data.age = int.parse(_ageController.text);
-                  if (_sexController.text == "男") {
-                    data.sex = 1;
-                  }else{
-                    data.sex = 0;
-                  }
-
+                  data.patientCode = _codeController.text;
                   print("the data is ${data.toJson()}");
                   await API.shared.server.updateIllnessCase(data.toJson());
                   data.status = "COMPLETE";
                   Navigator.of(context).pop();
                 });
-
               },
               child: Container(
                 width: double.infinity,
