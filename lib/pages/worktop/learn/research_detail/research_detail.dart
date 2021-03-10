@@ -365,7 +365,11 @@ class _ResearchDetailState extends State<ResearchDetail>
     var statusText = "待完成";
     var statusColor = Color(0xff489DFE);
     var borderColor = Color(0xff888888);
-    if (item.status == "COMPLETE") {
+    LearnDetailItem data = model.data;
+    var isHistory = data.status == "SUBMIT_LEARN" || data.status == "ACCEPTED";
+    if (isHistory) {
+      buttonText = "点击此处去查看";
+    }else if (item.status == "COMPLETE") {
       buttonText = "点击此处去重新编辑";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
@@ -431,7 +435,7 @@ class _ResearchDetailState extends State<ResearchDetail>
             child: GestureDetector(
               onTap: () async {
                 await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => CaseDetail(item),
+                  builder: (ctx) => CaseDetail(item,!isHistory),
                 ));
                 await model.initData();
                 setState(() {});
