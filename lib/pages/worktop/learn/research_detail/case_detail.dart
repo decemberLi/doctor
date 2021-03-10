@@ -152,6 +152,31 @@ class CaseDetailState extends State<CaseDetail> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> showList = [];
+    for(int i=0;i<data.showFields.length;i++){
+      var item = data.showFields[i];
+      Widget one;
+      //"patientName","patientCode","age","sex","hospital"
+      if (item == "patientName") {
+        one = buildItem("患者姓名",
+        buildText(_nameController, 10, TextInputType.text));
+      }else if (item == "patientCode") {
+        one = buildItem("编码",
+        buildText(_codeController, 20, TextInputType.number));
+      }else if (item  == "age") {
+        one = buildItem("年龄",
+        buildText(_ageController, 5, TextInputType.number));
+      }else if (item  == "sex") {
+        one = buildItem("性别", buildPicker());
+      }else if (item == "hospital") {
+        one = buildItem("就诊医院",
+        buildText(_hospitalController, 30, TextInputType.text));
+      }
+      if (one != null) {
+        showList.add(one);
+      }
+
+    }
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -172,17 +197,7 @@ class CaseDetailState extends State<CaseDetail> {
               ),
               child: Container(
                 child: Column(
-                  children: [
-                    buildItem("患者姓名",
-                        buildText(_nameController, 10, TextInputType.text)),
-                    buildItem("编码",
-                        buildText(_codeController, 20, TextInputType.number)),
-                    buildItem("年龄",
-                        buildText(_ageController, 5, TextInputType.number)),
-                    buildItem("性别", buildPicker()),
-                    buildItem("就诊医院",
-                        buildText(_hospitalController, 30, TextInputType.text)),
-                  ],
+                  children: showList,
                 ),
               ),
             ),
