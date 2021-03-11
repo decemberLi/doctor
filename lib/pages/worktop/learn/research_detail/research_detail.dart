@@ -287,7 +287,7 @@ class _ResearchDetailState extends State<ResearchDetail>
                 for (int i = 1; i < template.questionnaires.length; i++) {
                   var item = template.questionnaires[i];
                   if (item.status != "COMPLETE") {
-                    showAlert(i);
+                    showAlert(item.sort);
                     return;
                   }
                 }
@@ -528,7 +528,7 @@ class _ResearchDetailState extends State<ResearchDetail>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.title,
+                "${item.title}${item.sort}",
                 style: TextStyle(
                   color: Color(0xff222222),
                   fontSize: 14,
