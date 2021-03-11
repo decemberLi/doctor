@@ -528,7 +528,7 @@ class _ResearchDetailState extends State<ResearchDetail>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "${item.title}${item.sort}",
+                "${item.title}",
                 style: TextStyle(
                   color: Color(0xff222222),
                   fontSize: 14,
@@ -580,7 +580,7 @@ class _ResearchDetailState extends State<ResearchDetail>
                 ),
               ),
               Text(
-                "填写问卷",
+                "填写问卷${item.sort}",
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
               ),
               statusWidget,
