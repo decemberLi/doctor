@@ -381,7 +381,7 @@ class _ResearchDetailState extends State<ResearchDetail>
     LearnDetailItem data = model.data;
     var isHistory = data.status == "SUBMIT_LEARN" || data.status == "ACCEPTED";
     if (isHistory) {
-      buttonText = "点击此处去查看";
+      buttonText = "查看病例信息";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);

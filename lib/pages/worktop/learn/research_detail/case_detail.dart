@@ -162,7 +162,7 @@ class CaseDetailState extends State<CaseDetail> {
         buildText(_nameController, 10, TextInputType.text));
       }else if (item == "patientCode") {
         one = buildItem("编码",
-        buildText(_codeController, 20, TextInputType.number));
+        buildText(_codeController, 20, TextInputType.text));
       }else if (item  == "age") {
         one = buildItem("年龄",
         buildText(_ageController, 5, TextInputType.number));
