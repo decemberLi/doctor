@@ -382,6 +382,9 @@ class _ResearchDetailState extends State<ResearchDetail>
     var isHistory = data.status == "SUBMIT_LEARN" || data.status == "ACCEPTED";
     if (isHistory) {
       buttonText = "点击此处去查看";
+      statusText = "已完成";
+      statusColor = Color(0xff52C41A);
+      borderColor = Color(0xff52C41A);
     }else if (item.status == "COMPLETE") {
       buttonText = "点击此处去重新编辑";
       statusText = "已完成";

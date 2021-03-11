@@ -245,10 +245,13 @@ class LearnListItemWiget extends StatelessWidget {
       style: TextStyle(color: Color(0xFF666666), fontSize: 12),
     );
     var info = "";
-    var sexValue = item?.illnessCase?.sex ?? 0;
-    if (sexValue > 0 ){//
+
+    if (item?.illnessCase?.sex != null ){
+      var sexValue = item?.illnessCase?.sex ?? 0;
       var sex = "男";
-      // if (item.illnessCase.sex == false) sex = "女";
+      if (sexValue == 0) {
+        sex = "女";
+      }
       info += sex;
     }
     var age = item?.illnessCase?.age ?? 0;
@@ -269,6 +272,7 @@ class LearnListItemWiget extends StatelessWidget {
     }else{
       taskText = '再次拜访';
     }
+    var showReLearn = (item.status != "SUBMIT_LEARN" && item.status != "ACCEPTED");
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,7 +281,7 @@ class LearnListItemWiget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             taskTemplateWidget,
-            if (item.reLearn)
+            if (item.reLearn && showReLearn)
               LearnTextIcon(
                 text: taskText,
                 color: Color(0xffF6A419),
@@ -289,8 +293,7 @@ class LearnListItemWiget extends StatelessWidget {
             if (item.taskTemplate == 'MEDICAL_SURVEY')
             Container(
               alignment: Alignment.center,
-              margin: EdgeInsets.only(bottom: 10),
-              width: 108,
+              margin: EdgeInsets.only(bottom: 5,right: 25),
               child: Text(
                 info,
                 style: TextStyle(
