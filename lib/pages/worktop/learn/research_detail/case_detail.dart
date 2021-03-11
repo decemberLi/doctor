@@ -216,6 +216,7 @@ class CaseDetailState extends State<CaseDetail> {
                     print("the data is ${data.toJson()}");
                     await API.shared.server.updateIllnessCase(data.toJson());
                     data.status = "COMPLETE";
+                    EasyLoading.showToast("保存成功");
                     Navigator.of(context).pop();
                   });
                 },
