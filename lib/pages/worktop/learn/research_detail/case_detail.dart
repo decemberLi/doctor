@@ -41,6 +41,7 @@ class CaseDetailState extends State<CaseDetail> {
       borderSide: BorderSide(width: 0, color: Colors.transparent),
     );
     return TextField(
+      enabled: widget.canSubmit,
       maxLength: maxLength,
       controller: controller,
       textAlign: TextAlign.end,
@@ -54,6 +55,7 @@ class CaseDetailState extends State<CaseDetail> {
         border: noneBorder,
         focusedBorder: noneBorder,
         enabledBorder: noneBorder,
+        disabledBorder: noneBorder,
         counterText: "",
       ),
     );
@@ -80,6 +82,9 @@ class CaseDetailState extends State<CaseDetail> {
 
     return GestureDetector(
       onTap: () {
+        if (!widget.canSubmit) {
+          return;
+        }
         var listData = [
           PickerItem(
             text: Text('女'),
@@ -232,7 +237,7 @@ class CaseDetailState extends State<CaseDetail> {
                     ),
                   ),
                   decoration: BoxDecoration(
-                    color: Color(0xff489DFE).withOpacity(0.85),
+                    color: Color(0xff107BFD),
                     borderRadius: BorderRadius.all(Radius.circular(22)),
                     boxShadow: [
                       BoxShadow(

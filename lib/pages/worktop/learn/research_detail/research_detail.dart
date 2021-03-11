@@ -192,7 +192,7 @@ class _ResearchDetailState extends State<ResearchDetail>
     var upColor = Color(0xFFBCBCBC);
     var shadowColor = Color(0xFFBCBCBC).withOpacity(0.4);
     if (canUp) {
-      upColor = Color(0xff489DFE).withOpacity(0.85);
+      upColor = Color(0xff107BFD);
       shadowColor = Color(0xff489DFE).withOpacity(0.4);
     }
     var submit = () {
