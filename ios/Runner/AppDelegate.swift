@@ -272,6 +272,9 @@ extension AppDelegate {
 
 extension AppDelegate : UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if navi?.viewControllers.count == 1 {
+            return false
+        }
         return true
     }
 
