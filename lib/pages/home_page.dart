@@ -287,8 +287,7 @@ class _HomePageState extends State<HomePage>
                   'qualification': true,
                 };
                 if (model.data?.authStatus == 'VERIFYING') {
-                  path = RouteManager.QUALIFICATION_AUTH_STATUS;
-                  arguments = {'authStatus': model.data?.authStatus};
+                  path = RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE;
                 }
                 await Navigator.pushNamed(
                   context,

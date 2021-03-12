@@ -6,7 +6,6 @@ import 'package:doctor/pages/doctors/doctors_banner.dart';
 import 'package:doctor/pages/doctors/doctors_banner_item.dart';
 import 'package:doctor/pages/doctors/doctors_list_page.dart';
 import 'package:doctor/pages/doctors/doctors_list_page2.dart';
-import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';

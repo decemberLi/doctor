@@ -232,8 +232,7 @@ class _MessageListPageState extends State<MessageListPage> {
         });
       } else {
         await Navigator.pushNamed(
-            context, RouteManager.QUALIFICATION_AUTH_STATUS,
-            arguments: {'authStatus': entity.authStatus});
+            context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
       }
     } else if (type == MessageType.TYPE_LEAN_PLAN) {
       if (entity.params == null || entity.params['learnPlanId'] == null) {

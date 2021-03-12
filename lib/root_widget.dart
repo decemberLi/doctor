@@ -4,7 +4,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
-import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
@@ -73,30 +72,37 @@ class RootWidget extends StatelessWidget {
         print('Received push message process event, arguments - > [$args]');
         var context = NavigationService().navigatorKey.currentContext;
         try {
+          print('Received push message one');
           var obj = json.decode(args);
           var userID = obj["userId"];
           UserInfoViewModel model =
               Provider.of<UserInfoViewModel>(context, listen: false);
+          print('Received push message two ${model.data.doctorUserId} -- $userID');
           if (userID != model.data.doctorUserId ||
               !SessionManager.shared.isLogin) {
             return;
           }
+          print('Received push message two');
           var messageID = obj["messageId"];
           if (messageID != null) {
             API.shared.foundationSys.messageUpdateStatus({
               'messageId':messageID
             });
           }
+          print('Received push message third');
           var type = obj["bizType"];
           if (type == "QUALIFICATION_AUTH") {
+            print("the obj is ---- $obj");
             // 资质认证
             var authStatus = obj["authStatus"];
             if (authStatus == "FAIL") {
-              Navigator.of(context).pushNamed('DOCTOR_AUTHENTICATION_PAGE');
+              print("the obj is ---- fail");
+              Navigator.of(context).pushNamed(RouteManager.DOCTOR_AUTHENTICATION_PAGE);
             } else {
-              Navigator.of(context).pushNamed('DOCTOR_AUTH_STATUS_PASS_PAGE');
+              print("the obj is ---- success");
+              Navigator.of(context).pushNamed(RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
             }
-            Navigator.of(context).pushNamed("routeName");
+            print("the obj is ---- end");
           } else if (type == "ASSIGN_STUDY_PLAN") {
             // 学习计划详情
             var learnPlanId = obj["learnPlanId"];
