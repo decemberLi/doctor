@@ -62,6 +62,7 @@ class _WorktopPageState extends State<WorktopPage>
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     await model.queryDoctorInfo();
+    _model.initData();
     super.didPopNext();
   }
 
@@ -120,8 +121,8 @@ class _WorktopPageState extends State<WorktopPage>
                   'from': 'work_top',
                 },
               );
-              // 从详情页回来后刷新数据
-              _model.initData();
+              // 无脑刷新数据，从详情页回来后不刷新数据
+              // _model.initData();
             },
           ),
         );

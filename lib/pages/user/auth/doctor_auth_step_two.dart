@@ -9,6 +9,7 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
+import 'package:doctor/widgets/common_dialog.dart';
 import 'package:doctor/widgets/photo_view_gallery_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,111 +32,124 @@ class DoctorAuthenticationStepTwoPageState
 
   @override
   Widget build(BuildContext context) {
-    Widget rootWidget = SafeArea(
-      child: Scaffold(
-        backgroundColor: ThemeColor.colorFFF3F5F8,
-        appBar: AppBar(
-          title: Text('医师身份认证'),
-          elevation: 0,
-        ),
-        body: ChangeNotifierProvider<AuthenticationStep2ViewModel>.value(
-          value: _model,
-          child: Consumer<AuthenticationStep2ViewModel>(
-            builder: (context, model, child) {
-              return Container(
-                color: const Color(0xFFF3F5F8),
-                height: MediaQuery.of(context).size.height,
-                child: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          commonTips(),
-                          if (!TextUtil.isEmpty(model.data?.rejectReson))
-                            failTips(model.data?.rejectReson),
-                          CrudeProgressWidget(2),
-                          Container(
-                            margin:
-                                EdgeInsets.only(top: 12, left: 16, right: 16),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildGrid(
-                                  title: "上传证件照",
-                                  list: model.data.qualifications ?? [],
-                                  callback: (FacePhoto value, int index) async {
-                                    var selectedFile = await _pickImage();
-                                    if (selectedFile == null) {
-                                      return;
-                                    }
-                                    model.addImage(selectedFile, value, index);
-                                  },
-                                  removeCallback: (int index) {
-                                    model.removeImage(index);
-                                  },
-                                ),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(bottom: 40, left: 18),
-                                  child: Text(
-                                    "*支持执业证、资格证或者医师工作证等",
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Color(0xFF888888),
-                                    ),
+    Widget rootWidget = WillPopScope(
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: ThemeColor.colorFFF3F5F8,
+          appBar: AppBar(
+            title: Text('医师身份认证'),
+            elevation: 0,
+          ),
+          body: ChangeNotifierProvider<AuthenticationStep2ViewModel>.value(
+            value: _model,
+            child: Consumer<AuthenticationStep2ViewModel>(
+              builder: (context, model, child) {
+                return Container(
+                  color: const Color(0xFFF3F5F8),
+                  height: MediaQuery.of(context).size.height,
+                  child: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            commonTips(),
+                            if (!TextUtil.isEmpty(model.data?.rejectReson))
+                              failTips(model.data?.rejectReson),
+                            CrudeProgressWidget(2),
+                            Container(
+                              margin:
+                              EdgeInsets.only(top: 12, left: 16, right: 16),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildGrid(
+                                    title: "上传证件照",
+                                    list: model.data.qualifications ?? [],
+                                    callback:
+                                        (FacePhoto value, int index) async {
+                                      var selectedFile = await _pickImage();
+                                      if (selectedFile == null) {
+                                        return;
+                                      }
+                                      model.addImage(
+                                          selectedFile, value, index);
+                                    },
+                                    removeCallback: (int index) {
+                                      model.removeImage(index);
+                                    },
                                   ),
-                                )
-                              ],
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.only(bottom: 40, left: 18),
+                                    child: Text(
+                                      "*支持执业证、资格证或者医师工作证等",
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Color(0xFF888888),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          margin:
-                              EdgeInsets.only(left: 30, right: 30, bottom: 26),
-                          child: AceButton(
-                            width: double.infinity,
-                            type: model.canNext
-                                ? AceButtonType.primary
-                                : AceButtonType.grey,
-                            text: TextUtil.isEmpty(model.data.rejectReson)
-                                ? "提交"
-                                : "重新提交",
-                            onPressed: () async {
-                              if(model.isCommitting){
-                                return;
-                              }
-                              model.setIsCommitting(true);
-                              model.commitAuthenticationData().then((success)async {
-                                model.setIsCommitting(false);
-                                await Navigator.pushNamed(
-                                    context,
-                                    RouteManager
-                                        .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-                                Navigator.pop(context, true);
-                              },onError: (error){
-                                model.setIsCommitting(false);
-                              });
-                            },
-                          ),
-                        ))
-                  ],
-                ),
-              );
-            },
+                      Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                left: 30, right: 30, bottom: 26),
+                            child: AceButton(
+                              width: double.infinity,
+                              type: model.canNext
+                                  ? AceButtonType.primary
+                                  : AceButtonType.grey,
+                              text: TextUtil.isEmpty(model.data.rejectReson)
+                                  ? "提交"
+                                  : "重新提交",
+                              onPressed: () async {
+                                if (model.isCommitting) {
+                                  return;
+                                }
+                                model.setIsCommitting(true);
+                                model.commitAuthenticationData().then(
+                                        (success) async {
+                                      model.setIsCommitting(false);
+                                      await Navigator.pushNamed(
+                                          context,
+                                          RouteManager
+                                              .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                                      Navigator.pop(context, true);
+                                    }, onError: (error) {
+                                  model.setIsCommitting(false);
+                                });
+                              },
+                            ),
+                          ))
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
+      onWillPop: () async {
+        var needPop = await showNoTitleConfirmDialog(
+            context: context, content: '您还未完成医师身份认证，确定退出吗');
+        if(needPop){
+          Navigator.pop(context, true);
+        }
+        return Future.value(needPop);
+      },
     );
     _model.refreshData();
     return rootWidget;

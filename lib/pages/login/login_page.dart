@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                       type: AceButtonType.grey,
                       text: '使用密码登录',
                       onPressed: () => {
-                        Navigator.pushNamed(context, RouteManager.LOGIN_PWD)
+                        Navigator.pushNamed(context, RouteManager.LOGIN_PWD,arguments: {})
                       },
                     ),
                   ],
