@@ -223,17 +223,13 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
               ),
             ),
             actions: [
-              GestureDetector(
-                child: Container(
-                  width: double.infinity,
-                  height: 44,
-                  alignment: Alignment.center,
-                  child: Text(
-                    TextUtil.isEmpty(number) ? "继续" : "确定",
-                    style: _contentTextStyle(ThemeColor.primaryColor),
-                  ),
+              FlatButton(
+                height: 44,
+                child: Text(
+                  TextUtil.isEmpty(number) ? "继续" : "确定",
+                  style: _contentTextStyle(ThemeColor.primaryColor),
                 ),
-                onTap: () {
+                onPressed: () {
                   if (!TextUtil.isEmpty(number)) {
                     Navigator.of(context).pop(true);
                   } else {

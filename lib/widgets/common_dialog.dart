@@ -2,11 +2,8 @@ import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Future<bool> showNoTitleConfirmDialog<bool>({
-  @required BuildContext context,
-  @required String content,
-  bool dismiss
-}) {
+Future<bool> showNoTitleConfirmDialog<bool>(
+    {@required BuildContext context, @required String content, bool dismiss}) {
   return showCupertinoDialog<bool>(
     context: context,
     barrierDismissible: dismiss ?? false,
@@ -61,6 +58,40 @@ Future<bool> showConfirmDialog<bool>({
           FlatButton(
             child: Text(
               "确定",
+              style: TextStyle(
+                color: ThemeColor.primaryColor,
+              ),
+            ),
+            onPressed: () {
+              //关闭对话框并返回true
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<bool> showPrompt<bool>({
+  @required BuildContext context,
+  @required String content,
+  String buttonText,
+  bool dismiss,
+}) {
+  return showCupertinoDialog<bool>(
+    context: context,
+    barrierDismissible: dismiss ?? false,
+    builder: (context) {
+      return CupertinoAlertDialog(
+        content: Container(
+          padding: EdgeInsets.only(top: 12),
+          child: Text(content ?? ''),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(
+              buttonText ?? '确定',
               style: TextStyle(
                 color: ThemeColor.primaryColor,
               ),
