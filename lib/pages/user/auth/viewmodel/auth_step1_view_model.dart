@@ -22,6 +22,7 @@ class AuthenticationViewModel extends ViewStateModel {
   bool _agree = false;
   var _customerServicePhone = '028-XXXXXXXX';
   var _isCommitting = false;
+  var _isScanBankCard = false;
 
   bool get needShowIdCardInfo => _showIdCardInfo;
 
@@ -34,6 +35,12 @@ class AuthenticationViewModel extends ViewStateModel {
   bool get isCommitting =>_isCommitting;
 
   String get customServicePhone => _customerServicePhone;
+
+  bool get isScanBankCard => _isScanBankCard;
+
+  void setIsScanBankCard(bool value){
+    _isScanBankCard = value;
+  }
 
   void changeAgreeState(bool value) {
     _agree = value;
@@ -88,6 +95,7 @@ class AuthenticationViewModel extends ViewStateModel {
     debugPrint("setBankCard ---------> $val}");
     _entity.bankCard = val;
     checkDataIntegrity();
+    _isScanBankCard = false;
     notifyListeners();
   }
 
@@ -162,6 +170,7 @@ class AuthenticationViewModel extends ViewStateModel {
     _entity
       ..bankCard = json['CardNo']
       ..bankCardCertificates = img;
+    _isScanBankCard = true;
     checkDataIntegrity();
     notifyListeners();
   }

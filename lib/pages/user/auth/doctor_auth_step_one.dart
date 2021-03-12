@@ -36,121 +36,127 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       child: SafeArea(
-        child: Scaffold(
-          backgroundColor: ThemeColor.colorFFF3F5F8,
-          appBar: AppBar(
-            title: Text('医师身份认证'),
-            elevation: 0,
-          ),
-          body: ChangeNotifierProvider<AuthenticationViewModel>.value(
-            value: _model,
-            child: Consumer<AuthenticationViewModel>(
-              builder: (context, model, child) {
-                return SingleChildScrollView(
-                  child: Container(
-                    color: const Color(0xFFF3F5F8),
-                    height: MediaQuery.of(context).size.height - 100,
-                    child: Stack(
-                      children: [
-                        Column(
-                          children: [
-                            commonTips(),
-                            CrudeProgressWidget(1),
-                            Container(
-                                margin: EdgeInsets.symmetric(horizontal: 16),
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 16, horizontal: 18),
-                                  child: Column(
-                                    children: [
-                                      _buildIdCardWidget(model),
-                                      if (model.needShowIdCardInfo)
-                                        _buildItemWidget("姓名：",
-                                            model.data.identityName ?? ''),
-                                      if (model.needShowIdCardInfo)
-                                        _buildItemWidget("身份证号：",
-                                            model.data.identityNo ?? ''),
-                                      _underLineContainer(
-                                          _phoneNumberWidget(model)),
-                                      _underLineContainer(
-                                          _bankCardWidget(model))
-                                    ],
-                                  ),
-                                )),
-                            Container(
-                              margin:
-                                  EdgeInsets.only(left: 76, right: 76, top: 12),
-                              child: agreement(),
-                            ),
-                          ],
-                        ),
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: 30, right: 30, bottom: 26),
-                            child: AceButton(
-                              width: double.infinity,
-                              type: model.canNext
-                                  ? AceButtonType.primary
-                                  : AceButtonType.grey,
-                              text: "下一步",
-                              onPressed: () async {
-                                if (model.isCommitting) {
-                                  return;
-                                }
-                                if (model.canNext) {
-                                  model
-                                      .commitAuthenticationData()
-                                      .then((data) async {
-                                    debugPrint("success -> $data");
-                                    if (data is String) {
-                                      _resetFocus();
-                                      if (TextUtil.isEmpty(data)) {
-                                        _goNextStep();
-                                        return;
-                                      }
-
-                                      await showNoticeDialog(data);
-                                      _goNextStep();
-                                    }
-                                  }).catchError((error) {
-                                    debugPrint("error -> $error");
-                                    if (error is DioError &&
-                                        error.error is Map) {
-                                      var errorCode =
-                                          (error.error as Map)['errorCode'];
-                                      var errorMsg =
-                                          (error.error as Map)['errorMsg'];
-                                      if ('00010010' == errorCode) {
-                                        showNoticeDialog(errorMsg);
-                                      } else if ('00010009' == errorCode) {
-                                        showNoticeDialog(errorMsg,
-                                            number: model.customServicePhone);
-                                      }
-                                    } else if (error?.error != null &&
-                                        error.error is String) {
-                                      EasyLoading.showToast(error?.error);
-                                    }
-                                  });
-                                }
-                              },
-                            ),
+        child: GestureDetector(
+          child: Scaffold(
+            backgroundColor: ThemeColor.colorFFF3F5F8,
+            appBar: AppBar(
+              title: Text('医师身份认证'),
+              elevation: 0,
+            ),
+            body: ChangeNotifierProvider<AuthenticationViewModel>.value(
+              value: _model,
+              child: Consumer<AuthenticationViewModel>(
+                builder: (context, model, child) {
+                  return SingleChildScrollView(
+                    child: Container(
+                      color: const Color(0xFFF3F5F8),
+                      height: MediaQuery.of(context).size.height - 100,
+                      child: Stack(
+                        children: [
+                          Column(
+                            children: [
+                              commonTips(),
+                              CrudeProgressWidget(1),
+                              Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 16),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 16, horizontal: 18),
+                                    child: Column(
+                                      children: [
+                                        _buildIdCardWidget(model),
+                                        if (model.needShowIdCardInfo)
+                                          _buildItemWidget("姓名：",
+                                              model.data.identityName ?? ''),
+                                        if (model.needShowIdCardInfo)
+                                          _buildItemWidget("身份证号：",
+                                              model.data.identityNo ?? ''),
+                                        _underLineContainer(
+                                            _phoneNumberWidget(model)),
+                                        _underLineContainer(
+                                            _bankCardWidget(model))
+                                      ],
+                                    ),
+                                  )),
+                              Container(
+                                margin:
+                                EdgeInsets.only(left: 76, right: 76, top: 12),
+                                child: agreement(),
+                              ),
+                            ],
                           ),
-                        )
-                      ],
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  left: 30, right: 30, bottom: 26),
+                              child: AceButton(
+                                width: double.infinity,
+                                type: model.canNext
+                                    ? AceButtonType.primary
+                                    : AceButtonType.grey,
+                                text: "下一步",
+                                onPressed: () async {
+                                  _unFocus();
+                                  if (model.isCommitting) {
+                                    return;
+                                  }
+                                  if (model.canNext) {
+                                    model
+                                        .commitAuthenticationData()
+                                        .then((data) async {
+                                      debugPrint("success -> $data");
+                                      if (data is String) {
+                                        _resetFocus();
+                                        if (TextUtil.isEmpty(data)) {
+                                          _goNextStep();
+                                          return;
+                                        }
+
+                                        await showNoticeDialog(data);
+                                        _goNextStep();
+                                      }
+                                    }).catchError((error) {
+                                      debugPrint("error -> $error");
+                                      if (error is DioError &&
+                                          error.error is Map) {
+                                        var errorCode =
+                                        (error.error as Map)['errorCode'];
+                                        var errorMsg =
+                                        (error.error as Map)['errorMsg'];
+                                        if ('00010010' == errorCode) {
+                                          showNoticeDialog(errorMsg);
+                                        } else if ('00010009' == errorCode) {
+                                          showNoticeDialog(errorMsg,
+                                              number: model.customServicePhone);
+                                        }
+                                      } else if (error?.error != null &&
+                                          error.error is String) {
+                                        EasyLoading.showToast(error?.error);
+                                      }
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
+          onTap: (){
+            _unFocus();
+          },
         ),
       ),
       onWillPop: () async {
@@ -160,6 +166,10 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     );
   }
 
+  void _unFocus(){
+    _bankCardFocusNode.unfocus();
+    _mobileFocusNode.unfocus();
+  }
   void _resetFocus() {
     if (_mobileFocusNode != null) {
       _mobileFocusNode.unfocus();
@@ -311,9 +321,12 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
         ),
       ],
     );
-    _bankCardController.text = model.data.bankCard;
-    _bankCardController.selection = TextSelection.fromPosition(
-        TextPosition(offset: (_bankCardController.text ?? '').length));
+    if(model.isScanBankCard) {
+      _bankCardController.text = model.data.bankCard;
+      _bankCardController.selection = TextSelection.fromPosition(
+          TextPosition(offset: (_bankCardController.text ?? '').length));
+      model.setIsScanBankCard(false);
+    }
     return bankWidget;
   }
 
