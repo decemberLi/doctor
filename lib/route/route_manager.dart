@@ -46,7 +46,6 @@ import 'package:path/path.dart';
 
 class RouteManager {
   static const String HOME = '/home';
-  static const String LOGIN = '/login';
   static const String GUIDE = '/guide';
   static const String LOGIN_PWD = '/login_by_password';
   static const String LOGIN_CAPTCHA = '/login_by_captcha';
@@ -92,8 +91,10 @@ class RouteManager {
   static const String DOCTOR_AUTH_STATUS_PASS_PAGE = '/AuthStatusPagePass';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
-    LOGIN: (context) => LoginPage(),
-    LOGIN_PWD: (context) => LoginByPasswordPage(),
+    LOGIN_PWD: (context){
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return LoginByPasswordPage(obj['phoneNumber']);
+    },
     LOGIN_CAPTCHA: (context) => LoginByCaptchaPage(),
     FIND_PWD: (context) => FindPassword(),
     HOME: (context) => HomePage(),

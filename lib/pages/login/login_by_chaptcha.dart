@@ -293,9 +293,15 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                           style: TextStyle(
                               color: ThemeColor.primaryColor, fontSize: 12),
                         ),
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(RouteManager.LOGIN_PWD);
+                        onTap: ()async  {
+                          var phone = await Navigator.of(context)
+                              .pushNamed(RouteManager.LOGIN_PWD, arguments: {
+                                "phoneNumber": _phoneController.text
+                          });
+                          // 不为空设置手机号码
+                          if(!TextUtil.isEmpty(phone)) {
+                            _phoneController.text = phone;
+                          }
                         }),
                   ),
                 ],
