@@ -31,6 +31,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   var _phoneNumberController = TextEditingController();
   final FocusNode _mobileFocusNode = FocusNode();
   final FocusNode _bankCardFocusNode = FocusNode();
+  String _idNotMatchErrorMsg;
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +84,8 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                     ),
                                   )),
                               Container(
-                                margin:
-                                EdgeInsets.only(left: 76, right: 76, top: 12),
+                                margin: EdgeInsets.only(
+                                    left: 76, right: 76, top: 12),
                                 child: agreement(),
                               ),
                             ],
@@ -103,6 +104,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                     : AceButtonType.grey,
                                 text: "下一步",
                                 onPressed: () async {
+                                  _goNextStep();
                                   _unFocus();
                                   if (model.isCommitting) {
                                     return;
@@ -127,11 +129,13 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                       if (error is DioError &&
                                           error.error is Map) {
                                         var errorCode =
-                                        (error.error as Map)['errorCode'];
+                                            (error.error as Map)['errorCode'];
                                         var errorMsg =
-                                        (error.error as Map)['errorMsg'];
+                                            (error.error as Map)['errorMsg'];
                                         if ('00010010' == errorCode) {
-                                          showNoticeDialog(errorMsg);
+                                          setState(() {
+                                            _idNotMatchErrorMsg = errorMsg;
+                                          });
                                         } else if ('00010009' == errorCode) {
                                           showNoticeDialog(errorMsg,
                                               number: model.customServicePhone);
@@ -154,7 +158,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
               ),
             ),
           ),
-          onTap: (){
+          onTap: () {
             _unFocus();
           },
         ),
@@ -166,10 +170,11 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     );
   }
 
-  void _unFocus(){
+  void _unFocus() {
     _bankCardFocusNode.unfocus();
     _mobileFocusNode.unfocus();
   }
+
   void _resetFocus() {
     if (_mobileFocusNode != null) {
       _mobileFocusNode.unfocus();
@@ -321,7 +326,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
         ),
       ],
     );
-    if(model.isScanBankCard) {
+    if (model.isScanBankCard) {
       _bankCardController.text = model.data.bankCard;
       _bankCardController.selection = TextSelection.fromPosition(
           TextPosition(offset: (_bankCardController.text ?? '').length));
@@ -388,13 +393,14 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             )),
           ],
         ),
-        Container(
-          margin: EdgeInsets.only(top: 4),
-          child: Text(
-            "*姓名和身份证号不匹配，请重新上传正确身份证",
-            style: TextStyle(fontSize: 10, color: const Color(0xFFF57575)),
-          ),
-        )
+        if (!TextUtil.isEmpty(_idNotMatchErrorMsg))
+          Container(
+            margin: EdgeInsets.only(top: 4),
+            child: Text(
+              _idNotMatchErrorMsg,
+              style: TextStyle(fontSize: 10, color: const Color(0xFFF57575)),
+            ),
+          )
       ],
     );
   }

@@ -116,6 +116,9 @@ class DoctorAuthenticationStepTwoPageState
                                   ? "提交"
                                   : "重新提交",
                               onPressed: () async {
+                                if(!model.canNext){
+                                  return;
+                                }
                                 if (model.isCommitting) {
                                   return;
                                 }

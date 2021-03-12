@@ -55,7 +55,7 @@ class AuthenticationStep2ViewModel extends ViewStateModel {
   }
 
   Future commitAuthenticationData() async {
-    return await API.shared.ucenter.postAuthData(data.toJson());
+    return API.shared.ucenter.postAuthData(data.toJson());
   }
 
   void refreshData() async {
