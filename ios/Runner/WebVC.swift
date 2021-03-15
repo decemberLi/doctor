@@ -78,7 +78,6 @@ class WebVC: UIViewController {
             let request = URLRequest(url: url)
             webview.load(request)
         }
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardChanged(_:)), name: UIApplication.keyboardWillChangeFrameNotification, object: nil)
         textView.textContainer.lineFragmentPadding = 0
     }
     
@@ -101,6 +100,7 @@ class WebVC: UIViewController {
                 self.textAllBG.layoutIfNeeded()
             }
         }else{
+            NotificationCenter.default.removeObserver(self, name: UIApplication.keyboardWillChangeFrameNotification, object: nil)
             self.textBG.snp.remakeConstraints { (maker) in
                 maker.top.equalTo(self.textAllBG.snp.bottom)
             }
@@ -148,6 +148,7 @@ class WebVC: UIViewController {
 
 private extension WebVC {
     func showCommentBox(old:[AnyHashable:Any]) {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardChanged(_:)), name: UIApplication.keyboardWillChangeFrameNotification, object: nil)
         textView.becomeFirstResponder()
         guard let putData = commentData else {return}
         let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
