@@ -410,6 +410,9 @@ class _WorktopPageState extends State<WorktopPage>
                     padding: EdgeInsets.only(left: 24),
                     child: Consumer<UserInfoViewModel>(
                       builder: (_, model, __) {
+                        if(model.data == null){
+                          model.queryDoctorInfo();
+                        }
                         return doctorAvatarWidget(model.data);
                       },
                     ),

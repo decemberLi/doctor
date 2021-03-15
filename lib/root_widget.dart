@@ -136,6 +136,7 @@ class RootWidget extends StatelessWidget {
       return options;
     };
     HttpManager.shared.onResponse = (response) async {
+      EasyLoading.dismiss();
       debugPrint("url - ${response.request.baseUrl} data - ${response.data}");
       Map<String, dynamic> data = response.data;
       String status = data["status"];

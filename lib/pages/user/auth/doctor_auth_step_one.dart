@@ -112,16 +112,11 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                       .commitAuthenticationData()
                                       .then((data) async {
                                     debugPrint("success -> $data");
-                                    if (data is String) {
-                                      _resetFocus();
-                                      if (TextUtil.isEmpty(data)) {
-                                        _goNextStep();
-                                        return;
-                                      }
-
+                                    _resetFocus();
+                                    if(data != null && data is String && !TextUtil.isEmpty(data)){
                                       await showNoticeDialog(data);
-                                      _goNextStep();
                                     }
+                                    _goNextStep();
                                   }).catchError((error) {
                                     debugPrint("error -> $error");
                                     if (error is DioError &&
