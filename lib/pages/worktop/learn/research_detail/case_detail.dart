@@ -158,6 +158,7 @@ class CaseDetailState extends State<CaseDetail> {
   @override
   Widget build(BuildContext context) {
     List<Widget> showList = [];
+    bool canSave = true;
     for(int i=0;i<data.showFields.length;i++){
       var item = data.showFields[i];
       Widget one;
@@ -165,22 +166,33 @@ class CaseDetailState extends State<CaseDetail> {
       if (item == "patientName") {
         one = buildItem("患者姓名",
         buildText(_nameController, 10, TextInputType.text));
+        canSave = canSave && _nameController.text.length > 0;
       }else if (item == "patientCode") {
         one = buildItem("编码",
         buildText(_codeController, 20, TextInputType.text));
+        canSave = canSave && _codeController.text.length > 0;
       }else if (item  == "age") {
         one = buildItem("年龄",
         buildText(_ageController, 5, TextInputType.number));
+        canSave = canSave && _ageController.text.length > 0;
       }else if (item  == "sex") {
         one = buildItem("性别", buildPicker());
+        canSave = canSave && data.sex != null;
       }else if (item == "hospital") {
         one = buildItem("就诊医院",
         buildText(_hospitalController, 30, TextInputType.text));
+        canSave = canSave && _hospitalController.text.length > 0;
       }
       if (one != null) {
         showList.add(one);
       }
 
+    }
+    var upColor = Color(0xFFBCBCBC);
+    var shadowColor = Color(0xFFBCBCBC).withOpacity(0.4);
+    if (canSave) {
+      upColor = Color(0xff107BFD);
+      shadowColor = Color(0xff489DFE).withOpacity(0.4);
     }
     return Scaffold(
       appBar: AppBar(
@@ -210,6 +222,9 @@ class CaseDetailState extends State<CaseDetail> {
             if (widget.canSubmit)
               GestureDetector(
                 onTap: () async {
+                  if (!canSave) {
+                    return;
+                  }
                   EasyLoading.instance.flash(() async {
                     data.hospital = _hospitalController.text;
                     data.patientName = _nameController.text;
@@ -237,11 +252,11 @@ class CaseDetailState extends State<CaseDetail> {
                     ),
                   ),
                   decoration: BoxDecoration(
-                    color: Color(0xff107BFD),
+                    color: upColor,
                     borderRadius: BorderRadius.all(Radius.circular(22)),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xff489DFE).withOpacity(0.4),
+                        color: shadowColor,
                         offset: Offset(0, 4),
                         blurRadius: 10,
                       ),

@@ -482,7 +482,7 @@ class _WorktopPageState extends State<WorktopPage>
       margin: EdgeInsets.only(left: 5),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: doctorInfoEntity?.identityStatus == 'PASS'
+        color: doctorInfoEntity?.authStatus == 'PASS'
             ? Color(0xFFFAAD14)
             : Color(0xFFB9B9B9),
         borderRadius: BorderRadius.only(
@@ -516,7 +516,7 @@ class _WorktopPageState extends State<WorktopPage>
           textAlign: TextAlign.center,
           text: TextSpan(
             children: [
-              if (doctorInfoEntity?.identityStatus == 'PASS')
+              if (doctorInfoEntity?.authStatus == 'PASS')
                 WidgetSpan(
                   child: Image.asset(
                     "assets/images/rz.png",
@@ -529,7 +529,7 @@ class _WorktopPageState extends State<WorktopPage>
                   fontSize: 12,
                   color: Colors.white,
                 ),
-                text: doctorInfoEntity?.identityStatus == 'PASS' ? '已认证' : '未认证',
+                text: doctorInfoEntity?.authStatus == 'PASS' ? '已认证' : '未认证',
               ),
             ],
           ),
