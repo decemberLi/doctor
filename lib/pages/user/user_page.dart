@@ -300,7 +300,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                 margin: EdgeInsets.only(left: 5),
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  color: doctorData?.authStatus == 'PASS'
+                                  color: doctorData?.identityStatus == 'PASS'
                                       ? Color(0xFFFAAD14)
                                       : Color(0xFFB9B9B9),
                                   borderRadius: BorderRadius.only(
@@ -326,7 +326,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                           fontSize: 12,
                                           color: Colors.white,
                                         ),
-                                        text: doctorData?.authStatus == 'PASS'
+                                        text: doctorData?.identityStatus == 'PASS'
                                             ? '已认证'
                                             : '未认证',
                                       ),
