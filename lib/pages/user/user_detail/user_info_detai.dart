@@ -486,7 +486,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   Widget build(BuildContext context) {
     // 默认所有信息可以修改
     bool allowEdit = true;
-    bool isAuthPass = widget.args['identityStatus'] == 'PASS';
+    bool isAuthPass = widget.args['authStatus'] == 'PASS';
     print("----------------${widget.args['identityStatus']}");
     noCompleteBasicInfo = widget.args['basicInfoAuthStatus'] == 'NOT_COMPLETE';
     var doctorName = widget.args['doctorName'] ?? '';
