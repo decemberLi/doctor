@@ -486,8 +486,8 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   Widget build(BuildContext context) {
     // 默认所有信息可以修改
     bool allowEdit = true;
-    bool isNotAuth = widget.args['identityStatus'] == 'WAIT_VERIFY' ||
-        widget.args['identityStatus'] == 'FAIL';
+    bool isAuthPass = widget.args['identityStatus'] == 'PASS';
+    print("----------------${widget.args['identityStatus']}");
     noCompleteBasicInfo = widget.args['basicInfoAuthStatus'] == 'NOT_COMPLETE';
     var doctorName = widget.args['doctorName'] ?? '';
     if (noCompleteBasicInfo &&
@@ -520,9 +520,9 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                           'photo', null)
                       : Container(),
                   !_qualification ? _divider : Container(),
-                  infoItem('姓名', doctorName, isNotAuth, 'edit', null),
+                  infoItem('姓名', doctorName, !isAuthPass, 'edit', null),
                   _divider,
-                  infoItem('性别', _genderInfo(noCompleteBasicInfo), isNotAuth,
+                  infoItem('性别', _genderInfo(noCompleteBasicInfo), !isAuthPass,
                       'picker', args['sex']),
                   _divider,
                   infoItem('医院', args['hospitalName'], allowEdit, 'hospital',
