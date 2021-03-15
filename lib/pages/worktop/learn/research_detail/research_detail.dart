@@ -614,7 +614,7 @@ class _ResearchDetailState extends State<ResearchDetail>
     return GestureDetector(
       onTap: () {
         var url =
-            "https://m-dev.e-medclouds.com/mpost/#/questionnaire?learnPlanId=${data.learnPlanId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sor=${item.sort}";
+            "https://m-dev.e-medclouds.com/mpost/#/questionnaire?learnPlanId=${data.learnPlanId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}";
         MedcloudsNativeApi.instance().openWebPage(url);
         print("on tap $url");
       },
