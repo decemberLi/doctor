@@ -32,13 +32,13 @@ class AuthenticationViewModel extends ViewStateModel {
 
   bool get agree => _agree;
 
-  bool get isCommitting =>_isCommitting;
+  bool get isCommitting => _isCommitting;
 
   String get customServicePhone => _customerServicePhone;
 
   bool get isScanBankCard => _isScanBankCard;
 
-  void setIsScanBankCard(bool value){
+  void setIsScanBankCard(bool value) {
     _isScanBankCard = value;
   }
 
@@ -140,7 +140,8 @@ class AuthenticationViewModel extends ViewStateModel {
     if (data.idCardLicenseBehind == null) {
       return false;
     }
-    if (TextUtil.isEmpty(data.bankSignMobile)) {
+    if (!TextUtil.isEmpty(data.bankSignMobile) &&
+        data.bankSignMobile.length != 11) {
       if (needToast) {
         EasyLoading.showToast("请输入正确的手机号");
       }

@@ -148,6 +148,7 @@ class MainActivity : FlutterActivity() {
         })
         ChannelManager.instance.on("ocrIdCardFaceSide", object : OnFlutterCall {
             override fun call(arguments: String?, channel: MethodChannel): Any {
+                Log.d("TAG.Perm", "call: ${checkCameraPermission(application)}")
                 OcrSDKKit.getInstance().startProcessOcr(this@MainActivity,
                         OcrType.IDCardOCR_FRONT,
                         CustomConfigUi().apply {
