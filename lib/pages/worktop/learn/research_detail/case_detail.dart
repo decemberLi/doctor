@@ -33,6 +33,27 @@ class CaseDetailState extends State<CaseDetail> {
     _ageController.text = data.age == null ? "" : "${data.age}";
     _hospitalController.text = data.hospital;
     _codeController.text = data.patientCode;
+
+    _nameController.addListener(() {
+      setState(() {
+
+      });
+    });
+    _ageController.addListener(() {
+      setState(() {
+
+      });
+    });
+    _hospitalController.addListener(() {
+      setState(() {
+
+      });
+    });
+    _codeController.addListener(() {
+      setState(() {
+
+      });
+    });
   }
 
   Widget buildText(TextEditingController controller, int maxLength,
