@@ -106,7 +106,6 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                   : AceButtonType.grey,
                               text: "下一步",
                               onPressed: () async {
-                                _goNextStep();
                                 _unFocus();
                                 if (model.isCommitting) {
                                   return;
