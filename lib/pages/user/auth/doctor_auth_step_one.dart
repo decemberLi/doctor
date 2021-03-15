@@ -1,6 +1,5 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:doctor/main.dart';
 import 'package:doctor/pages/qualification/image_choose_widget.dart';
 import 'package:doctor/pages/user/auth/viewmodel/auth_step1_view_model.dart';
 import 'package:doctor/route/fade_route.dart';
@@ -47,13 +46,13 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             value: _model,
             child: Consumer<AuthenticationViewModel>(
               builder: (context, model, child) {
-                return SingleChildScrollView(
-                  child: Container(
-                    color: const Color(0xFFF3F5F8),
-                    height: MediaQuery.of(context).size.height - 100,
-                    child: Stack(
-                      children: [
-                        Column(
+                return Container(
+                  color: const Color(0xFFF3F5F8),
+                  height: MediaQuery.of(context).size.height - 100,
+                  child: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        child: Column(
                           children: [
                             commonTips(),
                             CrudeProgressWidget(1),
@@ -87,64 +86,66 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                   left: 76, right: 76, top: 12),
                               child: agreement(),
                             ),
+                            Container(height: 105,width: double.infinity)
                           ],
                         ),
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: 30, right: 30, bottom: 40),
-                            child: AceButton(
-                              width: double.infinity,
-                              type: model.canNext
-                                  ? AceButtonType.primary
-                                  : AceButtonType.grey,
-                              text: "下一步",
-                              onPressed: () async {
-                                _unFocus();
-                                if (model.isCommitting) {
-                                  return;
-                                }
-                                if (model.canNext) {
-                                  model
-                                      .commitAuthenticationData()
-                                      .then((data) async {
-                                    debugPrint("success -> $data");
-                                    _resetFocus();
-                                    if(data != null && data is String && !TextUtil.isEmpty(data)){
-                                      await showNoticeDialog(data);
+                      )
+                      ,
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              left: 30, right: 30, bottom: 30,top: 105),
+                          child: AceButton(
+                            width: double.infinity,
+                            type: model.canNext
+                                ? AceButtonType.primary
+                                : AceButtonType.grey,
+                            text: "下一步",
+                            onPressed: () async {
+                              _unFocus();
+                              if (model.isCommitting) {
+                                return;
+                              }
+                              if (model.canNext) {
+                                model
+                                    .commitAuthenticationData()
+                                    .then((data) async {
+                                  debugPrint("success -> $data");
+                                  _resetFocus();
+                                  if(data != null && data is String && !TextUtil.isEmpty(data)){
+                                    await showNoticeDialog(data);
+                                  }
+                                  _goNextStep();
+                                }).catchError((error) {
+                                  debugPrint("error -> $error");
+                                  if (error is DioError &&
+                                      error.error is Map) {
+                                    var errorCode =
+                                    (error.error as Map)['errorCode'];
+                                    var errorMsg =
+                                    (error.error as Map)['errorMsg'];
+                                    if ('00010010' == errorCode) {
+                                      setState(() {
+                                        _idNotMatchErrorMsg = errorMsg;
+                                      });
+                                    } else if ('00010009' == errorCode) {
+                                      showNoticeDialog(errorMsg,
+                                          number: model.customServicePhone);
                                     }
-                                    _goNextStep();
-                                  }).catchError((error) {
-                                    debugPrint("error -> $error");
-                                    if (error is DioError &&
-                                        error.error is Map) {
-                                      var errorCode =
-                                      (error.error as Map)['errorCode'];
-                                      var errorMsg =
-                                      (error.error as Map)['errorMsg'];
-                                      if ('00010010' == errorCode) {
-                                        setState(() {
-                                          _idNotMatchErrorMsg = errorMsg;
-                                        });
-                                      } else if ('00010009' == errorCode) {
-                                        showNoticeDialog(errorMsg,
-                                            number: model.customServicePhone);
-                                      }
-                                    } else if (error?.error != null &&
-                                        error.error is String) {
-                                      EasyLoading.showToast(error?.error);
-                                    }
-                                  });
-                                }
-                              },
-                            ),
+                                  } else if (error?.error != null &&
+                                      error.error is String) {
+                                    EasyLoading.showToast(error?.error);
+                                  }
+                                });
+                              }
+                            },
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
                 );
               },
@@ -331,7 +332,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     return Container(
       alignment: Alignment.center,
       color: const Color(0xFF88BEFF),
-      height: 30,
+      padding: EdgeInsets.symmetric(vertical: 2,horizontal: 2),
       child: Text(
         "注：以下信息仅供认证使用，请您放心填写，我们将严格保密",
         style: const TextStyle(fontSize: 12, color: Color(0xFF222222)),

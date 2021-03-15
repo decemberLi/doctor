@@ -59,7 +59,7 @@ class DoctorAuthenticationStepTwoPageState
                             CrudeProgressWidget(2),
                             Container(
                               margin:
-                              EdgeInsets.only(top: 12, left: 16, right: 16),
+                                  EdgeInsets.only(top: 12, left: 16, right: 16),
                               width: double.infinity,
                               decoration: BoxDecoration(
                                   color: Colors.white,
@@ -85,7 +85,7 @@ class DoctorAuthenticationStepTwoPageState
                                   ),
                                   Padding(
                                     padding:
-                                    EdgeInsets.only(bottom: 40, left: 18),
+                                        EdgeInsets.only(bottom: 40, left: 18),
                                     child: Text(
                                       "*支持执业证、资格证或者医师工作证等",
                                       style: const TextStyle(
@@ -93,7 +93,8 @@ class DoctorAuthenticationStepTwoPageState
                                         color: Color(0xFF888888),
                                       ),
                                     ),
-                                  )
+                                  ),
+                                  Container(height: 100,width: double.infinity)
                                 ],
                               ),
                             ),
@@ -106,7 +107,7 @@ class DoctorAuthenticationStepTwoPageState
                           bottom: 0,
                           child: Container(
                             margin: EdgeInsets.only(
-                                left: 30, right: 30, bottom: 26),
+                                left: 30, right: 30, bottom: 30, top: 30),
                             child: AceButton(
                               width: double.infinity,
                               type: model.canNext
@@ -116,7 +117,7 @@ class DoctorAuthenticationStepTwoPageState
                                   ? "提交"
                                   : "重新提交",
                               onPressed: () async {
-                                if(!model.canNext){
+                                if (!model.canNext) {
                                   return;
                                 }
                                 if (model.isCommitting) {
@@ -124,14 +125,14 @@ class DoctorAuthenticationStepTwoPageState
                                 }
                                 model.setIsCommitting(true);
                                 model.commitAuthenticationData().then(
-                                        (success) async {
-                                      model.setIsCommitting(false);
-                                      await Navigator.pushNamed(
-                                          context,
-                                          RouteManager
-                                              .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-                                      Navigator.pop(context, true);
-                                    }, onError: (error) {
+                                    (success) async {
+                                  model.setIsCommitting(false);
+                                  await Navigator.pushNamed(
+                                      context,
+                                      RouteManager
+                                          .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                                  Navigator.pop(context, true);
+                                }, onError: (error) {
                                   model.setIsCommitting(false);
                                 });
                               },
@@ -148,7 +149,7 @@ class DoctorAuthenticationStepTwoPageState
       onWillPop: () async {
         var needPop = await showNoTitleConfirmDialog(
             context: context, content: '您还未完成医师身份认证，确定退出吗');
-        if(needPop){
+        if (needPop) {
           Navigator.pop(context, true);
         }
         return Future.value(needPop);
@@ -162,7 +163,7 @@ class DoctorAuthenticationStepTwoPageState
     return Container(
       alignment: Alignment.center,
       color: const Color(0xFF88BEFF),
-      height: 30,
+      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
       child: Text(
         "注：以下信息仅供认证使用，请您放心填写，我们将严格保密",
         style: const TextStyle(fontSize: 12, color: Color(0xFF222222)),
