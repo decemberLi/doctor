@@ -223,11 +223,9 @@ class _HomePageState extends State<HomePage>
                       'doctorData': model.data.toJson(),
                       'openType': 'SURE_INFO',
                     });
-                if (result != null) {
-                  await model.queryDoctorInfo();
-                  if (model.data.basicInfoAuthStatus == 'COMPLETED') {
-                    Navigator.of(context).pop();
-                  }
+                await model.queryDoctorInfo();
+                if (model.data.basicInfoAuthStatus == 'COMPLETED') {
+                  Navigator.of(context).pop();
                 }
               },
             ),
