@@ -613,6 +613,10 @@ class _ResearchDetailState extends State<ResearchDetail>
     );
     return GestureDetector(
       onTap: () {
+        if (item.disable) {
+          EasyLoading.showToast("问卷已下架，请联系管理员处理");
+          return;
+        }
         var url =
             "https://m-dev.e-medclouds.com/mpost/#/questionnaire?learnPlanId=${data.learnPlanId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}";
         MedcloudsNativeApi.instance().openWebPage(url);

@@ -15,6 +15,7 @@ class Questionnaires {
   String status;
   int sort;
   int completeTime;
+  bool disable;
 
   Questionnaires(
     this.questionnaireId,
@@ -26,6 +27,7 @@ class Questionnaires {
     this.status,
     this.sort,
     this.completeTime,
+      this.disable,
   );
 
   factory Questionnaires.fromJson(Map<String, dynamic> json) =>

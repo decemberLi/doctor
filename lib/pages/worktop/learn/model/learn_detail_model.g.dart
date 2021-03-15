@@ -16,6 +16,7 @@ _$QuestionnairesFromJson(Map<String, dynamic> json) {
     json['status'] as String,
     json['sort'] as int,
     json['completeTime'] as int,
+    json['disable'] as bool,
   );
 }
 
@@ -30,6 +31,7 @@ Map<String, dynamic> _$QuestionnairesToJson(Questionnaires instance) =>
       'status': instance.status,
       'sort': instance.sort,
       'completeTime': instance.completeTime,
+      'disable':instance.disable,
     };
 
 Resources _$ResourcesFromJson(Map<String, dynamic> json) {
