@@ -85,12 +85,9 @@ class AuthStatusPassPage extends StatelessWidget {
                 onTap: () {
                   EasyLoading.instance.flash(() async {
                     var ret = await _getPdfFileUrl();
-                    EasyLoading.show();
                     FlutterFilePreview.openFile(ret,
                         title: '协议', context: context, onLoadFinished: () {
-                      EasyLoading.dismiss();
                     });
-                    EasyLoading.dismiss();
                   });
                 },
               ),
