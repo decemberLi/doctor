@@ -74,7 +74,14 @@ class ImageChooseWidget extends StatelessWidget {
     }
 
     if (url == null || url == '') {
-      return _container(child: cameraWidget);
+      return GestureDetector(
+          child: _container(child: cameraWidget),
+          onTap: () {
+            if (addImgCallback != null) {
+              addImgCallback();
+            }
+          }
+      );
     }
 
     return Container(
@@ -87,16 +94,16 @@ class ImageChooseWidget extends StatelessWidget {
             width: width ?? double.infinity,
             decoration: _dashDecoration,
             child: GestureDetector(child: Image.network(url, fit: BoxFit.fill),
-            onTap: (){
-              showOriginImgCallback();
-            },),
+              onTap: (){
+                showOriginImgCallback();
+              },),
           ),
           Positioned(
-            right: -6,
-            top: -6,
+            right: -16,
+            top: -16,
             child: GestureDetector(
               child: Container(
-                padding: EdgeInsets.only(left: 10, bottom: 10),
+                padding: EdgeInsets.only(left: 10, bottom: 10,top: 10, right: 10),
                 child: Icon(
                   Icons.remove_circle,
                   size: 18.0,

@@ -46,106 +46,109 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             value: _model,
             child: Consumer<AuthenticationViewModel>(
               builder: (context, model, child) {
-                return Container(
-                  color: const Color(0xFFF3F5F8),
-                  height: MediaQuery.of(context).size.height - 100,
-                  child: Stack(
-                    children: [
-                      SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            commonTips(),
-                            CrudeProgressWidget(1),
-                            Container(
-                                margin: EdgeInsets.symmetric(horizontal: 16),
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 16, horizontal: 18),
-                                  child: Column(
-                                    children: [
-                                      _buildIdCardWidget(model),
-                                      if (model.needShowIdCardInfo)
-                                        _buildItemWidget("姓名：",
-                                            model.data.identityName ?? ''),
-                                      if (model.needShowIdCardInfo)
-                                        _buildItemWidget("身份证号：",
-                                            model.data.identityNo ?? ''),
-                                      _underLineContainer(
-                                          _phoneNumberWidget(model)),
-                                      _underLineContainer(
-                                          _bankCardWidget(model))
-                                    ],
-                                  ),
-                                )),
-                            Container(
-                              margin: EdgeInsets.only(
-                                  left: 76, right: 76, top: 12),
-                              child: agreement(),
-                            ),
-                            Container(height: 105,width: double.infinity)
-                          ],
-                        ),
-                      )
-                      ,
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              left: 30, right: 30, bottom: 30,top: 105),
-                          child: AceButton(
-                            width: double.infinity,
-                            type: model.canNext
-                                ? AceButtonType.primary
-                                : AceButtonType.grey,
-                            text: "下一步",
-                            onPressed: () async {
-                              _unFocus();
-                              if (model.isCommitting) {
-                                return;
-                              }
-                              if (model.canNext) {
-                                model
-                                    .commitAuthenticationData()
-                                    .then((data) async {
-                                  debugPrint("success -> $data");
-                                  _resetFocus();
-                                  if(data != null && data is String && !TextUtil.isEmpty(data)){
-                                    await showNoticeDialog(data);
-                                  }
-                                  _goNextStep();
-                                }).catchError((error) {
-                                  debugPrint("error -> $error");
-                                  if (error is DioError &&
-                                      error.error is Map) {
-                                    var errorCode =
-                                    (error.error as Map)['errorCode'];
-                                    var errorMsg =
-                                    (error.error as Map)['errorMsg'];
-                                    if ('00010010' == errorCode) {
-                                      setState(() {
-                                        _idNotMatchErrorMsg = errorMsg;
-                                      });
-                                    } else if ('00010009' == errorCode) {
-                                      showNoticeDialog(errorMsg,
-                                          number: model.customServicePhone);
-                                    }
-                                  } else if (error?.error != null &&
-                                      error.error is String) {
-                                    EasyLoading.showToast(error?.error);
-                                  }
-                                });
-                              }
-                            },
+                return SingleChildScrollView(
+                  child: Container(
+                    color: const Color(0xFFF3F5F8),
+                    height: MediaQuery.of(context).size.height - 100,
+                    child: Stack(
+                      children: [
+                        SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              commonTips(),
+                              CrudeProgressWidget(1),
+                              Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 16),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 16, horizontal: 18),
+                                    child: Column(
+                                      children: [
+                                        _buildIdCardWidget(model),
+                                        if (model.needShowIdCardInfo)
+                                          _buildItemWidget("姓名：",
+                                              model.data.identityName ?? ''),
+                                        if (model.needShowIdCardInfo)
+                                          _buildItemWidget("身份证号：",
+                                              model.data.identityNo ?? ''),
+                                        _underLineContainer(
+                                            _phoneNumberWidget(model)),
+                                        _underLineContainer(
+                                            _bankCardWidget(model))
+                                      ],
+                                    ),
+                                  )),
+                              Container(
+                                margin: EdgeInsets.only(
+                                    left: 76, right: 76, top: 12),
+                                child: agreement(),
+                              ),
+                              Container(height: 105,width: double.infinity)
+                            ],
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                        ,
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                left: 30, right: 30, bottom: 30,top: 105),
+                            child: AceButton(
+                              width: double.infinity,
+                              type: model.canNext
+                                  ? AceButtonType.primary
+                                  : AceButtonType.grey,
+                              text: "下一步",
+                              onPressed: () async {
+                                _goNextStep();
+                                _unFocus();
+                                if (model.isCommitting) {
+                                  return;
+                                }
+                                if (model.canNext) {
+                                  model
+                                      .commitAuthenticationData()
+                                      .then((data) async {
+                                    debugPrint("success -> $data");
+                                    _resetFocus();
+                                    if(data != null && data is String && !TextUtil.isEmpty(data)){
+                                      await showNoticeDialog(data);
+                                    }
+                                    _goNextStep();
+                                  }).catchError((error) {
+                                    debugPrint("error -> $error");
+                                    if (error is DioError &&
+                                        error.error is Map) {
+                                      var errorCode =
+                                      (error.error as Map)['errorCode'];
+                                      var errorMsg =
+                                      (error.error as Map)['errorMsg'];
+                                      if ('00010010' == errorCode) {
+                                        setState(() {
+                                          _idNotMatchErrorMsg = errorMsg;
+                                        });
+                                      } else if ('00010009' == errorCode) {
+                                        showNoticeDialog(errorMsg,
+                                            number: model.customServicePhone);
+                                      }
+                                    } else if (error?.error != null &&
+                                        error.error is String) {
+                                      EasyLoading.showToast(error?.error);
+                                    }
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 );
               },
