@@ -215,6 +215,7 @@ class _MessageListPageState extends State<MessageListPage> {
   }
 
   _openDetail(String type, MessageListEntity entity) async {
+    print("the auth is ---- ");
     if (type == MessageType.TYPE_SYSTEM) {
       // 获取用户当前审核状态
       UserInfoViewModel userModel =
@@ -224,15 +225,21 @@ class _MessageListPageState extends State<MessageListPage> {
         EasyLoading.showToast('获取用户审核状态失败');
         return;
       }
-      var entity = userModel.data;
-      if (entity.authStatus == 'WAIT_VERIFY' || entity.authStatus == 'FAIL') {
-        Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL, arguments: {
-          'doctorData': entity.toJson(),
-          'qualification': true,
-        });
-      } else {
-        await Navigator.pushNamed(
-            context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+      var doctorData = userModel.data;
+      if (doctorData?.identityStatus == 'PASS') {
+        if (doctorData?.authStatus == 'WAIT_VERIFY' || doctorData.authStatus == 'FAIL') {
+          Navigator.pushNamed(
+              context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+        }else if (doctorData.authStatus == 'VERIFYING') {
+          Navigator.pushNamed(
+              context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+        }else if (doctorData.authStatus == 'PASS') {
+          Navigator.pushNamed(
+              context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+        }
+      }else{
+        Navigator.pushNamed(
+            context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
       }
     } else if (type == MessageType.TYPE_LEAN_PLAN) {
       if (entity.params == null || entity.params['learnPlanId'] == null) {
