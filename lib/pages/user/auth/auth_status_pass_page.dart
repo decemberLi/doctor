@@ -90,7 +90,7 @@ class AuthStatusPassPage extends StatelessWidget {
                         title: '协议', context: context, onLoadFinished: () {
                       EasyLoading.dismiss();
                     });
-                    EasyLoading.show();
+                    EasyLoading.dismiss();
                   });
                 },
               ),
