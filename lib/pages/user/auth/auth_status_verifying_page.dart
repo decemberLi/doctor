@@ -24,7 +24,7 @@ class AuthStatusVerifyingPage extends StatelessWidget {
         child: Scaffold(
           backgroundColor: ThemeColor.colorFFF3F5F8,
           appBar: AppBar(
-            title: Text('医师资质认证'),
+            title: Text('医师身份认证'),
             elevation: 1,
             leading: Text(''),
           ),

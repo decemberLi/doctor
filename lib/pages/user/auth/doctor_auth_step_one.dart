@@ -357,7 +357,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
           padding: EdgeInsets.only(bottom: 12),
           child: Text('身份证（需拍摄原件）',
               style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 14,
                   color: const Color(0xFF222222),
                   fontWeight: FontWeight.bold)),
         ),
