@@ -96,7 +96,7 @@ class CaseDetailState extends State<CaseDetail> {
         sex = "男";
       }
       textStyle = TextStyle(
-        fontSize: 14,
+        fontSize: 16,
         color: Colors.black,
       );
     }
@@ -157,7 +157,7 @@ class CaseDetailState extends State<CaseDetail> {
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               children: [
-                Text(name),
+                Text(name,),
                 Container(
                   width: 10,
                 ),
