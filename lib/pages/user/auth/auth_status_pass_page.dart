@@ -32,49 +32,42 @@ class AuthStatusPassPage extends StatelessWidget {
         title: Text('医师身份认证'),
         elevation: 1,
       ),
-      body: Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.only(top: 150),
-        width: double.infinity,
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  assets,
-                  width: 64,
-                  height: 66,
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 24),
-                  child: Text(
-                    authStatusNotice,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: ThemeColor.colorFF222222,
-                    ),
+      body: SingleChildScrollView(
+        child: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.only(top: 150),
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                assets,
+                width: 64,
+                height: 66,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 24),
+                child: Text(
+                  authStatusNotice,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: ThemeColor.colorFF222222,
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 28, left: 50, right: 50),
-                  child: contentWidget,
-                )
-              ],
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: GestureDetector(
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 28, left: 50, right: 50),
+                child: contentWidget,
+              ),
+              GestureDetector(
                 child: Container(
                   alignment: Alignment.center,
-                  padding: EdgeInsets.symmetric(vertical: 30),
+                  padding: EdgeInsets.only(top: 100,bottom: 30),
                   child: Container(
                     decoration: BoxDecoration(
                         border: Border(
                             bottom:
-                                BorderSide(color: const Color(0xFF107BFD)))),
+                            BorderSide(color: const Color(0xFF107BFD)))),
                     child: Text(
                       '查看我的电子合同',
                       style: TextStyle(
@@ -87,12 +80,12 @@ class AuthStatusPassPage extends StatelessWidget {
                     var ret = await _getPdfFileUrl();
                     FlutterFilePreview.openFile(ret,
                         title: '协议', context: context, onLoadFinished: () {
-                    });
+                        });
                   });
                 },
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

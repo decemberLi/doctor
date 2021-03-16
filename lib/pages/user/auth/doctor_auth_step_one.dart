@@ -87,18 +87,17 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                     left: 76, right: 76, top: 12),
                                 child: agreement(),
                               ),
-                              Container(height: 105,width: double.infinity)
+                              Container(height: 105, width: double.infinity)
                             ],
                           ),
-                        )
-                        ,
+                        ),
                         Positioned(
                           left: 0,
                           right: 0,
                           bottom: 0,
                           child: Container(
                             margin: EdgeInsets.only(
-                                left: 30, right: 30, bottom: 30,top: 105),
+                                left: 30, right: 30, bottom: 30, top: 105),
                             child: AceButton(
                               width: double.infinity,
                               type: model.canNext
@@ -107,6 +106,8 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                               text: "下一步",
                               onPressed: () async {
                                 _unFocus();
+                                Navigator.pushNamed(
+                                    context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
                                 if (model.isCommitting) {
                                   return;
                                 }
@@ -116,7 +117,9 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                       .then((data) async {
                                     debugPrint("success -> $data");
                                     _resetFocus();
-                                    if(data != null && data is String && !TextUtil.isEmpty(data)){
+                                    if (data != null &&
+                                        data is String &&
+                                        !TextUtil.isEmpty(data)) {
                                       await showNoticeDialog(data);
                                     }
                                     _goNextStep();
@@ -125,9 +128,9 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                     if (error is DioError &&
                                         error.error is Map) {
                                       var errorCode =
-                                      (error.error as Map)['errorCode'];
+                                          (error.error as Map)['errorCode'];
                                       var errorMsg =
-                                      (error.error as Map)['errorMsg'];
+                                          (error.error as Map)['errorMsg'];
                                       if ('00010010' == errorCode) {
                                         setState(() {
                                           _idNotMatchErrorMsg = errorMsg;
@@ -334,7 +337,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     return Container(
       alignment: Alignment.center,
       color: const Color(0xFF88BEFF),
-      padding: EdgeInsets.symmetric(vertical: 2,horizontal: 2),
+      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
       child: Text(
         "注：以下信息仅供认证使用，请您放心填写，我们将严格保密",
         style: const TextStyle(fontSize: 12, color: Color(0xFF222222)),
@@ -368,7 +371,10 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
               hintText: '人像面照片',
               url: model.data.idCardLicenseFront?.url,
               addImgCallback: () => idCardFaceSideOcr(),
-              removeImgCallback: () => _model.setIdCardFaceSide(null),
+              removeImgCallback: () {
+                _idNotMatchErrorMsg = null;
+                _model.setIdCardFaceSide(null);
+              },
               showOriginImgCallback: () {
                 _showOriginImage(data, 0);
               },
@@ -381,7 +387,10 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
               hintText: '国徽面照片',
               url: model.data.idCardLicenseBehind?.url,
               addImgCallback: () => idCardBackSideOcr(),
-              removeImgCallback: () => _model.setIdCardBackgroundSide(null),
+              removeImgCallback: () {
+                _idNotMatchErrorMsg = null;
+                _model.setIdCardBackgroundSide(null);
+              },
               showOriginImgCallback: () {
                 _showOriginImage(data, 1);
               },
