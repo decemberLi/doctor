@@ -2,14 +2,13 @@ package com.emedclouds.doctor
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.multidex.MultiDex
 import com.emedclouds.doctor.common.thirdpart.apm.APM
 import com.emedclouds.doctor.common.thirdpart.push.receiver.PushSdk
 import com.emedclouds.doctor.common.thirdpart.report.Reporter
 import com.emedclouds.doctor.common.thirdpart.report.appLaunch
 import com.emedclouds.doctor.utils.PackerNg
-import com.emedclouds.doctor.utils.SystemUtil
+import com.emedclouds.doctor.utils.SystemUtil.Companion.isAppMainProcess
 import com.tencent.ocr.sdk.common.OcrModeType
 import com.tencent.ocr.sdk.common.OcrSDKConfig
 import com.tencent.ocr.sdk.common.OcrSDKKit
@@ -25,8 +24,7 @@ class YYYApplication : FlutterApplication() {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
-        Log.d(TAG, "attachBaseContext: ${SystemUtil.getProcessName(this)}")
-        if (BuildConfig.APPLICATION_ID != SystemUtil.getProcessName(this)) {
+        if(!isAppMainProcess(this)){
             return
         }
         MultiDex.install(base)
@@ -35,6 +33,9 @@ class YYYApplication : FlutterApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        if(!isAppMainProcess(this)){
+            return
+        }
         context = this
         val apkChannelName = PackerNg.getChannel(this)
         APM.init(applicationContext, resources.getString(R.string.bugly_app_id), apkChannelName)
