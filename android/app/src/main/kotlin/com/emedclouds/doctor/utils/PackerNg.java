@@ -1,6 +1,7 @@
 package com.emedclouds.doctor.utils;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,9 @@ public class PackerNg {
      */
     @NonNull
     public static String getChannel(@NonNull Context context, @NonNull String defaultValue) {
+        Log.d(TAG, String.format("getChannel: startTime -> %s,", SystemClock.elapsedRealtime()));
         final String channel = ChannelReaderUtil.getChannel(context.getApplicationContext());
+        Log.d(TAG, String.format("getChannel: endTime -> %s,", SystemClock.elapsedRealtime()));
         Log.i(TAG, "getChannel: " + channel);
         return channel != null ? channel : defaultValue;
     }

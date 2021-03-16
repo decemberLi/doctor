@@ -4,8 +4,7 @@ import android.app.ActivityManager
 import android.app.ActivityManager.MOVE_TASK_WITH_HOME
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
-
-
+import android.os.Process
 
 
 class SystemUtil {
@@ -24,7 +23,7 @@ class SystemUtil {
             return false
         }
 
-        fun setTopApp(context: Context):Boolean {
+        fun setTopApp(context: Context): Boolean {
             if (isForeground(context)) {
                 return true
             }
@@ -41,6 +40,17 @@ class SystemUtil {
                 }
             }
             return false
+        }
+
+        fun getProcessName(ctx: Context): String? {
+            val activityManager = ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val processes: List<ActivityManager.RunningAppProcessInfo> = activityManager.runningAppProcesses
+            for (processInfo in processes) {
+                if (processInfo.pid == Process.myPid()) {
+                    return processInfo.processName;
+                }
+            }
+            return null
         }
     }
 }
