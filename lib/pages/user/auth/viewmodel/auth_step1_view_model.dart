@@ -20,7 +20,7 @@ class AuthenticationViewModel extends ViewStateModel {
   var _showIdCardInfo = false;
   var _canNext = false;
   bool _agree = false;
-  var _customerServicePhone = '028-XXXXXXXX';
+  var _customerServicePhone = '13198064238';
   var _isCommitting = false;
   var _isScanBankCard = false;
 

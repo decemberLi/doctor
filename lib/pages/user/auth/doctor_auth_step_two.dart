@@ -47,7 +47,7 @@ class DoctorAuthenticationStepTwoPageState
                 return SingleChildScrollView(
                   child: Container(
                     color: const Color(0xFFF3F5F8),
-                    height: MediaQuery.of(context).size.height,
+                    height: MediaQuery.of(context).size.height - 100,
                     child: Stack(
                       children: [
                         SingleChildScrollView(
