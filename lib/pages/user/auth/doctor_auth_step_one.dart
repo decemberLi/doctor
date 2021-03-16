@@ -106,8 +106,6 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                               text: "下一步",
                               onPressed: () async {
                                 _unFocus();
-                                Navigator.pushNamed(
-                                    context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
                                 if (model.isCommitting) {
                                   return;
                                 }
