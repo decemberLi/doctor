@@ -153,6 +153,7 @@ class MainActivity : FlutterActivity() {
                         OcrType.IDCardOCR_FRONT,
                         CustomConfigUi().apply {
                             titleBarText = "扫描身份证"
+                            remindDialogText = "未能识别证件，是否切换模式拍照上传?"
                         }, object : ISDKKitResultListener {
                     override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
                         Log.d(tag, "onProcessSucceed: $response")
@@ -172,6 +173,7 @@ class MainActivity : FlutterActivity() {
                         OcrType.BankCardOCR,
                         CustomConfigUi().apply {
                             titleBarText = "扫描银行卡"
+                            remindDialogText = "未能识别证件，是否切换模式拍照上传?"
                         }, object : ISDKKitResultListener {
                     override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
                         Log.d(tag, "onProcessSucceed: $response")
@@ -191,6 +193,7 @@ class MainActivity : FlutterActivity() {
                         OcrType.IDCardOCR_BACK,
                         CustomConfigUi().apply {
                             titleBarText = "扫描身份证"
+                            remindDialogText = "未能识别证件，是否切换模式拍照上传?"
                         }, object : ISDKKitResultListener {
                     override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
                         Log.d(tag, "onProcessSucceed: $response")

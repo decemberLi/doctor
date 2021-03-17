@@ -76,7 +76,7 @@ class AuthStatusVerifyingPage extends StatelessWidget {
                               text: "返回工作台",
                               onPressed: () async {
                                 eventBus.fire(EventHomeTab.createWorkTopEvent());
-                                Navigator.pop(context,true);
+                                Navigator.popUntil(context,  ModalRoute.withName(RouteManager.HOME));
                               },
                             ),
                           ),
@@ -91,7 +91,7 @@ class AuthStatusVerifyingPage extends StatelessWidget {
                               text: "去逛逛",
                               onPressed: () async {
                                 eventBus.fire(EventHomeTab.createDoctorCircleEvent());
-                                Navigator.pop(context,true);
+                                Navigator.popUntil(context,  ModalRoute.withName(RouteManager.HOME));
                               },
                             ),
                           ),
