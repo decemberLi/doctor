@@ -4,11 +4,12 @@ import android.content.Context
 import com.emedclouds.doctor.BuildConfig
 import com.tencent.bugly.crashreport.CrashReport
 import com.tencent.bugly.crashreport.CrashReport.CrashHandleCallback
+import com.tencent.bugly.crashreport.CrashReport.putUserData
 
 class APM {
 
     companion object {
-        fun init(ctx: Context, appId: String,channel: String) {
+        fun init(ctx: Context, appId: String, channel: String) {
             val strategy = CrashReport.UserStrategy(ctx).apply {
                 appVersion = BuildConfig.VERSION_NAME
                 appPackageName = BuildConfig.APPLICATION_ID
@@ -25,6 +26,7 @@ class APM {
                     }
 
                 })
+                putUserData(ctx, "buildId", "${BuildConfig.VERSION_CODE}")
             }
             CrashReport.setIsDevelopmentDevice(ctx, BuildConfig.DEBUG)
 
