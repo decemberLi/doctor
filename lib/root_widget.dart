@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
+import 'package:doctor/common/event/event_home_tab.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
@@ -101,14 +102,30 @@ class RootWidget extends StatelessWidget {
             }
             print("the obj is ---- end");
           } else if (type == "ASSIGN_STUDY_PLAN") {
-            // 学习计划详情
-            var learnPlanId = obj["learnPlanId"];
-            Navigator.of(context).pushNamed(
-              RouteManager.LEARN_DETAIL,
-              arguments: {
-                'learnPlanId': learnPlanId,
-              },
-            );
+            var template = obj['taskTemplate'];
+            if (template == 'MEDICAL_SURVEY') {
+              if (model.data.authStatus == 'PASS') {
+                var learnPlanId = obj["learnPlanId"];
+                Navigator.of(context).pushNamed(
+                  RouteManager.LEARN_DETAIL,
+                  arguments: {
+                    'learnPlanId': learnPlanId,
+                  },
+                );
+              }else{
+                eventBus.fire(EventHomeTab.createWorkTopEvent());
+                Navigator.of(context).popUntil(ModalRoute.withName(RouteManager.HOME));
+              }
+            }else{
+              // 学习计划详情
+              var learnPlanId = obj["learnPlanId"];
+              Navigator.of(context).pushNamed(
+                RouteManager.LEARN_DETAIL,
+                arguments: {
+                  'learnPlanId': learnPlanId,
+                },
+              );
+            }
           } else if (type == "RELEARN") {
             // 学习计划详情
             var learnPlanId = obj["learnPlanId"];
