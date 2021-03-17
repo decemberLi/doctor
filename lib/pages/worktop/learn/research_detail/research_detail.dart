@@ -627,12 +627,7 @@ class _ResearchDetailState extends State<ResearchDetail>
   }
 
   Widget typeDecoratedBox(String type) {
-    Color rendColor = ThemeColor.color72c140;
-    if (type == 'VIDEO') {
-      rendColor = ThemeColor.color5d9df7;
-    } else if (type == 'QUESTIONNAIRE') {
-      rendColor = ThemeColor.colorefaf41;
-    }
+    Color rendColor = Color(0xffFAAD14);
     return DecoratedBox(
       decoration: BoxDecoration(color: rendColor),
       child: Padding(

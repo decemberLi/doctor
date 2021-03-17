@@ -189,7 +189,7 @@ class CaseDetailState extends State<CaseDetail> {
         buildText(_nameController, 10, TextInputType.text));
         canSave = canSave && _nameController.text.length > 0;
       }else if (item == "patientCode") {
-        one = buildItem("编码",
+        one = buildItem("患者编码",
         buildText(_codeController, 20, TextInputType.text));
         canSave = canSave && _codeController.text.length > 0;
       }else if (item  == "age") {
