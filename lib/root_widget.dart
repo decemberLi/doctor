@@ -39,8 +39,9 @@ class RootWidget extends StatelessWidget {
   RootWidget(this.showGuide) {
     SessionManager.shared.addListener(() {
       var context = NavigationService().navigatorKey.currentContext;
+      debugPrint("RootWidget -> isLogin: ${SessionManager.shared.isLogin}");
       if (SessionManager.shared.isLogin) {
-        Navigator.of(context).pushReplacementNamed(RouteManager.HOME);
+        Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.HOME, (route)=>false);
       } else {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => LoginByCaptchaPage()),
