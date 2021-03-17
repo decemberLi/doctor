@@ -262,10 +262,17 @@ class CaseDetailState extends State<CaseDetail> {
 
                     if (_ageController.text != null && _ageController.text.length > 0) {
                       try {
-                        data.age = int.parse(_ageController.text);
-                      }catch(e){
-                        EasyLoading.showToast('年龄请填写数字');
-                          return;
+                        int age = int.parse(_ageController.text);
+                        if (age < 0) {
+                          throw "-1";
+                        }
+                        data.age = age;
+                      }catch(e) {
+                        EasyLoading.showToast(
+                            '请输入正确的年龄', duration: Duration(seconds: 1));
+
+                        await Future.delayed(Duration(seconds: 1));
+                        return;
                       }
                     }
 
@@ -273,7 +280,8 @@ class CaseDetailState extends State<CaseDetail> {
                     print("the data is ${data.toJson()}");
                     await API.shared.server.updateIllnessCase(data.toJson());
                     data.status = "COMPLETE";
-                    EasyLoading.showToast("保存成功");
+                    await EasyLoading.showToast("保存成功");
+                    await Future.delayed(Duration(seconds: 1));
                     Navigator.of(context).pop();
                   });
                 },
