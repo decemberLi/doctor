@@ -259,8 +259,14 @@ class CaseDetailState extends State<CaseDetail> {
                   EasyLoading.instance.flash(() async {
                     data.hospital = _hospitalController.text;
                     data.patientName = _nameController.text;
+
                     if (_ageController.text != null && _ageController.text.length > 0) {
-                      data.age = int.parse(_ageController.text);
+                      try {
+                        data.age = int.parse(_ageController.text);
+                      }catch(e){
+                        EasyLoading.showToast('年龄请填写数字');
+                          return;
+                      }
                     }
 
                     data.patientCode = _codeController.text;
