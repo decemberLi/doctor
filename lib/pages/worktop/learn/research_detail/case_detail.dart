@@ -61,23 +61,30 @@ class CaseDetailState extends State<CaseDetail> {
     var noneBorder = UnderlineInputBorder(
       borderSide: BorderSide(width: 0, color: Colors.transparent),
     );
-    return TextField(
-      enabled: widget.canSubmit,
-      maxLength: maxLength,
-      controller: controller,
-      textAlign: TextAlign.end,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        hintText: "请输入",
-        hintStyle: TextStyle(
-          fontSize: 12,
-          color: Color(0xff888888),
+    return Container(
+      constraints: BoxConstraints(
+        minHeight: 10,
+        maxHeight: 100,
+      ),
+      child:TextField(
+        maxLines: null,
+        enabled: widget.canSubmit,
+        maxLength: maxLength,
+        controller: controller,
+        textAlign: TextAlign.end,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          hintText: "请输入",
+          hintStyle: TextStyle(
+            fontSize: 12,
+            color: Color(0xff888888),
+          ),
+          border: noneBorder,
+          focusedBorder: noneBorder,
+          enabledBorder: noneBorder,
+          disabledBorder: noneBorder,
+          counterText: "",
         ),
-        border: noneBorder,
-        focusedBorder: noneBorder,
-        enabledBorder: noneBorder,
-        disabledBorder: noneBorder,
-        counterText: "",
       ),
     );
   }
@@ -140,10 +147,14 @@ class CaseDetailState extends State<CaseDetail> {
             });
         picker.showModal(context);
       },
-      child: Text(
-        sex,
-        textAlign: TextAlign.end,
-        style: textStyle,
+      child: Container(
+        height: 50,
+        alignment: AlignmentDirectional.centerEnd,
+        child: Text(
+          sex,
+          textAlign: TextAlign.end,
+          style: textStyle,
+        ),
       ),
     );
   }
@@ -153,7 +164,6 @@ class CaseDetailState extends State<CaseDetail> {
       child: Column(
         children: [
           Container(
-            height: 48,
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               children: [
