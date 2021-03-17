@@ -184,9 +184,6 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     var result = await Navigator.pushNamed(
         context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
     debugPrint("page poped , & value is $result");
-    if (result != null && (result is bool) && result) {
-      Navigator.pop(context);
-    }
   }
 
   showNoticeDialog(String content, {String number = null}) async {
