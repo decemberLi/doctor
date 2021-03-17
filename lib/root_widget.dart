@@ -135,9 +135,6 @@ class RootWidget extends StatelessWidget {
     HttpManager.shared.onResponse = (response) async {
       EasyLoading.dismiss();
       debugPrint("url - ${response.request.baseUrl} data - ${response.data}");
-      if(!response.data is Map){
-        throw '数据解析错误';
-      }
       Map<String, dynamic> data = response.data;
       String status = data["status"];
       if (status.toUpperCase() == "ERROR") {
