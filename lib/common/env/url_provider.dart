@@ -13,4 +13,17 @@ class UrlProvider {
 
     throw AssertionError('environment info error.');
   }
+
+  static String mHost(Environment environment){
+    switch (environment.env) {
+      case AppEnvironment.ENV_PROD:
+        return 'https://m.e-medclouds.com/';
+      case AppEnvironment.ENV_QA:
+        return 'https://m-dev.e-medclouds.com/';
+      case AppEnvironment.ENV_DEV:
+        return 'https://m-dev.e-medclouds.com/';
+    }
+
+    throw AssertionError('environment info error.');
+  }
 }

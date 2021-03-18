@@ -1,3 +1,5 @@
+import 'package:doctor/common/env/environment.dart';
+import 'package:doctor/common/env/url_provider.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
@@ -618,7 +620,7 @@ class _ResearchDetailState extends State<ResearchDetail>
           return;
         }
         var url =
-            "https://m-dev.e-medclouds.com/mpost/#/questionnaire?learnPlanId=${data.learnPlanId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}";
+            "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?learnPlanId=${data.learnPlanId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}";
         MedcloudsNativeApi.instance().openWebPage(url);
         print("on tap $url");
       },
