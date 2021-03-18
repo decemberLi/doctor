@@ -115,7 +115,7 @@ class AuthenticationViewModel extends ViewStateModel {
       await API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
         (value) {
           _isCommitting = false;
-          debugPrint(value);
+          debugPrint("$value");
           completer.complete(value);
         },
         onError: (error, msg) {
