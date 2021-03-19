@@ -40,8 +40,8 @@ target 'Runner' do
   pod 'MBProgressHUD'
   pod 'Bugly'
   pod 'UMCommon'
-  pod 'JCore', '2.1.4-noidfa'
-  pod 'JPush', '3.2.4-noidfa'
+  pod 'JCore', '2.4.0-noidfa'
+  pod 'JPush', '3.3.6'
 end
 
 post_install do |installer|

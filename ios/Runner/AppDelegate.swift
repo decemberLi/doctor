@@ -330,6 +330,10 @@ extension AppDelegate : JPUSHRegisterDelegate {
         naviChannel.invokeMethod("receiveNotification", arguments: value)
         
     }
+    func jpushNotificationAuthorization(_ status: JPAuthorizationStatus, withInfo info: [AnyHashable : Any]!) {
+        
+    }
+    
     func jpushNotificationCenter(_ center: UNUserNotificationCenter!, willPresent notification: UNNotification!, withCompletionHandler completionHandler: ((Int) -> Void)!) {
         let info = notification.request.content.userInfo
         JPUSHService.handleRemoteNotification(info)
