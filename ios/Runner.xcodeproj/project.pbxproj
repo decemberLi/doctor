@@ -29,6 +29,7 @@
 		6A8CE77425EE293400BFE666 /* OCRManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A8CE77325EE293400BFE666 /* OCRManager.mm */; };
 		6ABA8A8A25C79DFC0090BC4C /* WebVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABA8A8825C79DFC0090BC4C /* WebVC.swift */; };
 		6ABA8A8B25C79DFC0090BC4C /* WebVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6ABA8A8925C79DFC0090BC4C /* WebVC.xib */; };
+		6ABC99A526044370006C7119 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ABC99A426044370006C7119 /* StoreKit.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -72,6 +73,7 @@
 		6A8CE77525EE295E00BFE666 /* OCRManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OCRManager.h; sourceTree = "<group>"; };
 		6ABA8A8825C79DFC0090BC4C /* WebVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebVC.swift; sourceTree = "<group>"; };
 		6ABA8A8925C79DFC0090BC4C /* WebVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WebVC.xib; sourceTree = "<group>"; };
+		6ABC99A426044370006C7119 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		6ADFEEB925AFF3BC00372E8B /* RunnerDebug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = RunnerDebug.entitlements; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A8CE77125EE286F00BFE666 /* opencv2.framework in Frameworks */,
+				6ABC99A526044370006C7119 /* StoreKit.framework in Frameworks */,
 				41C78659D7500331E9C419B0 /* Pods_Runner.framework in Frameworks */,
 				6A8CE76F25EE286F00BFE666 /* OcrSDKKit.framework in Frameworks */,
 				6A8CE77025EE286F00BFE666 /* YTImageRefiner_pub.framework in Frameworks */,
@@ -108,6 +111,7 @@
 		2438F14B526E88AD1BD6F547 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6ABC99A426044370006C7119 /* StoreKit.framework */,
 				CB3CD1E0B1D6B992AB94E592 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -444,7 +448,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20300;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 44SDL2RZYX;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -598,7 +602,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20300;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 44SDL2RZYX;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -644,7 +648,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20300;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 44SDL2RZYX;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
