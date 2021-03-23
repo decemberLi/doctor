@@ -277,7 +277,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   _uploadFinish(lectureID) {
     EasyLoading.instance.flash(() async {
       print("-------------");
-      print("the lectureID == ${lectureID}");
+      print("the lectureID == $lectureID");
       var result = await API.shared.server.doctorLectureSharePic("$lectureID");
       var appDocDir = await getApplicationDocumentsDirectory();
       if (Platform.isAndroid) {
@@ -363,11 +363,11 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     MedcloudsNativeApi.instance().addProcessor(
       "uploadLearnVideo",
       (args) async {
-        print("call uploadLearnVideo ${args}");
+        print("call uploadLearnVideo $args");
         var obj = json.decode(args);
-        print("call 1111111 ${obj}");
+        print("call 1111111 $obj");
         var entity = await OssService.upload(obj["path"], showLoading: false);
-        print("call 22222 ${entity}");
+        print("call 22222 $entity");
         var result = await API.shared.server.addLectureSubmit(
           {
             'learnPlanId': data.learnPlanId,

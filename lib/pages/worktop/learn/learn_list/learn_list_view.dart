@@ -1,7 +1,6 @@
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_item_wiget.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
-import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/root_widget.dart';
 import 'package:doctor/route/route_manager.dart';

@@ -17,6 +17,7 @@ class BannerViewModel {
           .toList();
       return Future.value(result);
     } on DioError catch (e) {
+      print("the error is $e");
       return Future.value(null);
     } catch (e) {
       print(e);

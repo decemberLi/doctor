@@ -6,9 +6,7 @@ import 'package:doctor/pages/doctors/model/banner_entity.dart';
 import 'package:doctor/pages/doctors/model/doctor_circle_entity.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/category_widget.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/enterprise_open_class_widget.dart';
-import 'package:doctor/pages/doctors/widget/circleflow/hot_post_widget.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/online_classic.dart';
-import 'package:doctor/pages/qualification/model/config_data_entity.dart';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/dtp.dart';
 import 'package:doctor/http/developer.dart';
@@ -97,7 +95,7 @@ class AcademicCircleViewModel {
       List<DoctorCircleEntity> posts = list['records']
           .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
           .toList();
-      List<OnlineClassicEntity> results = List<OnlineClassicEntity>();
+      List<OnlineClassicEntity> results = [];
       for (DoctorCircleEntity each in posts) {
         results.add(OnlineClassicEntity(
           each.postId,
@@ -108,6 +106,7 @@ class AcademicCircleViewModel {
       }
       _onlineClassStreamController.sink.add(results);
     } on DioError catch (e) {
+      print("the e is $e");
     }
   }
 
@@ -119,7 +118,7 @@ class AcademicCircleViewModel {
       List<DoctorCircleEntity> posts = list['records']
           .map<DoctorCircleEntity>((item) => DoctorCircleEntity.fromJson(item))
           .toList();
-      List<OpenClassEntity> results = List<OpenClassEntity>();
+      List<OpenClassEntity> results = [];
       for (DoctorCircleEntity each in posts) {
         results.add(OpenClassEntity(
           each.postId,
@@ -132,6 +131,7 @@ class AcademicCircleViewModel {
       }
       _openClassStreamController.sink.add(results);
     } on DioError catch (e) {
+      print("the error is $e");
     }
   }
 
@@ -153,6 +153,7 @@ class AcademicCircleViewModel {
       } else {
       }
     } on DioError catch (e) {
+      print("the error is $e");
     }
   }
 

@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -159,7 +158,7 @@ class _SubCollectState<T> extends State<NormalTableView>
           );
 
     return Center(
-      child: FlatButton(
+      child: TextButton(
         child: child,
         onPressed: () {
           _loadingGetData();

@@ -127,6 +127,12 @@ class _SearchWidget<T extends Search> extends State<SearchWidget> {
   StreamController<List<T>> _controller = StreamController<List<T>>();
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.close();
+    super.dispose();
+  }
+  @override
   void initState() {
     super.initState();
   }

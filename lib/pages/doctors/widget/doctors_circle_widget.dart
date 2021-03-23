@@ -3,7 +3,6 @@ import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,13 +23,6 @@ class EventVideoOutOfScreen {
 
   EventVideoOutOfScreen(this.offset);
 }
-
-final _colorPanel = {
-  '文献专区': ThemeColor.colorFF52C41A,
-  '病例解析': ThemeColor.colorFF107BFD,
-  '每日医讲': ThemeColor.colorFFFAAD14,
-};
-
 typedef OnScrollerCallback = void Function(double offset);
 
 openBannerDetail(BuildContext context, data) {

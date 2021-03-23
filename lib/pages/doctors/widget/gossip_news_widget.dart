@@ -1,17 +1,13 @@
-import 'dart:math';
 
 import 'package:doctor/common/event/event_model.dart';
-import 'package:doctor/pages/doctors/model/banner_entity.dart';
 import 'package:doctor/pages/doctors/model/in_screen_event_model.dart';
 import 'package:doctor/pages/doctors/viewmodel/doctors_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../root_widget.dart';
 import '../doctors_banner.dart';
@@ -19,7 +15,6 @@ import '../doctors_banner_item.dart';
 import '../model/doctor_circle_entity.dart';
 import 'doctors_circle_widget.dart';
 
-final _avatarPanel = {};
 
 class GossipNewsItemWidget extends StatelessWidget {
   final DoctorCircleEntity data;
@@ -33,15 +28,6 @@ class GossipNewsItemWidget extends StatelessWidget {
 
   GossipNewsItemWidget(this.data, this.onLikeClick);
 
-  Color _avatarColor(int idx) {
-    Color color = _avatarPanel[idx];
-    if (color != null) {
-      return color;
-    }
-    var hitColor = colors[Random().nextInt(3)];
-    _avatarPanel[idx] = hitColor;
-    return hitColor;
-  }
 
   _staticsWidget(BuildContext context, icon, count) {
     return Row(

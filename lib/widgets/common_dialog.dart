@@ -14,11 +14,11 @@ Future<bool> showNoTitleConfirmDialog<bool>(
           child: Text(content ?? ''),
         ),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text("取消"),
             onPressed: () => Navigator.of(context).pop(false), // 关闭对话框
           ),
-          FlatButton(
+          TextButton(
             child: Text(
               "确定",
               style: TextStyle(
@@ -51,11 +51,11 @@ Future<bool> showConfirmDialog<bool>({
           child: Text(content ?? ''),
         ),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text("取消"),
             onPressed: () => Navigator.of(context).pop(false), // 关闭对话框
           ),
-          FlatButton(
+          TextButton(
             child: Text(
               "确定",
               style: TextStyle(

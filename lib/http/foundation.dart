@@ -1,4 +1,3 @@
-import 'package:doctor/http/host_provider.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:http_manager/manager.dart';
 import 'host.dart';

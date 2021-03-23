@@ -3,19 +3,12 @@ import 'dart:io';
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
-import 'package:doctor/pages/worktop/learn/lecture_videos/upload_video.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
-import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
-import 'package:doctor/pages/worktop/learn_plan_page.dart';
-import 'package:doctor/provider/provider_widget.dart';
-import 'package:doctor/route/route_manager.dart';
 
-// import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/debounce.dart';
-import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/utils/no_wifi_notice_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/video/chewie_video.dart';
@@ -211,11 +204,11 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
             child: Text('确认要上传讲课视频吗？'),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text("取消"),
               onPressed: () => Navigator.of(context).pop(false), // 关闭对话框
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 "确定",
                 style: TextStyle(
@@ -299,7 +292,6 @@ class _LearnDetailPageState extends State<LectureVideosPage> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic obj = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

@@ -504,7 +504,7 @@ class _CupertinoControlsState extends State<CupertinoControls> {
       } else {
         _cancelAndRestartTimer();
 
-        if (!controller.value.initialized) {
+        if (!controller.value.isInitialized) {
           controller.initialize().then((_) {
             controller.play();
           });

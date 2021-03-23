@@ -339,7 +339,7 @@ class _DoctorsDetailPageState extends State<DoctorsDetailPage> {
     return Container(
       child: Stack(
         alignment: AlignmentDirectional.topEnd,
-        overflow: Overflow.visible,
+        clipBehavior: Clip.none,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -53,9 +53,7 @@ CommentListItem _$CommentListItemFromJson(Map<String, dynamic> json) {
     json['respondent'] as String,
     json['respondentUserType'] as String,
     (json['secondLevelCommentList'] as List)
-        ?.map((e) => e == null
-            ? null
-            : CommentSecond.fromJson(e as Map<String, dynamic>))
+        ?.map((e) => CommentSecond.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     json['respondentContent'] as String,
   );

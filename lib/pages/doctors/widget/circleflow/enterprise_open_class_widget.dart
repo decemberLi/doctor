@@ -392,7 +392,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
     _controller.setLooping(false);
     _initializeVideoPlayerFuture = _controller.initialize()
       ..whenComplete(() async {
-        initialized = _controller.value.initialized;
+        initialized = _controller.value.isInitialized;
         _volume = _controller.value.volume;
         // 总时长
         _formatTime(_controller.value.duration);

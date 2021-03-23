@@ -1,9 +1,7 @@
 import 'package:doctor/common/event/event_home_tab.dart';
-import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
-import 'package:doctor/pages/prescription/prescription_page.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/reporter_dialog.dart';
 import 'package:doctor/pages/user/setting/update/app_update.dart';
@@ -42,7 +40,6 @@ class _HomePageState extends State<HomePage>
   bool isDoctors = true;
 
   int _currentIndex = 1;
-  int _toIndex = 0;
   final List<Widget> _children = [
     WorktopPage(),
     // PrescriptionPage(),
@@ -78,7 +75,7 @@ class _HomePageState extends State<HomePage>
             child: Text("记得打开消息通知哦\n这样重要消息就可以及时通知您啦"),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(
                 "残忍拒绝",
                 style: TextStyle(
@@ -91,7 +88,7 @@ class _HomePageState extends State<HomePage>
                 Navigator.of(context).maybePop(false);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 "确认",
                 style: TextStyle(
@@ -112,7 +109,6 @@ class _HomePageState extends State<HomePage>
   }
 
   void onTabTapped(int index) async {
-    _toIndex = index;
     if (index == 1) {
       if (isDoctors) {
         eventBus.fire(_outScreenViewModel.event);
@@ -196,7 +192,7 @@ class _HomePageState extends State<HomePage>
             child: Text("您还没有完善医生基础信息"),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(
                 "退出登录",
                 style: TextStyle(
@@ -209,7 +205,7 @@ class _HomePageState extends State<HomePage>
                 MedcloudsNativeApi.instance().logout();
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 "现在去完善",
                 style: TextStyle(
@@ -217,7 +213,7 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
               onPressed: () async {
-                var result = await Navigator.pushNamed(
+                await Navigator.pushNamed(
                     context, RouteManager.USERINFO_DETAIL,
                     arguments: {
                       'doctorData': model.data.toJson(),
@@ -259,7 +255,7 @@ class _HomePageState extends State<HomePage>
             child: Text("认证后才可以进入开处方页面"),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(
                 "取消",
                 style: TextStyle(
@@ -270,7 +266,7 @@ class _HomePageState extends State<HomePage>
                 Navigator.of(context).maybePop(false);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 "马上去",
                 style: TextStyle(
@@ -332,9 +328,6 @@ class _HomePageState extends State<HomePage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    // if (state == AppLifecycleState.resumed && _toIndex == 0) {
-    //   showWeekIfNeededReporter(context);
-    // }
   }
 
   @override

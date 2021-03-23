@@ -303,7 +303,6 @@ class _WorktopPageState extends State<WorktopPage>
             ),
             Row(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
               children: [
                 Text(
                   '${value ?? 0}',
