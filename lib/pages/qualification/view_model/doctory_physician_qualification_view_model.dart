@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:doctor/model/face_photo.dart';
 import 'package:doctor/model/recognize_entity.dart';
-import 'package:doctor/model/oss_policy.dart';
 import 'package:doctor/model/uploaded_file_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_physician_qualification_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
@@ -37,16 +35,6 @@ class DoctorPhysicianQualificationViewModel {
 
   notifyDataChange() {
     _controller.sink.add(_model);
-  }
-
-  _querySignature() async {
-    var result = await API.shared.foundation.aliossPolicy();
-    return OssPolicy.fromJson(result);
-  }
-
-  _saveImage(Map<String, dynamic> param) async {
-    var result = await API.shared.foundation.aliossSave(param);
-    return UploadFileEntity.fromJson(result);
   }
 
   _recognizeIdCard(Map<String, dynamic> param) async {

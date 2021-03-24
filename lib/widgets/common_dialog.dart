@@ -89,7 +89,7 @@ Future<bool> showPrompt<bool>({
           child: Text(content ?? ''),
         ),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text(
               buttonText ?? '确定',
               style: TextStyle(

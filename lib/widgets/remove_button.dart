@@ -14,8 +14,7 @@ class RemoveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      overflow: Overflow.visible,
-      children: [
+      clipBehavior: Clip.none, children: [
         Container(
           height: 30,
           child: OutlinedButton(

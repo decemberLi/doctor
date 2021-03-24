@@ -19,8 +19,6 @@ import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/ace_button.dart';
-import 'package:doctor/utils/constants.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
@@ -400,7 +398,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               flex: 1,
               child: Container(
                 height: 44,
-                child: FlatButton(
+                child: TextButton(
                   onPressed: () {
                     Navigator.of(context).pushNamed(
                         RouteManager.LOOK_LECTURE_VIDEOS,

@@ -10,7 +10,6 @@ import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/time_text.dart';
 import 'package:doctor/widgets/dashed_decoration.dart';
-import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -225,7 +224,7 @@ class _ResearchDetailState extends State<ResearchDetail>
               child: Text("您还未完成问卷$index,\n确定提交吗？"),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(
                   "取消",
                   style: TextStyle(
@@ -236,7 +235,7 @@ class _ResearchDetailState extends State<ResearchDetail>
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(
                   "提交",
                   style: TextStyle(

@@ -189,7 +189,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     }
   }
 
-  showNoticeDialog(String content, {String number = null}) async {
+  showNoticeDialog(String content, {String number }) async {
     _contentTextStyle(color) {
       return TextStyle(fontSize: 14, color: color, height: 1.6);
     }
@@ -234,11 +234,13 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
               ),
             ),
             actions: [
-              FlatButton(
-                height: 44,
-                child: Text(
-                  TextUtil.isEmpty(number) ? "继续" : "确定",
-                  style: _contentTextStyle(ThemeColor.primaryColor),
+              TextButton(
+                child: Container(
+                  height: 44,
+                  child: Text(
+                    TextUtil.isEmpty(number) ? "继续" : "确定",
+                    style: _contentTextStyle(ThemeColor.primaryColor),
+                  ),
                 ),
                 onPressed: () {
                   if (!TextUtil.isEmpty(number)) {

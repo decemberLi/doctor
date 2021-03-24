@@ -105,8 +105,7 @@ class _ImageUploadState extends State<ImageUpload> {
   Widget renderImageItem(OssFileEntity image) {
     return Container(
       child: Stack(
-        overflow: Overflow.visible,
-        children: [
+        clipBehavior: Clip.none, children: [
           ImageItem(
             image: image,
             width: widget.width,

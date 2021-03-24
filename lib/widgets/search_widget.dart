@@ -99,15 +99,15 @@ class _SearchBarState extends State<SearchBar> {
 }
 
 class SearchWidget<T extends Search> extends StatefulWidget {
-  Widget child;
-  String title;
+  final Widget child;
+  final String title;
 
-  String hintText;
-  bool multiChoose;
+  final String hintText;
+  final bool multiChoose;
 
-  OnSearchConditionCallback<T> searchConditionCallback;
-  OnSelectedCallback<T> callback;
-  OnMultiSelectedCallback<T> multiCallback;
+  final OnSearchConditionCallback<T> searchConditionCallback;
+  final OnSelectedCallback<T> callback;
+  final OnMultiSelectedCallback<T> multiCallback;
 
   SearchWidget(
     this.title, {

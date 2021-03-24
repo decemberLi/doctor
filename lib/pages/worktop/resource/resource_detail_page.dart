@@ -21,7 +21,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 import 'comment/input_bar.dart';
 
@@ -425,8 +424,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
         },
         child: Container(
           child: Stack(
-            overflow: Overflow.visible,
-            children: [
+            clipBehavior: Clip.none, children: [
               Positioned(
                 left: 0,
                 right: 0,
@@ -467,8 +465,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                                   level: item['level']);
                             },
                             child: Stack(
-                              overflow: Overflow.visible,
-                              children: [
+                              clipBehavior: Clip.none, children: [
                                 Container(
                                   height: 30,
                                   padding: EdgeInsets.only(left: 30, right: 30),
@@ -511,8 +508,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
                       if (_feedbackData.length > 0)
                         Container(
                           child: Stack(
-                            overflow: Overflow.visible,
-                            children: [
+                            clipBehavior: Clip.none, children: [
                               Container(
                                 margin: EdgeInsets.only(top: 26),
                                 width: 140,

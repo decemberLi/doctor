@@ -285,8 +285,7 @@ class AppUpdateDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Stack(
-                overflow: Overflow.visible,
-                children: [
+                clipBehavior: Clip.none, children: [
                   Image.asset('assets/images/app_update_top.png'),
                   Positioned(
                     right: 21,

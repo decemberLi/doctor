@@ -9,7 +9,6 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
-import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -178,21 +177,7 @@ class _WorktopPageState extends State<WorktopPage>
   }
 
   doctorAvatarWidget(DoctorDetailInfoEntity doctorInfoEntity) {
-    var avatar;
-    if (doctorInfoEntity?.fullFacePhoto?.url != null) {
-      avatar = ImageWidget(
-        url: doctorInfoEntity.fullFacePhoto.url,
-        width: 70,
-        height: 70,
-        fit: BoxFit.fill,
-      );
-    } else {
-      avatar = Image.asset(
-        "assets/images/doctorAva.png",
-        width: 70,
-        fit: BoxFit.fill,
-      );
-    }
+
     // 医生个人信息部分
     var doctorName = doctorInfoEntity?.doctorName ?? '';
     if (doctorInfoEntity?.basicInfoAuthStatus == 'NOT_COMPLETE') {
@@ -490,7 +475,7 @@ class _WorktopPageState extends State<WorktopPage>
           topRight: Radius.circular(28),
         ),
       ),
-      child: FlatButton(
+      child: TextButton(
         onPressed: () {
           print(
               "the identityStatus is ${doctorInfoEntity?.identityStatus} - ${doctorInfoEntity?.authStatus} ");

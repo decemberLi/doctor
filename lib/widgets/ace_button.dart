@@ -48,19 +48,22 @@ class AceButton extends StatelessWidget {
             ),
           ),
     );
-    FlatButton greyBtn = FlatButton(
-      onPressed: debounce(onPressed),
-      color: color ?? ThemeColor.colorFFBCBCBC,
-      shape: shape,
-      child: child ??
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: textColor ?? Colors.white,
-              fontSize: fontSize,
-            ),
-          ),
+    TextButton greyBtn = TextButton(
+        onPressed: debounce(onPressed),
+        child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(height / 2)),
+              color: color ?? ThemeColor.colorFFBCBCBC,),
+            child: child ??
+                Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: textColor ?? Colors.white,
+                    fontSize: fontSize,
+                  ),
+                ),
+        )
     );
 
     FlatButton secondaryBtn = FlatButton(

@@ -64,7 +64,7 @@ class PermissionHelper {
               child: Text(hintText),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(
                   "好的",
                   style: TextStyle(

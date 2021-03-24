@@ -265,7 +265,6 @@ class DoctorAuthenticationStepTwoPageState
     );
   }
 
-  _addImage(FacePhoto value, int index) async {}
 
   _pickImage({bool needCrop = false}) async {
     int index = await DialogHelper.showBottom(context);

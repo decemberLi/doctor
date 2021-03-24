@@ -98,11 +98,6 @@ class _SettingPageState extends State<SettingPage> {
       },
     );
   }
-
-  _obtainAppVersion() async {
-    await PlatformUtils.getAppVersion();
-  }
-
   _buildModifyPwdWidget() {
     return GestureDetector(
       child: Container(

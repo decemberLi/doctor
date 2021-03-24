@@ -20,7 +20,7 @@ Map<String, dynamic> _$ResourceTypeResultToJson(ResourceTypeResult instance) =>
     };
 
 IllnessCase _IllnessCaseFromJson(Map<String, dynamic> json) {
-  print("the json is ${json}");
+  print("the json is $json");
   return IllnessCase(
     json['patientName'] as String,
     json['age'] as int,

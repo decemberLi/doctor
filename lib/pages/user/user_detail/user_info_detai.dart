@@ -20,8 +20,6 @@ import 'package:http_manager/manager.dart';
 import 'package:doctor/http/foundation.dart';
 import 'package:doctor/http/ucenter.dart';
 
-import 'uploadImage.dart';
-
 final uploadData = {
   '性别': 'sex',
   '科室': 'departmentsCode',

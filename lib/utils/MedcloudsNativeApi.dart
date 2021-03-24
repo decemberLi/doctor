@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 typedef OnNativeProcessor = Future Function(String args);
 
@@ -32,7 +31,7 @@ class MedcloudsNativeApi {
         }
         return "${e.message}";
       } catch (e) {
-        print("----------------------${e}");
+        print("----------------------$e");
         return "$e";
       }
 
@@ -123,7 +122,7 @@ class MedcloudsNativeApi {
         params['deviceId'] = "${ids["registerId"]}";
       }
       params['registerId'] = "${ids["registerId"]}";
-      print("the params - ${params}");
+      print("the params - $params");
       GlobalData.shared.registerId = "${ids["registerId"]}";
       await API.shared.foundation.pushDeviceSubmit(params);
     } catch (e) {}

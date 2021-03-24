@@ -30,7 +30,7 @@ class Chewie extends StatefulWidget {
   /// The [ChewieController]
   final ChewieController controller;
 
-  Widget child;
+  final Widget child;
 
   @override
   ChewieState createState() {

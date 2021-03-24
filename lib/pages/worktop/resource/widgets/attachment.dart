@@ -6,7 +6,6 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_file_preview/flutter_file_preview.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class Attacement extends StatelessWidget {
   final ResourceModel data;
