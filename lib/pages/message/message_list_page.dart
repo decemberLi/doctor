@@ -30,7 +30,7 @@ class MessageType {
 }
 
 class MessageListPage extends StatefulWidget {
-  String _type;
+  final String _type;
   Map<String, String> _map = {
     MessageType.TYPE_SYSTEM: '系统消息',
     MessageType.TYPE_PRESCRIPTION: '处方消息',

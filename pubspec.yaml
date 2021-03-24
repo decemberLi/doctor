@@ -68,10 +68,6 @@ dependencies:
 
   open_file: ^3.0.1
 
-  webview_flutter:
-    git:
-      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/webview_flutter.git
-
   # 视频播放
   video_player: ^2.0.2
   # 视频压缩 https://pub.flutter-io.cn/packages/video_compress

@@ -1,5 +1,4 @@
 import 'package:doctor/provider/view_state_model.dart';
-import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +22,7 @@ class AppUpdateModel extends ViewStateModel {
     AppUpdateInfo appUpdateInfo;
     setBusy();
     try {
-      var appVersion = await PlatformUtils.getAppVersion();
+      // var appVersion = await PlatformUtils.getAppVersion();
       // appUpdateInfo =
       //     await AppRepository.checkUpdate(Platform.operatingSystem, appVersion);
       setIdle();

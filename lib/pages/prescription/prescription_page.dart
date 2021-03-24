@@ -125,7 +125,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
             child: Text("患者必须为复诊才能开处方"),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(
                 "确定",
                 style: TextStyle(

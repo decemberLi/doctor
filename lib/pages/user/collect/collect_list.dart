@@ -351,7 +351,7 @@ class _ClooectStudyCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(bottom: 12),
-      child: FlatButton(
+      child: TextButton(
         onPressed: () {
           Navigator.of(context).pushNamed(
             RouteManager.RESOURCE_DETAIL,

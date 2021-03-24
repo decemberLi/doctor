@@ -14,10 +14,8 @@ import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/ucenter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../root_widget.dart';
@@ -222,75 +220,6 @@ class _HomePageState extends State<HomePage>
                 await model.queryDoctorInfo();
                 if (model.data.basicInfoAuthStatus == 'COMPLETED') {
                   Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  _checkDoctorBindRelation(String authStatus) async {
-    if (authStatus != 'PASS') {
-      return Future.value(true);
-    }
-    // 已认证，未绑定代表
-    if (authStatus == 'PASS' &&
-        !await API.shared.ucenter.queryDoctorRelation()) {
-      EasyLoading.showToast('您没有绑定医药代表，暂不能开具处方');
-      return Future.value(false);
-    }
-    // 未认证状态
-    return Future.value(true);
-  }
-
-  _showAuthenticationDialog(UserInfoViewModel model) {
-    showCupertinoDialog<bool>(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          content: Container(
-            padding: EdgeInsets.only(top: 12),
-            child: Text("认证后才可以进入开处方页面"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                "取消",
-                style: TextStyle(
-                  color: ThemeColor.primaryColor,
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context).maybePop(false);
-              },
-            ),
-            TextButton(
-              child: Text(
-                "马上去",
-                style: TextStyle(
-                  color: ThemeColor.primaryColor,
-                ),
-              ),
-              onPressed: () async {
-                //关闭对话框并返回true
-                String path = RouteManager.USERINFO_DETAIL;
-                Map arguments = {
-                  'doctorData': model.data.toJson(),
-                  'qualification': true,
-                };
-                if (model.data?.authStatus == 'VERIFYING') {
-                  path = RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE;
-                }
-                await Navigator.pushNamed(
-                  context,
-                  path,
-                  arguments: arguments,
-                );
-                await model.queryDoctorInfo();
-                if (model.data?.authStatus == 'PASS') {
-                  Navigator.of(context).maybePop(false);
                 }
               },
             ),

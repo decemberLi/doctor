@@ -242,7 +242,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       hintText: '输入医院名称',
       searchConditionCallback: <T extends Search>(condition, streamSink) async {
         if (condition == null || condition.length == 0) {
-          streamSink.add(List());
+          streamSink.add([]);
           return;
         }
         var hospitals = await _model.queryHospital(condition);

@@ -77,7 +77,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
           }
           params['deviceId'] = GlobalData.shared.registerId;
           params['registerId'] = GlobalData.shared.registerId;
-          print("the params is -- ${params}");
+          print("the params is -- $params");
           await API.shared.foundation.pushDeviceLoginSubmit(params);
         }catch(e){
 

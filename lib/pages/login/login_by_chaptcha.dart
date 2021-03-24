@@ -4,11 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:doctor/common/statistics/biz_tracker.dart';
 import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
-import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/provider/GlobalData.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
-import 'package:doctor/utils/adapt.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
@@ -19,7 +17,6 @@ import 'package:http_manager/manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'common_style.dart';
-import 'package:http_manager/manager.dart';
 import 'package:doctor/http/foundation.dart';
 import 'package:doctor/http/Sso.dart';
 import 'package:doctor/widgets/YYYEasyLoading.dart';
@@ -78,7 +75,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
           }
           params['deviceId'] = GlobalData.shared.registerId;
           params['registerId'] = GlobalData.shared.registerId;
-          print("the params is -- ${params}");
+          print("the params is -- $params");
           await API.shared.foundation.pushDeviceLoginSubmit(params);
         }catch(e){
 

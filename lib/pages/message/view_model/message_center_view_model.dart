@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:doctor/pages/message/model/message_center_entity.dart';
 import 'package:doctor/provider/view_state_model.dart';

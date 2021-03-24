@@ -1,10 +1,8 @@
-import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/common_webview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_file_preview/flutter_file_preview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String AGREE_KEY = 'AGREE_KEY';

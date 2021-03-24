@@ -1,5 +1,4 @@
 import 'package:common_utils/common_utils.dart';
-import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/provider/view_state_model.dart';

@@ -77,7 +77,7 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                   child: Container(
                 alignment: Alignment.centerRight,
                 child: Stack(
-                  overflow: Overflow.visible,
+                  clipBehavior: Clip.none,
                   children: [
                     Icon(
                       Icons.keyboard_arrow_right,
@@ -130,7 +130,6 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
         builder: (context, model, child) {
           var systemCount = model?.data?.systemCount ?? 0;
           var leanPlanCount = model?.data?.leanPlanCount ?? 0;
-          var prescriptionCount = model?.data?.prescriptionCount ?? 0;
           var interactiveCount = model?.data?.interactiveCount ?? 0;
           var likeCount = model?.data?.likeCount ?? 0;
           var commentCount = model?.data?.commentCount ?? 0;
@@ -206,7 +205,7 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Stack(
-          overflow: Overflow.visible,
+          clipBehavior: Clip.none,
           children: [
             Container(
               child: Image.asset(assetPath, width: 40, height: 40),
