@@ -148,6 +148,7 @@ class RootWidget extends StatelessWidget {
       options.headers["_ticketObject"] = SessionManager.shared.session;
       options.headers["_appVersion"] = await PlatformUtils.getAppVersion();
       options.headers["_appVersionCode"] = await PlatformUtils.getBuildNum();
+      options.headers["_greyVersion"] = "1.9.5";
       return options;
     };
     HttpManager.shared.onResponse = (response) async {
