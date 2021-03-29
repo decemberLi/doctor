@@ -224,50 +224,30 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     }
   }
 
-  _uploadVideo(model, arguments, data) async {
-    if (data.taskTemplate == 'DOCTOR_LECTURE') {
-      var result = await Navigator.of(context).pushNamed(
-        RouteManager.LECTURE_VIDEOS,
-        arguments: {
-          'reLearn': data.reLearn,
-          'resourceId': data.resources[0].resourceId,
-          'learnPlanId': data.learnPlanId,
-          'doctorName': userInfo?.doctorName ?? '',
-          'taskName': data.taskName,
-          'from': arguments['from'],
-          'upFinished': (lectureID) {
-            _uploadFinish(lectureID);
-          }
-        },
-      );
-      if (result == true) {
-        model.initData();
-      }
+  _submit(model, arguments, data) async {
+    // EasyLoading.showToast('暂未开放'),
+    if (data.learnProgress == 0) {
+      String _text = '当前学习计划尚未学习，请在学习后提交';
+      EasyLoading.showToast(_text);
     } else {
-      // EasyLoading.showToast('暂未开放'),
-      if (data.learnProgress == 0) {
-        String _text = '当前学习计划尚未学习，请在学习后提交';
-        EasyLoading.showToast(_text);
-      } else {
-        bool success = await model.bindLearnPlan(
-          learnPlanId: data.learnPlanId,
+      bool success = await model.bindLearnPlan(
+        learnPlanId: data.learnPlanId,
+      );
+      if (success) {
+        UserInfoViewModel model =
+            Provider.of<UserInfoViewModel>(context, listen: false);
+        eventTracker(Event.PLAN_SUBMIT, {
+          "learn_plan_id": "${data?.learnPlanId}",
+          "user_id": "${model?.data?.doctorUserId}"
+        });
+        EasyLoading.showSuccess('提交成功');
+        // 延时1s执行返回
+        Future.delayed(
+          Duration(seconds: 1),
+          () {
+            Navigator.of(context).pop();
+          },
         );
-        if (success) {
-          UserInfoViewModel model =
-              Provider.of<UserInfoViewModel>(context, listen: false);
-          eventTracker(Event.PLAN_SUBMIT, {
-            "learn_plan_id": "${data?.learnPlanId}",
-            "user_id": "${model?.data?.doctorUserId}"
-          });
-          EasyLoading.showSuccess('提交成功');
-          // 延时1s执行返回
-          Future.delayed(
-            Duration(seconds: 1),
-            () {
-              Navigator.of(context).pop();
-            },
-          );
-        }
       }
     }
   }
@@ -453,7 +433,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 if (data.taskTemplate == 'DOCTOR_LECTURE') {
                   _gotoRecord(data);
                 } else {
-                  this._uploadVideo(model, arguments, data);
+                  _submit(model, arguments, data);
                 }
               },
             ),
@@ -487,7 +467,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         body: Container(
           color: ThemeColor.colorFFF3F5F8,
           alignment: Alignment.topCenter,
-          child: ViewStateEmptyWidget(onPressed: model.initData) ,
+          child: ViewStateEmptyWidget(onPressed: model.initData),
         ),
       );
     }
