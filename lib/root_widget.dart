@@ -32,7 +32,7 @@ import 'utils/app_utils.dart';
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final EventBus eventBus = EventBus();
 Set<String> userAuthCode = {'00010009', '00010010'};
-
+String windowDeviceToken = "";
 class RootWidget extends StatelessWidget {
   final showGuide;
 
@@ -48,6 +48,9 @@ class RootWidget extends StatelessWidget {
           (route) => false,
         );
       }
+    });
+    MedcloudsNativeApi.instance().addProcessor("receiveToken", (args) async{
+      windowDeviceToken = args;
     });
     MedcloudsNativeApi.instance().addProcessor("uploadDeviceInfo",
         (args) async {

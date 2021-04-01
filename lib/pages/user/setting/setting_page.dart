@@ -1,3 +1,4 @@
+import 'package:doctor/pages/user/setting/DevSetting.dart';
 import 'package:doctor/pages/user/setting/update/app_update.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -27,7 +28,13 @@ class _SettingPageState extends State<SettingPage> {
       backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
         elevation: 0,
-        title: Text('设置'),
+        title: GestureDetector(
+          child: Text('设置'),
+          onDoubleTap: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => DevSetting()));
+          },
+        ),
       ),
       body: Column(
         children: [
@@ -97,10 +104,6 @@ class _SettingPageState extends State<SettingPage> {
         });
       },
     );
-  }
-
-  _obtainAppVersion() async {
-    await PlatformUtils.getAppVersion();
   }
 
   _buildModifyPwdWidget() {
