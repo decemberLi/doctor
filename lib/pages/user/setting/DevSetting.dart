@@ -100,7 +100,7 @@ class _DevSettingState extends State<DevSetting> {
                       var sp = await SharedPreferences.getInstance();
                       sp.setString("settingProxy", text);
                       HttpManager.shared.findProxy = () {
-                        return text;
+                        return "PROXY $text";
                       };
                     },
                     child: Text("设置")),
