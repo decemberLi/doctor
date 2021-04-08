@@ -109,7 +109,7 @@ dependencies:
   flutter_file_preview:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_file_preview.git
-      ref: 1.0.1
+      ref: 1.0.2
   # 图片压缩
   flutter_image_compress:
     git:
