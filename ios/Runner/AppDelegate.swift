@@ -9,6 +9,9 @@ import UserNotificationsUI
     var gotoURL : String?
     var isLoaded  = false
     var notiInfo : [AnyHashable:Any]? = nil
+    var navi : UINavigationController?
+    var rootVC : FlutterViewController?
+
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -18,9 +21,13 @@ import UserNotificationsUI
         Bugly.start(withAppId: "463f24e2f9")
         WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
         AppDelegate.shared = self
-        let vc = FlutterViewController(project: nil, initialRoute: nil, nibName: nil, bundle: nil)
+        let vc = FlutterViewController()
+        rootVC = vc
+        navi = UINavigationController(rootViewController: vc)
+        navi?.interactivePopGestureRecognizer?.delegate = self
+        navi?.setNavigationBarHidden(true, animated: false)
         window = UIWindow()
-        window.rootViewController = vc
+        window.rootViewController = navi
         window.makeKeyAndVisible()
         naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
         naviChannel.setMethodCallHandler { (call, result) in
@@ -65,6 +72,21 @@ import UserNotificationsUI
                 MobClick.profileSignIn(withPUID: value)
             }else if call.method == "logout" {
                 MobClick.profileSignOff()
+            }else if call.method == "ocrIdCardBackSide" {
+                OCRManager.shared()?.startProcessOcrBack{ obj in
+                    self.naviChannel.invokeMethod("ocrIdCardBackSide", arguments: obj)
+                }
+                result(true)
+            }else if call.method == "ocrBankCard" {
+                OCRManager.shared()?.startBankCardOcrProcess{ obj in
+                    self.naviChannel.invokeMethod("ocrBankCard", arguments: obj)
+                }
+                result(true)
+            }else if call.method == "ocrIdCardFaceSide" {
+                OCRManager.shared()?.startProcessOcrFRONT{ obj in
+                    self.naviChannel.invokeMethod("ocrIdCardFaceSide", arguments: obj)
+                }
+                result(true)
             }
         }
         vc.setFlutterViewDidRenderCallback {
@@ -141,10 +163,27 @@ import UserNotificationsUI
         application.applicationIconBadgeNumber = 0;
         JPUSHService.setBadge(0);
     }
+    @objc var rootFlutterViewController : FlutterViewController {
+        return rootVC!
+    }
+
+    //MARK - FlutterPluginRegistry methods. All delegating to the rootViewController
+
+    override func registrar(forPlugin pluginKey: String) -> FlutterPluginRegistrar? {
+        rootVC?.pluginRegistry().registrar(forPlugin: pluginKey)
+    }
+
+    override func hasPlugin(_ pluginKey: String) -> Bool {
+        rootVC?.pluginRegistry().hasPlugin(pluginKey) ?? false
+    }
+
+    override func valuePublished(byPlugin pluginKey: String) -> NSObject? {
+        rootVC?.pluginRegistry().valuePublished(byPlugin: pluginKey)
+    }
     override func applicationWillEnterForeground(_ application: UIApplication) {
         launchEvent(type: -1)
     }
-    
+
 }
 
 extension AppDelegate {
@@ -172,12 +211,13 @@ extension AppDelegate {
                             UNAuthorizationOptions.sound.rawValue)
         JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
         #if DEBUG
-        UMConfigure.initWithAppkey("6007995f6a2a470e8f822118", channel: "App Store developer")//
+        UMConfigure.initWithAppkey("6007995f6a2a470e8f822118", channel: "App Store")
         JPUSHService.setup(withOption: launchOptions, appKey: "05de7d1b7c21f44388f972b6", channel: "App Store", apsForProduction: false)
         #else
         UMConfigure.initWithAppkey("60079989f1eb4f3f9b67973b", channel: "App Store")
         JPUSHService.setup(withOption: launchOptions, appKey: "602e4ea4245634138758a93c", channel: "App Store", apsForProduction: true)
         #endif
+        OCRManager.shared()?.initSDK()
         
     }
     
@@ -226,10 +266,18 @@ extension AppDelegate {
     func openWebView(map : [String:Any]){
         let vc = WebVC()
         vc.initData = map
-        vc.modalPresentationStyle = .fullScreen
-        window.rootViewController?.present(vc, animated: false, completion: nil)
+        navi?.pushViewController(vc, animated: true)
     }
-    
+}
+
+extension AppDelegate : UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if navi?.viewControllers.count == 1 {
+            return false
+        }
+        return true
+    }
+
     func statistics(name:String,ext:String){
         var attributes : [AnyHashable:Any] = [:]
         if let data = ext.data(using: .utf8) {
@@ -240,7 +288,7 @@ extension AppDelegate {
         }
         MobClick.event(name, attributes: attributes)
     }
-    
+
     func launchEvent(type:Int){
         print("----the type is --- \(type)")
         let isfirst = UserDefaults.standard.bool(forKey: "isFirst")

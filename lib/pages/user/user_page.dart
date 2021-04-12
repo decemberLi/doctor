@@ -6,7 +6,6 @@ import 'package:doctor/pages/doctors/doctors_banner.dart';
 import 'package:doctor/pages/doctors/doctors_banner_item.dart';
 import 'package:doctor/pages/doctors/doctors_list_page.dart';
 import 'package:doctor/pages/doctors/doctors_list_page2.dart';
-import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
@@ -277,46 +276,65 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Container(
-                              width: 80,
-                              height: 20,
-                              margin: EdgeInsets.only(left: 5),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: doctorData?.authStatus == 'PASS'
-                                    ? Color(0xFFFAAD14)
-                                    : Color(0xFFB9B9B9),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(28),
-                                  bottomRight: Radius.circular(28),
-                                  topRight: Radius.circular(28),
+                            GestureDetector(
+                              onTap: (){
+                                if (doctorData?.identityStatus == 'PASS') {
+                                  if (doctorData?.authStatus == 'WAIT_VERIFY' || doctorData.authStatus == 'FAIL') {
+                                    Navigator.pushNamed(
+                                        context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+                                  }else if (doctorData.authStatus == 'VERIFYING') {
+                                    Navigator.pushNamed(
+                                        context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                                  }else if (doctorData.authStatus == 'PASS') {
+                                    Navigator.pushNamed(
+                                        context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+                                  }
+                                }else{
+                                  Navigator.pushNamed(
+                                      context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+                                }
+                              },
+                              child: Container(
+                                width: 65,
+                                height: 20,
+                                margin: EdgeInsets.only(left: 5),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: doctorData?.authStatus == 'PASS'
+                                      ? Color(0xFFFAAD14)
+                                      : Color(0xFFB9B9B9),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(28),
+                                    bottomRight: Radius.circular(28),
+                                    topRight: Radius.circular(28),
+                                  ),
                                 ),
-                              ),
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  children: [
-                                    if (doctorData?.authStatus == 'PASS')
-                                      WidgetSpan(
-                                        child: Image.asset(
-                                          "assets/images/rz.png",
-                                          width: 14,
-                                          height: 14,
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    children: [
+                                      if (doctorData?.authStatus == 'PASS')
+                                        WidgetSpan(
+                                          child: Image.asset(
+                                            "assets/images/rz.png",
+                                            width: 14,
+                                            height: 14,
+                                          ),
                                         ),
+                                      TextSpan(
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                        ),
+                                        text: doctorData?.authStatus == 'PASS'
+                                            ? '已认证'
+                                            : '未认证',
                                       ),
-                                    TextSpan(
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.white,
-                                      ),
-                                      text: doctorData?.authStatus == 'PASS'
-                                          ? '资质认证'
-                                          : '尚未认证',
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),

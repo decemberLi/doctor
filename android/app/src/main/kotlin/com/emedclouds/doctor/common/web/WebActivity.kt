@@ -40,6 +40,8 @@ open class WebActivity : ComponentActivity() {
     private lateinit var mWebView: YWebView
     private lateinit var mContainer: FrameLayout
 
+    private lateinit var mBackBtnListener: OnBackBtnListener
+
     companion object {
         const val TAG = "YWeb.WebActivity"
     }
@@ -115,6 +117,25 @@ open class WebActivity : ComponentActivity() {
                         }
                     }
                 })
+        ApiManager.instance.addApi("hookBackBtn", object : BaseApi(apiCaller) {
+            override fun doAction(bizType: String, param: String?) {
+                if (param == null) {
+                    return
+                }
+                val json = JSONObject(param)
+                val hookBackBtn = json.getBoolean("needHook")
+                mBackBtnListener = object : OnBackBtnListener {
+                    override fun onBack() {
+                        successCallJavaScript(bizType, "")
+                    }
+
+                    override fun needBack(): Boolean {
+                        return hookBackBtn
+                    }
+
+                }
+            }
+        })
         ApiManager.instance.addApi(
                 "showInputBar",
                 object : BaseApi(apiCaller) {
@@ -174,6 +195,9 @@ open class WebActivity : ComponentActivity() {
                 mWebView.goBack()
                 return@setOnClickListener
             }
+            if(dispatchBackBtnIfNeeded()){
+                return@setOnClickListener
+            }
             finish()
         }
     }
@@ -201,15 +225,26 @@ open class WebActivity : ComponentActivity() {
         super.onDestroy()
     }
 
-
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // 返回键
+            if (dispatchBackBtnIfNeeded()){
+                return true
+            }
             if (mWebView.canGoBack()) {
                 mWebView.goBack()
                 return true
             }
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    private fun dispatchBackBtnIfNeeded(): Boolean {
+        if (this::mBackBtnListener.isInitialized && mBackBtnListener.needBack()) {
+            mBackBtnListener.onBack()
+            return true
+        }
+        return false
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -339,4 +374,9 @@ open class WebActivity : ComponentActivity() {
 
     }
 
+    interface OnBackBtnListener {
+        fun onBack(): Unit
+
+        fun needBack(): Boolean
+    }
 }

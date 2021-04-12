@@ -22,6 +22,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'common_style.dart';
 
 class LoginByPasswordPage extends StatefulWidget {
+
+  final String phoneNumber;
+  LoginByPasswordPage(this.phoneNumber);
+  
   @override
   _LoginByPasswordPageState createState() => _LoginByPasswordPageState();
 }
@@ -93,11 +97,16 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
         }
       },
     );
-    getLastPhone();
+    getLastPhoneIfNeeded();
     super.initState();
   }
 
-  getLastPhone() async {
+  getLastPhoneIfNeeded() async {
+    if(!TextUtil.isEmpty(widget.phoneNumber)){
+      _phoneController.text = widget.phoneNumber;
+      return;
+    }
+
     var sp = await SharedPreferences.getInstance();
     var phone = sp.get(LAST_PHONE);
     if (phone is String) {
@@ -217,7 +226,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                                       fontSize: 12),
                                 ),
                                 onTap: () {
-                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop(_phoneController.text);
                                 },
                               ),
                               GestureDetector(

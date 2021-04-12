@@ -241,10 +241,10 @@ class DoctorsListItem extends StatelessWidget {
                 ),
                 Container(
                   color: Color(0xffEAF3FF),
-                  width: 116,
+                  width: 133,
                   height: 80,
                   child: Image.network("${data.coverUrl}",
-                      width: 116, height: 80, fit: BoxFit.cover),
+                      width: 133, height: 80, fit: BoxFit.cover),
                 )
               ],
             ),

@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
+import 'package:doctor/common/event/event_home_tab.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
-import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
@@ -25,11 +25,13 @@ import 'dart:io';
 
 import 'model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/http/ucenter.dart';
+import 'package:doctor/http/foundationSystem.dart';
 
 import 'utils/app_utils.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final EventBus eventBus = EventBus();
+Set<String> userAuthCode = {'00010009', '00010010'};
 
 class RootWidget extends StatelessWidget {
   final showGuide;
@@ -37,11 +39,9 @@ class RootWidget extends StatelessWidget {
   RootWidget(this.showGuide) {
     SessionManager.shared.addListener(() {
       var context = NavigationService().navigatorKey.currentContext;
+      debugPrint("RootWidget -> isLogin: ${SessionManager.shared.isLogin}");
       if (SessionManager.shared.isLogin) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => HomePage()),
-          (route) => false,
-        );
+        Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.HOME, (route)=>false);
       } else {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => LoginByCaptchaPage()),
@@ -62,77 +62,118 @@ class RootWidget extends StatelessWidget {
         return true;
       }
     });
-    MedcloudsNativeApi.instance().addProcessor("getTicket",(args) async {
+    MedcloudsNativeApi.instance().addProcessor("getTicket", (args) async {
       return SessionManager.shared.session;
     });
-    MedcloudsNativeApi.instance().addProcessor("receiveNotification",
-        (args) async {
-      print('Received push message process event, arguments - > [$args]');
-      var context = NavigationService().navigatorKey.currentContext;
-      try {
-        var obj = json.decode(args);
-        var userID = obj["userId"];
-        UserInfoViewModel model =
-        Provider.of<UserInfoViewModel>(context, listen: false);
-        if (userID != model.data.doctorUserId || !SessionManager.shared.isLogin) {
-          return ;
-        }
-        var type = obj["bizType"];
-        if (type == "QUALIFICATION_AUTH") {
-          // 资质认证
-          var authStatus = obj["authStatus"];
-          if (authStatus == "FAIL") {
-            var basicData = await API.shared.ucenter.getBasicData();
-            var doctorData = DoctorDetailInfoEntity.fromJson(basicData);
-            Navigator.pushNamed(
-              context,
-              RouteManager.USERINFO_DETAIL,
+    MedcloudsNativeApi.instance().addProcessor(
+      "receiveNotification",
+      (args) async {
+        print('Received push message process event, arguments - > [$args]');
+        var context = NavigationService().navigatorKey.currentContext;
+        try {
+          print('Received push message one');
+          var obj = json.decode(args);
+          var userID = obj["userId"];
+          UserInfoViewModel model =
+              Provider.of<UserInfoViewModel>(context, listen: false);
+          print('Received push message two ${model.data.doctorUserId} -- $userID');
+          if (userID != model.data.doctorUserId ||
+              !SessionManager.shared.isLogin) {
+            return;
+          }
+          print('Received push message two');
+          var messageID = obj["messageId"];
+          if (messageID != null) {
+            API.shared.foundationSys.messageUpdateStatus({
+              'messageId':messageID
+            });
+          }
+          print('Received push message third');
+          var type = obj["bizType"];
+          if (type == "QUALIFICATION_AUTH") {
+            print("the obj is ---- $obj");
+            // 资质认证
+            var authStatus = obj["authStatus"];
+            if (authStatus == "FAIL") {
+              print("the obj is ---- fail");
+              Navigator.of(context).pushNamed(RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+            } else {
+              print("the obj is ---- success");
+              Navigator.of(context).pushNamed(RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+            }
+            print("the obj is ---- end");
+          } else if (type == "ASSIGN_STUDY_PLAN") {
+            var template = obj['taskTemplate'];
+            if (template == 'MEDICAL_SURVEY') {
+              if (model.data.authStatus == 'PASS') {
+                var learnPlanId = obj["learnPlanId"];
+                Navigator.of(context).pushNamed(
+                  RouteManager.LEARN_DETAIL,
+                  arguments: {
+                    'learnPlanId': learnPlanId,
+                  },
+                );
+              }else{
+                eventBus.fire(EventHomeTab.createWorkTopEvent());
+                Navigator.of(context).popUntil(ModalRoute.withName(RouteManager.HOME));
+              }
+            }else{
+              // 学习计划详情
+              var learnPlanId = obj["learnPlanId"];
+              Navigator.of(context).pushNamed(
+                RouteManager.LEARN_DETAIL,
+                arguments: {
+                  'learnPlanId': learnPlanId,
+                },
+              );
+            }
+          } else if (type == "RELEARN") {
+            // 学习计划详情
+            var learnPlanId = obj["learnPlanId"];
+            Navigator.of(context).pushNamed(
+              RouteManager.LEARN_DETAIL,
               arguments: {
-                'doctorData': doctorData.toJson(),
-                'qualification': true,
+                'learnPlanId': learnPlanId,
               },
             );
-          } else {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        DoctorPhysicianStatusPage(authStatus)));
+          }else if (type == ""){
+
           }
-          Navigator.of(context).pushNamed("routeName");
-        } else if (type == "ASSIGN_STUDY_PLAN") {
-          // 学习计划详情
-          var learnPlanId = obj["learnPlanId"];
-          Navigator.of(context).pushNamed(
-            RouteManager.LEARN_DETAIL,
-            arguments: {
-              'learnPlanId': learnPlanId,
-            },
-          );
-        } else if (type == "RELEARN") {
-          // 学习计划详情
-          var learnPlanId = obj["learnPlanId"];
-          Navigator.of(context).pushNamed(
-            RouteManager.LEARN_DETAIL,
-            arguments: {
-              'learnPlanId': learnPlanId,
-            },
-          );
-        }
-      } catch (e) {}
-    });
+        } catch (e) {}
+      },
+    );
     HttpManager.shared.onRequest = (options) async {
       debugPrint("$options");
       debugPrint("ticket:${SessionManager.shared.session}");
       options.headers["_ticketObject"] = SessionManager.shared.session;
       options.headers["_appVersion"] = await PlatformUtils.getAppVersion();
-
+      options.headers["_appVersionCode"] = await PlatformUtils.getBuildNum();
       return options;
+    };
+    HttpManager.shared.onResponse = (response) async {
+      EasyLoading.dismiss();
+      debugPrint("url - ${response.request.baseUrl} data - ${response.data}");
+      Map<String, dynamic> data = response.data;
+      String status = data["status"];
+      if (status.toUpperCase() == "ERROR") {
+        String errorCode = data["errorCode"];
+        if (outLoginCodes.contains(errorCode) ||
+            authFailCodes.contains(errorCode)) {
+          SessionManager.shared.session = null;
+        }
+        if (userAuthCode.contains(errorCode)) {
+          throw data;
+        }
+        throw data["errorMsg"] ?? "请求错误";
+      }
+      response.data = response.data["content"] ?? response.data;
+      return response;
     };
   }
 
   @override
   Widget build(BuildContext context) {
+    EasyLoading.instance.successWidget = Image.asset("assets/images/success.png");
     return RefreshConfiguration(
       hideFooterWhenNotFull: true, //列表数据不满一页,不触发加载更多
       child: MaterialApp(

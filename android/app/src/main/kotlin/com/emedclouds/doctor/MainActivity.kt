@@ -18,11 +18,16 @@ import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
 import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.utils.OnFlutterCall.Companion.CHANNEL_RESULT_OK
+import com.tencent.ocr.sdk.common.CustomConfigUi
+import com.tencent.ocr.sdk.common.ISDKKitResultListener
+import com.tencent.ocr.sdk.common.OcrSDKKit
+import com.tencent.ocr.sdk.common.OcrType
 import com.umeng.analytics.MobclickAgent
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
+
 
 class MainActivity : FlutterActivity() {
     private val tag = "MainActivity"
@@ -141,7 +146,76 @@ class MainActivity : FlutterActivity() {
             }
 
         })
+        ChannelManager.instance.on("ocrIdCardFaceSide", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                Log.d("TAG.Perm", "call: ${checkCameraPermission(application)}")
+                OcrSDKKit.getInstance().startProcessOcr(this@MainActivity,
+                        OcrType.IDCardOCR_FRONT,
+                        CustomConfigUi().apply {
+                            titleBarText = "扫描身份证"
+                            remindDialogText = "未能识别证件，是否切换模式拍照上传?"
+                        }, object : ISDKKitResultListener {
+                    override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
+                        Log.d(tag, "onProcessSucceed: $response")
+                        ocrCallback("ocrIdCardFaceSide", srcBase64Image, response)
+                    }
+
+                    override fun onProcessFailed(errorCode: String, message: String, requestId: String) {
+                        Log.d(tag, "onProcessFailed: ")
+                    }
+                })
+                return "OK"
+            }
+        });
+        ChannelManager.instance.on("ocrBankCard", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                OcrSDKKit.getInstance().startProcessOcr(this@MainActivity,
+                        OcrType.BankCardOCR,
+                        CustomConfigUi().apply {
+                            titleBarText = "扫描银行卡"
+                            remindDialogText = "未能识别证件，是否切换模式拍照上传?"
+                        }, object : ISDKKitResultListener {
+                    override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
+                        Log.d(tag, "onProcessSucceed: $response")
+                        ocrCallback("ocrBankCard", srcBase64Image, response)
+                    }
+
+                    override fun onProcessFailed(errorCode: String, message: String, requestId: String) {
+                        Log.d(tag, "onProcessFailed: ")
+                    }
+                })
+                return "OK"
+            }
+        });
+        ChannelManager.instance.on("ocrIdCardBackSide", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                OcrSDKKit.getInstance().startProcessOcr(this@MainActivity,
+                        OcrType.IDCardOCR_BACK,
+                        CustomConfigUi().apply {
+                            titleBarText = "扫描身份证"
+                            remindDialogText = "未能识别证件，是否切换模式拍照上传?"
+                        }, object : ISDKKitResultListener {
+                    override fun onProcessSucceed(response: String, srcBase64Image: String, requestId: String) {
+                        Log.d(tag, "onProcessSucceed: $response")
+                        ocrCallback("ocrIdCardBackSide", srcBase64Image, response)
+                    }
+
+                    override fun onProcessFailed(errorCode: String, message: String, requestId: String) {
+                        Log.d(tag, "onProcessFailed: ")
+                    }
+                })
+                return "OK"
+            }
+        });
 //        CommonWebActivity.start(this@MainActivity, "", "http://192.168.1.27:9000/#/detail?id=283")
+    }
+
+    fun ocrCallback(type: String, srcBase64Image: String, response: String) {
+        val filePath = ImageConvertUtil.base64ToFile(application, srcBase64Image, type)
+        val json = JSONObject(response).apply {
+            put("imgPath", filePath?.absolutePath)
+        }
+        ChannelManager.instance.callFlutter(type, json.toString(), MethodChannelResultAdapter())
     }
 
 

@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../root_widget.dart';
+import 'learn/research_detail/research_detail.dart';
 
 class WorktopPage extends StatefulWidget {
   @override
@@ -61,6 +62,7 @@ class _WorktopPageState extends State<WorktopPage>
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     await model.queryDoctorInfo();
+    _model.initData();
     super.didPopNext();
   }
 
@@ -104,8 +106,13 @@ class _WorktopPageState extends State<WorktopPage>
         var item = entity.learnPlanList[index];
         return Container(
           color: Color(0xFFF3F5F8),
-          child: GestureDetector(
-            onTap: () async {
+          child: LearnListItemWiget(
+            item,
+            'LEARNING',
+            () {
+              _model.initData();
+            },
+            () async {
               await Navigator.of(context).pushNamed(
                 RouteManager.LEARN_DETAIL,
                 arguments: {
@@ -114,12 +121,9 @@ class _WorktopPageState extends State<WorktopPage>
                   'from': 'work_top',
                 },
               );
-              // 从详情页回来后刷新数据
-              _model.initData();
+              // 无脑刷新数据，从详情页回来后不刷新数据
+              // _model.initData();
             },
-            child: LearnListItemWiget(item, 'LEARNING',(){
-              _model.initData();
-            },),
           ),
         );
       }, childCount: entity?.learnPlanList?.length ?? 0);
@@ -191,7 +195,7 @@ class _WorktopPageState extends State<WorktopPage>
     }
     // 医生个人信息部分
     var doctorName = doctorInfoEntity?.doctorName ?? '';
-    if(doctorInfoEntity?.basicInfoAuthStatus == 'NOT_COMPLETE'){
+    if (doctorInfoEntity?.basicInfoAuthStatus == 'NOT_COMPLETE') {
       doctorName = '待完善';
     }
     return GestureDetector(
@@ -203,20 +207,24 @@ class _WorktopPageState extends State<WorktopPage>
             height: 70,
             alignment: Alignment.center,
             child: doctorInfoEntity?.fullFacePhoto == null
-                ? Image.asset("assets/images/doctorHeader.png",width: 40,height: 40,)
-                :Container(
-              width: 68,
-              height: 68,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  fit: BoxFit.fitWidth,
-                  image: NetworkImage(
-                      '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}'),
-                ),
-              ),
-            ),
+                ? Image.asset(
+                    "assets/images/doctorHeader.png",
+                    width: 40,
+                    height: 40,
+                  )
+                : Container(
+                    width: 68,
+                    height: 68,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: NetworkImage(
+                            '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}'),
+                      ),
+                    ),
+                  ),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -402,6 +410,9 @@ class _WorktopPageState extends State<WorktopPage>
                     padding: EdgeInsets.only(left: 24),
                     child: Consumer<UserInfoViewModel>(
                       builder: (_, model, __) {
+                        if(model.data == null){
+                          model.queryDoctorInfo();
+                        }
                         return doctorAvatarWidget(model.data);
                       },
                     ),
@@ -466,7 +477,7 @@ class _WorktopPageState extends State<WorktopPage>
 
   _buildAuthStatusWidget(DoctorDetailInfoEntity doctorInfoEntity) {
     return Container(
-      width: 80,
+      width: 65,
       height: 20,
       margin: EdgeInsets.only(left: 5),
       alignment: Alignment.center,
@@ -480,26 +491,48 @@ class _WorktopPageState extends State<WorktopPage>
           topRight: Radius.circular(28),
         ),
       ),
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          children: [
-            if (doctorInfoEntity?.authStatus == 'PASS')
-              WidgetSpan(
-                child: Image.asset(
-                  "assets/images/rz.png",
-                  width: 14,
-                  height: 14,
+      child: FlatButton(
+        onPressed: () {
+          print(
+              "the identityStatus is ${doctorInfoEntity?.identityStatus} - ${doctorInfoEntity?.authStatus} ");
+          if (doctorInfoEntity?.identityStatus == 'PASS') {
+            if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' ||
+                doctorInfoEntity.authStatus == 'FAIL') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+            } else if (doctorInfoEntity.authStatus == 'VERIFYING') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+            } else if (doctorInfoEntity.authStatus == 'PASS') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+            }
+          } else {
+            Navigator.pushNamed(
+                context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+          }
+        },
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            children: [
+              if (doctorInfoEntity?.authStatus == 'PASS')
+                WidgetSpan(
+                  child: Image.asset(
+                    "assets/images/rz.png",
+                    width: 14,
+                    height: 14,
+                  ),
                 ),
+              TextSpan(
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+                text: doctorInfoEntity?.authStatus == 'PASS' ? '已认证' : '未认证',
               ),
-            TextSpan(
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white,
-              ),
-              text: doctorInfoEntity?.authStatus == 'PASS' ? '资质认证' : '尚未认证',
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:doctor/pages/doctors/tab_indicator.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
@@ -67,6 +68,19 @@ class _LearnPlanPageState extends State<LearnPlanPage>
                 // indicatorSize: TabBarIndicatorSize.label,
                 indicatorPadding: EdgeInsets.only(left: 80, right: 80),
                 indicatorColor: ThemeColor.primaryColor,
+                indicator: LinearGradientTabIndicatorDecoration(
+                    borderSide: BorderSide(
+                      width: 6,
+                      color: ThemeColor.primaryColor,
+                    ),
+                    insets: EdgeInsets.only(left: 80, right: 80),
+                    gradient: const LinearGradient(
+                      colors: [
+                        ThemeColor.primaryColor,
+                        ThemeColor.primaryColor
+                      ],
+                    ),
+                    isRound: true),
                 tabs: [
                   Tab(
                     // text: '学习中',

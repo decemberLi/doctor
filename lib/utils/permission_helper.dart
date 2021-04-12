@@ -30,6 +30,7 @@ class PermissionHelper {
   static Future<bool> checkPhotosPermission(BuildContext context) async {
     var status = await Permission.photos.status;
     print('Is camera permission granted --> $status');
+
     // 从未申请过权限, 申请权限
     if (status.isUndetermined && await Permission.photos.request().isGranted ||
         status.isGranted) {
@@ -37,6 +38,10 @@ class PermissionHelper {
       return true;
     }
 
+    if (status.isLimited) {
+      return true;
+    }
+    
     // 完全完毕
     if (status == PermissionStatus.denied) {
       await showPermissionDialog(context, '请在手机的隐私设置中，允许易学术访问你的相册');

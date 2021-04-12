@@ -5,24 +5,59 @@ part of 'learn_detail_model.dart';
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
+_$QuestionnairesFromJson(Map<String, dynamic> json) {
+  return Questionnaires(
+    json['questionnaireId'] as int,
+    json['title'] as String,
+    json['summary'] as String,
+    json['desc'] as String,
+    json['showIndex'] as int,
+    json['schedule'] as int,
+    json['status'] as String,
+    json['sort'] as int,
+    json['completeTime'] as int,
+    json['disable'] as bool,
+  );
+}
+
+Map<String, dynamic> _$QuestionnairesToJson(Questionnaires instance) =>
+    <String, dynamic>{
+      'questionnaireId': instance.questionnaireId,
+      'title': instance.title,
+      'summary': instance.summary,
+      'desc': instance.desc,
+      'showIndex': instance.showIndex,
+      'schedule': instance.schedule,
+      'status': instance.status,
+      'sort': instance.sort,
+      'completeTime': instance.completeTime,
+      'disable':instance.disable,
+    };
 
 Resources _$ResourcesFromJson(Map<String, dynamic> json) {
   return Resources(
-    json['resourceType'] as String,
-    json['contentType'] as String,
-    json['resourceName'] as String,
-    json['resourceId'] as int,
-    json['title'] as String,
-    json['needLearnTime'] as int,
-    json['learnTime'] as int,
-    json['status'] as String,
-    json['thumbnailOssId'] as String,
-    json['thumbnailUrl'] as String,
-    json['feedback'] as String,
-    json['info'] == null
-        ? null
-        : Info.fromJson(json['info'] as Map<String, dynamic>),
-  );
+      json['resourceType'] as String,
+      json['contentType'] as String,
+      json['resourceName'] as String,
+      json['resourceId'] as int,
+      json['title'] as String,
+      json['needLearnTime'] as int,
+      json['learnTime'] as int,
+      json['status'] as String,
+      json['thumbnailOssId'] as String,
+      json['thumbnailUrl'] as String,
+      json['feedback'] as String,
+      json['info'] == null
+          ? null
+          : Info.fromJson(json['info'] as Map<String, dynamic>),
+      json['questionnaires'] == null
+          ? null
+          : (json['questionnaires'] as List)
+              .map((e) => Questionnaires.fromJson(e))
+              .toList(),
+      json['illnessCase'] != null
+          ? IllnessCase.fromJson(json['illnessCase'])
+          : null);
 }
 
 Map<String, dynamic> _$ResourcesToJson(Resources instance) => <String, dynamic>{
@@ -38,6 +73,7 @@ Map<String, dynamic> _$ResourcesToJson(Resources instance) => <String, dynamic>{
       'thumbnailUrl': instance.thumbnailUrl,
       'feedback': instance.feedback,
       'info': instance.info,
+      'illnessCase': instance.illnessCase?.toJson(),
     };
 
 Info _$InfoFromJson(Map<String, dynamic> json) {

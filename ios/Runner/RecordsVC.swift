@@ -408,7 +408,7 @@ class RecordsVC: UIViewController {
     private func submitFile(_ title : String,hud:MBProgressHUD){
         let dir = NSHomeDirectory() + "/Documents/records"
         let path = dir + "/allRecord.mp4"
-        let vc = AppDelegate.shared?.window.rootViewController
+        let vc = AppDelegate.shared?.rootVC
         let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
         naviChannel.invokeMethod("uploadLearnVideo", arguments: "{\"path\":\"\(path)\",\"title\":\"\(title)\",\"duration\":\"\(Int(recordTime))\"}") { (error) in
             hud.hide(animated: false)

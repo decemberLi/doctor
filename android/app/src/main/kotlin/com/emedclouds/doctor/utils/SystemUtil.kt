@@ -4,13 +4,16 @@ import android.app.ActivityManager
 import android.app.ActivityManager.MOVE_TASK_WITH_HOME
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
-
-
+import android.os.Process
+import android.util.Log
+import com.emedclouds.doctor.BuildConfig
+import com.emedclouds.doctor.YYYApplication
 
 
 class SystemUtil {
 
     companion object {
+        const val TAG = "SystemUtil"
         fun isForeground(context: Context?): Boolean {
             if (context != null) {
                 val activityManager: ActivityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -24,7 +27,7 @@ class SystemUtil {
             return false
         }
 
-        fun setTopApp(context: Context):Boolean {
+        fun setTopApp(context: Context): Boolean {
             if (isForeground(context)) {
                 return true
             }
@@ -41,6 +44,24 @@ class SystemUtil {
                 }
             }
             return false
+        }
+
+        fun getProcessName(ctx: Context): String? {
+            val activityManager = ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val processes: List<ActivityManager.RunningAppProcessInfo> = activityManager.runningAppProcesses
+            for (processInfo in processes) {
+                if (processInfo.pid == Process.myPid()) {
+                    return processInfo.processName;
+                }
+            }
+            return null
+        }
+
+        // true is main process otherwise false
+        fun isAppMainProcess(ctx: Context): Boolean {
+            val isMainProcess = BuildConfig.APPLICATION_ID == getProcessName(ctx);
+            Log.d(TAG, "isMainProcess -> $isMainProcess")
+            return isMainProcess
         }
     }
 }

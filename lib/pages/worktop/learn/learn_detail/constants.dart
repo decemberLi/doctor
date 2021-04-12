@@ -92,4 +92,5 @@ const Map<String, List<Map>> LEARN_LIST = {
   'VISIT': VISIT,
   'SURVEY': VISIT,
   'DOCTOR_LECTURE': DOCTOR_LECTURE,
+  'MEDICAL_SURVEY':SALON,
 };

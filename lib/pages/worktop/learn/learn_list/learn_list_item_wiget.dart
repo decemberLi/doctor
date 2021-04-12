@@ -1,6 +1,7 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/common/statistics/biz_tracker.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -28,6 +29,11 @@ class ResourceTypeListWiget extends StatelessWidget {
       icon = Icons.done;
       decorationColor = Color(0xFF25CDA1);
     }
+    var type = MAP_RESOURCE_TYPE[resource.resourceType];
+    if (type == null){
+      type = "问卷";
+      print("the type is ${resource.resourceType}");
+    }
     return Container(
       decoration: BoxDecoration(
         color: decorationColor,
@@ -46,7 +52,7 @@ class ResourceTypeListWiget extends StatelessWidget {
             width: 3,
           ),
           Text(
-            MAP_RESOURCE_TYPE[resource.resourceType],
+           type,
             style: TextStyle(
               color: textColor,
               fontSize: 12,
@@ -72,8 +78,9 @@ class LearnListItemWiget extends StatelessWidget {
   final LearnListItem item;
   final String listStatus;
   final Function onSubmit;
+  final Function gotoDetail;
 
-  LearnListItemWiget(this.item, this.listStatus, this.onSubmit);
+  LearnListItemWiget(this.item, this.listStatus, this.onSubmit,this.gotoDetail);
 
   String timeRender() {
     if (this.item.taskTemplate == 'SALON' ||
@@ -90,7 +97,7 @@ class LearnListItemWiget extends StatelessWidget {
     return '截止日期：${DateUtil.formatDateMs(item.planImplementEndTime, format: 'yyyy年MM月dd日')}';
   }
 
-  Widget circleRender(context) {
+  Widget circleRender(BuildContext context, bool needAuth) {
     double percent = 0;
     String text = '开始学习';
     if (this.item.learnProgress >= 100 &&
@@ -106,12 +113,26 @@ class LearnListItemWiget extends StatelessWidget {
       style: TextStyle(color: ThemeColor.primaryColor, fontSize: 14.0),
     );
     if (listStatus == 'HISTORY') {
-      percent = 1;
+      percent = 0;
       text = '查看学习内容';
-      centerText = Icon(
-        Icons.done,
-        size: 40,
-        color: ThemeColor.primaryColor,
+      centerText = Container(
+        margin: EdgeInsets.only(bottom: 10),
+        child: Icon(
+          Icons.check_circle_outline_rounded,
+          size: 20,
+          color: ThemeColor.primaryColor,
+        ),
+      );
+    } else if (needAuth && item.taskTemplate == "MEDICAL_SURVEY") {
+      percent = 0;
+      text = "认证解锁";
+      centerText = Container(
+        margin: EdgeInsets.only(bottom: 15),
+        child: Icon(
+          Icons.lock,
+          size: 40,
+          color: ThemeColor.primaryColor,
+        ),
       );
     }
     Widget learn = Text(
@@ -147,24 +168,27 @@ class LearnListItemWiget extends StatelessWidget {
         child: learn,
       );
     }
+    var showAuth = needAuth && item.taskTemplate == "MEDICAL_SURVEY";
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 66,
-          height: 70,
-          margin: EdgeInsets.only(bottom: 2),
-          child: CircularPercentIndicator(
-            radius: 60.0,
-            lineWidth: listStatus == 'HISTORY' ? 5 : 8.0,
-            animation: false,
-            percent: percent,
-            center: centerText,
-            circularStrokeCap: CircularStrokeCap.round,
-            backgroundColor: Color(0xFFDEDEE1),
-            progressColor: ThemeColor.primaryColor,
-          ),
-        ),
+        showAuth || listStatus == "HISTORY"
+            ? centerText
+            : Container(
+                width: 66,
+                height: 70,
+                margin: EdgeInsets.only(bottom: 2),
+                child: CircularPercentIndicator(
+                  radius: 60.0,
+                  lineWidth: listStatus == 'HISTORY' ? 5 : 8.0,
+                  animation: false,
+                  percent: percent,
+                  center: centerText,
+                  circularStrokeCap: CircularStrokeCap.round,
+                  backgroundColor: Color(0xFFDEDEE1),
+                  progressColor: ThemeColor.primaryColor,
+                ),
+              ),
         learn,
       ],
     );
@@ -194,7 +218,7 @@ class LearnListItemWiget extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(context) {
+  Widget _buildItem(BuildContext context) {
     Widget taskTemplateWidget = Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(bottom: 10),
@@ -220,51 +244,67 @@ class LearnListItemWiget extends StatelessWidget {
       '医学信息推广专员：${item.representName}',
       style: TextStyle(color: Color(0xFF666666), fontSize: 12),
     );
-    if (listStatus == 'HISTORY') {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                taskTemplateWidget,
-                resourceTypeListWiget,
-                SizedBox(
-                  height: 6,
-                ),
-                taskNameWidget,
-                SizedBox(
-                  height: 6,
-                ),
-                representNameWidget,
-              ],
-            ),
-          ),
-          Container(
-            width: 108,
-            child: circleRender(context),
-          ),
-        ],
-      );
+    var info = "";
+
+    if (item?.illnessCase?.sex != null ){
+      var sexValue = item?.illnessCase?.sex ?? 0;
+      var sex = "男";
+      if (sexValue == 0) {
+        sex = "女";
+      }
+      info += sex;
     }
+    var age = item?.illnessCase?.age ?? 0;
+    if (age > 0) {
+      if (info.length > 0) info += "|";
+      info += "${item.illnessCase.age}";
+    }
+    var nameLength = item?.illnessCase?.patientName?.length ?? 0;
+    if ( nameLength > 0) {
+      if (info.length > 0) info += "|";
+      info += item.illnessCase.patientName;
+    }
+    var taskText = "";
+    if (item.taskTemplate == "DOCTOR_LECTURE") {
+      taskText = '需重新上传';
+    }else if (item.taskTemplate == "MEDICAL_SURVEY") {
+      taskText = '继续调研';
+    }else{
+      taskText = '再次拜访';
+    }
+    var showReLearn = (item.status != "SUBMIT_LEARN" && item.status != "ACCEPTED");
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          taskTemplateWidget,
-          if (item.reLearn)
-            LearnTextIcon(
-              text: item.taskTemplate == 'DOCTOR_LECTURE' ? '需重新上传' : '再次拜访',
-              color: Color(0xffF6A419),
-            ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            taskTemplateWidget,
+            if (item.reLearn && showReLearn)
+              LearnTextIcon(
+                text: taskText,
+                color: Color(0xffF6A419),
+              ),
 
-          // 新
-          if (item.status == 'WAIT_LEARN') LearnTextIcon(),
-        ]),
+            // 新
+            if (item.status == 'WAIT_LEARN') LearnTextIcon(),
+            Expanded(child: Container()),
+            if (item.taskTemplate == 'MEDICAL_SURVEY')
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(bottom: 5,right: 25),
+              child: Text(
+                info,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Color(0xff444444),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            )
+          ],
+        ),
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -312,7 +352,11 @@ class LearnListItemWiget extends StatelessWidget {
             ),
             Container(
               width: 108,
-              child: circleRender(context),
+              child: Consumer<UserInfoViewModel>(
+                builder: (_, model, __) {
+                  return circleRender(context, model?.data?.authStatus != 'PASS');
+                },
+              ),
             ),
           ],
         )
@@ -322,7 +366,7 @@ class LearnListItemWiget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    var content = Container(
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
       padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
@@ -331,6 +375,33 @@ class LearnListItemWiget extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
       child: _buildItem(context),
+    );
+    return GestureDetector(
+      onTap: (){
+        UserInfoViewModel model = Provider.of<UserInfoViewModel>(context, listen: false);
+        bool needAuth = model?.data?.authStatus != 'PASS';
+        if (needAuth && item.taskTemplate == "MEDICAL_SURVEY") {
+          if (model?.data?.identityStatus == 'PASS') {
+            if (model?.data?.authStatus == 'WAIT_VERIFY' ||
+                model?.data?.authStatus == 'FAIL') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+            } else if (model?.data?.authStatus == 'VERIFYING') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+            } else if (model?.data?.authStatus == 'PASS') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+            }
+          } else {
+            Navigator.pushNamed(
+                context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+          }
+        }else if (this.gotoDetail != null){
+          this.gotoDetail();
+        }
+      },
+      child: content,
     );
   }
 }

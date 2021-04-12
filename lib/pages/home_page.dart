@@ -1,3 +1,4 @@
+import 'package:doctor/common/event/event_home_tab.dart';
 import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/pages/message/message_page.dart';
@@ -222,11 +223,9 @@ class _HomePageState extends State<HomePage>
                       'doctorData': model.data.toJson(),
                       'openType': 'SURE_INFO',
                     });
-                if (result != null) {
-                  await model.queryDoctorInfo();
-                  if (model.data.basicInfoAuthStatus == 'COMPLETED') {
-                    Navigator.of(context).pop();
-                  }
+                await model.queryDoctorInfo();
+                if (model.data.basicInfoAuthStatus == 'COMPLETED') {
+                  Navigator.of(context).pop();
                 }
               },
             ),
@@ -286,8 +285,7 @@ class _HomePageState extends State<HomePage>
                   'qualification': true,
                 };
                 if (model.data?.authStatus == 'VERIFYING') {
-                  path = RouteManager.QUALIFICATION_AUTH_STATUS;
-                  arguments = {'authStatus': model.data?.authStatus};
+                  path = RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE;
                 }
                 await Navigator.pushNamed(
                   context,
@@ -317,6 +315,12 @@ class _HomePageState extends State<HomePage>
     initData();
     // showWeekIfNeededReporter(context);
     WidgetsBinding.instance.addObserver(this);
+    eventBus.on().listen((event) {
+      if(event is EventHomeTab){
+        debugPrint("index ------------------> ${event.index}");
+        onTabTapped(event.index);
+      }
+    });
   }
 
   @override

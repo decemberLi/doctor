@@ -1,4 +1,4 @@
-import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
+
 import 'package:doctor/pages/qualification/model/doctor_qualification_model.dart';
 import 'package:doctor/pages/qualification/view_model/doctor_qualification_view_model.dart';
 import 'package:doctor/route/route_manager.dart';

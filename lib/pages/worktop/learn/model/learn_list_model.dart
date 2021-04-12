@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'learn_list_model.g.dart';
@@ -7,11 +9,45 @@ part 'learn_list_model.g.dart';
 class ResourceTypeResult {
   String resourceType;
   bool complete;
+
   ResourceTypeResult(this.resourceType, this.complete);
+
   factory ResourceTypeResult.fromJson(Map<String, dynamic> json) =>
       _$ResourceTypeResultFromJson(json);
 
   Map<String, dynamic> toJson() => _$ResourceTypeResultToJson(this);
+}
+
+@JsonSerializable()
+class IllnessCase {
+  int illnessCaseId;
+  String patientCode;
+  String patientName;
+  String hospital;
+  String status;
+  int showIndex;
+  int age;
+  int sex;
+  int schedule;
+  List<dynamic> showFields;
+
+  IllnessCase(
+    this.patientName,
+    this.age,
+    this.sex,
+    this.illnessCaseId,
+    this.hospital,
+    this.status,
+    this.showIndex,
+    this.patientCode,
+    this.schedule,
+    this.showFields,
+  );
+
+  factory IllnessCase.fromJson(Map<String, dynamic> json) =>
+      _IllnessCaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _IllnessCaseToJson(this);
 }
 
 /// 学习计划列表项
@@ -32,6 +68,8 @@ class LearnListItem {
   int learnProgress;
   String status;
   bool reLearn;
+  IllnessCase illnessCase;
+
   LearnListItem({
     this.learnPlanId,
     this.taskDetailId,
@@ -47,6 +85,7 @@ class LearnListItem {
     this.status,
     this.reLearn,
     this.planImplementEndTime,
+    this.illnessCase,
   });
 
   factory LearnListItem.fromJson(Map<String, dynamic> json) =>

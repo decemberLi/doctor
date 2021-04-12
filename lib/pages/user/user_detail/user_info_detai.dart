@@ -484,8 +484,10 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
 
   @override
   Widget build(BuildContext context) {
-    bool doctorStatus = widget.args['authStatus'] == 'WAIT_VERIFY' ||
-        widget.args['authStatus'] == 'FAIL';
+    // 默认所有信息可以修改
+    bool allowEdit = true;
+    bool isAuthPass = widget.args['authStatus'] == 'PASS';
+    print("----------------${widget.args['identityStatus']}");
     noCompleteBasicInfo = widget.args['basicInfoAuthStatus'] == 'NOT_COMPLETE';
     var doctorName = widget.args['doctorName'] ?? '';
     if (noCompleteBasicInfo &&
@@ -514,35 +516,35 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
               child: Column(
                 children: [
                   widget.openType == 'VIEW' && !widget.qualification
-                      ? infoItem('头像', args['fullFacePhoto'], doctorStatus,
+                      ? infoItem('头像', args['fullFacePhoto'], allowEdit,
                           'photo', null)
                       : Container(),
                   !_qualification ? _divider : Container(),
-                  infoItem('姓名', doctorName, doctorStatus, 'edit', null),
+                  infoItem('姓名', doctorName, !isAuthPass, 'edit', null),
                   _divider,
-                  infoItem('性别', _genderInfo(noCompleteBasicInfo), doctorStatus,
+                  infoItem('性别', _genderInfo(noCompleteBasicInfo), !isAuthPass,
                       'picker', args['sex']),
                   _divider,
-                  infoItem('医院', args['hospitalName'], doctorStatus, 'hospital',
+                  infoItem('医院', args['hospitalName'], allowEdit, 'hospital',
                       null),
                   _divider,
                   infoItem(
                       '科室',
                       args['departmentsName'],
-                      doctorStatus,
+                      allowEdit,
                       'picker',
                       args['departmentsCode'] == ''
                           ? null
                           : args['departmentsCode']),
                   _divider,
-                  infoItem('职称', args['jobGradeName'], doctorStatus, 'picker',
+                  infoItem('职称', args['jobGradeName'], allowEdit, 'picker',
                       args['jobGradeCode']),
                   _qualification ? _divider : Container(),
                   _qualification
                       ? infoItem(
                           '易学术执业科室',
                           args['practiceDepartmentName'],
-                          doctorStatus,
+                          allowEdit,
                           'picker',
                           args['practiceDepartmentCode'])
                       : Container(),

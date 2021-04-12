@@ -24,6 +24,8 @@ class WebVC: UIViewController {
     var initData : [String:Any]?
     
     fileprivate var commentData : [AnyHashable:Any]?
+    fileprivate var needHook = 0
+    fileprivate var bizType = ""
     @available(iOS 13.0 , *)
     override var overrideUserInterfaceStyle: UIUserInterfaceStyle {
         get{.light}
@@ -76,7 +78,6 @@ class WebVC: UIViewController {
             let request = URLRequest(url: url)
             webview.load(request)
         }
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardChanged(_:)), name: UIApplication.keyboardWillChangeFrameNotification, object: nil)
         textView.textContainer.lineFragmentPadding = 0
     }
     
@@ -99,6 +100,7 @@ class WebVC: UIViewController {
                 self.textAllBG.layoutIfNeeded()
             }
         }else{
+            NotificationCenter.default.removeObserver(self, name: UIApplication.keyboardWillChangeFrameNotification, object: nil)
             self.textBG.snp.remakeConstraints { (maker) in
                 maker.top.equalTo(self.textAllBG.snp.bottom)
             }
@@ -146,6 +148,7 @@ class WebVC: UIViewController {
 
 private extension WebVC {
     func showCommentBox(old:[AnyHashable:Any]) {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardChanged(_:)), name: UIApplication.keyboardWillChangeFrameNotification, object: nil)
         textView.becomeFirstResponder()
         guard let putData = commentData else {return}
         let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
@@ -202,7 +205,12 @@ private extension WebVC {
     }
     
     @IBAction func onBack(){
-        dismiss(animated: true, completion: nil)
+        if needHook == 1{
+            let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":{}}}"#
+            webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+        }else{
+            navigationController?.popViewController(animated: true)
+        }
     }
     
     @IBAction func onRefreash() {
@@ -217,14 +225,13 @@ private extension WebVC {
 
 private class MessageHander : NSObject,WKScriptMessageHandler {
     weak var inVC : WebVC?
-    
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == "jsCall" else {return}
         guard let body = message.body as? String else {return}
         guard let data = body.data(using: .utf8) else {return}
         guard let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [AnyHashable:Any] else {return}
         guard let dispatchType = json["dispatchType"] as? String else {return}
-        let vc = AppDelegate.shared?.window.rootViewController
+        let vc = AppDelegate.shared?.rootVC
         let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
         if dispatchType == "ticket" {
             naviChannel.invokeMethod("getTicket", arguments: nil) { (result) in
@@ -235,7 +242,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
             }
             
         }else if dispatchType == "closeWindow" {
-            inVC?.dismiss(animated: true, completion: nil)
+            inVC?.navigationController?.popViewController(animated: true)
         }else if dispatchType == "setTitle" {
             let param = json["param"] as? String
             inVC?.titleLbl.text = param
@@ -252,6 +259,14 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
 //                print("the params is -- \(params)")
                 self.inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
             }
+        }else if dispatchType == "hookBackBtn" {
+            let bizType = json["bizType"] as? String ?? ""
+            if let params = json["param"] as? [AnyHashable:Any] {
+                let need = params["needHook"] as? Int
+                inVC?.needHook = need ?? 0
+                inVC?.bizType = bizType
+            }
+            
         }
     }
 }

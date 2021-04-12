@@ -27,4 +27,13 @@ class Developer extends SubAPI {
           'type': 'doctor',
         },
       );
+  customServicePhone() async => await normalPost(
+    "/dict/list-data-dict",
+    params: {
+      'pn': 1,
+      'ps': 10,
+      'code': 'custom_service_phone',
+      'type': 'doctor',
+    },
+  );
 }

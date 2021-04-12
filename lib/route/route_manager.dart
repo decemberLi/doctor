@@ -18,10 +18,14 @@ import 'package:doctor/pages/prescription/prescription_preview_page.dart';
 import 'package:doctor/pages/prescription/prescription_success_page.dart';
 import 'package:doctor/pages/prescription/prescription_template_add_page.dart';
 import 'package:doctor/pages/qualification/doctor_basic_info_page.dart';
-import 'package:doctor/pages/qualification/doctor_physician_status_page.dart';
+
 import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
+import 'package:doctor/pages/user/auth/auth_status_pass_page.dart';
+import 'package:doctor/pages/user/auth/auth_status_verifying_page.dart';
+import 'package:doctor/pages/user/auth/doctor_auth_step_one.dart';
+import 'package:doctor/pages/user/auth/doctor_auth_step_two.dart';
 import 'package:doctor/pages/user/collect/collect_list.dart';
 import 'package:doctor/pages/user/setting/setting_page.dart';
 import 'package:doctor/pages/user/update_pwd/set_new_pwd.dart';
@@ -42,7 +46,6 @@ import 'package:path/path.dart';
 
 class RouteManager {
   static const String HOME = '/home';
-  static const String LOGIN = '/login';
   static const String GUIDE = '/guide';
   static const String LOGIN_PWD = '/login_by_password';
   static const String LOGIN_CAPTCHA = '/login_by_captcha';
@@ -73,15 +76,24 @@ class RouteManager {
   static const String EDIT_DOCTOR_PAGE = '/edit_user_detail';
   static const String SETTING = '/setting';
   static const String MODIFY_PWD = '/modify_pwd';
-  static const String QUALIFICATION_AUTH_STATUS = '/qualification_auth_status';
   static const String DOCTORS_ARTICLE_DETAIL = '/doctors_detail';
   static const String COMMON_WEB = '/commonWeb';
   static const String DOCTOR_LIST1 = '/DoctorList1';
   static const String DOCTOR_LIST2 = '/DoctorList2';
+  // 未认证
+  static const String DOCTOR_AUTHENTICATION_INFO_PAGE = '/DoctorAuthenticationInfoPage';
+  // 认证失败
+  static const String DOCTOR_AUTHENTICATION_PAGE = '/DoctorAuthenticationPage';
+  // 认证中
+  static const String DOCTOR_AUTH_STATUS_VERIFYING_PAGE = '/AuthStatusPageVerifying';
+  // 认证成功
+  static const String DOCTOR_AUTH_STATUS_PASS_PAGE = '/AuthStatusPagePass';
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
-    LOGIN: (context) => LoginPage(),
-    LOGIN_PWD: (context) => LoginByPasswordPage(),
+    LOGIN_PWD: (context){
+      dynamic obj = ModalRoute.of(context).settings.arguments;
+      return LoginByPasswordPage(obj['phoneNumber']);
+    },
     LOGIN_CAPTCHA: (context) => LoginByCaptchaPage(),
     FIND_PWD: (context) => FindPassword(),
     HOME: (context) => HomePage(),
@@ -140,10 +152,6 @@ class RouteManager {
     },
     SETTING: (context) => SettingPage(),
     MODIFY_PWD: (context) => UpdatePwdPage(),
-    QUALIFICATION_AUTH_STATUS: (context) {
-      dynamic obj = ModalRoute.of(context).settings.arguments;
-      return DoctorPhysicianStatusPage(obj['authStatus']);
-    },
     EDIT_DOCTOR_PAGE: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return UserEditPage(
@@ -169,6 +177,14 @@ class RouteManager {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return DoctorsListPage2(obj);
     },
+    DOCTOR_AUTHENTICATION_INFO_PAGE:(context){
+      return DoctorAuthenticationPage();
+    },
+    DOCTOR_AUTHENTICATION_PAGE:(context){
+      return DoctorAuthenticationStepTwoPage();
+    },
+    DOCTOR_AUTH_STATUS_VERIFYING_PAGE: (context) => AuthStatusVerifyingPage(),
+    DOCTOR_AUTH_STATUS_PASS_PAGE: (context) => AuthStatusPassPage()
   };
 
   static openDoctorsDetail(postId, {String from = "list"}) {

@@ -45,7 +45,7 @@ class _LearnListPageState extends State<LearnListPage>
     );
     model.initData();
     eventBus.on().listen((event) {
-      if (event == "studyHistoryRefresh" && widget.learnStatus == "HISTORY"){
+      if (event == "studyHistoryRefresh" && widget.learnStatus == "HISTORY") {
         model.refresh();
       }
     });
@@ -112,8 +112,14 @@ class _LearnListPageState extends State<LearnListPage>
         itemCount: model.list.length,
         itemBuilder: (context, index) {
           LearnListItem item = model.list[index];
-          return GestureDetector(
-            onTap: () async {
+          return LearnListItemWiget(
+            item,
+            widget.learnStatus,
+            () {
+              model.removeItem(item);
+              eventBus.fire("studyHistoryRefresh");
+            },
+            () async {
               await Navigator.of(context).pushNamed(
                 RouteManager.LEARN_DETAIL,
                 arguments: {
@@ -125,17 +131,14 @@ class _LearnListPageState extends State<LearnListPage>
               if (widget.learnStatus == 'LEARNING') {
                 model.refreshController.requestRefresh(needMove: false);
               }
-              model.taskTemplate = TASK_TYPE_MAP[_currentTabIndex]['taskTemplate'];
+              model.taskTemplate =
+                  TASK_TYPE_MAP[_currentTabIndex]['taskTemplate'];
               model.initData();
               if (widget.onTaskTypeChange != null) {
                 widget.onTaskTypeChange(
                     TASK_TYPE_MAP[_currentTabIndex]['taskTemplate']);
               }
             },
-            child: LearnListItemWiget(item, widget.learnStatus,(){
-              model.removeItem(item);
-              eventBus.fire("studyHistoryRefresh");
-            }),
           );
         },
       ),

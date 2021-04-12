@@ -21,14 +21,14 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 def buildVersionCode = localProperties.getProperty('build.versionCode')
-if(buildVersionCode == null){
+if (buildVersionCode == null) {
     buildVersionCode = '1'
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-apply plugin:'kotlin-android-extensions'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 
@@ -37,12 +37,22 @@ android {
     buildToolsVersion '30.0.2'
 
     sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
+        main {
+            java.srcDirs += 'src/main/kotlin'
+        }
+        qa {
+            res.srcDirs += 'src/qa'
+        }
+        production {
+            res.srcDirs += 'src/production'
+        }
     }
 
     packagingOptions {
         doNotStrip '*/mips/*.so'
         doNotStrip '*/mips64/*.so'
+        pickFirst 'lib/armeabi-v7a/libopencv_world.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
     }
 
     lintOptions {
@@ -55,7 +65,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode buildVersionCode.toInteger()
-        versionName '2.4.6'
+        versionName '2.4.7'
         multiDexEnabled true
 
     }
@@ -66,12 +76,6 @@ android {
             zipAlignEnabled false
             shrinkResources false
             signingConfig signingConfigs.debug
-            manifestPlaceholders = [
-                    JPUSH_PKGNAME : defaultConfig.applicationId,
-                    JPUSH_APPKEY : "05de7d1b7c21f44388f972b6",
-                    JPUSH_CHANNEL : "developer-default",
-            ]
-
         }
         release {
             minifyEnabled true
@@ -83,13 +87,24 @@ android {
                 abiFilters "armeabi-v7a"
             }
 
-            manifestPlaceholders = [
-                    JPUSH_PKGNAME : defaultConfig.applicationId,
-                    JPUSH_APPKEY : "602e4ea4245634138758a93c",
-//                    JPUSH_APPKEY : "05de7d1b7c21f44388f972b6",
-                    JPUSH_CHANNEL : "developer-default",
-            ]
+        }
+    }
 
+    flavorDimensions "env"
+    productFlavors {
+        qa {
+            manifestPlaceholders = [
+                    JPUSH_PKGNAME: defaultConfig.applicationId,
+                    JPUSH_APPKEY : "05de7d1b7c21f44388f972b6",
+                    JPUSH_CHANNEL: "default",
+            ]
+        }
+        production {
+            manifestPlaceholders = [
+                    JPUSH_PKGNAME: defaultConfig.applicationId,
+                    JPUSH_APPKEY : "602e4ea4245634138758a93c",
+                    JPUSH_CHANNEL: "default",
+            ]
         }
     }
 
@@ -101,6 +116,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "droctor-${variant.flavorName}-${variant.buildType.name}-v${versionName}-${versionCode}.apk"
+        }
+    }
 }
 
 flutter {
@@ -108,6 +129,7 @@ flutter {
 }
 
 dependencies {
+    fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'
 
@@ -123,6 +145,8 @@ dependencies {
     api "androidx.camera:camera-camera2:$camerax_version"
     api "androidx.camera:camera-lifecycle:$camerax_version"
     api "androidx.camera:camera-view:1.0.0-alpha14"
+
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
     implementation "com.github.bumptech.glide:glide:$glide_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
@@ -143,12 +167,22 @@ dependencies {
 //    api 'com.github.barteksc:pdfium-android:1.9.0'
     implementation("com.google.guava:guava:30.1-android")
 
-    api  'com.kaopiz:kprogresshud:1.0.2'
+    api 'com.kaopiz:kprogresshud:1.0.2'
     api 'com.tencent.tbs.tbssdk:sdk:43903'
 
     implementation 'androidx.webkit:webkit:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     api 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+
+    // OCR
+    implementation files('libs/OcrSDKv1.0.5-release.aar')
+    // OCR SDK 依赖 xlog 组件需要添加引用
+    implementation 'com.tencent.mars:mars-xlog:1.2.3'
+    // OCR SDK 返回实体对象需要的依赖
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    api 'com.leon.channel:helper:2.0.3'
+
     // 注解
 //    implementation "com.google.dagger:dagger:2.30.1"
 //    kapt "com.google.dagger:dagger-compiler:2.30.1"

@@ -66,4 +66,17 @@ class UCenter extends SubAPI {
     return normalPost('/personal/change-head-pic',
         params: params, );
   }
+
+  Future postDoctorIdentityInfo(params) async{
+    return normalPost('/personal/commit-doctor-identity-info',params: params);
+  }
+
+  postAuthData(params) async{
+    return await normalPost('/personal/commit-doctor-certification-info',params: params);
+  }
+
+  // 高灯合同PDF
+  Future queryContractUrl() async{
+    return await normalPost('/contract/identity-sign-download');
+  }
 }
