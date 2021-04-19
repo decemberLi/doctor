@@ -588,16 +588,11 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   }
 
   _genderInfo(bool noCompleteBasicInfo) {
-    // 基础信息已完成
-    if (!noCompleteBasicInfo) {
-      return args['sex'] == 0 ? '女' : '男';
+    if(args['sex'] == null){
+      return '';
     }
-    // 未完成 修改过性别
-    if (isGenderModified) {
-      return args['sex'] == 0 ? '女' : '男';
-    }
-
-    return '';
+    // 后端返回基础信息即展示
+    return args['sex'] == 0 ? '女' : '男';
   }
 
   _buildNextBtnIfNeeded() {
