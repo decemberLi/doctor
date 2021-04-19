@@ -372,7 +372,7 @@ class _MessageStudyCell extends StatelessWidget {
               Expanded(
                   child: Text(
                 data.messageContent,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 12, color: ThemeColor.colorFF444444),
               )),
@@ -484,7 +484,7 @@ class _InteractiveCell extends StatelessWidget {
                   Expanded(
                     child: Text(
                       data.messageContent,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           color: ThemeColor.colorFF222222,

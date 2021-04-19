@@ -175,6 +175,9 @@ class _SubCollectState<T> extends State<_SubCollectList>
     } catch (e) {}
 
     _controller.headerMode.value = RefreshStatus.completed;
+    setState(() {
+
+    });
   }
 
   void onLoading() async {
