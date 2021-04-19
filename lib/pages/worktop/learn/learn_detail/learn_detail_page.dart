@@ -294,6 +294,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   _gotoRecord(LearnDetailItem data) {
+    if (EasyLoading.isShow) {
+      return;
+    }
     EasyLoading.instance.flash(
       () async {
         var appDocDir = await getApplicationDocumentsDirectory();
