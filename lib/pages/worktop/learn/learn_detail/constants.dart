@@ -2,7 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:doctor/utils/constants.dart';
 
 defaultFormatDate(int value) =>
-    DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日 HH:ss');
+    DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日 HH:ss:mm');
 formatDateDay(int value) => DateUtil.formatDateMs(value, format: 'yyyy年MM月dd日');
 
 taskTemplateFormat(String value) => TASK_TEMPLATE[value];
