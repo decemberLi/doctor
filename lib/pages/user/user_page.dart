@@ -342,7 +342,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                         width: Adapt.screenW() * 0.6,
                         padding: EdgeInsets.only(top: 8, bottom: 8),
                         child: Text(
-                          "${doctorData?.hospitalName}",
+                          "${doctorData?.hospitalName??''}",
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
