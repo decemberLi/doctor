@@ -88,6 +88,7 @@ class RouteManager {
   static const String DOCTOR_AUTH_STATUS_VERIFYING_PAGE = '/AuthStatusPageVerifying';
   // 认证成功
   static const String DOCTOR_AUTH_STATUS_PASS_PAGE = '/AuthStatusPagePass';
+
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN_PWD: (context){
@@ -184,7 +185,7 @@ class RouteManager {
       return DoctorAuthenticationStepTwoPage();
     },
     DOCTOR_AUTH_STATUS_VERIFYING_PAGE: (context) => AuthStatusVerifyingPage(),
-    DOCTOR_AUTH_STATUS_PASS_PAGE: (context) => AuthStatusPassPage()
+    DOCTOR_AUTH_STATUS_PASS_PAGE: (context) => AuthStatusPassPage(),
   };
 
   static openDoctorsDetail(postId, {String from = "list"}) {

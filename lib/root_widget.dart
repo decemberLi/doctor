@@ -37,16 +37,20 @@ class RootWidget extends StatelessWidget {
   final showGuide;
 
   RootWidget(this.showGuide) {
-    SessionManager.shared.addListener(() {
+    SessionManager.shared.addListener(() async{
       var context = NavigationService().navigatorKey.currentContext;
       debugPrint("RootWidget -> isLogin: ${SessionManager.shared.isLogin}");
       if (SessionManager.shared.isLogin) {
         Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.HOME, (route)=>false);
       } else {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => LoginByCaptchaPage()),
-          (route) => false,
-        );
+        if (ModalRoute.of(context).settings.name == RouteManager.LOGIN_CAPTCHA) {
+          return;
+        }
+        await Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.LOGIN_CAPTCHA, (route) => false);
+        // Navigator.of(context).pushAndRemoveUntil(
+        //   MaterialPageRoute(builder: (context) => LoginByCaptchaPage()),
+        //   (route) => false,
+        // );
       }
     });
     MedcloudsNativeApi.instance().addProcessor("receiveToken", (args) async{
