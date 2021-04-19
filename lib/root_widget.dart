@@ -43,7 +43,8 @@ class RootWidget extends StatelessWidget {
       if (SessionManager.shared.isLogin) {
         Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.HOME, (route)=>false);
       } else {
-        if (ModalRoute.of(context).settings.name == RouteManager.LOGIN_CAPTCHA) {
+        var name = ModalRoute.of(context).settings?.name ?? "";
+        if (name == RouteManager.LOGIN_CAPTCHA) {
           return;
         }
         await Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.LOGIN_CAPTCHA, (route) => false);
@@ -163,6 +164,7 @@ class RootWidget extends StatelessWidget {
       debugPrint("url - ${response.request.baseUrl} data - ${response.data}");
       Map<String, dynamic> data = response.data;
       String status = data["status"];
+      print("the status is $status");
       if (status.toUpperCase() == "ERROR") {
         String errorCode = data["errorCode"];
         if (outLoginCodes.contains(errorCode) ||
