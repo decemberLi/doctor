@@ -65,7 +65,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode buildVersionCode.toInteger()
-        versionName '2.4.7'
+        versionName '2.4.8'
         multiDexEnabled true
 
     }
