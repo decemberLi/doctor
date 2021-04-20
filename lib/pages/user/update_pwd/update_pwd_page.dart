@@ -59,122 +59,124 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
       ),
       // 避免键盘弹起时高度错误
       resizeToAvoidBottomInset: false,
-      body: Container(
-        height: 500,
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(left: 40),
-              child: Text(
-                '修改密码',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Container(
+          height: 500,
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: EdgeInsets.only(left: 40),
+                child: Text(
+                  '修改密码',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.fromLTRB(40, 0, 40, 44),
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        maxLength: 6,
-                        decoration: InputDecoration(
-                          hintText: '请输入原密码',
-                          counterText: '',
-                          suffixIcon: IconButton(
-                            icon: Icon(pwdOldVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () => {
-                              setState(() {
-                                pwdOldVisible = !pwdOldVisible;
-                              })
-                            },
+              Container(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.fromLTRB(40, 0, 40, 44),
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          maxLength: 6,
+                          decoration: InputDecoration(
+                            hintText: '请输入原密码',
+                            counterText: '',
+                            suffixIcon: IconButton(
+                              icon: Icon(pwdOldVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                              color: Theme.of(context).primaryColor,
+                              onPressed: () => {
+                                setState(() {
+                                  pwdOldVisible = !pwdOldVisible;
+                                })
+                              },
+                            ),
                           ),
+                          validator: (val) => val.length < 6 || !pwd.hasMatch(val)
+                              ? '请输入6位数字密码'
+                              : null,
+                          onSaved: (val) => oldPassword = val,
+                          obscureText: pwdOldVisible,
+                          autocorrect: false,
+                          style: pwdInputStyle,
                         ),
-                        validator: (val) => val.length < 6 || !pwd.hasMatch(val)
-                            ? '请输入6位数字密码'
-                            : null,
-                        onSaved: (val) => oldPassword = val,
-                        obscureText: pwdOldVisible,
-                        autocorrect: false,
-                        style: pwdInputStyle,
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(40, 0, 40, 44),
-                      child: TextFormField(
-                        maxLength: 6,
-                        decoration: InputDecoration(
-                          hintText: '请输入新密码',
-                          counterText: '',
-                          suffixIcon: IconButton(
-                            icon: Icon(pwdNewVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () => {
-                              setState(() {
-                                pwdNewVisible = !pwdNewVisible;
-                              })
-                            },
+                      Container(
+                        margin: EdgeInsets.fromLTRB(40, 0, 40, 44),
+                        child: TextFormField(
+                          maxLength: 6,
+                          decoration: InputDecoration(
+                            hintText: '请输入新密码',
+                            counterText: '',
+                            suffixIcon: IconButton(
+                              icon: Icon(pwdNewVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                              color: Theme.of(context).primaryColor,
+                              onPressed: () => {
+                                setState(() {
+                                  pwdNewVisible = !pwdNewVisible;
+                                })
+                              },
+                            ),
                           ),
+                          validator: (val) => val.length < 6 || !pwd.hasMatch(val)
+                              ? '请输入6位数字密码'
+                              : null,
+                          onSaved: (val) => newPassword = val,
+                          obscureText: pwdNewVisible,
+                          keyboardType: TextInputType.number,
+                          autocorrect: false,
+                          style: pwdInputStyle,
                         ),
-                        validator: (val) => val.length < 6 || !pwd.hasMatch(val)
-                            ? '请输入6位数字密码'
-                            : null,
-                        onSaved: (val) => newPassword = val,
-                        obscureText: pwdNewVisible,
-                        keyboardType: TextInputType.number,
-                        autocorrect: false,
-                        style: pwdInputStyle,
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(40, 0, 40, 44),
-                      child: TextFormField(
-                        maxLength: 6,
-                        decoration: InputDecoration(
-                          hintText: '再次输入密码',
-                          counterText: '',
-                          suffixIcon: IconButton(
-                            icon: Icon(pwdConfirmVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () => {
-                              setState(() {
-                                pwdConfirmVisible = !pwdConfirmVisible;
-                              })
-                            },
+                      Container(
+                        margin: EdgeInsets.fromLTRB(40, 0, 40, 44),
+                        child: TextFormField(
+                          maxLength: 6,
+                          decoration: InputDecoration(
+                            hintText: '再次输入密码',
+                            counterText: '',
+                            suffixIcon: IconButton(
+                              icon: Icon(pwdConfirmVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                              color: Theme.of(context).primaryColor,
+                              onPressed: () => {
+                                setState(() {
+                                  pwdConfirmVisible = !pwdConfirmVisible;
+                                })
+                              },
+                            ),
                           ),
+                          validator: (val) => val.length < 6 || !pwd.hasMatch(val)
+                              ? '请输入6位数字密码'
+                              : null,
+                          onSaved: (val) => confirmPassword = val,
+                          obscureText: pwdConfirmVisible,
+                          keyboardType: TextInputType.number,
+                          autocorrect: false,
+                          style: pwdInputStyle,
                         ),
-                        validator: (val) => val.length < 6 || !pwd.hasMatch(val)
-                            ? '请输入6位数字密码'
-                            : null,
-                        onSaved: (val) => confirmPassword = val,
-                        obscureText: pwdConfirmVisible,
-                        keyboardType: TextInputType.number,
-                        autocorrect: false,
-                        style: pwdInputStyle,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            AceButton(onPressed: () => changePwd(), text: '修改'),
-          ],
+              AceButton(onPressed: () => changePwd(), text: '修改'),
+            ],
+          ),
         ),
       ),
     );
