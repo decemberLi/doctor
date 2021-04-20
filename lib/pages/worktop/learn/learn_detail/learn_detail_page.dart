@@ -150,7 +150,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                     decorationStyle: TextDecorationStyle.solid),
               ),
               onTap: () {
-                Navigator.of(context).pushNamed(RouteManager.LOOK_COURSE_PAGE);
+                MedcloudsNativeApi.instance().openWebPage("https://mp.weixin.qq.com/s/YprfqD8GdSHCMvtW_LJx9Q");
                 print('如何录制讲课视频？');
               },
             ),
