@@ -691,10 +691,6 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       return false;
     }
     // 基础信息未完成 & 未修改过基础信息
-    if (noCompleteBasicInfo && !isGenderModified) {
-      EasyLoading.showToast('请选择性别');
-      return false;
-    }
     if (entity.sex == null) {
       EasyLoading.showToast('请选择性别');
       return false;
