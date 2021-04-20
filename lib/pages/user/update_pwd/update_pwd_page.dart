@@ -58,7 +58,7 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
         title: Text('修改密码'),
       ),
       // 避免键盘弹起时高度错误
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Container(
           height: 500,
