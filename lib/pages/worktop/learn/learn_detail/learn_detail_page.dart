@@ -529,7 +529,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          if (data.taskTemplate == 'DOCTOR_LECTURE' &&
+                          if (//data.taskTemplate == 'DOCTOR_LECTURE' &&
                               data.reLearnReason != null &&
                               data.status != 'SUBMIT_LEARN' &&
                               data.status != 'ACCEPTED')
