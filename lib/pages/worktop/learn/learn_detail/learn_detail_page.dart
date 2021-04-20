@@ -297,6 +297,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     if (EasyLoading.isShow) {
       return;
     }
+    UserInfoViewModel model =
+        Provider.of<UserInfoViewModel>(context, listen: false);
     EasyLoading.instance.flash(
       () async {
         var appDocDir = await getApplicationDocumentsDirectory();
@@ -309,8 +311,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           'resourceId': pdf.resourceId,
           'learnPlanId': data.learnPlanId,
         });
-        UserInfoViewModel model =
-            Provider.of<UserInfoViewModel>(context, listen: false);
         var map = {
           "path": picPath,
           "name": userInfo?.doctorName ?? '',
@@ -345,7 +345,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               print("格式为：-  $event");
               EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
             }
-          }catch(e){
+          } catch (e) {
             print("格式为：-  $e");
             EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
           }
@@ -363,6 +363,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   _gotoRecordPage(pdf, LearnDetailItem data, result) {
+    if (_mIsBack) {
+      return;
+    }
     MedcloudsNativeApi.instance().record(result.toString());
     MedcloudsNativeApi.instance().addProcessor(
       "uploadLearnVideo",
@@ -493,7 +496,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         body: Container(
           color: ThemeColor.colorFFF3F5F8,
           alignment: Alignment.topCenter,
-          child: ViewStateEmptyWidget(onPressed: model.initData) ,
+          child: ViewStateEmptyWidget(onPressed: model.initData),
         ),
       );
     }
@@ -692,20 +695,27 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     );
   }
 
+  bool _mIsBack = false;
+
   @override
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
     _model = LearnDetailViewModel(arguments['learnPlanId']);
-    return ProviderWidget<LearnDetailViewModel>(
-      model: _model,
-      onModelReady: (model) => model.initData(),
-      builder: (context, model, child) {
-        if (model.data?.taskTemplate == 'MEDICAL_SURVEY') {
-          return ResearchDetail();
-        } else {
-          return buildDetail(model);
-        }
-      },
-    );
+    return WillPopScope(
+        child: ProviderWidget<LearnDetailViewModel>(
+          model: _model,
+          onModelReady: (model) => model.initData(),
+          builder: (context, model, child) {
+            if (model.data?.taskTemplate == 'MEDICAL_SURVEY') {
+              return ResearchDetail();
+            } else {
+              return buildDetail(model);
+            }
+          },
+        ),
+        onWillPop: () {
+          EasyLoading.dismiss();
+          return Future.value(_mIsBack = true);
+        });
   }
 }
