@@ -43,7 +43,7 @@ class RootWidget extends StatelessWidget {
       if (SessionManager.shared.isLogin) {
         Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.HOME, (route)=>false);
       } else {
-        var name = ModalRoute.of(context).settings?.name ?? "";
+        var name = ModalRoute.of(context)?.settings?.name ?? "";
         if (name == RouteManager.LOGIN_CAPTCHA) {
           return;
         }
