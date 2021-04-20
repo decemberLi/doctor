@@ -21,6 +21,9 @@ class _DevSettingState extends State<DevSetting> {
 
   @override
   void initState() {
+    SharedPreferences.getInstance().then((e){
+      _proxyController.text = e.getString("settingProxy");
+    });
     super.initState();
   }
 
@@ -84,6 +87,7 @@ class _DevSettingState extends State<DevSetting> {
               style: TextStyle(fontSize: 18, color: Colors.black),
             ),
             TextField(
+              controller: _proxyController,
               decoration: InputDecoration(
                 hintText: "DIRECT",
               ),
