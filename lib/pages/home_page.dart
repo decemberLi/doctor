@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/ucenter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:doctor/http/foundation.dart';
 
 import '../root_widget.dart';
 import 'doctors/doctors_home.dart';
@@ -204,10 +205,10 @@ class _HomePageState extends State<HomePage>
                       color: ThemeColor.primaryColor,
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
+                  onPressed: () async {
+                    await API.shared.foundation.pushDeviceDel();
+                    await MedcloudsNativeApi.instance().logout();
                     SessionManager.shared.session = null;
-                    MedcloudsNativeApi.instance().logout();
                   },
                 ),
                 FlatButton(
