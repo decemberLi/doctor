@@ -370,24 +370,28 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     MedcloudsNativeApi.instance().addProcessor(
       "uploadLearnVideo",
       (args) async {
-        print("call uploadLearnVideo ${args}");
-        var obj = json.decode(args);
-        print("call 1111111 ${obj}");
-        var entity = await OssService.upload(obj["path"], showLoading: false);
-        print("call 22222 ${entity}");
-        var result = await API.shared.server.addLectureSubmit(
-          {
-            'learnPlanId': data.learnPlanId,
-            'resourceId': pdf.resourceId,
-            'videoTitle': obj['title'] ?? data.taskName,
-            'duration': obj['duration'] ?? 0,
-            'presenter': userInfo?.doctorName ?? '',
-            'videoOssId': entity.ossId,
-          },
-        );
-        print("the result is --- $result");
-        _model.initData();
-        _uploadFinish(result["lectureId"]);
+        try{
+          print("call uploadLearnVideo ${args}");
+          var obj = json.decode(args);
+          print("call 1111111 ${obj}");
+          var entity = await OssService.upload(obj["path"], showLoading: false);
+          print("call 22222 ${entity}");
+          var result = await API.shared.server.addLectureSubmit(
+            {
+              'learnPlanId': data.learnPlanId,
+              'resourceId': pdf.resourceId,
+              'videoTitle': obj['title'] ?? data.taskName,
+              'duration': obj['duration'] ?? 0,
+              'presenter': userInfo?.doctorName ?? '',
+              'videoOssId': entity.ossId,
+            },
+          );
+          print("the result is --- $result");
+          _model.initData();
+          _uploadFinish(result["lectureId"]);
+        }catch(e){
+          return "网络错误";
+        }
         return null;
         //print("the result is ${result}");
       },
