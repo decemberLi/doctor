@@ -1,6 +1,7 @@
 import 'package:doctor/http/foundationSystem.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -108,11 +109,7 @@ void _showDialog(
                         onPressed: () async {
                           _isDialogShowing = false;
                           Navigator.pop(context);
-                          Navigator.pushNamed(
-                            context,
-                            RouteManager.COMMON_WEB,
-                            arguments: {'url': url, 'title': ''},
-                          );
+                          MedcloudsNativeApi.instance().openWebPage(url);
                           await API.shared.foundationSys
                               .messageUpdateStatus({'messageId': messageId});
                         },
