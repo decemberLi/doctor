@@ -77,7 +77,6 @@ class RouteManager {
   static const String SETTING = '/setting';
   static const String MODIFY_PWD = '/modify_pwd';
   static const String DOCTORS_ARTICLE_DETAIL = '/doctors_detail';
-  static const String COMMON_WEB = '/commonWeb';
   static const String DOCTOR_LIST1 = '/DoctorList1';
   static const String DOCTOR_LIST2 = '/DoctorList2';
   // 未认证
@@ -165,10 +164,6 @@ class RouteManager {
         type: obj['type'],
         from: obj['from'],
       );
-    },
-    COMMON_WEB: (context) {
-      dynamic obj = ModalRoute.of(context).settings.arguments;
-      return CommonWebView(obj['url'],obj['title']);
     },
     DOCTOR_LIST1: (context){
       dynamic obj = ModalRoute.of(context).settings.arguments;
