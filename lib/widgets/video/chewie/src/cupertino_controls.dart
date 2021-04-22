@@ -49,10 +49,16 @@ class _CupertinoControlsState extends State<CupertinoControls> {
               chewieController.videoPlayerController.value.errorDescription,
             )
           : Center(
-              child: Icon(
-                Icons.error,
-                color: Colors.white,
-                size: 42,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 42,
+                  ),
+                  Text("网络错误，请稍后重试",style: TextStyle(color: Colors.white),),
+                ],
               ),
             );
     }
