@@ -44,14 +44,7 @@ class RootWidget extends StatelessWidget {
         Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.HOME, (route)=>false);
       } else {
         var name = ModalRoute.of(context)?.settings?.name ?? "";
-        if (name == RouteManager.LOGIN_CAPTCHA) {
-          return;
-        }
         await Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.LOGIN_CAPTCHA, (route) => false);
-        // Navigator.of(context).pushAndRemoveUntil(
-        //   MaterialPageRoute(builder: (context) => LoginByCaptchaPage()),
-        //   (route) => false,
-        // );
       }
     });
     MedcloudsNativeApi.instance().addProcessor("receiveToken", (args) async{
