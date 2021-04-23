@@ -121,7 +121,7 @@ dependencies:
   http_manager:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/http_manager.git
-      ref: 1.0.4
+      ref: 1.0.5
   qr_code_scanner: ^0.3.5
 
 dependency_overrides:
