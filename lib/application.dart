@@ -51,10 +51,7 @@ class ApplicationInitialize {
       var url = json.decode(ext)['url'];
       print('url -> $url');
 
-      return Navigator.pushNamed(
-          NavigationService().navigatorKey.currentContext,
-          RouteManager.COMMON_WEB,
-          arguments: {'title': '', 'url': url});
+      return MedcloudsNativeApi.instance().openWebPage(url);
     });
     runApp(RootWidget({'showGuide': showGuide}));
   }

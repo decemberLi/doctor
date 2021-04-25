@@ -29,7 +29,7 @@ dependencies:
   dio: ^3.0.10
   # https://pub.dev/packages/flutter_easyloading
   flutter_easyloading: ^2.0.0
-  shared_preferences: ^0.5.12
+  shared_preferences: 0.5.12+4
   # 下拉刷新 https://github.com/peng8350/flutter_pulltorefresh
   # pull_to_refresh: ^1.6.1
   pull_to_refresh:
@@ -109,6 +109,7 @@ dependencies:
   flutter_file_preview:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_file_preview.git
+      ref: 1.0.2
   # 图片压缩
   flutter_image_compress:
     git:
@@ -120,7 +121,9 @@ dependencies:
   http_manager:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/http_manager.git
-      ref: 1.0.1
+      ref: 1.0.5
+  qr_code_scanner: ^0.3.5
+
 dependency_overrides:
   camera: 0.5.8+1
 dev_dependencies:

@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/ucenter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:doctor/http/foundation.dart';
 
 import '../root_widget.dart';
 import 'doctors/doctors_home.dart';
@@ -190,47 +191,49 @@ class _HomePageState extends State<HomePage>
     return showCupertinoDialog<bool>(
       context: context,
       builder: (context) {
-        return CupertinoAlertDialog(
-          content: Container(
-            padding: EdgeInsets.only(top: 12),
-            child: Text("您还没有完善医生基础信息"),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(
-                "退出登录",
-                style: TextStyle(
-                  color: ThemeColor.primaryColor,
-                ),
+        return WillPopScope(
+            child: CupertinoAlertDialog(
+              content: Container(
+                padding: EdgeInsets.only(top: 12),
+                child: Text("您还没有完善医生基础信息"),
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                SessionManager.shared.session = null;
-                MedcloudsNativeApi.instance().logout();
-              },
-            ),
-            FlatButton(
-              child: Text(
-                "现在去完善",
-                style: TextStyle(
-                  color: ThemeColor.primaryColor,
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(
+                    "退出登录",
+                    style: TextStyle(
+                      color: ThemeColor.primaryColor,
+                    ),
+                  ),
+                  onPressed: () async {
+                    await API.shared.foundation.pushDeviceDel();
+                    await MedcloudsNativeApi.instance().logout();
+                    SessionManager.shared.session = null;
+                  },
                 ),
-              ),
-              onPressed: () async {
-                var result = await Navigator.pushNamed(
-                    context, RouteManager.USERINFO_DETAIL,
-                    arguments: {
-                      'doctorData': model.data.toJson(),
-                      'openType': 'SURE_INFO',
-                    });
-                await model.queryDoctorInfo();
-                if (model.data.basicInfoAuthStatus == 'COMPLETED') {
-                  Navigator.of(context).pop();
-                }
-              },
+                FlatButton(
+                  child: Text(
+                    "现在去完善",
+                    style: TextStyle(
+                      color: ThemeColor.primaryColor,
+                    ),
+                  ),
+                  onPressed: () async {
+                    var result = await Navigator.pushNamed(
+                        context, RouteManager.USERINFO_DETAIL,
+                        arguments: {
+                          'doctorData': model.data.toJson(),
+                          'openType': 'SURE_INFO',
+                        });
+                    await model.queryDoctorInfo();
+                    if (model.data.basicInfoAuthStatus == 'COMPLETED') {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+              ],
             ),
-          ],
-        );
+            onWillPop: () => Future.value(false));
       },
     );
   }

@@ -32,22 +32,23 @@ import 'utils/app_utils.dart';
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final EventBus eventBus = EventBus();
 Set<String> userAuthCode = {'00010009', '00010010'};
-
+String windowDeviceToken = "";
 class RootWidget extends StatelessWidget {
   final showGuide;
 
   RootWidget(this.showGuide) {
-    SessionManager.shared.addListener(() {
+    SessionManager.shared.addListener(() async{
       var context = NavigationService().navigatorKey.currentContext;
       debugPrint("RootWidget -> isLogin: ${SessionManager.shared.isLogin}");
       if (SessionManager.shared.isLogin) {
         Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.HOME, (route)=>false);
       } else {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => LoginByCaptchaPage()),
-          (route) => false,
-        );
+        var name = ModalRoute.of(context)?.settings?.name ?? "";
+        await Navigator.of(context).pushNamedAndRemoveUntil(RouteManager.LOGIN_CAPTCHA, (route) => false);
       }
+    });
+    MedcloudsNativeApi.instance().addProcessor("receiveToken", (args) async{
+      windowDeviceToken = args;
     });
     MedcloudsNativeApi.instance().addProcessor("uploadDeviceInfo",
         (args) async {
@@ -148,13 +149,14 @@ class RootWidget extends StatelessWidget {
       options.headers["_ticketObject"] = SessionManager.shared.session;
       options.headers["_appVersion"] = await PlatformUtils.getAppVersion();
       options.headers["_appVersionCode"] = await PlatformUtils.getBuildNum();
+      options.headers["_greyVersion"] = "1.9.5";
       return options;
     };
     HttpManager.shared.onResponse = (response) async {
-      EasyLoading.dismiss();
       debugPrint("url - ${response.request.baseUrl} data - ${response.data}");
       Map<String, dynamic> data = response.data;
       String status = data["status"];
+      print("the status is $status");
       if (status.toUpperCase() == "ERROR") {
         String errorCode = data["errorCode"];
         if (outLoginCodes.contains(errorCode) ||

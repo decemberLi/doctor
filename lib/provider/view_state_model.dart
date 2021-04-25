@@ -93,7 +93,10 @@ class ViewStateModel with ChangeNotifier {
         if (e is SocketException) {
           errorType = ViewStateErrorType.networkTimeOutError;
           message = e.message;
-        } else {
+        }else if (e is String){
+          message = e;
+        }
+        else {
           message = e.data['errorMsg'];
         }
       }

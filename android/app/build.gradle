@@ -65,8 +65,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode buildVersionCode.toInteger()
-        versionName '2.4.7'
-        multiDexEnabled true
+        versionName '2.4.8'
 
     }
 
@@ -131,7 +130,6 @@ flutter {
 dependencies {
     fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:multidex:1.0.3'
 
     implementation "androidx.core:core:$core_version"
     implementation "androidx.core:core-ktx:$core_version"

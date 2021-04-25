@@ -1,6 +1,9 @@
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
+import 'package:http_manager/api.dart';
 import 'package:http_manager/session_manager.dart';
+import 'package:doctor/http/foundation.dart';
 
 class TestPage extends StatefulWidget {
   TestPage({Key key}) : super(key: key);
@@ -40,7 +43,9 @@ class _TestPageState extends State<TestPage> {
           children: [
             AceButton(onPressed: login, text: '登录'),
             AceButton(
-                onPressed: () {
+                onPressed: () async {
+                  await API.shared.foundation.pushDeviceDel();
+                  await MedcloudsNativeApi.instance().logout();
                   SessionManager.shared.session = null;
                 },
                 text: '退出登录'),

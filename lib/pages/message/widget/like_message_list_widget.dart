@@ -1,10 +1,12 @@
 import 'package:doctor/pages/message/view_model/social_message_list_view_model.dart';
 import 'package:doctor/pages/message/widget/redoc_logic.dart';
+import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/common_widget_style.dart';
 import 'package:doctor/widgets/refreshable_list_widget.dart';
+import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +20,7 @@ class LikeMessagePage extends StatefulWidget {
 }
 
 class _LikeMessagePageState
-    extends AbstractListPageState<SocialMessageListViewModel, LikeMessagePage> {
+    extends State<LikeMessagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,27 +31,43 @@ class _LikeMessagePageState
           style: TextStyle(fontSize: 17, color: ThemeColor.colorFF000000),
         ),
       ),
-      body: super.build(context),
+      body:Container(
+        color: ThemeColor.colorFFF3F5F8,
+        child:  NormalTableView(
+          padding: EdgeInsets.only(top: 10),
+          itemBuilder: itemWidget,
+          holder: (isError,message){
+            if (isError){
+              return ViewStateEmptyWidget(message: message);
+            }else{
+              return ViewStateEmptyWidget(message: '还没有任何赞，好落寞');
+            }
+          },
+          getData: (page) async {
+            if (page == 1){
+              await _model.initData();
+            }else{
+              await _model.loadData(pageNum: page);
+            }
+            return _model.list;
+          },
+        ),
+      ),
     );
   }
 
-  @override
-  SocialMessageListViewModel getModel() =>
+
+  SocialMessageListViewModel _model =
       SocialMessageListViewModel(SocialMessageType.TYPE_LIKE);
 
-  @override
-  Widget emptyWidget(String msg) {
-    return super.emptyWidget('还没有任何赞，好落寞');
-  }
 
-  @override
-  Widget itemWidget(BuildContext context, int index, dynamic data) {
+  Widget itemWidget(BuildContext context, dynamic data) {
     if (!(data is SocialMessageModel)) {
       return Container();
     }
-    return Container(
+    var content = Container(
       padding: EdgeInsets.all(12),
-      margin: EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.symmetric(horizontal: 16,vertical: 5),
       decoration: itemContainerDecoration,
       child: IntrinsicHeight(
         child: Row(
@@ -93,11 +111,16 @@ class _LikeMessagePageState
         ),
       ),
     );
+    return GestureDetector(
+      child: content,
+      onTap: (){
+        onItemClicked(data);
+      },
+    );
   }
 
-  @override
-  void onItemClicked(SocialMessageListViewModel model, itemData) {
+  void onItemClicked(itemData) {
     RouteManager.openDoctorsDetail(itemData?.postId,from: 'msg');
-    model?.messageClicked(itemData?.messageId);
+    _model.messageClicked(itemData?.messageId);
   }
 }

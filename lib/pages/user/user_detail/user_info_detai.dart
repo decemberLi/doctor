@@ -19,6 +19,7 @@ import 'package:toast/toast.dart';
 import 'package:http_manager/manager.dart';
 import 'package:doctor/http/foundation.dart';
 import 'package:doctor/http/ucenter.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 import 'uploadImage.dart';
 
@@ -275,7 +276,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
         MaterialPageRoute(builder: (context) => _hospitalSearchWidget));
   }
 
-  showPickerModal(BuildContext context, lable, defaultCode) {
+  showPickerModal(BuildContext context, lable, defaultCode) async {
     //下拉数据
     List<PickerItem<String>> listData = [];
     //默认选择值 默认值是通过index来确定的
@@ -293,6 +294,11 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       defaultSelect = defaultCode == null ? [0] : [defaultCode];
     }
     if (lable == '职称') {
+      if (doctorTitle.length == 0 ){
+        await EasyLoading.instance.flash(() async {
+          doctorTitle = await API.shared.foundation.getSelectInfo({'type': 'DOCTOR_TITLE'});
+        });
+      }
       listData = [
         ...doctorTitle
             .map((e) => new PickerItem(
@@ -308,6 +314,11 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       defaultSelect = defaultCode == null ? [0] : [defaultCode];
     }
     if (lable == '科室') {
+      if (departments.length == 0 ){
+        await EasyLoading.instance.flash(() async {
+          departments = await API.shared.foundation.getSelectInfo({'type': 'DEPARTMENTS'});
+        });
+      }
       //找到父亲
       String parent;
       int sonIndex;
@@ -588,16 +599,11 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
   }
 
   _genderInfo(bool noCompleteBasicInfo) {
-    // 基础信息已完成
-    if (!noCompleteBasicInfo) {
-      return args['sex'] == 0 ? '女' : '男';
+    if(args['sex'] == null){
+      return '';
     }
-    // 未完成 修改过性别
-    if (isGenderModified) {
-      return args['sex'] == 0 ? '女' : '男';
-    }
-
-    return '';
+    // 后端返回基础信息即展示
+    return args['sex'] == 0 ? '女' : '男';
   }
 
   _buildNextBtnIfNeeded() {
@@ -696,10 +702,6 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       return false;
     }
     // 基础信息未完成 & 未修改过基础信息
-    if (noCompleteBasicInfo && !isGenderModified) {
-      EasyLoading.showToast('请选择性别');
-      return false;
-    }
     if (entity.sex == null) {
       EasyLoading.showToast('请选择性别');
       return false;

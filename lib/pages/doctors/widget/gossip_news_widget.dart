@@ -99,7 +99,7 @@ class GossipNewsItemWidget extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.only(top: 6),
-            child: Text(data?.postContent ?? '',
+            child: Text("${data?.postContent ?? ''} ",
                 maxLines: 10,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(

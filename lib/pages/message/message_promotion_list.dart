@@ -7,6 +7,7 @@ import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -120,11 +121,7 @@ class _MessagePromotionListState extends State<MessagePromotionList> with RouteA
                             item.readed = true;
                           });
                           if(data.bizType == 'DOCTOR_WORK_CONCLUSION'){
-                            Navigator.pushNamed(
-                              context,
-                              RouteManager.COMMON_WEB,
-                              arguments: {'url': data.params['viewUrl'], 'title': ''},
-                            );
+                            MedcloudsNativeApi.instance().openWebPage(data.params['viewUrl']);
                             return;
                           }
                           if (data.params == null ||
@@ -372,7 +369,7 @@ class _MessageStudyCell extends StatelessWidget {
               Expanded(
                   child: Text(
                 data.messageContent,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 12, color: ThemeColor.colorFF444444),
               )),
@@ -484,7 +481,7 @@ class _InteractiveCell extends StatelessWidget {
                   Expanded(
                     child: Text(
                       data.messageContent,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           color: ThemeColor.colorFF222222,

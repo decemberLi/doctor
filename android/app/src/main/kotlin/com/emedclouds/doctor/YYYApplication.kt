@@ -2,7 +2,6 @@ package com.emedclouds.doctor
 
 import android.app.Application
 import android.content.Context
-import androidx.multidex.MultiDex
 import com.emedclouds.doctor.common.thirdpart.apm.APM
 import com.emedclouds.doctor.common.thirdpart.push.receiver.PushSdk
 import com.emedclouds.doctor.common.thirdpart.report.Reporter
@@ -27,7 +26,6 @@ class YYYApplication : FlutterApplication() {
         if(!isAppMainProcess(this)){
             return
         }
-        MultiDex.install(base)
     }
 
 

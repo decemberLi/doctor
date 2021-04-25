@@ -77,7 +77,6 @@ class RouteManager {
   static const String SETTING = '/setting';
   static const String MODIFY_PWD = '/modify_pwd';
   static const String DOCTORS_ARTICLE_DETAIL = '/doctors_detail';
-  static const String COMMON_WEB = '/commonWeb';
   static const String DOCTOR_LIST1 = '/DoctorList1';
   static const String DOCTOR_LIST2 = '/DoctorList2';
   // 未认证
@@ -88,6 +87,7 @@ class RouteManager {
   static const String DOCTOR_AUTH_STATUS_VERIFYING_PAGE = '/AuthStatusPageVerifying';
   // 认证成功
   static const String DOCTOR_AUTH_STATUS_PASS_PAGE = '/AuthStatusPagePass';
+
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN_PWD: (context){
@@ -165,10 +165,6 @@ class RouteManager {
         from: obj['from'],
       );
     },
-    COMMON_WEB: (context) {
-      dynamic obj = ModalRoute.of(context).settings.arguments;
-      return CommonWebView(obj['url'],obj['title']);
-    },
     DOCTOR_LIST1: (context){
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return DoctorsListPage(obj);
@@ -184,7 +180,7 @@ class RouteManager {
       return DoctorAuthenticationStepTwoPage();
     },
     DOCTOR_AUTH_STATUS_VERIFYING_PAGE: (context) => AuthStatusVerifyingPage(),
-    DOCTOR_AUTH_STATUS_PASS_PAGE: (context) => AuthStatusPassPage()
+    DOCTOR_AUTH_STATUS_PASS_PAGE: (context) => AuthStatusPassPage(),
   };
 
   static openDoctorsDetail(postId, {String from = "list"}) {
