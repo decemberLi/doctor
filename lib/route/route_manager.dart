@@ -2,7 +2,6 @@ import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
 import 'package:doctor/pages/doctors/doctors_list_page.dart';
 import 'package:doctor/pages/doctors/doctors_list_page2.dart';
-import 'package:doctor/pages/doctors/widget/doctors_detail_widget.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/find_password.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
@@ -71,7 +70,6 @@ class RouteManager {
   static const String EDIT_DOCTOR_PAGE = '/edit_user_detail';
   static const String SETTING = '/setting';
   static const String MODIFY_PWD = '/modify_pwd';
-  static const String DOCTORS_ARTICLE_DETAIL = '/doctors_detail';
   static const String DOCTOR_LIST1 = '/DoctorList1';
   static const String DOCTOR_LIST2 = '/DoctorList2';
   // 未认证
@@ -150,14 +148,6 @@ class RouteManager {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return UserEditPage(
           obj['lable'], obj['value'], obj['editWay'], obj['function']);
-    },
-    DOCTORS_ARTICLE_DETAIL: (context) {
-      dynamic obj = ModalRoute.of(context).settings.arguments;
-      return DoctorsDetailPage(
-        postId: obj['postId'],
-        type: obj['type'],
-        from: obj['from'],
-      );
     },
     DOCTOR_LIST1: (context){
       dynamic obj = ModalRoute.of(context).settings.arguments;
