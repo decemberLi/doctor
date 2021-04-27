@@ -50,7 +50,6 @@ class RouteManager {
   static const String LOGIN_PWD = '/login_by_password';
   static const String LOGIN_CAPTCHA = '/login_by_captcha';
   static const String FIND_PWD = '/find_password';
-  static const String TEST = '/test';
   static const String LEARN_LIST = '/learn_list';
   static const String LEARN_DETAIL = '/learn_detail';
   static const String LECTURE_VIDEOS = '/lecture_videos';
@@ -97,7 +96,6 @@ class RouteManager {
     LOGIN_CAPTCHA: (context) => LoginByCaptchaPage(),
     FIND_PWD: (context) => FindPassword(),
     HOME: (context) => HomePage(),
-    TEST: (context) => TestPage(),
     LEARN_LIST: (context) => LearnListPage('LEARNING'),
     LEARN_DETAIL: (context) => LearnDetailPage(),
     LECTURE_VIDEOS: (context) => LectureVideosPage(),
