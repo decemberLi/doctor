@@ -7,7 +7,6 @@ import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/find_password.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:doctor/pages/login/login_by_password_page.dart';
-import 'package:doctor/pages/login/login_page.dart';
 import 'package:doctor/pages/medication/medication_detail_page.dart';
 import 'package:doctor/pages/patient/patient_detail_page.dart';
 import 'package:doctor/pages/patient/patient_page.dart';
@@ -20,7 +19,6 @@ import 'package:doctor/pages/prescription/prescription_template_add_page.dart';
 import 'package:doctor/pages/qualification/doctor_basic_info_page.dart';
 
 import 'package:doctor/pages/splash/splash.dart';
-import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
 import 'package:doctor/pages/user/auth/auth_status_pass_page.dart';
 import 'package:doctor/pages/user/auth/auth_status_verifying_page.dart';
@@ -40,9 +38,7 @@ import 'package:doctor/pages/worktop/learn/lecture_videos/look_lecture_video_pag
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
-import 'package:doctor/widgets/common_webview.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 
 class RouteManager {
   static const String HOME = '/home';
