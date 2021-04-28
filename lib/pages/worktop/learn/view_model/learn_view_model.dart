@@ -1,10 +1,10 @@
-import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
-import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
-import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
-import 'package:doctor/provider/view_state_refresh_list_model.dart';
-import 'package:doctor/provider/view_state_model.dart';
-import 'package:http_manager/manager.dart';
 import 'package:doctor/http/server.dart';
+import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
+import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
+import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
+import 'package:doctor/provider/view_state_model.dart';
+import 'package:doctor/provider/view_state_refresh_list_model.dart';
+import 'package:http_manager/manager.dart';
 
 
 

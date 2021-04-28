@@ -3,7 +3,6 @@ import 'package:doctor/pages/prescription/widgets/prescription_status.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/common_style.dart';
-import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/form_item.dart';
 import 'package:doctor/widgets/one_line_text.dart';
 import 'package:doctor/widgets/photo_view_gallery_screen.dart';

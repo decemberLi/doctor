@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
+import 'package:doctor/http/developer.dart';
 import 'package:doctor/pages/user/setting/update/app_repository.dart';
 import 'package:doctor/pages/user/setting/update/app_update_info.dart';
 import 'package:doctor/theme/theme.dart';
@@ -12,12 +13,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http_manager/manager.dart';
-import 'package:doctor/http/developer.dart';
 
 class AppUpdateHelper {
   static Future _downloadApp(

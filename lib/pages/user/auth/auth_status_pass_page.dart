@@ -1,11 +1,11 @@
+import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_file_preview/flutter_file_preview.dart';
 import 'package:http_manager/api.dart';
-import 'package:doctor/http/ucenter.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class AuthStatusPassPage extends StatelessWidget {
   @override

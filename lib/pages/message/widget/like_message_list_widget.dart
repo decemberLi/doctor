@@ -5,7 +5,6 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/common_widget_style.dart';
-import 'package:doctor/widgets/refreshable_list_widget.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

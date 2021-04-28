@@ -1,9 +1,9 @@
+import 'package:doctor/http/foundation.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http_manager/manager.dart';
 
 import 'app_update_info.dart';
-import 'package:doctor/http/foundation.dart';
-import 'package:http_manager/manager.dart';
 
 /// App相关接口
 class AppRepository {

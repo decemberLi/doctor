@@ -21,7 +21,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 import 'comment/input_bar.dart';
 

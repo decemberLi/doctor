@@ -1,18 +1,20 @@
+import 'dart:async';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:doctor/http/Sso.dart';
+import 'package:doctor/http/foundation.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async';
+
 import 'common_style.dart';
-import 'package:http_manager/manager.dart';
-import 'package:doctor/http/foundation.dart';
-import 'package:doctor/http/Sso.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class FindPassword extends StatefulWidget {
   @override

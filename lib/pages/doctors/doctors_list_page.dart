@@ -1,13 +1,11 @@
-import 'dart:async';
 import 'dart:convert';
 
+import 'package:doctor/http/dtp.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/api.dart';
-import 'package:doctor/http/dtp.dart';
-import 'package:provider/provider.dart';
 
 import 'model/doctor_circle_entity.dart';
 import 'viewmodel/doctors_view_model.dart';

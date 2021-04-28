@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:doctor/widgets/video/chewie/src/chewie_player.dart';
 import 'package:doctor/widgets/video/chewie/src/utils.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import 'chewie_progress_colors.dart';

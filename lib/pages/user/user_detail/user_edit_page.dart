@@ -1,9 +1,9 @@
+import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/ucenter.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 final uploadData = {
   '姓名': 'doctorName',

@@ -1,35 +1,28 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/http/oss_service.dart';
+import 'package:doctor/http/server.dart';
 import 'package:doctor/model/oss_file_entity.dart';
-import 'package:doctor/pages/worktop/learn/lecture_videos/upload_video.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
-import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
-import 'package:doctor/pages/worktop/learn_plan_page.dart';
-import 'package:doctor/provider/provider_widget.dart';
-import 'package:doctor/route/route_manager.dart';
-
 // import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/debounce.dart';
-import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/utils/no_wifi_notice_helper.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/video/chewie_video.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_compress/video_compress.dart';
 import 'package:video_player/video_player.dart';
-import 'package:flutter/rendering.dart';
-import 'package:doctor/http/server.dart';
-import 'dart:async';
 
 /// * @Author: duanruilong  * @Date: 2020-10-30 14:49:43  * @Desc: 上传讲课视频  */ lecture_videos
 
