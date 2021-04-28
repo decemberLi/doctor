@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:common_utils/common_utils.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:doctor/provider/GlobalData.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:http_manager/api.dart';
@@ -105,6 +107,10 @@ class MedcloudsNativeApi {
   Future uploadDeviceInfo(args) async {
     try {
       var ids = json.decode(args);
+      var registerId = ids["registerId"];
+      if(TextUtil.isEmpty(registerId)){
+        return;
+      }
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       var params = {'appType': 'DOCTOR'};
       if (Platform.isIOS) {
@@ -121,8 +127,8 @@ class MedcloudsNativeApi {
         params['os'] = "${androidInfo.version.sdkInt}";
         params['deviceId'] = "${ids["registerId"]}";
       }
-      params['registerId'] = "${ids["registerId"]}";
-      print("the params - ${params}");
+      params['registerId'] = "$registerId";
+      debugPrint("the params - $params");
       GlobalData.shared.registerId = "${ids["registerId"]}";
       await API.shared.foundation.pushDeviceSubmit(params);
     } catch (e) {}
