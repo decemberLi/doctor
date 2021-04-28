@@ -151,9 +151,9 @@ class RootWidget extends StatelessWidget {
       options.headers["_appVersionCode"] = await PlatformUtils.getBuildNum();
       options.headers["_greyVersion"] = "1.9.5";
       if (Platform.isAndroid){
-        options.headers['platform'] = "Android";
+        options.headers['_platform'] = "Android";
       }else if (Platform.isIOS){
-        options.headers['platform']= "iOS";
+        options.headers['_platform']= "iOS";
       }
 
       return options;

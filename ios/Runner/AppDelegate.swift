@@ -105,7 +105,8 @@ import UserNotificationsUI
                 }
             }
             JPUSHService.registrationIDCompletionHandler { (code, id) in
-                let map = ["registerId":id ?? "error id"]
+                guard let real = id else {return}
+                let map = ["registerId":real]
                 guard let data = try? JSONSerialization.data(withJSONObject: map, options: .fragmentsAllowed) else { return }
                 let upload = String(data: data, encoding: .utf8)
                 self.naviChannel.invokeMethod("uploadDeviceInfo", arguments: upload)
