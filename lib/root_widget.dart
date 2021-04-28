@@ -150,6 +150,12 @@ class RootWidget extends StatelessWidget {
       options.headers["_appVersion"] = await PlatformUtils.getAppVersion();
       options.headers["_appVersionCode"] = await PlatformUtils.getBuildNum();
       options.headers["_greyVersion"] = "1.9.5";
+      if (Platform.isAndroid){
+        options.headers['platform'] = "Android";
+      }else if (Platform.isIOS){
+        options.headers['platform']= "iOS";
+      }
+
       return options;
     };
     HttpManager.shared.onResponse = (response) async {
