@@ -1,7 +1,5 @@
-import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/http/foundation.dart';
 import 'package:http_manager/manager.dart';
 

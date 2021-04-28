@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:doctor/http/foundationSystem.dart';
 import 'package:doctor/pages/doctors/model/banner_entity.dart';
 import 'package:http_manager/api.dart';
-import 'package:doctor/http/foundationSystem.dart';
 
 class BannerViewModel {
   final String bannerType;

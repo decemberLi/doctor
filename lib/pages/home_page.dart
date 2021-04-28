@@ -1,9 +1,9 @@
 import 'package:doctor/common/event/event_home_tab.dart';
-import 'package:doctor/common/event/event_model.dart';
 import 'package:doctor/common/event/event_tab_index.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
-import 'package:doctor/pages/prescription/prescription_page.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/reporter_dialog.dart';
 import 'package:doctor/pages/user/setting/update/app_update.dart';
@@ -17,11 +17,9 @@ import 'package:doctor/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:provider/provider.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/ucenter.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:doctor/http/foundation.dart';
 
 import '../root_widget.dart';
 import 'doctors/doctors_home.dart';

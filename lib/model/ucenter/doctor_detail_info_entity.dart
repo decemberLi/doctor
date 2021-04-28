@@ -1,5 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:doctor/model/face_photo.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'doctor_detail_info_entity.g.dart';
 

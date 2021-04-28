@@ -1,16 +1,17 @@
+import 'package:doctor/http/dtp.dart';
+import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/user/collect/model/collect_list_model.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor/utils/constants.dart';
-import 'package:doctor/theme/theme.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import '../../doctors/tab_indicator.dart';
-import 'package:doctor/http/server.dart';
-import 'package:doctor/http/dtp.dart';
 
 /// 渲染列表
 class CollectDetailList extends StatelessWidget {

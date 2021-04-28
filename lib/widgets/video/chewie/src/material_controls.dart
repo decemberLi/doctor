@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:doctor/widgets/video/chewie/src/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import 'chewie_player.dart';

@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
+import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/ucenter.dart';
-import 'dart:async';
+
 import 'common_style.dart';
 
 

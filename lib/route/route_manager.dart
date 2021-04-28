@@ -7,16 +7,15 @@ import 'package:doctor/pages/login/find_password.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:doctor/pages/login/login_by_password_page.dart';
 import 'package:doctor/pages/medication/medication_detail_page.dart';
+import 'package:doctor/pages/medication/medication_page.dart';
 import 'package:doctor/pages/patient/patient_detail_page.dart';
 import 'package:doctor/pages/patient/patient_page.dart';
-import 'package:doctor/pages/medication/medication_page.dart';
 import 'package:doctor/pages/prescription/prescription_detail_page.dart';
 import 'package:doctor/pages/prescription/prescription_list_page.dart';
 import 'package:doctor/pages/prescription/prescription_preview_page.dart';
 import 'package:doctor/pages/prescription/prescription_success_page.dart';
 import 'package:doctor/pages/prescription/prescription_template_add_page.dart';
 import 'package:doctor/pages/qualification/doctor_basic_info_page.dart';
-
 import 'package:doctor/pages/splash/splash.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
 import 'package:doctor/pages/user/auth/auth_status_pass_page.dart';

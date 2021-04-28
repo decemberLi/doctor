@@ -1,5 +1,4 @@
 import 'package:doctor/theme/common_style.dart';
-import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 /// 开处方页面Card

@@ -1,10 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:device_info/device_info.dart';
 import 'package:doctor/common/event/event_home_tab.dart';
-import 'package:doctor/pages/home_page.dart';
-import 'package:doctor/pages/login/login_by_chaptcha.dart';
+import 'package:doctor/http/foundationSystem.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
@@ -21,11 +20,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'dart:io';
-
-import 'model/ucenter/doctor_detail_info_entity.dart';
-import 'package:doctor/http/ucenter.dart';
-import 'package:doctor/http/foundationSystem.dart';
 
 import 'utils/app_utils.dart';
 

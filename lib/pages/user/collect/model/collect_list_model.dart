@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'collect_list_model.g.dart';
 
 // /// 资源类型

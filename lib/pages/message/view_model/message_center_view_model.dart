@@ -1,8 +1,7 @@
-import 'dart:async';
 
+import 'package:doctor/http/foundationSystem.dart';
 import 'package:doctor/pages/message/model/message_center_entity.dart';
 import 'package:doctor/provider/view_state_model.dart';
-import 'package:doctor/http/foundationSystem.dart';
 import 'package:http_manager/manager.dart';
 
 

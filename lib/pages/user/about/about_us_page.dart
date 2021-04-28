@@ -1,6 +1,6 @@
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor/theme/theme.dart';
 
 class AboutUs extends StatelessWidget {
   @override
