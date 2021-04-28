@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 typedef OnNativeProcessor = Future Function(String args);
 

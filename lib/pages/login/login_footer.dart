@@ -1,10 +1,8 @@
-import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/widgets/common_webview.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_file_preview/flutter_file_preview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String AGREE_KEY = 'AGREE_KEY';
@@ -109,9 +107,9 @@ class _LoginFooterState extends State<LoginFooter> {
                         style: _testStyle(ThemeColor.primaryColor),
                         recognizer: _tap1
                           ..onTap = () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return CommonWebView('https://static.e-medclouds.com/web/other/protocols/doctor_license_app.html','易学术服务协议');
-                          }));
+                            MedcloudsNativeApi.instance().openWebPage(
+                                'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.html',
+                                title: '易学术服务协议');
                           },
                       ),
                       TextSpan(
@@ -122,9 +120,9 @@ class _LoginFooterState extends State<LoginFooter> {
                         style: _testStyle(ThemeColor.primaryColor),
                         recognizer: _tap2
                           ..onTap = () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context){
-                              return CommonWebView('https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.html','易学术隐私协议');
-                            }));
+                            MedcloudsNativeApi.instance().openWebPage(
+                                'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.html',
+                                title: '易学术隐私协议');
                           },
                       ),
                     ],
