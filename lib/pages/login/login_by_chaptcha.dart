@@ -79,7 +79,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
           params['deviceId'] = GlobalData.shared.registerId;
           params['registerId'] = GlobalData.shared.registerId;
           print("the params is -- ${params}");
-          await API.shared.foundation.pushDeviceLoginSubmit(params);
+          await API.shared.foundation.pushDeviceSubmit(params);
         }catch(e){
 
         }

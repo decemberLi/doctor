@@ -72,6 +72,5 @@ class Foundation extends SubAPI {
   }
   sendSMS(params) async => normalPost('/sms/send-captcha', params: params);
   pushDeviceSubmit(params) async => normalPost('/push-device/submit',params: params);
-  pushDeviceLoginSubmit(params) async => normalPost('/push-device/submit',params: params);
   pushDeviceDel() async => doctorPost('/push-device/del');
 }
