@@ -26,22 +26,22 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  json_annotation: ^3.0.1
+  json_annotation: ^4.0.1
   # https://pub.dev/packages/flutter_easyloading
-  flutter_easyloading: ^2.0.0
+  flutter_easyloading: ^3.0.0
   shared_preferences: ^2.0.5
   # 下拉刷新 https://github.com/peng8350/flutter_pulltorefresh
-  pull_to_refresh: ^1.6.4-nullsafety.1
+  pull_to_refresh: 1.6.4-nullsafety.1
 #  pull_to_refresh:
 #    git:
 #      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_pulltorefresh.git
   # State
   provider: ^5.0.0
   # 常用工具 https://github.com/Sky24n/common_utils
-  common_utils: ^1.2.1
+  common_utils: ^2.0.2
 
   # 进度条 https://pub.dev/packages/percent_indicator
-  percent_indicator: ^2.1.7+4
+  percent_indicator: ^3.0.1
 
   #轮播图 https://pub.flutter-io.cn/packages/flutter_swiper#installation
   flutter_swiper:
@@ -51,7 +51,7 @@ dependencies:
   flutter_picker: ^2.0.1
 
   # 图片查看器 https://pub.flutter-io.cn/packages/photo_view
-  photo_view: ^0.10.2
+  photo_view: ^0.11.1
   path_provider: ^2.0.1
   flutter_keyboard_visibility: ^5.0.1
   # 解析html标签
@@ -62,7 +62,7 @@ dependencies:
   url_launcher: ^6.0.3
 
   device_info: ^2.0.0
-  package_info: ^0.4.3
+  package_info: ^2.0.0
 
   open_file: ^3.0.1
 
@@ -77,12 +77,12 @@ dependencies:
   image_picker: 0.7.3
 
   # 图片占位符
-  transparent_image: ^1.0.0
+  transparent_image: ^2.0.0
 
   #图片截取
-  image_crop: ^0.3.4
+  image_crop: ^0.4.0
   # 滚动到指数＃
-  scroll_to_index: ^1.0.6
+  scroll_to_index: ^2.0.0
 
   # 该组件已在项目中重写
   # spinner_input: ^0.1.2
@@ -104,12 +104,12 @@ dependencies:
   # 文件路径url 操作
   path: ^1.7.0
   permission_handler: ^7.0.0
-  event_bus: ^1.1.1
+  event_bus: ^2.0.0
   http_manager:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/http_manager.git
       ref: 1.0.6
-  qr_code_scanner: ^0.3.5
+  qr_code_scanner: ^0.4.0
 
 dependency_overrides:
   http_parser: 4.0.0
@@ -117,8 +117,8 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^1.10.3
-  json_serializable: ^3.4.1
+  build_runner: ^2.0.1
+  json_serializable: ^4.1.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
