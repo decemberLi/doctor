@@ -19,8 +19,8 @@ import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 import 'comment/input_bar.dart';
 
@@ -68,7 +68,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   String feedbackType;
   bool isKeyboardActived = false; //当前键盘是否激活
   int backfocus = 0; //点击返回按钮状态，第二次点击直接返回
-  int subscribeId;
+  KeyboardVisibilityController subscribeId;
 
   Widget resourceRender(ResourceModel data) {
     void openTimer() {
@@ -134,8 +134,9 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
       }
     });
     //监听键盘高度变化
-    subscribeId = KeyboardVisibilityNotification().addNewListener(
-      onChange: (bool visible) {
+    subscribeId = KeyboardVisibilityController()
+        ..onChange.listen(
+      (visible) {
         if (!visible) {
           //键盘下降失去焦点
           commentFocusNode.unfocus();
@@ -178,7 +179,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   void dispose() {
     InputBarHelper.reset();
     super.dispose();
-    KeyboardVisibilityNotification().removeListener(subscribeId);
+
     commentFocusNode.dispose();
     feedbackFocusNode.dispose();
     WidgetsBinding.instance.removeObserver(this); //卸载观察者

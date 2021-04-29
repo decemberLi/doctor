@@ -31,7 +31,7 @@ dependencies:
   flutter_easyloading: ^2.0.0
   shared_preferences: ^2.0.5
   # 下拉刷新 https://github.com/peng8350/flutter_pulltorefresh
-  pull_to_refresh: ^1.6.4
+  pull_to_refresh: ^1.6.4-nullsafety.1
 #  pull_to_refresh:
 #    git:
 #      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_pulltorefresh.git
@@ -48,23 +48,18 @@ dependencies:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/flutter_swiper.git
 
-  flutter_picker:
-    git:
-      url: git://github.com/yangyxd/flutter_picker.git
-      ref: e95d121f54faba889fbf8a850c86dd5cf4aa5c5a
+  flutter_picker: ^2.0.1
 
   # 图片查看器 https://pub.flutter-io.cn/packages/photo_view
   photo_view: ^0.10.2
   path_provider: ^2.0.1
-  keyboard_visibility:
-    git:
-      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_keyboard_visibility.git
+  flutter_keyboard_visibility: ^5.0.1
   # 解析html标签
   # flutter_html: ^1.0.2
 
   # third_app
   # 启动第三方appflu
-  url_launcher: ^5.7.2
+  url_launcher: ^6.0.3
 
   device_info: ^2.0.0
   package_info: ^0.4.3
@@ -93,11 +88,11 @@ dependencies:
   # spinner_input: ^0.1.2
 
   # 监听网络变化 https://pub.flutter-io.cn/packages/connectivity
-  connectivity: ^2.0.1
+  connectivity: ^3.0.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.3
+  cupertino_icons: ^1.0.2
 
   # 文件预览插件
   flutter_file_preview:
@@ -108,7 +103,7 @@ dependencies:
   flutter_image_compress: ^1.0.0
   # 文件路径url 操作
   path: ^1.7.0
-  permission_handler: ^5.0.1+1
+  permission_handler: ^7.0.0
   event_bus: ^1.1.1
   http_manager:
     git:
@@ -118,6 +113,7 @@ dependencies:
 
 dependency_overrides:
   http_parser: 4.0.0
+#  plugin_platform_interface: 2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

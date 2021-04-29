@@ -20,8 +20,8 @@ import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'common_style.dart';
@@ -40,7 +40,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   Timer _timer;
   int _maxCount = 0;
   String _mobile, _captcha;
-  int subscribeId;
+  KeyboardVisibilityController subscribeId;
   bool _agree = false;
   var _phoneController = TextEditingController();
 
@@ -139,8 +139,9 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
 
   void initState() {
     //监听键盘高度变化
-    subscribeId = KeyboardVisibilityNotification().addNewListener(
-      onChange: (bool visible) {
+    subscribeId = KeyboardVisibilityController()
+        ..onChange.listen(
+      (bool visible) {
         if (!visible) {
           //键盘下降失去焦点
           FocusScope.of(context).requestFocus(FocusNode());
@@ -162,7 +163,6 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   @override
   void dispose() {
     super.dispose();
-    KeyboardVisibilityNotification().removeListener(subscribeId);
     if (_timer != null) {
       _timer.cancel();
     }
