@@ -13,8 +13,8 @@ import 'package:doctor/widgets/common_dialog.dart';
 import 'package:doctor/widgets/photo_view_gallery_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
-import 'package:toast/toast.dart';
 
 import 'crude_progress_widget.dart';
 
@@ -282,7 +282,7 @@ class DoctorAuthenticationStepTwoPageState
     }
     File finalFile = await ImageHelper.compressImage(cropedFile);
     if (finalFile == null) {
-      Toast.show('图片处理失败', context);
+      EasyLoading.showToast("图片处理失败");
       return;
     }
     return finalFile;

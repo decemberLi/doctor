@@ -156,7 +156,7 @@ class RootWidget extends StatelessWidget {
       return options;
     };
     HttpManager.shared.onResponse = (response) async {
-      debugPrint("url - ${response.request.baseUrl} data - ${response.data}");
+      debugPrint("url - ${response.realUri} data - ${response.data}");
       Map<String, dynamic> data = response.data;
       String status = data["status"];
       print("the status is $status");

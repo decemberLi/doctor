@@ -20,11 +20,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_picker/Picker.dart';
 import 'package:http_manager/manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
-
-import 'package:http_manager/manager.dart';
-import 'package:doctor/http/foundation.dart';
-import 'package:doctor/http/ucenter.dart';
 
 final uploadData = {
   '性别': 'sex',
@@ -85,7 +80,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
 
     File imageFile = await ImageHelper.cropImage(context, value.path);
     if (imageFile == null) {
-      Toast.show('图片处理失败', context);
+      EasyLoading.showToast("图片处理失败");
       return;
     }
 
