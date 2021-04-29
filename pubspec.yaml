@@ -44,7 +44,10 @@ dependencies:
   percent_indicator: ^2.1.7+4
 
   #轮播图 https://pub.flutter-io.cn/packages/flutter_swiper#installation
-  flutter_swiper: ^1.1.6
+  flutter_swiper:
+    git:
+      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/flutter_swiper.git
+
   flutter_picker:
     git:
       url: git://github.com/yangyxd/flutter_picker.git
