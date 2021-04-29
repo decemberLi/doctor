@@ -112,7 +112,7 @@ dependencies:
   qr_code_scanner: ^0.4.0
 
 dependency_overrides:
-  http_parser: 4.0.0
+#  http_parser: 4.0.0
 #  plugin_platform_interface: 2.0.0
 dev_dependencies:
   flutter_test:
