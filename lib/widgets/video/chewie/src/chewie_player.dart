@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 
 import 'chewie_progress_colors.dart';
@@ -154,16 +154,16 @@ class ChewieState extends State<Chewie> {
     // }
 
     if (!widget.controller.allowedScreenSleep) {
-      Screen.keepOn(true);
+      MedcloudsNativeApi.instance().keepOn(true);
     }
 
     await Navigator.of(context).push(route);
     _isFullScreen = false;
     widget.controller.exitFullScreen();
 
-    bool isKeptOn = await Screen.isKeptOn;
+    bool isKeptOn = await MedcloudsNativeApi.instance().isKeptOn;
     if (isKeptOn) {
-      Screen.keepOn(false);
+      MedcloudsNativeApi.instance().keepOn(false);
     }
 
     SystemChrome.setEnabledSystemUIOverlays(
