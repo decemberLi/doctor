@@ -88,6 +88,18 @@ import UserNotificationsUI
                     self.naviChannel.invokeMethod("ocrIdCardFaceSide", arguments: obj)
                 }
                 result(true)
+            }else if call.method == "brightness" {
+                result(UIScreen.main.brightness)
+            }else if call.method == "setBrightness"{
+                let string = call.arguments as? String ?? "0"
+                var brightness = CGFloat(Double(string))
+                UIScreen.main.brightness = brightness
+                result(true)
+            }else if call.method == "isKeptOn" {
+                result(UIApplication.shared.isIdleTimerDisabled)
+            }else if call.method == "keepOn" {
+                var b = call.arguments as? String ?? "0"
+                UIApplication.shared.isIdleTimerDisabled = b == "1"
             }
         }
         vc.setFlutterViewDidRenderCallback {
@@ -276,6 +288,7 @@ extension AppDelegate {
         vc.initData = map
         navi?.pushViewController(vc, animated: true)
     }
+    
 }
 
 extension AppDelegate : UIGestureRecognizerDelegate {

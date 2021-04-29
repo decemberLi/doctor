@@ -4,13 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.text.TextUtils
 import android.util.Log
-import androidx.core.util.lruCache
+import android.view.WindowManager
 import cn.jpush.android.api.JPushInterface
 import com.emedclouds.doctor.common.constants.keyLaunchParam
 import com.emedclouds.doctor.common.thirdpart.push.receiver.MessagePushReceiver
-import com.emedclouds.doctor.common.thirdpart.report.EVENT_APP_LAUNCH
 import com.emedclouds.doctor.common.thirdpart.report.appLaunch
 import com.emedclouds.doctor.common.web.WebActivity
 import com.emedclouds.doctor.common.web.pluginwebview.X5WebViewPlugin
@@ -130,6 +130,7 @@ class MainActivity : FlutterActivity() {
                 return CHANNEL_RESULT_OK
             }
         })
+
         goWebIfNeeded(intent)
         openNotificationIfNeeded(intent)
         flutterEngine?.renderer?.addIsDisplayingFlutterUiListener(object : FlutterUiDisplayListener {
@@ -207,6 +208,34 @@ class MainActivity : FlutterActivity() {
                 return "OK"
             }
         });
+        ChannelManager.instance.on("brightness",object : OnFlutterCall{
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                return getBrightness()
+            }
+        })
+        ChannelManager.instance.on("setBrightness",object : OnFlutterCall{
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                activity.window.attributes.screenBrightness = arguments?.toFloat() ?: 0f
+                return true
+            }
+        })
+        ChannelManager.instance.on("isKeptOn",object : OnFlutterCall{
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                val flags = activity.window.attributes.flags
+                return (flags and WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0
+            }
+        })
+        ChannelManager.instance.on("keepOn",object : OnFlutterCall{
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                val keep = arguments == "1"
+                if (keep){
+                    activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }else{
+                    activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+                return true
+            }
+        })
 //        CommonWebActivity.start(this@MainActivity, "", "http://192.168.1.27:9000/#/detail?id=283")
     }
 
@@ -299,6 +328,19 @@ class MainActivity : FlutterActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun getBrightness(): Float {
+        var result: Float = activity.window.attributes.screenBrightness
+        if (result < 0) { // the application is using the system brightness
+            try {
+                result = Settings.System.getInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS) / 255.toFloat()
+            } catch (e: Settings.SettingNotFoundException) {
+                result = 1.0f
+                e.printStackTrace()
+            }
+        }
+        return result
     }
 
 //    override fun finish() {
