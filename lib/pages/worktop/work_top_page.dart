@@ -16,7 +16,6 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../root_widget.dart';
-import 'learn/research_detail/research_detail.dart';
 
 class WorktopPage extends StatefulWidget {
   @override

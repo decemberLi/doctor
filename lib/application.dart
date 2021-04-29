@@ -1,14 +1,12 @@
 import 'dart:convert';
 
 import 'package:doctor/http/host_provider.dart';
-import 'package:doctor/route/navigation_service.dart';
-import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
-import 'package:http_manager/manager.dart';
 import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,10 +47,7 @@ class ApplicationInitialize {
       var url = json.decode(ext)['url'];
       print('url -> $url');
 
-      return Navigator.pushNamed(
-          NavigationService().navigatorKey.currentContext,
-          RouteManager.COMMON_WEB,
-          arguments: {'title': '', 'url': url});
+      return MedcloudsNativeApi.instance().openWebPage(url);
     });
     runApp(RootWidget({'showGuide': showGuide}));
   }

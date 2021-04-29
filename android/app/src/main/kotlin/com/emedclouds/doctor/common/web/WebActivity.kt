@@ -90,7 +90,6 @@ open class WebActivity : ComponentActivity() {
         ApiManager.instance.addApi("setTitle",
                 object : BaseApi(apiCaller) {
                     override fun doAction(bizType: String, param: String?) {
-                        tvTitle.text = param ?: ""
                         successCallJavaScript(bizType, "OK")
                     }
                 })
@@ -344,6 +343,7 @@ open class WebActivity : ComponentActivity() {
             if (TextUtils.isEmpty(p1)) {
                 return
             }
+            Log.e(TAG, "onShowCustomView: $p1")
             tvTitle.text = p1
         }
 

@@ -1,5 +1,7 @@
 import 'package:doctor/common/event/event_home_tab.dart';
 import 'package:doctor/common/event/event_tab_index.dart';
+import 'package:doctor/http/foundation.dart';
+import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/pages/message/message_page.dart';
 import 'package:doctor/pages/message/view_model/message_center_view_model.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
@@ -14,8 +16,10 @@ import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:http_manager/manager.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../root_widget.dart';
@@ -184,42 +188,113 @@ class _HomePageState extends State<HomePage>
     return showCupertinoDialog<bool>(
       context: context,
       builder: (context) {
+        return WillPopScope(
+            child: CupertinoAlertDialog(
+              content: Container(
+                padding: EdgeInsets.only(top: 12),
+                child: Text("您还没有完善医生基础信息"),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    "退出登录",
+                    style: TextStyle(
+                      color: ThemeColor.primaryColor,
+                    ),
+                  ),
+                  onPressed: () async {
+                    await API.shared.foundation.pushDeviceDel();
+                    await MedcloudsNativeApi.instance().logout();
+                    SessionManager.shared.session = null;
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                    "现在去完善",
+                    style: TextStyle(
+                      color: ThemeColor.primaryColor,
+                    ),
+                  ),
+                  onPressed: () async {
+                    await Navigator.pushNamed(
+                        context, RouteManager.USERINFO_DETAIL,
+                        arguments: {
+                          'doctorData': model.data.toJson(),
+                          'openType': 'SURE_INFO',
+                        });
+                    await model.queryDoctorInfo();
+                    if (model.data.basicInfoAuthStatus == 'COMPLETED') {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+              ],
+            ),
+            onWillPop: () => Future.value(false));
+      },
+    );
+  }
+
+  _checkDoctorBindRelation(String authStatus) async {
+    if (authStatus != 'PASS') {
+      return Future.value(true);
+    }
+    // 已认证，未绑定代表
+    if (authStatus == 'PASS' &&
+        !await API.shared.ucenter.queryDoctorRelation()) {
+      EasyLoading.showToast('您没有绑定医药代表，暂不能开具处方');
+      return Future.value(false);
+    }
+    // 未认证状态
+    return Future.value(true);
+  }
+
+  _showAuthenticationDialog(UserInfoViewModel model) {
+    showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
         return CupertinoAlertDialog(
           content: Container(
             padding: EdgeInsets.only(top: 12),
-            child: Text("您还没有完善医生基础信息"),
+            child: Text("认证后才可以进入开处方页面"),
           ),
           actions: <Widget>[
-            TextButton(
+            FlatButton(
               child: Text(
-                "退出登录",
+                "取消",
                 style: TextStyle(
                   color: ThemeColor.primaryColor,
                 ),
               ),
               onPressed: () {
-                Navigator.of(context).pop();
-                SessionManager.shared.session = null;
-                MedcloudsNativeApi.instance().logout();
+                Navigator.of(context).maybePop(false);
               },
             ),
-            TextButton(
+            FlatButton(
               child: Text(
-                "现在去完善",
+                "马上去",
                 style: TextStyle(
                   color: ThemeColor.primaryColor,
                 ),
               ),
               onPressed: () async {
+                //关闭对话框并返回true
+                String path = RouteManager.USERINFO_DETAIL;
+                Map arguments = {
+                  'doctorData': model.data.toJson(),
+                  'qualification': true,
+                };
+                if (model.data?.authStatus == 'VERIFYING') {
+                  path = RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE;
+                }
                 await Navigator.pushNamed(
-                    context, RouteManager.USERINFO_DETAIL,
-                    arguments: {
-                      'doctorData': model.data.toJson(),
-                      'openType': 'SURE_INFO',
-                    });
+                  context,
+                  path,
+                  arguments: arguments,
+                );
                 await model.queryDoctorInfo();
-                if (model.data.basicInfoAuthStatus == 'COMPLETED') {
-                  Navigator.of(context).pop();
+                if (model.data?.authStatus == 'PASS') {
+                  Navigator.of(context).maybePop(false);
                 }
               },
             ),

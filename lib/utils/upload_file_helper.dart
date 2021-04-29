@@ -1,9 +1,9 @@
 import 'package:doctor/http/common_service.dart';
+import 'package:doctor/http/foundation.dart';
 import 'package:doctor/model/oss_policy.dart';
 import 'package:doctor/model/uploaded_file_entity.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/foundation.dart';
 
 /// 临时方案
 ///

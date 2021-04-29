@@ -11,6 +11,7 @@ import UserNotificationsUI
     var notiInfo : [AnyHashable:Any]? = nil
     var navi : UINavigationController?
     var rootVC : FlutterViewController?
+    var deviceToken  : String?
 
     override func application(
         _ application: UIApplication,
@@ -90,18 +91,22 @@ import UserNotificationsUI
             }
         }
         vc.setFlutterViewDidRenderCallback {
+            if let token = self.deviceToken {
+                self.naviChannel.invokeMethod("receiveToken", arguments: token)
+            }
             self.isLoaded = true
             if let url = self.gotoURL {
                 self.naviChannel?.invokeMethod("commonWeb", arguments: url)
                 self.gotoURL = nil
             }else if let url = launchOptions?[UIApplication.LaunchOptionsKey.url] as? URL {
-                if url.absoluteString.hasPrefix("https://site-dev.e-medclouds.com")
+                if url.absoluteString.hasPrefix("httpsc://site-dev.e-medclouds.com")
                     || url.scheme == "com.emedclouds.doctor" {
                     self.naviChannel?.invokeMethod("commonWeb", arguments: url.absoluteString)
                 }
             }
             JPUSHService.registrationIDCompletionHandler { (code, id) in
-                let map = ["registerId":id ?? "error id"]
+                guard let real = id else {return}
+                let map = ["registerId":real]
                 guard let data = try? JSONSerialization.data(withJSONObject: map, options: .fragmentsAllowed) else { return }
                 let upload = String(data: data, encoding: .utf8)
                 self.naviChannel.invokeMethod("uploadDeviceInfo", arguments: upload)
@@ -127,6 +132,9 @@ import UserNotificationsUI
     }
     
     override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let hexString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        naviChannel.invokeMethod("receiveToken", arguments: hexString)
+        self.deviceToken = hexString
         JPUSHService.registerDeviceToken(deviceToken)
     }
     

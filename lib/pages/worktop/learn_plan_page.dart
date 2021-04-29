@@ -1,10 +1,10 @@
+import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/doctors/tab_indicator.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor/http/server.dart';
 import 'package:http_manager/manager.dart';
 
 class LearnPlanPage extends StatefulWidget {

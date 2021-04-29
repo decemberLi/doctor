@@ -1,6 +1,6 @@
+import 'package:doctor/http/foundation.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor/http/foundation.dart';
 import 'package:http_manager/manager.dart';
 
 /// 加载处方二维码

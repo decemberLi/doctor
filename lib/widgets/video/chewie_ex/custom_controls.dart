@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:doctor/widgets/video/chewie/src/chewie_player.dart';
 import 'package:doctor/widgets/video/chewie/src/chewie_progress_colors.dart';
 import 'package:doctor/widgets/video/chewie/src/material_progress_bar.dart';
 import 'package:doctor/widgets/video/chewie/src/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomControls extends StatefulWidget {
@@ -40,10 +41,16 @@ class _CustomControlsState extends State<CustomControls> {
               chewieController.videoPlayerController.value.errorDescription,
             )
           : Center(
-              child: Icon(
-                Icons.error,
-                color: Colors.white,
-                size: 42,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 42,
+                  ),
+                  Text("网络错误，请稍后重试",style: TextStyle(color: Colors.white),),
+                ],
               ),
             );
     }

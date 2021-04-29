@@ -1,3 +1,4 @@
+import 'package:doctor/http/dtp.dart';
 import 'package:doctor/pages/prescription/prescription_page.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_detail.dart';
@@ -7,15 +8,14 @@ import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:provider/provider.dart';
-import 'package:doctor/http/dtp.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:provider/provider.dart';
 
 /// 处方详情页面
 class PrescriptionDetailPage extends StatefulWidget {

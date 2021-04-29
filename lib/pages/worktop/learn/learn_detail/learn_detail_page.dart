@@ -4,29 +4,30 @@ import 'package:dio/dio.dart';
 import 'package:doctor/common/statistics/biz_tracker.dart';
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/http/oss_service.dart';
+import 'package:doctor/http/server.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
+import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/research_detail/research_detail.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/platform_utils.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:doctor/theme/theme.dart';
-import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
 import 'package:http_manager/api.dart';
-import 'package:provider/provider.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
-import 'package:doctor/http/server.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 // * @Desc: 计划详情页  */
 /// 科室会议
@@ -148,7 +149,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                     decorationStyle: TextDecorationStyle.solid),
               ),
               onTap: () {
-                Navigator.of(context).pushNamed(RouteManager.LOOK_COURSE_PAGE);
+                MedcloudsNativeApi.instance().openWebPage("https://mp.weixin.qq.com/s/YprfqD8GdSHCMvtW_LJx9Q");
                 print('如何录制讲课视频？');
               },
             ),
@@ -272,6 +273,11 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   _gotoRecord(LearnDetailItem data) {
+    if (EasyLoading.isShow) {
+      return;
+    }
+    UserInfoViewModel model =
+        Provider.of<UserInfoViewModel>(context, listen: false);
     EasyLoading.instance.flash(
       () async {
         var appDocDir = await getApplicationDocumentsDirectory();
@@ -284,8 +290,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           'resourceId': pdf.resourceId,
           'learnPlanId': data.learnPlanId,
         });
-        UserInfoViewModel model =
-            Provider.of<UserInfoViewModel>(context, listen: false);
         var map = {
           "path": picPath,
           "name": userInfo?.doctorName ?? '',
@@ -311,18 +315,19 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           var result = json.encode(map);
           Stream<String> pdfFileStream;
           pdfFileStream = File(picPath).openRead(0, 4).transform(utf8.decoder);
-
-          pdfFileStream.listen((event) {
+          String event = "";
+          try {
+            event = await pdfFileStream.first;
             if (event.toUpperCase() == '%PDF') {
               this._gotoRecordPage(pdf, data, result);
             } else {
               print("格式为：-  $event");
               EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
             }
-          }, onError: (e) {
+          } catch (e) {
             print("格式为：-  $e");
             EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
-          });
+          }
         }
       },
     );
@@ -337,28 +342,35 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   _gotoRecordPage(pdf, LearnDetailItem data, result) {
+    if (_mIsBack) {
+      return;
+    }
     MedcloudsNativeApi.instance().record(result.toString());
     MedcloudsNativeApi.instance().addProcessor(
       "uploadLearnVideo",
       (args) async {
-        print("call uploadLearnVideo $args");
-        var obj = json.decode(args);
-        print("call 1111111 $obj");
-        var entity = await OssService.upload(obj["path"], showLoading: false);
-        print("call 22222 $entity");
-        var result = await API.shared.server.addLectureSubmit(
-          {
-            'learnPlanId': data.learnPlanId,
-            'resourceId': pdf.resourceId,
-            'videoTitle': obj['title'] ?? data.taskName,
-            'duration': obj['duration'] ?? 0,
-            'presenter': userInfo?.doctorName ?? '',
-            'videoOssId': entity.ossId,
-          },
-        );
-        print("the result is --- $result");
-        _model.initData();
-        _uploadFinish(result["lectureId"]);
+        try{
+          print("call uploadLearnVideo $args");
+          var obj = json.decode(args);
+          print("call 1111111 $obj");
+          var entity = await OssService.upload(obj["path"], showLoading: false);
+          print("call 22222 $entity");
+          var result = await API.shared.server.addLectureSubmit(
+            {
+              'learnPlanId': data.learnPlanId,
+              'resourceId': pdf.resourceId,
+              'videoTitle': obj['title'] ?? data.taskName,
+              'duration': obj['duration'] ?? 0,
+              'presenter': userInfo?.doctorName ?? '',
+              'videoOssId': entity.ossId,
+            },
+          );
+          print("the result is --- $result");
+          _model.initData();
+          _uploadFinish(result["lectureId"]);
+        }catch(e){
+          return "网络错误";
+        }
         return null;
         //print("the result is ${result}");
       },
@@ -500,7 +512,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          if (data.taskTemplate == 'DOCTOR_LECTURE' &&
+                          if (//data.taskTemplate == 'DOCTOR_LECTURE' &&
                               data.reLearnReason != null &&
                               data.status != 'SUBMIT_LEARN' &&
                               data.status != 'ACCEPTED')
@@ -666,20 +678,27 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     );
   }
 
+  bool _mIsBack = false;
+
   @override
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
     _model = LearnDetailViewModel(arguments['learnPlanId']);
-    return ProviderWidget<LearnDetailViewModel>(
-      model: _model,
-      onModelReady: (model) => model.initData(),
-      builder: (context, model, child) {
-        if (model.data?.taskTemplate == 'MEDICAL_SURVEY') {
-          return ResearchDetail();
-        } else {
-          return buildDetail(model);
-        }
-      },
-    );
+    return WillPopScope(
+        child: ProviderWidget<LearnDetailViewModel>(
+          model: _model,
+          onModelReady: (model) => model.initData(),
+          builder: (context, model, child) {
+            if (model.data?.taskTemplate == 'MEDICAL_SURVEY') {
+              return ResearchDetail();
+            } else {
+              return buildDetail(model);
+            }
+          },
+        ),
+        onWillPop: () {
+          EasyLoading.dismiss();
+          return Future.value(_mIsBack = true);
+        });
   }
 }

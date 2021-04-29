@@ -1,6 +1,6 @@
+import 'package:doctor/widgets/video/chewie/src/chewie_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor/widgets/video/chewie/src/chewie_player.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomPlayerWithControls extends StatelessWidget {

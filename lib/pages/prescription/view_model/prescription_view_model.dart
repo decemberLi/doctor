@@ -1,4 +1,6 @@
 import 'package:common_utils/common_utils.dart';
+import 'package:doctor/http/dtp.dart';
+import 'package:doctor/http/foundation.dart';
 import 'package:doctor/pages/prescription/model/prescription_model.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
@@ -6,9 +8,7 @@ import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:doctor/utils/app_regex_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:doctor/http/foundation.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/dtp.dart';
 
 /// 开处方主页面viewModel
 class PrescriptionViewModel extends ViewStateModel {

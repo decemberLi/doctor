@@ -1,7 +1,7 @@
+import 'package:doctor/http/foundationSystem.dart';
 import 'package:doctor/pages/message/model/message_list_entity.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/foundationSystem.dart';
 
 
 class MessageListModel extends ViewStateRefreshListModel<MessageListEntity> {

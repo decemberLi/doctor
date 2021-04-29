@@ -2,24 +2,21 @@ import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
 import 'package:doctor/pages/doctors/doctors_list_page.dart';
 import 'package:doctor/pages/doctors/doctors_list_page2.dart';
-import 'package:doctor/pages/doctors/widget/doctors_detail_widget.dart';
 import 'package:doctor/pages/home_page.dart';
 import 'package:doctor/pages/login/find_password.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:doctor/pages/login/login_by_password_page.dart';
 import 'package:doctor/pages/medication/medication_detail_page.dart';
+import 'package:doctor/pages/medication/medication_page.dart';
 import 'package:doctor/pages/patient/patient_detail_page.dart';
 import 'package:doctor/pages/patient/patient_page.dart';
-import 'package:doctor/pages/medication/medication_page.dart';
 import 'package:doctor/pages/prescription/prescription_detail_page.dart';
 import 'package:doctor/pages/prescription/prescription_list_page.dart';
 import 'package:doctor/pages/prescription/prescription_preview_page.dart';
 import 'package:doctor/pages/prescription/prescription_success_page.dart';
 import 'package:doctor/pages/prescription/prescription_template_add_page.dart';
 import 'package:doctor/pages/qualification/doctor_basic_info_page.dart';
-
 import 'package:doctor/pages/splash/splash.dart';
-import 'package:doctor/pages/test/test_page.dart';
 import 'package:doctor/pages/user/about/about_us_page.dart';
 import 'package:doctor/pages/user/auth/auth_status_pass_page.dart';
 import 'package:doctor/pages/user/auth/auth_status_verifying_page.dart';
@@ -38,7 +35,6 @@ import 'package:doctor/pages/worktop/learn/lecture_videos/look_lecture_video_pag
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
 import 'package:doctor/pages/worktop/resource/resource_detail_page.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
-import 'package:doctor/widgets/common_webview.dart';
 import 'package:flutter/material.dart';
 
 class RouteManager {
@@ -47,7 +43,6 @@ class RouteManager {
   static const String LOGIN_PWD = '/login_by_password';
   static const String LOGIN_CAPTCHA = '/login_by_captcha';
   static const String FIND_PWD = '/find_password';
-  static const String TEST = '/test';
   static const String LEARN_LIST = '/learn_list';
   static const String LEARN_DETAIL = '/learn_detail';
   static const String LOOK_LECTURE_VIDEOS = '/look_lecture_video_page';
@@ -72,8 +67,6 @@ class RouteManager {
   static const String EDIT_DOCTOR_PAGE = '/edit_user_detail';
   static const String SETTING = '/setting';
   static const String MODIFY_PWD = '/modify_pwd';
-  static const String DOCTORS_ARTICLE_DETAIL = '/doctors_detail';
-  static const String COMMON_WEB = '/commonWeb';
   static const String DOCTOR_LIST1 = '/DoctorList1';
   static const String DOCTOR_LIST2 = '/DoctorList2';
   // 未认证
@@ -84,6 +77,7 @@ class RouteManager {
   static const String DOCTOR_AUTH_STATUS_VERIFYING_PAGE = '/AuthStatusPageVerifying';
   // 认证成功
   static const String DOCTOR_AUTH_STATUS_PASS_PAGE = '/AuthStatusPagePass';
+
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
     LOGIN_PWD: (context){
@@ -93,7 +87,6 @@ class RouteManager {
     LOGIN_CAPTCHA: (context) => LoginByCaptchaPage(),
     FIND_PWD: (context) => FindPassword(),
     HOME: (context) => HomePage(),
-    TEST: (context) => TestPage(),
     LEARN_LIST: (context) => LearnListPage('LEARNING'),
     LEARN_DETAIL: (context) => LearnDetailPage(),
     LOOK_LECTURE_VIDEOS: (context) => LookLectureVideosPage(),
@@ -152,18 +145,6 @@ class RouteManager {
       return UserEditPage(
           obj['lable'], obj['value'], obj['editWay'], obj['function']);
     },
-    DOCTORS_ARTICLE_DETAIL: (context) {
-      dynamic obj = ModalRoute.of(context).settings.arguments;
-      return DoctorsDetailPage(
-        postId: obj['postId'],
-        type: obj['type'],
-        from: obj['from'],
-      );
-    },
-    COMMON_WEB: (context) {
-      dynamic obj = ModalRoute.of(context).settings.arguments;
-      return CommonWebView(obj['url'],obj['title']);
-    },
     DOCTOR_LIST1: (context){
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return DoctorsListPage(obj);
@@ -179,7 +160,7 @@ class RouteManager {
       return DoctorAuthenticationStepTwoPage();
     },
     DOCTOR_AUTH_STATUS_VERIFYING_PAGE: (context) => AuthStatusVerifyingPage(),
-    DOCTOR_AUTH_STATUS_PASS_PAGE: (context) => AuthStatusPassPage()
+    DOCTOR_AUTH_STATUS_PASS_PAGE: (context) => AuthStatusPassPage(),
   };
 
   static openDoctorsDetail(postId, {String from = "list"}) {

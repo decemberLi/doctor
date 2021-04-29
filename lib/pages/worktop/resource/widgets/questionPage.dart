@@ -1,4 +1,5 @@
 import 'package:doctor/common/statistics/biz_tracker.dart';
+import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/theme/theme.dart';
@@ -8,10 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:http_manager/manager.dart';
-import 'package:doctor/http/server.dart';
 
 class QuestionPage extends StatefulWidget {
   final ResourceModel data;

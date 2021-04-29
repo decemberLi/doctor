@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:doctor/widgets/video/chewie/src/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import 'chewie_player.dart';
@@ -42,10 +42,16 @@ class _MaterialControlsState extends State<MaterialControls> {
               chewieController.videoPlayerController.value.errorDescription,
             )
           : Center(
-              child: Icon(
-                Icons.error,
-                color: Colors.white,
-                size: 42,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                    size: 42,
+                  ),
+                  Text("网络错误，请稍后重试",style: TextStyle(color: Colors.white),),
+                ],
               ),
             );
     }

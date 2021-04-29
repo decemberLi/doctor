@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:doctor/http/foundation.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/model/oss_policy.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/foundation.dart';
 
 /// 上传服务
 class OssService {

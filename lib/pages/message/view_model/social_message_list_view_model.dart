@@ -1,5 +1,5 @@
-import 'package:doctor/provider/refreshable_view_state_model.dart';
 import 'package:doctor/http/foundationSystem.dart';
+import 'package:doctor/provider/refreshable_view_state_model.dart';
 import 'package:http_manager/manager.dart';
 
 import '../model/social_message_entity.dart';
