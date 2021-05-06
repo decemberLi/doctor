@@ -11,4 +11,6 @@
     <!--重要提示，该 Style 不允许使用，不允许修改，存在的原因是修改腾讯 OCR sdk 中字体的颜-->
     <color name="txy_action_bg">#FFFFFFFF</color>
     <color name="txy_white">#FF000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="transparent">#ff000000</color>
 </resources>

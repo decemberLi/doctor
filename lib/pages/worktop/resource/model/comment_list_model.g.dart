@@ -5,7 +5,7 @@ part of 'comment_list_model.dart';
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
-
+s
 CommentSecond _$CommentSecondFromJson(Map<String, dynamic> json) {
   return CommentSecond(
     json['commentContent'] as String,

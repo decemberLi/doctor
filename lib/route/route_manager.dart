@@ -29,7 +29,6 @@ import 'package:doctor/pages/user/update_pwd/update_pwd_page.dart';
 import 'package:doctor/pages/user/user_detail/user_edit_page.dart';
 import 'package:doctor/pages/user/user_detail/user_info_detai.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart';
-import 'package:doctor/pages/worktop/learn/learn_detail/look_course_page.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
 import 'package:doctor/pages/worktop/learn/lecture_videos/look_lecture_video_page.dart';
 import 'package:doctor/pages/worktop/learn_plan_page.dart';
@@ -90,7 +89,6 @@ class RouteManager {
     LEARN_LIST: (context) => LearnListPage('LEARNING'),
     LEARN_DETAIL: (context) => LearnDetailPage(),
     LOOK_LECTURE_VIDEOS: (context) => LookLectureVideosPage(),
-    LOOK_COURSE_PAGE: (context) => LookCoursePage(),
     RESOURCE_DETAIL: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;
       return ResourceDetailPage(

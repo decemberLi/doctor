@@ -94,11 +94,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
-  # 文件预览插件
-  flutter_file_preview:
-    git:
-      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_file_preview.git
-      ref: 1.0.2
   # 图片压缩
   flutter_image_compress: ^1.0.0
   # 文件路径url 操作
@@ -110,6 +105,7 @@ dependencies:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/http_manager.git
       ref: 1.0.6
   qr_code_scanner: ^0.4.0
+  webview_flutter: ^2.0.4
 
 dependency_overrides:
 #  http_parser: 4.0.0

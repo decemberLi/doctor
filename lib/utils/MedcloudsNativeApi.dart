@@ -88,7 +88,6 @@ class MedcloudsNativeApi {
     return await _channel.invokeMethod("openFile", arguments);
   }
 
-  Future ocrIdCardFaceSide() async{
   Future ocrIdCardFaceSide() async {
     return await _channel.invokeMethod("ocrIdCardFaceSide");
   }
