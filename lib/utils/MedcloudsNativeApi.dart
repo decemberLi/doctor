@@ -83,6 +83,12 @@ class MedcloudsNativeApi {
     return await _channel.invokeMethod("openWebPage", arguments);
   }
 
+  Future openFile(String url, {String title = ""}) async {
+    var arguments = json.encode({"url": url, "title": title});
+    return await _channel.invokeMethod("openFile", arguments);
+  }
+
+  Future ocrIdCardFaceSide() async{
   Future ocrIdCardFaceSide() async {
     return await _channel.invokeMethod("ocrIdCardFaceSide");
   }

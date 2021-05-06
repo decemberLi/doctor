@@ -139,6 +139,8 @@ dependencies {
 //    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 //    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+    implementation "androidx.fragment:fragment-ktx:$androidx_appcompat_version"
+    implementation "androidx.activity:activity-ktx:$androidx_appcompat_version"
 
     api "androidx.camera:camera-camera2:$camerax_version"
     api "androidx.camera:camera-lifecycle:$camerax_version"
@@ -180,6 +182,11 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     api 'com.leon.channel:helper:2.0.3'
+
+    implementation 'com.squareup.okio:okio:1.13.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
 
     // 注解
 //    implementation "com.google.dagger:dagger:2.30.1"

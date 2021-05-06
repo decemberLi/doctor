@@ -2,16 +2,17 @@ import 'package:doctor/http/common_service.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/theme/myIcons.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/pdf_Viewer_adapter.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_file_preview/flutter_file_preview.dart';
 
 class Attacement extends StatelessWidget {
   final ResourceModel data;
   final openTimer;
   final closeTimer;
   final _clickWebView;
+
   Attacement(this.data, this.openTimer, this.closeTimer, this._clickWebView);
 
   _openFile(BuildContext context) async {
@@ -23,17 +24,10 @@ class Attacement extends StatelessWidget {
     }
     //计时器
     openTimer();
-    EasyLoading.show();
-    await FlutterFilePreview.openFile(
+    await PdfViewerAdapter.openFile(
       files[0]['tmpUrl'],
       title: data.title ?? data.resourceName,
-      context: context,
-        onLoadFinished: (){
-        EasyLoading.dismiss();
-      }
     );
-    EasyLoading.dismiss();
-
     closeTimer();
   }
 

@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.WindowManager
 import cn.jpush.android.api.JPushInterface
 import com.emedclouds.doctor.common.constants.keyLaunchParam
+import com.emedclouds.doctor.common.document.DocumentViewActivity
 import com.emedclouds.doctor.common.thirdpart.push.receiver.MessagePushReceiver
 import com.emedclouds.doctor.common.thirdpart.report.appLaunch
 import com.emedclouds.doctor.common.web.WebActivity
@@ -86,6 +87,16 @@ class MainActivity : FlutterActivity() {
                 intent.putExtra("url", json.getString("url"))
                 intent.putExtra("title", json.getString("title"))
                 startActivity(intent)
+                return CHANNEL_RESULT_OK
+            }
+        })
+        ChannelManager.instance.on("openFile", object : OnFlutterCall {
+            override fun call(arguments: String?, channel: MethodChannel): Any {
+                if (arguments == null) {
+                    return CHANNEL_RESULT_OK
+                }
+                val json = JSONObject(arguments)
+                DocumentViewActivity.open(this@MainActivity, json.getString("url"), json.getString("title"))
                 return CHANNEL_RESULT_OK
             }
         })
@@ -308,7 +319,7 @@ class MainActivity : FlutterActivity() {
             return
         }
         try {
-            if(!SystemUtil.isForeground(context)) {
+            if (!SystemUtil.isForeground(context)) {
                 appLaunch(context, 0)
             }
             ChannelManager.instance.callFlutter("receiveNotification", extra,
