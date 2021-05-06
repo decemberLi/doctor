@@ -35,7 +35,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
             child: Text("系统检测到您还未设置新密码，为了您的账户安全，请重新设置!"),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(
                 "取消",
                 style: TextStyle(
@@ -46,7 +46,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                 Navigator.of(context).pop(false);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 "去设置",
                 style: TextStyle(

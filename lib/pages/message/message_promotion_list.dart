@@ -199,6 +199,7 @@ class _SubCollectState extends State<_SubCollectList>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ProviderWidget<MessageListModel>(
       model: MessageListModel(widget.type),
       onModelReady: (model) => model.initData(),
@@ -388,7 +389,7 @@ class _MessageStudyCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(bottom: 12),
-      child: FlatButton(
+      child: TextButton(
           onPressed: () {
             onTap(data);
           },
@@ -507,7 +508,7 @@ class _InteractiveCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(bottom: 12),
-      child: FlatButton(
+      child: TextButton(
         onPressed: () {
           onTap(data);
         },

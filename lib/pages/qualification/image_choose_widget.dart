@@ -80,30 +80,32 @@ class ImageChooseWidget extends StatelessWidget {
             if (addImgCallback != null) {
               addImgCallback();
             }
-          }
-      );
+          });
     }
 
     return Container(
       child: Stack(
-        overflow: Overflow.visible,
+        clipBehavior: Clip.none,
         children: [
           Container(
             alignment: Alignment.center,
             height: height > 85 ? height : 85,
             width: width ?? double.infinity,
             decoration: _dashDecoration,
-            child: GestureDetector(child: Image.network(url, fit: BoxFit.fill),
-              onTap: (){
+            child: GestureDetector(
+              child: Image.network(url, fit: BoxFit.fill),
+              onTap: () {
                 showOriginImgCallback();
-              },),
+              },
+            ),
           ),
           Positioned(
             right: -16,
             top: -16,
             child: GestureDetector(
               child: Container(
-                padding: EdgeInsets.only(left: 10, bottom: 10,top: 10, right: 10),
+                padding:
+                    EdgeInsets.only(left: 10, bottom: 10, top: 10, right: 10),
                 child: Icon(
                   Icons.remove_circle,
                   size: 18.0,

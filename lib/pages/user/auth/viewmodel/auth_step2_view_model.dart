@@ -29,7 +29,7 @@ class AuthenticationStep2ViewModel extends ViewStateModel {
     UploadFileEntity entity = await uploadImageToOss(path.path);
 
     if (_data.qualifications == null) {
-      _data.qualifications = List();
+      _data.qualifications = [];
     }
     FacePhoto img;
     if (value == null) {

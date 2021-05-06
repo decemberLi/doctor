@@ -1,6 +1,5 @@
 import 'dart:async';
 
-// import 'package:chewie/chewie.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/constants.dart';

@@ -7,8 +7,13 @@
     <color name="color_ff489dfe">#FF489DFE</color>
     <color name="color_fff67777">#8B050505</color>
     <color name="color_ff000000">#FF000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="transparent">#00000000</color>
+    <color name="black">#ff000000</color>
+    <dimen name="text_size_17">17sp</dimen>
 
     <!--重要提示，该 Style 不允许使用，不允许修改，存在的原因是修改腾讯 OCR sdk 中字体的颜-->
     <color name="txy_action_bg">#FFFFFFFF</color>
     <color name="txy_white">#FF000000</color>
+
 </resources>

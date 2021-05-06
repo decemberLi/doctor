@@ -5,6 +5,7 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/api.dart';
+import 'package:doctor/http/dtp.dart';
 
 import 'model/doctor_circle_entity.dart';
 
@@ -69,11 +70,11 @@ class _DoctorsListStates2 extends State<DoctorsListPage2> {
         children: [
           Container(
             width: 44,
-            child: FlatButton(
+            child: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Icon(
+              icon: Icon(
                 Icons.arrow_back,
                 color: Colors.white,
               ),

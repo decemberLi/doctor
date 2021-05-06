@@ -23,13 +23,6 @@ class EventVideoOutOfScreen {
 
   EventVideoOutOfScreen(this.offset);
 }
-
-final _colorPanel = {
-  '文献专区': ThemeColor.colorFF52C41A,
-  '病例解析': ThemeColor.colorFF107BFD,
-  '每日医讲': ThemeColor.colorFFFAAD14,
-};
-
 typedef OnScrollerCallback = void Function(double offset);
 
 openBannerDetail(BuildContext context, data) {

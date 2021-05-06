@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:doctor/http/foundation.dart';
 import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/model/face_photo.dart';
-import 'package:doctor/model/oss_policy.dart';
 import 'package:doctor/model/recognize_entity.dart';
 import 'package:doctor/model/uploaded_file_entity.dart';
 import 'package:doctor/pages/qualification/model/doctor_physician_qualification_entity.dart';
@@ -14,7 +13,6 @@ import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
-import 'package:toast/toast.dart';
 
 class DoctorPhysicianQualificationViewModel {
   StreamController<DoctorQualificationModel> _controller =
@@ -36,16 +34,6 @@ class DoctorPhysicianQualificationViewModel {
 
   notifyDataChange() {
     _controller.sink.add(_model);
-  }
-
-  _querySignature() async {
-    var result = await API.shared.foundation.aliossPolicy();
-    return OssPolicy.fromJson(result);
-  }
-
-  _saveImage(Map<String, dynamic> param) async {
-    var result = await API.shared.foundation.aliossSave(param);
-    return UploadFileEntity.fromJson(result);
   }
 
   _recognizeIdCard(Map<String, dynamic> param) async {
@@ -299,10 +287,7 @@ class DoctorPhysicianQualificationViewModel {
           .commitDoctorVerifyInfo(_model.physicianInfoEntity.toJson());
     },text: '正在提交');
 
-    Toast.show('提交成功', context,
-        duration: Toast.LENGTH_LONG,
-        gravity: Toast.CENTER,
-        backgroundRadius: 6);
+    EasyLoading.showToast("提交成功");
 
     return true;
   }

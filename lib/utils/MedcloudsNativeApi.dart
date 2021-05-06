@@ -9,6 +9,7 @@ import 'package:doctor/provider/GlobalData.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http_manager/api.dart';
+import 'package:doctor/http/foundation.dart';
 
 typedef OnNativeProcessor = Future Function(String args);
 
@@ -33,7 +34,7 @@ class MedcloudsNativeApi {
         }
         return "${e.message}";
       } catch (e) {
-        print("----------------------${e}");
+        print("----------------------$e");
         return "$e";
       }
 
@@ -82,25 +83,32 @@ class MedcloudsNativeApi {
     return await _channel.invokeMethod("openWebPage", arguments);
   }
 
-  Future ocrIdCardFaceSide() async{
+  Future openFile(String url, {String title = ""}) async {
+    var arguments = json.encode({"url": url, "title": title});
+    return await _channel.invokeMethod("openFile", arguments);
+  }
+
+  Future ocrIdCardFaceSide() async {
     return await _channel.invokeMethod("ocrIdCardFaceSide");
   }
-  Future ocrIdCardBackSide() async{
+
+  Future ocrIdCardBackSide() async {
     return await _channel.invokeMethod("ocrIdCardBackSide");
   }
-  Future ocrBankCard() async{
+
+  Future ocrBankCard() async {
     return await _channel.invokeMethod("ocrBankCard");
   }
 
-  Future eventTracker(String eventName,dynamic arguments) async {
+  Future eventTracker(String eventName, dynamic arguments) async {
     return await _channel.invokeMethod("eventTracker", arguments);
   }
 
-  Future login(String userId) async{
+  Future login(String userId) async {
     return await _channel.invokeMethod("login", userId);
   }
 
-  Future logout() async{
+  Future logout() async {
     return await _channel.invokeMethod("logout");
   }
 
@@ -108,7 +116,7 @@ class MedcloudsNativeApi {
     try {
       var ids = json.decode(args);
       var registerId = ids["registerId"];
-      if(TextUtil.isEmpty(registerId)){
+      if (TextUtil.isEmpty(registerId)) {
         return;
       }
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -133,4 +141,15 @@ class MedcloudsNativeApi {
       await API.shared.foundation.pushDeviceSubmit(params);
     } catch (e) {}
   }
+
+  Future<double> get brightness async =>
+      (await _channel.invokeMethod('brightness')) as double;
+
+  Future setBrightness(double brightness) =>
+      _channel.invokeMethod('setBrightness', "$brightness");
+
+  Future<bool> get isKeptOn async =>
+      (await _channel.invokeMethod('isKeptOn')) as bool;
+
+  Future keepOn(bool on) => _channel.invokeMethod('keepOn', "${on ? "1" : "0"}");
 }

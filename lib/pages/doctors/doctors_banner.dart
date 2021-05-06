@@ -71,7 +71,7 @@ class _DoctorsBannerState extends State<DoctorsBanner> {
       realList.addAll(dataList);
     }
 
-    print("the data is --- ${ dataList}");
+    print("the data is --- $dataList");
     if (realList.length > 1) {
       setState(() {
         realList.insert(0, dataList[dataList.length - 1]);

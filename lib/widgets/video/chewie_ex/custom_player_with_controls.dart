@@ -70,7 +70,7 @@ class VideoPlayerContainer extends StatefulWidget {
   final double maxHeight;
 
   ///根据入参的宽高，计算得到容器宽高比
-  double _viewRatio;
+  final double _viewRatio;
 
   VideoPlayerContainer(
     this.maxWidth,

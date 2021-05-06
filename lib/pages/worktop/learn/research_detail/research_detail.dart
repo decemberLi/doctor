@@ -224,7 +224,7 @@ class _ResearchDetailState extends State<ResearchDetail>
               child: Text("您还未完成问卷$index,\n确定提交吗？"),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(
                   "取消",
                   style: TextStyle(
@@ -235,7 +235,7 @@ class _ResearchDetailState extends State<ResearchDetail>
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(
                   "提交",
                   style: TextStyle(

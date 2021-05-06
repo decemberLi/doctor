@@ -59,7 +59,7 @@ class AppUpdateHelper {
       builder: (context) => AlertDialog(
         content: Text(appUpdateInfo.appContent),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -68,7 +68,7 @@ class AppUpdateHelper {
           SizedBox(
             width: 20,
           ),
-          FlatButton(
+          TextButton(
             onPressed: () {
               Navigator.of(context).pop(true);
             },
@@ -76,7 +76,7 @@ class AppUpdateHelper {
               '重新下载',
             ),
           ),
-          FlatButton(
+          TextButton(
             onPressed: () async {
               Navigator.of(context).pop(false);
             },
@@ -202,7 +202,7 @@ class AppUpdateHelper {
                 "将使用移动网络下载最新安装包，大概消耗移动流量${updateInfo.packageSize}M,现在下载吗？"),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(
                 "稍后再说",
                 style: TextStyle(
@@ -213,7 +213,7 @@ class AppUpdateHelper {
                 Navigator.of(context).pop(false);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 "立即下载",
                 style: TextStyle(
@@ -285,8 +285,7 @@ class AppUpdateDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Stack(
-                overflow: Overflow.visible,
-                children: [
+                clipBehavior: Clip.none, children: [
                   Image.asset('assets/images/app_update_top.png'),
                   Positioned(
                     right: 21,

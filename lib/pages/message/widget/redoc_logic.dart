@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 buildMessageItemAvatar(SocialMessageModel data) {
   return Container(
     child: Stack(
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       children: [
         data?.postType == 'GOSSIP'
             ? _buildGossipAvatar(data?.messageTitle ?? '')

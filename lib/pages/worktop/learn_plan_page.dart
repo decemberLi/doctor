@@ -20,8 +20,6 @@ class _LearnPlanPageState extends State<LearnPlanPage>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
 
-  int _currentTabIndex = 0;
-
   int _waitLearnCount = 0;
 
   @override
@@ -33,7 +31,7 @@ class _LearnPlanPageState extends State<LearnPlanPage>
         // 避免触发两次
         if (_tabController.index.toDouble() == _tabController.animation.value) {
           setState(() {
-            _currentTabIndex = _tabController.index;
+            // _currentTabIndex = _tabController.index;
           });
         }
       });
@@ -85,7 +83,7 @@ class _LearnPlanPageState extends State<LearnPlanPage>
                   Tab(
                     // text: '学习中',
                     child: Stack(
-                      overflow: Overflow.visible,
+                      clipBehavior: Clip.none,
                       children: [
                         Text(
                           '学习中',
@@ -126,7 +124,7 @@ class _LearnPlanPageState extends State<LearnPlanPage>
 
   double redDotPosition() {
     if (_waitLearnCount > 9999) {
-      return - 56;
+      return -56;
     } else if (_waitLearnCount > 999) {
       return -50;
     } else if (_waitLearnCount > 99) {

@@ -33,9 +33,9 @@ class CommonService {
       'file': await MultipartFile.fromFile(file, filename: fileName),
     });
 
-    print("YYYLog::UploadFile request --> ${formData}");
+    print("YYYLog::UploadFile request --> $formData");
     var response = await dio.post(host, data: formData);
-    print("YYYLog::UploadFile response <-- ${formData}");
+    print("YYYLog::UploadFile response <-- $formData");
     if (response.statusCode == 204) {
       return;
     }

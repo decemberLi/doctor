@@ -2,8 +2,8 @@ import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 final uploadData = {
   '姓名': 'doctorName',
@@ -59,21 +59,21 @@ class _UserEditPageState extends State<UserEditPage> {
   @override
   void initState() {
     //监听键盘高度变化
-    subscribeId = KeyboardVisibilityNotification().addNewListener(
-      onChange: (bool visible) {
-        if (!visible) {
-          //键盘下降失去焦点
-          FocusScope.of(context).requestFocus(FocusNode());
-        }
-      },
-    );
+    var controller = KeyboardVisibilityController();
+    controller.onChange.listen((event) {
+      if (!event) {
+        //键盘下降失去焦点
+        FocusScope.of(context).requestFocus(FocusNode());
+      }
+    });
+
     super.initState();
     dataText.text = widget.value; //初始化默认值
   }
 
   @override
   void dispose() {
-    KeyboardVisibilityNotification().removeListener(subscribeId);
+
     super.dispose();
   }
 

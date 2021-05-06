@@ -82,8 +82,7 @@ class _VideoDetailState extends State<VideoDetail> {
           margin: EdgeInsets.only(top: 10),
           height: 20,
           alignment: Alignment.center,
-          child: FlatButton(
-            textColor: ThemeColor.primaryColor,
+          child: TextButton(
             onPressed: () {
               //签到接口
               API.shared.server.meetingSign({'taskDetailId': widget.taskDetailId}).then((res) {
@@ -95,7 +94,7 @@ class _VideoDetailState extends State<VideoDetail> {
             },
             child: Text(
               '签到',
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: 14,color: ThemeColor.primaryColor),
             ),
           ),
         )

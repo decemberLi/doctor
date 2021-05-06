@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 
 import 'chewie_progress_colors.dart';
@@ -30,7 +30,7 @@ class Chewie extends StatefulWidget {
   /// The [ChewieController]
   final ChewieController controller;
 
-  Widget child;
+  final Widget child;
 
   @override
   ChewieState createState() {
@@ -90,11 +90,12 @@ class ChewieState extends State<Chewie> {
       Animation<double> animation,
       _ChewieControllerProvider controllerProvider) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      body: Container(
-        alignment: Alignment.center,
-        color: Colors.black,
-        child: controllerProvider,
+      body: SingleChildScrollView(
+        child: Container(
+          alignment: Alignment.center,
+          color: Colors.black,
+          child: controllerProvider,
+        ),
       ),
     );
   }
@@ -131,7 +132,6 @@ class ChewieState extends State<Chewie> {
   }
 
   Future<dynamic> _pushFullScreenWidget(BuildContext context) async {
-    final isAndroid = Theme.of(context).platform == TargetPlatform.android;
     final TransitionRoute<Null> route = PageRouteBuilder<Null>(
 //      settings: RouteSettings(isInitialRoute: false),
       pageBuilder: _fullScreenRoutePageBuilder,
@@ -154,16 +154,16 @@ class ChewieState extends State<Chewie> {
     // }
 
     if (!widget.controller.allowedScreenSleep) {
-      Screen.keepOn(true);
+      MedcloudsNativeApi.instance().keepOn(true);
     }
 
     await Navigator.of(context).push(route);
     _isFullScreen = false;
     widget.controller.exitFullScreen();
 
-    bool isKeptOn = await Screen.isKeptOn;
+    bool isKeptOn = await MedcloudsNativeApi.instance().isKeptOn;
     if (isKeptOn) {
-      Screen.keepOn(false);
+      MedcloudsNativeApi.instance().keepOn(false);
     }
 
     SystemChrome.setEnabledSystemUIOverlays(
@@ -293,8 +293,7 @@ class ChewieController extends ChangeNotifier {
 
   static ChewieController of(BuildContext context) {
     final chewieControllerProvider =
-        context.inheritFromWidgetOfExactType(_ChewieControllerProvider)
-            as _ChewieControllerProvider;
+        context.dependOnInheritedWidgetOfExactType<_ChewieControllerProvider>();
 
     return chewieControllerProvider.controller;
   }
@@ -307,7 +306,7 @@ class ChewieController extends ChangeNotifier {
     await videoPlayerController.setLooping(looping);
 
     if ((autoInitialize || autoPlay) &&
-        !videoPlayerController.value.initialized) {
+        !videoPlayerController.value.isInitialized) {
       await videoPlayerController.initialize();
     }
 

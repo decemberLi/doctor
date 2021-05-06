@@ -307,7 +307,7 @@ class _MedicationPageState extends State<MedicationPage>
         },
       ),
       floatingActionButton: Stack(
-        overflow: Overflow.visible,
+        clipBehavior: Clip.none,
         children: [
           FloatingActionButton(
             backgroundColor: Color(0xFFFDA705),

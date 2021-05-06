@@ -5,10 +5,8 @@ import 'package:doctor/pages/doctors/widget/doctors_circle_widget.dart';
 import 'package:doctor/pages/doctors/widget/gossip_news_widget.dart';
 import 'package:doctor/root_widget.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/utils/platform_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'model/in_screen_event_model.dart';
@@ -30,17 +28,6 @@ class _DoctorsHomeState extends State<DoctorsHome>
 
   @override
   bool get wantKeepAlive => true;
-
-  _setAndroidSystemBar() {
-    if (Platform.isAndroid) {
-      // 以下两行 设置android状态栏为透明的沉浸。写在组件渲染之后，是为了在渲染后进行set赋值，覆盖状态栏，写在渲染之前
-      // MaterialApp组件会覆盖掉这个值。
-      SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark);
-      SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-    }
-  }
 
   @override
   void initState() {

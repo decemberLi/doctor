@@ -513,7 +513,6 @@ class _BoxDecorationPainter extends BoxPainter {
     return path;
   }
 
-  @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
