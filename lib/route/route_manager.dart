@@ -1,5 +1,6 @@
 import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
+import 'package:doctor/pages/activity/activity_list_page.dart';
 import 'package:doctor/pages/doctors/doctors_list_page.dart';
 import 'package:doctor/pages/doctors/doctors_list_page2.dart';
 import 'package:doctor/pages/home_page.dart';
@@ -76,6 +77,7 @@ class RouteManager {
   static const String DOCTOR_AUTH_STATUS_VERIFYING_PAGE = '/AuthStatusPageVerifying';
   // 认证成功
   static const String DOCTOR_AUTH_STATUS_PASS_PAGE = '/AuthStatusPagePass';
+  static const String ACTIVITY_LIST_PAGE = '/activity_list_page';
 
   static Map<String, WidgetBuilder> routes = {
     GUIDE: (context) => GuidePage(),
@@ -159,6 +161,7 @@ class RouteManager {
     },
     DOCTOR_AUTH_STATUS_VERIFYING_PAGE: (context) => AuthStatusVerifyingPage(),
     DOCTOR_AUTH_STATUS_PASS_PAGE: (context) => AuthStatusPassPage(),
+    ACTIVITY_LIST_PAGE: (context) => ActivityListPage(),
   };
 
   static openDoctorsDetail(postId, {String from = "list"}) {
