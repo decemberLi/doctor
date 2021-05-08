@@ -163,6 +163,16 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                         'assets/images/msg_learn_plan.png',
                         leanPlanCount + interactiveCount,
                         () {
+                          goMessageList(MessageType.TYPE_SYSTEM);
+                        },
+                        2,
+                        dotColor: _dotColor(leanPlanCount + interactiveCount),
+                      ),
+                      messageItem(
+                        '活动通知',
+                        'assets/images/active_notice.png',
+                        leanPlanCount + interactiveCount,
+                            () {
                           goStudyPlane();
                         },
                         2,
