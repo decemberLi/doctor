@@ -1,6 +1,5 @@
 
 
-
 import 'package:flutter/cupertino.dart';
 
 class ActivityListPage extends StatefulWidget{
@@ -10,6 +9,7 @@ class ActivityListPage extends StatefulWidget{
 }
 
 class _ActivityListPageState extends State<ActivityListPage>{
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
