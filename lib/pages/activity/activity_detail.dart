@@ -1,3 +1,4 @@
+import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 
 class ActivityDetail extends StatefulWidget {
@@ -8,6 +9,8 @@ class ActivityDetail extends StatefulWidget {
 }
 
 class _ActivityState extends State<ActivityDetail> {
+  bool showInfo = true;
+
   Widget cardTitle(String data) {
     return Text(
       data,
@@ -68,7 +71,16 @@ class _ActivityState extends State<ActivityDetail> {
         ),
       );
     }
-
+    List<Widget> showLine(){
+      if(showInfo){
+        return [
+          line("活动名称", "问题讨论"),
+          line("来自企业", "问题讨论"),
+          line("截止日期", "2020年6月1日23:58"),
+        ];
+      }
+      return [];
+    }
     return card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,11 +88,18 @@ class _ActivityState extends State<ActivityDetail> {
           Row(
             children: [
               cardTitle("病例征集信息"),
+              Expanded(child: Container()),
+              IconButton(
+                icon: showInfo ? Icon(Icons.arrow_drop_down) : Icon(Icons.arrow_drop_up),
+                onPressed: () {
+                  setState(() {
+                    showInfo = !showInfo;
+                  });
+                },
+              ),
             ],
           ),
-          line("活动名称", "问题讨论"),
-          line("来自企业", "问题讨论"),
-          line("截止日期", "2020年6月1日23:58"),
+          ...showLine(),
           Container(
             padding: EdgeInsets.only(top: 15),
             child: Text(
@@ -182,9 +201,34 @@ class _ActivityState extends State<ActivityDetail> {
       ),
       body: Column(
         children: [
-          buildInfo(),
-          buildDesc(),
-          buildList(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  buildInfo(),
+                  buildDesc(),
+                  buildList(),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Text(
+              "剩余调研数5",
+              style: TextStyle(
+                color: Color(0xff107BFD),
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(bottom: 53),
+            child: AceButton(
+              text: "填写病例信息",
+            ),
+          )
         ],
       ),
     );
