@@ -8,7 +8,7 @@ class ActivityWidget extends StatelessWidget {
 
   final ActivityEntity _data;
 
-  ActivityWidget(this._data)
+  ActivityWidget(this._data);
 
   @override
   Widget build(BuildContext context) {
