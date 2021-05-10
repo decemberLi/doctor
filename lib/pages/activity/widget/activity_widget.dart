@@ -88,18 +88,20 @@ class ActivityWidget extends StatelessWidget {
             ),
             Row(
               children: [
-                Container(
-                  padding: EdgeInsets.only(right: 16),
+                Expanded(child: Container(
+                  padding: EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border(
                           right:
-                              BorderSide(color: Color(0xFFF3F5F8), width: 1))),
+                          BorderSide(color: Color(0xFFF3F5F8), width: 1))),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         _data.activityName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             color: Color(0xFF222222),
                             fontSize: 14,
@@ -111,6 +113,8 @@ class ActivityWidget extends StatelessWidget {
                       ),
                       Text(
                         '来自企业：${_data.companyName}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             fontSize: 12, color: ThemeColor.colorFF666666),
                       ),
@@ -120,13 +124,15 @@ class ActivityWidget extends StatelessWidget {
                       ),
                       Text(
                         '截止日期：${_endTimeFormat(_data.endTime)} ',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             fontSize: 12, color: ThemeColor.colorFF666666),
                       ),
                     ],
                   ),
-                ),
-                progressWidget()
+                )),
+                Padding(padding: EdgeInsets.only(right: 10),child: progressWidget(),)
               ],
             )
           ],
