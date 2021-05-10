@@ -267,7 +267,7 @@ class _ActivityState extends State<ActivityDetail> {
                       schedule < 100 &&
                       _data.status == "EXECUTING");
               return ActivityResearch(
-                true,
+                canEdit,
                 _data.activityPackageId,
                 activityTaskId: taskId,
               );
@@ -371,9 +371,18 @@ class _ActivityState extends State<ActivityDetail> {
       bottoms = [
         Container(
           padding: EdgeInsets.only(bottom: 53),
-          child: AceButton(
-            text: "活动已结束",
-            onPressed: () {},
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 33),
+            alignment: Alignment.center,
+            height: 44,
+            decoration: BoxDecoration(
+              color: Color(0xff888888),
+              borderRadius: BorderRadius.all(Radius.circular(22)),
+            ),
+            child: Text("活动已结束",style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),),
           ),
         )
       ];
