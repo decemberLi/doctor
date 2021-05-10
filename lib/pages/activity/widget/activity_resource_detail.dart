@@ -65,12 +65,12 @@ class _ImageResourceModel extends ChangeNotifier {
 
   List<_ImageResource> getAllImage() => _list;
 
-  void submit() async {
+  submit() async {
     var localRes = _list.where((element) => element.type == 0).toList();
     // upload pic
     Map<int, _ImageResource> map = HashMap();
     List<Future<OssFileEntity>> futires = [];
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < localRes.length; i++) {
       var toBeUploadEntity = localRes[i];
       var eachF = OssService.upload(localRes[i].uri);
       futires.add(eachF);
@@ -88,7 +88,7 @@ class _ImageResourceModel extends ChangeNotifier {
     });
 
     // post to server
-    await API.shared.activity.saveActivityCaseCollection(activityId, picList,
+    return await API.shared.activity.saveActivityCaseCollection(activityId, picList,
         activityTaskId: taskId);
   }
 
@@ -234,7 +234,7 @@ class _ActivityResourceDetailPageState
                             return;
                           }
                           EasyLoading.instance.flash(() async {
-                            _model.submit();
+                            await _model.submit();
                             Navigator.pop(context, true);
                           });
                         },
