@@ -33,8 +33,10 @@ class ActivityEntity {
 class ActivityDetailEntity extends ActivityEntity {
   String activityContent;
   int waitExecuteTask;
+  int startTime;
   ActivityDetailEntity(Map<String,dynamic> json):super(json){
     activityContent = json["activityContent"] as String;
     waitExecuteTask = json["waitExecuteTask"] as int;
+    startTime = json["startTime"] as int;
   }
 }

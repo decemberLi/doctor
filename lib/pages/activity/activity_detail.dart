@@ -139,7 +139,7 @@ class _ActivityState extends State<ActivityDetail> {
         children: [
           Row(
             children: [
-              cardTitle("病例征集信息"),
+              cardTitle("${activityName(widget.type)}信息"),
               Expanded(child: Container()),
               IconButton(
                 icon: showInfo
@@ -177,7 +177,7 @@ class _ActivityState extends State<ActivityDetail> {
         children: [
           Row(
             children: [
-              cardTitle("病例征集说明"),
+              cardTitle("${activityName(widget.type)}说明"),
             ],
           ),
           Container(
@@ -251,6 +251,9 @@ class _ActivityState extends State<ActivityDetail> {
       lines.add(itemWidget);
     }
 
+    if (_list.length == 0) {
+      return Container();
+    }
     return card(
       child: Column(
         children: [
@@ -266,30 +269,21 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   Widget buildBody() {
-    return Column(
-      children: [
-        Expanded(
-          child: SmartRefresher(
-            controller: _refreshController,
-            header: ClassicHeader(),
-            footer: ClassicFooter(),
-            enablePullDown: false,
-            enablePullUp: true,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  buildInfo(),
-                  buildDesc(),
-                  buildList(),
-                ],
-              ),
-            ),
-            onLoading: () async {
-              await Future.delayed(Duration(seconds: 2));
-              _refreshController.loadComplete();
+    List<Widget> bottoms = [];
+    if (_data.status == "WAIT_START") {
+      bottoms = [
+        Container(
+          padding: EdgeInsets.only(bottom: 53),
+          child: AceButton(
+            text: "活动于${_data.startTime}开始",
+            onPressed: (){
+
             },
           ),
-        ),
+        )
+      ];
+    }else if (_data.status == "EXECUTING") {
+      bottoms = [
         Container(
           padding: EdgeInsets.symmetric(vertical: 5),
           child: Text(
@@ -310,6 +304,45 @@ class _ActivityState extends State<ActivityDetail> {
             },
           ),
         )
+      ];
+    }else{
+      bottoms = [
+        Container(
+          padding: EdgeInsets.only(bottom: 53),
+          child: AceButton(
+            text: "活动已结束",
+            onPressed: (){
+
+            },
+          ),
+        )
+      ];
+    }
+    return Column(
+      children: [
+        Expanded(
+          child: SmartRefresher(
+            controller: _refreshController,
+            header: ClassicHeader(),
+            footer: ClassicFooter(),
+            enablePullDown: false,
+            enablePullUp: _list.length > 0,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  buildInfo(),
+                  buildDesc(),
+                  buildList(),
+                ],
+              ),
+            ),
+            onLoading: () async {
+              await Future.delayed(Duration(seconds: 2));
+              _refreshController.loadComplete();
+            },
+          ),
+        ),
+        ...bottoms,
       ],
     );
   }
