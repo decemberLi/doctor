@@ -1,3 +1,7 @@
+
+import 'package:json_annotation/json_annotation.dart';
+
+@JsonSerializable()
 class ActivityEntity {
 
   int activityPackageId;
@@ -18,6 +22,7 @@ class ActivityEntity {
 
 }
 
+@JsonSerializable()
 class ActivityDetailEntity extends ActivityEntity {
   String activityContent;
   int waitExecuteTask;

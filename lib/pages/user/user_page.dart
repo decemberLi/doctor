@@ -2,6 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
+import 'package:doctor/pages/activity/activity_detail.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
@@ -373,7 +374,8 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 Navigator.pushNamed(context, RouteManager.SETTING);
               }),
               messageItem('关于我们', 'assets/images/aboutus.png', () {
-                Navigator.pushNamed(context, RouteManager.ABOUT_US);
+                // Navigator.pushNamed(context, RouteManager.ABOUT_US);
+                Navigator.of(context).push(MaterialPageRoute(builder: (c)=>ActivityDetail(1,"ss")));
               }),
               messageItem('活动列表', 'assets/images/aboutus.png', () {
                 Navigator.pushNamed(context, RouteManager.ACTIVITY_LIST_PAGE);
