@@ -400,7 +400,6 @@ class _UserPageState extends State<UserPage> with RouteAware {
                               1,
                               2,
                               status: VERIFY_STATUS_REJECT,
-                              imgs: [],
                             )));
               }),
             ],

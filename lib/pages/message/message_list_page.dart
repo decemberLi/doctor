@@ -1,3 +1,4 @@
+import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/activity_detail.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/message/model/message_list_entity.dart';
@@ -268,8 +269,11 @@ class _MessageListPageState extends State<MessageListPage> {
       if (entity.params['bizType'] == 'REJECT_ACTIVITY_TASK') {
         // go 资料详情
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ActivityResourceDetailPage(entity.params['activityPackageId'],
-              entity.params['activityTaskId']);
+          return ActivityResourceDetailPage(
+            entity.params['activityPackageId'],
+            entity.params['activityTaskId'],
+            status: VERIFY_STATUS_REJECT,
+          );
         }));
         return;
       }

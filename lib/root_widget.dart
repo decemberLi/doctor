@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:doctor/common/event/event_home_tab.dart';
 import 'package:doctor/http/foundationSystem.dart';
+import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/activity_detail.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
@@ -141,7 +142,7 @@ class RootWidget extends StatelessWidget {
             if(obj['bizType'] == 'REJECT_ACTIVITY_TASK'){
               // go 资料详情
               Navigator.push(context, MaterialPageRoute(builder: (context){
-                ActivityResourceDetailPage(obj['activityPackageId'],obj['activityTaskId']);
+                ActivityResourceDetailPage(obj['activityPackageId'],obj['activityTaskId'],status: VERIFY_STATUS_REJECT,);
                 return;
               }));
               return ;
