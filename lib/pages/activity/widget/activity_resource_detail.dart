@@ -1,6 +1,6 @@
 import 'dart:collection';
-import 'dart:convert';
 
+import 'package:doctor/http/activity.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
@@ -14,7 +14,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
-import 'package:doctor/http/activity.dart';
 
 class _ImageResource {
   // 0 is local path, 1 is url
