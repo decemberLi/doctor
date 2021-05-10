@@ -28,21 +28,21 @@ class _ActivityListPageState extends State<ActivityListPage> {
         },
         getData: (page) {
           List<ActivityEntity> list = [];
-          list.add(ActivityEntity()
+          list.add(ActivityEntity(null)
             ..activityType = TYPE_CASE_COLLECTION
             ..status = STATUS_WAIT
             ..activityName = '靖江宾馆冠心病相关问题讨论'
             ..companyName = '重庆易药云科技有限公司'
             ..endTime = DateTime.now().millisecondsSinceEpoch
             ..schedule = 70);
-          list.add(ActivityEntity()
+          list.add(ActivityEntity(null)
             ..activityType = TYPE_MEDICAL_SURVEY
             ..status = STATUS_EXECUTING
             ..activityName = '靖江宾馆冠心病相关问题讨论'
             ..companyName = '重庆易药云科技有限公司'
             ..endTime = DateTime.now().millisecondsSinceEpoch
             ..schedule = 10);
-          list.add(ActivityEntity()
+          list.add(ActivityEntity(null)
             ..activityType = TYPE_CASE_COLLECTION
             ..status = STATUS_FINISH
             ..activityName = '靖江宾馆冠心病相关问题讨论'

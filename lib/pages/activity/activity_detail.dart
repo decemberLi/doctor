@@ -30,16 +30,25 @@ class _ActivityState extends State<ActivityDetail> {
   bool _isLoading = true;
   String _error;
 
+  @override
+  void initState() {
+    firstGetData();
+    super.initState();
+  }
+
   void firstGetData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    var result =
-        await API.shared.activity.packageDetail(widget.activityPackageId);
-    _data = ActivityDetailEntity();
-    var list =
-        await API.shared.activity.activityTaskList(widget.activityPackageId, 1);
-    _list = list;
+    try {
+      var result =
+      await API.shared.activity.packageDetail(widget.activityPackageId);
+      _data = ActivityDetailEntity(result);
+      var list =
+      await API.shared.activity.activityTaskList(widget.activityPackageId, 1);
+      _list = list;
+    }catch(e){
+      setState(() {
+        _error = "${e.message}";
+      });
+    }
     setState(() {
       _isLoading = false;
     });
@@ -315,6 +324,9 @@ class _ActivityState extends State<ActivityDetail> {
         child: child,
         onPressed: () {
           _error = null;
+          setState(() {
+            _isLoading = true;
+          });
           firstGetData();
         },
       ),

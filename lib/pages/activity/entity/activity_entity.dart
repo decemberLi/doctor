@@ -1,7 +1,4 @@
 
-import 'package:json_annotation/json_annotation.dart';
-
-@JsonSerializable()
 class ActivityEntity {
 
   int activityPackageId;
@@ -19,11 +16,25 @@ class ActivityEntity {
   int endTime;
 
   int schedule;
-
+  ActivityEntity(Map<String,dynamic> json){
+    if (json == null){
+      return;
+    }
+    activityPackageId = json["activityPackageId"] as int;
+    activityName = json["activityName"] as String;
+    status = json["status"] as String;
+    activityType = json["activityType"] as String;
+    companyName = json["companyName"] as String;
+    endTime = json["endTime"] as int;
+    schedule = json["schedule"] as int;
+  }
 }
 
-@JsonSerializable()
 class ActivityDetailEntity extends ActivityEntity {
   String activityContent;
   int waitExecuteTask;
+  ActivityDetailEntity(Map<String,dynamic> json):super(json){
+    activityContent = json["activityContent"] as String;
+    waitExecuteTask = json["waitExecuteTask"] as int;
+  }
 }
