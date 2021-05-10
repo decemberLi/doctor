@@ -1,4 +1,7 @@
+import 'package:doctor/pages/activity/activity_case_detail.dart';
+import 'package:doctor/pages/activity/activity_research.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
+import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,7 +29,7 @@ class _ActivityState extends State<ActivityDetail> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ActivityDetailEntity _data;
-  List _list;
+  List _list = [];
   bool _isLoading = true;
   String _error;
 
@@ -40,13 +43,16 @@ class _ActivityState extends State<ActivityDetail> {
     try {
       var result =
       await API.shared.activity.packageDetail(widget.activityPackageId);
+      print("the result is - $result");
+
       _data = ActivityDetailEntity(result);
-      var list =
+      var rawData =
       await API.shared.activity.activityTaskList(widget.activityPackageId, 1);
+      var list = rawData["records"];
       _list = list;
     }catch(e){
       setState(() {
-        _error = "${e.message}";
+        _error = "${e}";
       });
     }
     setState(() {
@@ -55,8 +61,9 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   void loadMoreData() async {
-    List list =
+    var rawData =
         await API.shared.activity.activityTaskList(widget.activityPackageId, 1);
+    List list = rawData["records"];
     _refreshController.loadComplete();
     _list.addAll(list);
   }
@@ -197,17 +204,17 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   Widget buildList() {
-    Widget line(String desc, String status,int schedule) {
+    Widget line(String desc, String status,int schedule,int taskId) {
       Color color = Color(0xff444444);
       String text = activityStatus(status);
-      if (schedule < 100){
+      if ( schedule != null &&  schedule < 100){
         text = "$schedule%";
       }else if (text == "审核未通过") {
         color = Color(0xffFAAD14);
       } else if (text == "审核通过") {
         color = Color(0xff52C41A);
       }
-      return Container(
+      var content = Container(
         height: 40,
         padding: EdgeInsets.symmetric(horizontal: 10),
         margin: EdgeInsets.only(top: 12),
@@ -237,6 +244,16 @@ class _ActivityState extends State<ActivityDetail> {
           ],
         ),
       );
+      return GestureDetector(
+        child: content,
+        onTap: (){
+          if (_data.activityType == TYPE_CASE_COLLECTION){
+            Navigator.of(context).push(MaterialPageRoute(builder: (c){
+              return ActivityResourceDetailPage(_data.activityPackageId, taskId,status: status);
+            }));
+          }
+        },
+      );
     }
 
     List<Widget> lines = [];
@@ -250,7 +267,7 @@ class _ActivityState extends State<ActivityDetail> {
         desc =
             "${item["activityTaskName"]}:${illnessCase["sex"]}|${illnessCase["age"]}|${illnessCase["patientName"]}";
       }
-      var itemWidget = line(desc, item["status"],item["schedule"]);
+      var itemWidget = line(desc, item["status"],item["schedule"],item["activityTaskId"]);
       lines.add(itemWidget);
     }
 
@@ -303,7 +320,13 @@ class _ActivityState extends State<ActivityDetail> {
           child: AceButton(
             text: "填写病例信息",
             onPressed: (){
+              if (_data.activityType == TYPE_CASE_COLLECTION) {
 
+              }else{
+                Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                  return ActivityResearch(true, _data.activityPackageId);
+                }));
+              }
             },
           ),
         )
