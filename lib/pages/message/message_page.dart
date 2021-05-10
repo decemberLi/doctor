@@ -133,6 +133,7 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
           var interactiveCount = model?.data?.interactiveCount ?? 0;
           var likeCount = model?.data?.likeCount ?? 0;
           var commentCount = model?.data?.commentCount ?? 0;
+          var activityCount = model?.data?.activityCount ?? 0;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -163,7 +164,7 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                         'assets/images/msg_learn_plan.png',
                         leanPlanCount + interactiveCount,
                         () {
-                          goMessageList(MessageType.TYPE_SYSTEM);
+                          goStudyPlane();
                         },
                         2,
                         dotColor: _dotColor(leanPlanCount + interactiveCount),
@@ -173,10 +174,10 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                         'assets/images/active_notice.png',
                         leanPlanCount + interactiveCount,
                             () {
-                          goStudyPlane();
+                              goMessageList(MessageType.TYPE_ACTIVITY);
                         },
                         2,
-                        dotColor: _dotColor(leanPlanCount + interactiveCount),
+                        dotColor: _dotColor(activityCount),
                       ),
                     ],
                   ),

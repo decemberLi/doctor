@@ -4,6 +4,7 @@ import 'package:doctor/http/activity.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
+import 'package:doctor/pages/activity/entity/activity_resources_entity.dart';
 import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
@@ -90,6 +91,19 @@ class _ImageResourceModel extends ChangeNotifier {
     await API.shared.activity.saveActivityCaseCollection(activityId, picList,
         activityTaskId: taskId);
   }
+
+  void obtainTaskResources() {
+    EasyLoading.instance.flash(() async {
+      var result =
+          await API.shared.activity.activityCaseCollectionDetail(taskId);
+      var entity = ActivityResourceEntity(result);
+      taskId = entity.activityTaskId;
+      activityId = entity.activityPackageId;
+      addImages(entity.attachments
+          .map((e) => _ImageResource(1, e.url, ossRes: e))
+          .toList());
+    });
+  }
 }
 
 class ActivityResourceDetailPage extends StatefulWidget {
@@ -98,13 +112,11 @@ class ActivityResourceDetailPage extends StatefulWidget {
   final bool _isNotPass;
   final int activityPackageId;
   final int activityTaskId;
-  List<OssFileEntity> images;
 
   ActivityResourceDetailPage(this.activityPackageId, this.activityTaskId,
-      {this.status, List<OssFileEntity> imgs})
+      {this.status})
       : _titleText = status == null ? '新增病例征集' : '病例详情',
-        _isNotPass = status == VERIFY_STATUS_REJECT,
-        images = imgs == null ? [] : imgs;
+        _isNotPass = status == VERIFY_STATUS_REJECT;
 
   @override
   State<StatefulWidget> createState() => _ActivityResourceDetailPageState();
@@ -117,11 +129,9 @@ class _ActivityResourceDetailPageState
   @override
   void initState() {
     super.initState();
-    _model = _ImageResourceModel(
-        widget.activityPackageId, widget.activityTaskId,
-        images: widget.images
-            .map((e) => _ImageResource(1, e.url, ossRes: e))
-            .toList());
+    _model =
+        _ImageResourceModel(widget.activityPackageId, widget.activityTaskId);
+    _model.obtainTaskResources();
   }
 
   @override

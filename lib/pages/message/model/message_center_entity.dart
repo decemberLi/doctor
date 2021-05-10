@@ -11,6 +11,7 @@ class MessageCenterEntity {
   int total;
   int likeCount;
   int commentCount;
+  int activityCount;
 
   MessageCenterEntity(
       this.systemCount,

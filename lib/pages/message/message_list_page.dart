@@ -1,3 +1,6 @@
+import 'package:doctor/pages/activity/activity_constants.dart';
+import 'package:doctor/pages/activity/activity_detail.dart';
+import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/message/model/message_list_entity.dart';
 import 'package:doctor/pages/message/view_model/message_list_view_model.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
@@ -24,6 +27,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 ///
 class MessageType {
   static const String TYPE_SYSTEM = 'SYSTEM';
+  static const String TYPE_ACTIVITY = 'ACTIVITY';
   static const String TYPE_PRESCRIPTION = 'PRESCRIPTION';
   static const String TYPE_LEAN_PLAN = 'LEAN_PLAN';
   static const String TYPE_INTERACTIVE = 'INTERACTIVE';
@@ -36,6 +40,7 @@ class MessageListPage extends StatefulWidget {
     MessageType.TYPE_PRESCRIPTION: '处方消息',
     MessageType.TYPE_LEAN_PLAN: '学习计划消息',
     MessageType.TYPE_INTERACTIVE: '互动消息',
+    MessageType.TYPE_ACTIVITY: '活动通知',
   };
 
   MessageListPage(this._type);
@@ -227,17 +232,17 @@ class _MessageListPageState extends State<MessageListPage> {
       }
       var doctorData = userModel.data;
       if (doctorData?.identityStatus == 'PASS') {
-        if (doctorData?.authStatus == 'WAIT_VERIFY' || doctorData.authStatus == 'FAIL') {
-          Navigator.pushNamed(
-              context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-        }else if (doctorData.authStatus == 'VERIFYING') {
+        if (doctorData?.authStatus == 'WAIT_VERIFY' ||
+            doctorData.authStatus == 'FAIL') {
+          Navigator.pushNamed(context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+        } else if (doctorData.authStatus == 'VERIFYING') {
           Navigator.pushNamed(
               context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-        }else if (doctorData.authStatus == 'PASS') {
+        } else if (doctorData.authStatus == 'PASS') {
           Navigator.pushNamed(
               context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
         }
-      }else{
+      } else {
         Navigator.pushNamed(
             context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
       }
@@ -260,6 +265,22 @@ class _MessageListPageState extends State<MessageListPage> {
         "learnPlanId": entity.params['learnPlanId'],
         'from': 'MESSAGE_CENTER'
       });
+    } else if (type == MessageType.TYPE_ACTIVITY) {
+      if (entity.params['bizType'] == 'REJECT_ACTIVITY_TASK') {
+        // go 资料详情
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return ActivityResourceDetailPage(
+            entity.params['activityPackageId'],
+            entity.params['activityTaskId'],
+            status: VERIFY_STATUS_REJECT,
+          );
+        }));
+        return;
+      }
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return ActivityDetail(
+            entity.params['activityPackageId'], entity.params['activityType']);
+      }));
     }
     _model.mark('${entity.messageId}');
     entity.readed = true;
