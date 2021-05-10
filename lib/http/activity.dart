@@ -126,6 +126,14 @@ class Activity extends SubAPI {
     );
   }
 
+  activityQuestionnaireSaveWithJson(
+      Map params) async {
+    return await normalPost(
+      "/activity-task/questionnaire/save-or-update",
+      params: params,
+    );
+  }
+
   /// 医学调研查询资源问卷详情
   activityQuestionnaireDetail(
       int activityPackageId, int questionnaireId, int resourceId,

@@ -103,7 +103,7 @@ dependencies:
   http_manager:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/http_manager.git
-      ref: 1.0.6
+      ref: 1.0.7
   qr_code_scanner: ^0.4.0
   webview_flutter: ^2.0.4
 

@@ -2,29 +2,39 @@ import 'package:doctor/provider/provider_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
-import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/learn/research_detail/case_detail.dart';
-import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/time_text.dart';
 import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:provider/provider.dart';
+import 'package:http_manager/api.dart';
+import 'package:doctor/http/activity.dart';
+
+import 'activity_case_detail.dart';
+import 'entity/activity_questionnaire_entity.dart';
 
 class ActivityResearch extends StatefulWidget {
+  final bool canEdit;
+  final int activityPackageId;
+  final int activityTaskId;
+
+  ActivityResearch(this.canEdit, this.activityPackageId, {this.activityTaskId});
+
   @override
   State<StatefulWidget> createState() {
     return _ActivityResearch();
   }
 }
 
-class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObserver {
-
+class _ActivityResearch extends State<ActivityResearch>
+    with WidgetsBindingObserver {
   bool collapsed = true;
-  LearnDetailViewModel _model = LearnDetailViewModel(137574);
+
+  // LearnDetailViewModel _model = LearnDetailViewModel(137574);
+  ActivityQuestionnaireEntity _data;
 
   @override
   void initState() {
@@ -46,8 +56,10 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
   }
 
   void freshData() async {
-    var model = Provider.of<LearnDetailViewModel>(context, listen: false);
-    await model.initData();
+    Map<String, dynamic> json = await API.shared.activity
+        .activityQuestionnaireList(widget.activityPackageId,
+            activityTaskId: widget.activityTaskId);
+    _data = ActivityQuestionnaireEntity.fromJson(json);
     setState(() {});
   }
 
@@ -64,56 +76,15 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
     );
   }
 
-  Widget message(LearnDetailItem data) {
-    return item(
-      Column(
-        children: [
-          Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  '${data.representName}推广员给您留言了：', //data.representName
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: Color(0xFFfece35),
-                  ),
-                ),
-              ]),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Text(
-                  '${data.reLearnReason}', //data.reLearnReason
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                    color: Color(0xFFfece35),
-                  ),
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget plans(LearnDetailViewModel model) {
-    LearnDetailItem data = model.data;
-    var template = data.resources.first;
+  Widget plans(ActivityQuestionnaireEntity data) {
+    var template = data;
     if (template == null || template.questionnaires == null) return Container();
     List<Widget> sources = [];
     var canUp = false;
     for (int i = 0; i < template.questionnaires.length; i++) {
       var item = template.questionnaires[i];
-      var cell = buildPlanItem(model, template.resourceId, item,
-          i == template.questionnaires.length - 1);
+      var cell = buildPlanItem(
+          template.resourceId, item, i == template.questionnaires.length - 1);
       sources.add(cell);
       canUp = canUp || item.status == "COMPLETE";
     }
@@ -141,7 +112,7 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
                 ),
               ),
             ),
-            buildCaseItem(model, template.illnessCase),
+            buildCaseItem(template.illnessCase),
             ...sources,
           ],
         ),
@@ -149,19 +120,18 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
     );
   }
 
-  Widget buildCaseItem(LearnDetailViewModel model, IllnessCase item) {
+  Widget buildCaseItem(ActivityIllnessCaseEntity item) {
     var buttonText = "点击此处去填写";
     var statusText = "待完成";
     var statusColor = Color(0xff489DFE);
     var borderColor = Color(0xff888888);
-    LearnDetailItem data = model.data;
-    var isHistory = data.status == "SUBMIT_LEARN" || data.status == "ACCEPTED";
-    if (isHistory) {
+    var canEdit = widget.canEdit;
+    if (!canEdit) {
       buttonText = "查看病例信息";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
-    }else if (item.status == "COMPLETE") {
+    } else if (item.status == "COMPLETE") {
       buttonText = "点击此处去重新编辑";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
@@ -227,10 +197,9 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
             child: GestureDetector(
               onTap: () async {
                 await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => CaseDetail(item,!isHistory),
+                  builder: (ctx) => ActivityCaseDetail(item, canEdit),
                 ));
-                await model.initData();
-                setState(() {});
+                freshData();
               },
               child: Container(
                 margin: EdgeInsets.only(top: 12),
@@ -253,9 +222,9 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
     );
   }
 
-  Widget buildPlanItem(LearnDetailViewModel model, int resourceID,
-      Questionnaires item, bool isEnd) {
-    LearnDetailItem data = model.data;
+  Widget buildPlanItem(
+      int resourceID, ActivityQuestionnairesSubEntity item, bool isEnd) {
+    ActivityQuestionnaireEntity data = _data;
     var statusText = "未开启";
     var statusColor = Color(0xffDEDEE1);
     var borderColor = Color(0xff888888);
@@ -268,9 +237,9 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
     }
-    var statusWidget =Container();
-    if (statusText == "已完成" || (data.status != "SUBMIT_LEARN" && data.status != "ACCEPTED")){
-      statusWidget =  Container(
+    var statusWidget = Container();
+    if (statusText == "已完成") {
+      statusWidget = Container(
         margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
         padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
         decoration: BoxDecoration(
@@ -287,8 +256,8 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
       );
     }
     var timeText = "";
-    if (item.completeTime != null) {
-      timeText = "${RelativeDateFormat.format(item.completeTime)}完成";
+    if (item.submitTime != null) {
+      timeText = "${RelativeDateFormat.format(item.submitTime)}完成";
     }
 
     var content = Stack(
@@ -370,18 +339,29 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
               ),
             ],
           ),
+          if (item.rejectReason != null)
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 5),
+              child: Text(
+                item.rejectReason,
+                style: TextStyle(
+                  color: Color(0xffFECE35),
+                  fontSize: 12,
+                ),
+              ),
+            ),
           Container(
             margin: EdgeInsets.fromLTRB(25, 0, 0, 0),
             padding: EdgeInsets.fromLTRB(25, 5, 0, 20),
             decoration: isEnd
                 ? null
                 : BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: borderColor,
-                ),
-              ),
-            ),
+                    border: Border(
+                      left: BorderSide(
+                        color: borderColor,
+                      ),
+                    ),
+                  ),
             child: content,
           ),
         ],
@@ -389,12 +369,12 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
     );
     return GestureDetector(
       onTap: () {
-        if (item.disable) {
-          EasyLoading.showToast("问卷已下架，请联系管理员处理");
-          return;
-        }
+        // if (item.disable) {
+        //   EasyLoading.showToast("问卷已下架，请联系管理员处理");
+        //   return;
+        // }
         var url =
-            "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?learnPlanId=${data.learnPlanId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}";
+            "${UrlProvider.mHost(Environment.instance)}mpost/#/qpreview?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}";
         MedcloudsNativeApi.instance().openWebPage(url);
         print("on tap $url");
       },
@@ -425,13 +405,29 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
   Widget card({@required Widget child}) {
     return Container(
       height: double.infinity,
-      margin: EdgeInsets.only(left: 16, right: 16, top: 12,bottom: 64),
+      margin: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 64),
       padding: EdgeInsets.symmetric(vertical: 21, horizontal: 25),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
       child: child,
+    );
+  }
+
+  Widget buildContent() {
+    if (_data == null) {
+      return Container();
+    }
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          plans(_data),
+          Container(
+            height: 20,
+          )
+        ],
+      ),
     );
   }
 
@@ -442,30 +438,7 @@ class _ActivityResearch extends State<ActivityResearch> with WidgetsBindingObser
       appBar: AppBar(
         title: Text("医学调研详情"),
       ),
-      body: ProviderWidget<LearnDetailViewModel>(
-        model: _model,
-        onModelReady: (model) => model.initData(),
-        builder: (context, model, child) {
-          var data = model.data;
-          if (data == null){
-            return Container();
-          }
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                if (data.reLearnReason != null &&
-                    data.status != 'SUBMIT_LEARN' &&
-                    data.status != 'ACCEPTED')
-                  message(model.data),
-                plans(model),
-                Container(
-                  height: 20,
-                )
-              ],
-            ),
-          );
-        },
-      ),
+      body: buildContent(),
     );
   }
 }

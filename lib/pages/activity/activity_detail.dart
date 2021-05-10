@@ -197,11 +197,14 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   Widget buildList() {
-    Widget line(String desc, String status) {
+    Widget line(String desc, String status,int schedule) {
       Color color = Color(0xff444444);
-      if (status == "审核未通过") {
+      String text = activityStatus(status);
+      if (schedule < 100){
+        text = "$schedule%";
+      }else if (text == "审核未通过") {
         color = Color(0xffFAAD14);
-      } else if (status == "审核通过") {
+      } else if (text == "审核通过") {
         color = Color(0xff52C41A);
       }
       return Container(
@@ -224,7 +227,7 @@ class _ActivityState extends State<ActivityDetail> {
             ),
             Expanded(child: Container()),
             Text(
-              status,
+              text,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -247,7 +250,7 @@ class _ActivityState extends State<ActivityDetail> {
         desc =
             "${item["activityTaskName"]}:${illnessCase["sex"]}|${illnessCase["age"]}|${illnessCase["patientName"]}";
       }
-      var itemWidget = line(desc, activityStatus(item["status"]));
+      var itemWidget = line(desc, item["status"],item["schedule"]);
       lines.add(itemWidget);
     }
 
