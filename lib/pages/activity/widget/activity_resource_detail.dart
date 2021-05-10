@@ -23,7 +23,11 @@ class _ImageResourceModel extends ChangeNotifier {
   // ignore: non_constant_identifier_names
   int MAX_COUNT = 30;
 
-  _ImageResourceModel();
+  _ImageResourceModel({List<_ImageResource> images}) {
+    if (images != null) {
+      _list.addAll(images);
+    }
+  }
 
   void addImages(List<_ImageResource> selectedImg) {
     _list.addAll(selectedImg);
@@ -49,7 +53,6 @@ class _ImageResourceModel extends ChangeNotifier {
     // upload pic
 
     // post to server
-
   }
 }
 
@@ -57,10 +60,15 @@ class ActivityResourceDetailPage extends StatefulWidget {
   final String _titleText;
   final String status;
   final bool _isNotPass;
+  final int activityPackageId;
+  final int activityTaskId;
+  List<String> images;
 
-  ActivityResourceDetailPage(this.status)
+  ActivityResourceDetailPage(this.activityPackageId, this.activityTaskId,
+      {this.status, List<String> imgs})
       : _titleText = status == null ? '新增病例征集' : '病例详情',
-        _isNotPass = status == VERIFY_STATUS_REJECT;
+        _isNotPass = status == VERIFY_STATUS_REJECT,
+        images = imgs == null ? [] : imgs;
 
   @override
   State<StatefulWidget> createState() => _ActivityResourceDetailPageState();
@@ -72,9 +80,9 @@ class _ActivityResourceDetailPageState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _model = _ImageResourceModel();
+    _model = _ImageResourceModel(
+        images: widget.images.map((e) => _ImageResource(1, e)).toList());
   }
 
   @override
@@ -98,8 +106,7 @@ class _ActivityResourceDetailPageState
                     if (widget._isNotPass)
                       Container(
                         width: double.infinity,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        margin: EdgeInsets.only(left: 16, right: 16, top: 10),
                         padding:
                             EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                         decoration: BoxDecoration(
@@ -114,7 +121,7 @@ class _ActivityResourceDetailPageState
                       ),
                     Container(
                       width: double.infinity,
-                      margin: EdgeInsets.symmetric(horizontal: 16),
+                      margin: EdgeInsets.only(left: 16, right: 16, top: 10),
                       padding: EdgeInsets.fromLTRB(25, 0, 10, 25),
                       decoration: BoxDecoration(
                         color: Colors.white,
