@@ -4,7 +4,10 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:doctor/common/event/event_home_tab.dart';
 import 'package:doctor/http/foundationSystem.dart';
+import 'package:doctor/pages/activity/activity_detail.dart';
+import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
+import 'package:doctor/pages/message/message_list_page.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
@@ -134,6 +137,18 @@ class RootWidget extends StatelessWidget {
                 'learnPlanId': learnPlanId,
               },
             );
+          } else if (type == MessageType.TYPE_ACTIVITY) {
+            if(obj['bizType'] == 'REJECT_ACTIVITY_TASK'){
+              // go 资料详情
+              Navigator.push(context, MaterialPageRoute(builder: (context){
+                ActivityResourceDetailPage(obj['activityPackageId'],obj['activityTaskId']);
+                return;
+              }));
+              return ;
+            }
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return ActivityDetail(obj['activityPackageId'], obj['activityType']);
+            }));
           }else if (type == ""){
 
           }
