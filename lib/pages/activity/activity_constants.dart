@@ -12,6 +12,14 @@ const String STATUS_EXECUTING = "EXECUTING";
 // 已结束
 const String STATUS_FINISH = "END";
 
+/// 审核状态(WAIT_VERIFY-待审核，VERIFIED-已审核通过，REJECT-驳回)
+const String VERIFY_STATUS_WAIT = 'WAIT_VERIFY';
+/// 已审核通过
+const String VERIFY_STATUS_VERIFIED = 'VERIFIED';
+/// 驳回
+const String VERIFY_STATUS_REJECT = 'REJECT';
+
+
 String activityName(String type) {
   return type == TYPE_CASE_COLLECTION ? '病例征集' : '医学调研';
 }

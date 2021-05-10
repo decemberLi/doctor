@@ -1,8 +1,8 @@
-
 import 'package:dio/dio.dart';
 import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
-import 'package:doctor/pages/activity/activity_detail.dart';
+import 'package:doctor/pages/activity/activity_constants.dart';
+import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
@@ -124,7 +124,10 @@ class _UserPageState extends State<UserPage> with RouteAware {
                           fontSize: 14,
                         ),
                       ),
-                    Icon(Icons.keyboard_arrow_right,color: Color(0x35000000),),
+                    Icon(
+                      Icons.keyboard_arrow_right,
+                      color: Color(0x35000000),
+                    ),
                   ],
                 ),
               ),
@@ -134,7 +137,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
       ),
     );
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         callBack();
       },
       child: content,
@@ -271,21 +274,31 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                   fontWeight: FontWeight.bold),
                             ),
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 if (doctorData?.identityStatus == 'PASS') {
-                                  if (doctorData?.authStatus == 'WAIT_VERIFY' || doctorData.authStatus == 'FAIL') {
+                                  if (doctorData?.authStatus == 'WAIT_VERIFY' ||
+                                      doctorData.authStatus == 'FAIL') {
                                     Navigator.pushNamed(
-                                        context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-                                  }else if (doctorData.authStatus == 'VERIFYING') {
+                                        context,
+                                        RouteManager
+                                            .DOCTOR_AUTHENTICATION_PAGE);
+                                  } else if (doctorData.authStatus ==
+                                      'VERIFYING') {
                                     Navigator.pushNamed(
-                                        context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-                                  }else if (doctorData.authStatus == 'PASS') {
+                                        context,
+                                        RouteManager
+                                            .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                                  } else if (doctorData.authStatus == 'PASS') {
                                     Navigator.pushNamed(
-                                        context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+                                        context,
+                                        RouteManager
+                                            .DOCTOR_AUTH_STATUS_PASS_PAGE);
                                   }
-                                }else{
+                                } else {
                                   Navigator.pushNamed(
-                                      context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+                                      context,
+                                      RouteManager
+                                          .DOCTOR_AUTHENTICATION_INFO_PAGE);
                                 }
                               },
                               child: Container(
@@ -336,7 +349,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                         width: Adapt.screenW() * 0.6,
                         padding: EdgeInsets.only(top: 8, bottom: 8),
                         child: Text(
-                          "${doctorData?.hospitalName??''}",
+                          "${doctorData?.hospitalName ?? ''}",
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -374,11 +387,21 @@ class _UserPageState extends State<UserPage> with RouteAware {
                 Navigator.pushNamed(context, RouteManager.SETTING);
               }),
               messageItem('关于我们', 'assets/images/aboutus.png', () {
-                // Navigator.pushNamed(context, RouteManager.ABOUT_US);
-                Navigator.of(context).push(MaterialPageRoute(builder: (c)=>ActivityDetail(1,"ss")));
+                Navigator.pushNamed(context, RouteManager.ABOUT_US);
               }),
               messageItem('活动列表', 'assets/images/aboutus.png', () {
                 Navigator.pushNamed(context, RouteManager.ACTIVITY_LIST_PAGE);
+              }),
+              messageItem('资料详情', 'assets/images/aboutus.png', () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ActivityResourceDetailPage(
+                              1,
+                              2,
+                              // status: VERIFY_STATUS_REJECT,
+                              imgs: [],
+                            )));
               }),
             ],
           ),

@@ -97,6 +97,24 @@ class ImageHelper {
     return originFile;
   }
 
+  static Future<List<File>> pickMultiImageFromGallery(BuildContext context,
+      {bool needCompress = true, int max = 9}) async {
+    await Future.delayed(Duration(milliseconds: 500));
+    if (await PermissionHelper.checkPhotosPermission(context)) {
+      var list = await AssetPicker.pickAssets(context,
+          maxAssets: max, requestType: RequestType.image);
+      if (list != null) {
+        List<File> originFiles = [];
+        for (var element in list) {
+          originFiles.add(await compressImage(await element.file));
+        }
+        return originFiles;
+      }
+    }
+
+    return [];
+  }
+
   /// source: 0 camera， 1 gallery
   static pickSingleVideo(BuildContext context, {int source = 0}) async {
     await Future.delayed(Duration(milliseconds: 500));
