@@ -3,6 +3,8 @@ import 'package:doctor/pages/activity/activity_research.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/utils/data_format_util.dart';
+import 'package:doctor/utils/time_text.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -314,9 +316,18 @@ class _ActivityState extends State<ActivityDetail> {
       bottoms = [
         Container(
           padding: EdgeInsets.only(bottom: 53),
-          child: AceButton(
-            text: "活动于${_data.startTime}开始",
-            onPressed: () {},
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 33),
+            alignment: Alignment.center,
+            height: 44,
+            decoration: BoxDecoration(
+              color: Color(0xff888888),
+              borderRadius: BorderRadius.all(Radius.circular(22)),
+            ),
+            child: Text("活动于${normalDateFormate(_data.startTime)}开始",style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),),
           ),
         )
       ];
