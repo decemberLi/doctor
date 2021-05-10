@@ -17,3 +17,8 @@ class ActivityEntity {
   int schedule;
 
 }
+
+class ActivityDetailEntity extends ActivityEntity {
+  String activityContent;
+  int waitExecuteTask;
+}
