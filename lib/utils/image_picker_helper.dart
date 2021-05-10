@@ -6,10 +6,12 @@ import 'package:doctor/utils/permission_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class DialogHelper {
   static showBottom(BuildContext context) async {
@@ -105,9 +107,11 @@ class ImageHelper {
           maxAssets: max, requestType: RequestType.image);
       if (list != null) {
         List<File> originFiles = [];
-        for (var element in list) {
-          originFiles.add(await compressImage(await element.file));
-        }
+        await EasyLoading.instance.flash(() async {
+          for (var element in list) {
+            originFiles.add(await compressImage(await element.file));
+          }
+        });
         return originFiles;
       }
     }

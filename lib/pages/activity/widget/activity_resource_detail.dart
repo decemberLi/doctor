@@ -1,6 +1,6 @@
 import 'dart:collection';
-import 'dart:convert';
 
+import 'package:doctor/http/activity.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
@@ -12,9 +12,10 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/enhance_photo_viewer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
-import 'package:doctor/http/activity.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class _ImageResource {
   // 0 is local path, 1 is url
@@ -41,6 +42,9 @@ class _ImageResourceModel extends ChangeNotifier {
   }
 
   void addImages(List<_ImageResource> selectedImg) {
+    if (selectedImg == null || selectedImg.isEmpty) {
+      return;
+    }
     _list.addAll(selectedImg);
     notifyListeners();
   }
@@ -219,7 +223,10 @@ class _ActivityResourceDetailPageState
                           if (!enable) {
                             return;
                           }
-                          _model.submit();
+                          EasyLoading.instance.flash(() async {
+                            _model.submit();
+                            Navigator.pop(context, true);
+                          });
                         },
                       );
                     },
