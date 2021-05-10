@@ -15,7 +15,7 @@ class ActivityQuestionnaireEntity {
       ..activityTaskId = json["activityTaskId"] as int
       ..resourceId = json["resourceId"] as int
       ..questionnaires = (json["questionnaires"] as List)
-          .map((e) => ActivityQuestionnairesSubEntity.fromJson(e))
+          .map((e) => ActivityQuestionnairesSubEntity.fromJson(e)).toList()
       ..illnessCase = ActivityIllnessCaseEntity.fromJson(json["illnessCase"]);
   }
 }
@@ -62,7 +62,7 @@ class ActivityIllnessCaseEntity {
 
   factory ActivityIllnessCaseEntity.fromJson(Map<String, dynamic> json) {
     return ActivityIllnessCaseEntity()
-      ..showFields = json["showFields"]
+      ..showFields = (json["showFields"] as List).map((e) => "$e").toList()
       ..patientName = json["patientName"]
       ..patientCode = json["patientCode"]
       ..age = json["age"]

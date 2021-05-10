@@ -39,6 +39,7 @@ class _ActivityResearch extends State<ActivityResearch>
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    freshData();
     super.initState();
   }
 
@@ -374,7 +375,7 @@ class _ActivityResearch extends State<ActivityResearch>
         //   return;
         // }
         var url =
-            "${UrlProvider.mHost(Environment.instance)}mpost/#/qpreview?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}";
+            "${UrlProvider.mHost(Environment.instance)}mpost/#/marketpreview?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}";
         MedcloudsNativeApi.instance().openWebPage(url);
         print("on tap $url");
       },

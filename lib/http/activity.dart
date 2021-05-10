@@ -87,7 +87,7 @@ class Activity extends SubAPI {
 
   /// 医学调研查询资源问卷列表
   activityQuestionnaireList(int activityPackageId, {int activityTaskId}) async {
-    var params = {};
+    Map<String,dynamic> params = {};
     params["activityPackageId"] = activityPackageId;
     if (activityTaskId != null) {
       params["activityTaskId"] = activityTaskId;

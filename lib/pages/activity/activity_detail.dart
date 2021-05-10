@@ -6,6 +6,7 @@ import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:doctor/http/activity.dart';
@@ -42,15 +43,15 @@ class _ActivityState extends State<ActivityDetail> {
   void firstGetData() async {
     try {
       var result =
-      await API.shared.activity.packageDetail(widget.activityPackageId);
+          await API.shared.activity.packageDetail(widget.activityPackageId);
       print("the result is - $result");
 
       _data = ActivityDetailEntity(result);
-      var rawData =
-      await API.shared.activity.activityTaskList(widget.activityPackageId, 1);
+      var rawData = await API.shared.activity
+          .activityTaskList(widget.activityPackageId, 1);
       var list = rawData["records"];
       _list = list;
-    }catch(e){
+    } catch (e) {
       setState(() {
         _error = "${e}";
       });
@@ -204,15 +205,20 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   Widget buildList() {
-    Widget line(String desc, String status,int schedule,int taskId) {
+    Widget line(String desc, String status, int schedule, int taskId) {
       Color color = Color(0xff444444);
-      String text = activityStatus(status);
-      if ( schedule != null &&  schedule < 100){
+      String text = "";
+      print("$status --  status is ");
+      if (schedule != null && schedule < 100) {
         text = "$schedule%";
-      }else if (text == "审核未通过") {
+      } else if (status == "WAIT_VERIFY") {
+        text = "审核中";
+      } else if (status == "REJECT") {
         color = Color(0xffFAAD14);
-      } else if (text == "审核通过") {
+        text = "审核未通过";
+      } else if (status == "COMPLETE") {
         color = Color(0xff52C41A);
+        text = "审核通过";
       }
       var content = Container(
         height: 40,
@@ -246,10 +252,23 @@ class _ActivityState extends State<ActivityDetail> {
       );
       return GestureDetector(
         child: content,
-        onTap: (){
-          if (_data.activityType == TYPE_CASE_COLLECTION){
-            Navigator.of(context).push(MaterialPageRoute(builder: (c){
-              return ActivityResourceDetailPage(_data.activityPackageId, taskId,status: status);
+        onTap: () {
+          if (_data.activityType == TYPE_CASE_COLLECTION) {
+            Navigator.of(context).push(MaterialPageRoute(builder: (c) {
+              return ActivityResourceDetailPage(_data.activityPackageId, taskId,
+                  status: status);
+            }));
+          } else {
+            Navigator.of(context).push(MaterialPageRoute(builder: (c) {
+              bool canEdit = status == "REJECT" ||
+                  (schedule != null &&
+                      schedule < 100 &&
+                      _data.status == "EXECUTING");
+              return ActivityResearch(
+                true,
+                _data.activityPackageId,
+                activityTaskId: taskId,
+              );
             }));
           }
         },
@@ -267,7 +286,8 @@ class _ActivityState extends State<ActivityDetail> {
         desc =
             "${item["activityTaskName"]}:${illnessCase["sex"]}|${illnessCase["age"]}|${illnessCase["patientName"]}";
       }
-      var itemWidget = line(desc, item["status"],item["schedule"],item["activityTaskId"]);
+      var itemWidget =
+          line(desc, item["status"], item["schedule"], item["activityTaskId"]);
       lines.add(itemWidget);
     }
 
@@ -296,13 +316,11 @@ class _ActivityState extends State<ActivityDetail> {
           padding: EdgeInsets.only(bottom: 53),
           child: AceButton(
             text: "活动于${_data.startTime}开始",
-            onPressed: (){
-
-            },
+            onPressed: () {},
           ),
         )
       ];
-    }else if (_data.status == "EXECUTING") {
+    } else if (_data.status == "EXECUTING") {
       bottoms = [
         Container(
           padding: EdgeInsets.symmetric(vertical: 5),
@@ -319,11 +337,18 @@ class _ActivityState extends State<ActivityDetail> {
           padding: EdgeInsets.only(bottom: 53),
           child: AceButton(
             text: "填写病例信息",
-            onPressed: (){
+            onPressed: () {
+              if(_data.waitExecuteTask == 0){
+                EasyLoading.showToast("没有剩余调研数");
+                return;
+              }
               if (_data.activityType == TYPE_CASE_COLLECTION) {
-
-              }else{
-                Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                Navigator.of(context).push(MaterialPageRoute(builder: (c) {
+                  return ActivityResourceDetailPage(_data.activityPackageId,0);
+                }));
+              } else {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
                   return ActivityResearch(true, _data.activityPackageId);
                 }));
               }
@@ -331,15 +356,13 @@ class _ActivityState extends State<ActivityDetail> {
           ),
         )
       ];
-    }else{
+    } else {
       bottoms = [
         Container(
           padding: EdgeInsets.only(bottom: 53),
           child: AceButton(
             text: "活动已结束",
-            onPressed: (){
-
-            },
+            onPressed: () {},
           ),
         )
       ];
@@ -415,15 +438,17 @@ class _ActivityState extends State<ActivityDetail> {
       ),
     );
   }
-  Widget realBody(){
-    if (_isLoading){
+
+  Widget realBody() {
+    if (_isLoading) {
       return loading();
-    }else if (_error != null){
+    } else if (_error != null) {
       return _showHolder();
-    }else {
+    } else {
       return buildBody();
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
