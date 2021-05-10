@@ -399,7 +399,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                         builder: (context) => ActivityResourceDetailPage(
                               1,
                               2,
-                              // status: VERIFY_STATUS_REJECT,
+                              status: VERIFY_STATUS_REJECT,
                               imgs: [],
                             )));
               }),
