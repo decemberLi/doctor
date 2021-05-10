@@ -4,6 +4,8 @@ import 'package:doctor/pages/activity/widget/activity_widget.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:doctor/http/activity.dart';
+import 'package:http_manager/api.dart';
 
 class ActivityListPage extends StatefulWidget {
   @override
@@ -26,30 +28,13 @@ class _ActivityListPageState extends State<ActivityListPage> {
             child: ActivityWidget(entity, true),
           );
         },
-        getData: (page) {
-          List<ActivityEntity> list = [];
-          list.add(ActivityEntity(null)
-            ..activityType = TYPE_CASE_COLLECTION
-            ..status = STATUS_WAIT
-            ..activityName = '靖江宾馆冠心病相关问题讨论'
-            ..companyName = '重庆易药云科技有限公司'
-            ..endTime = DateTime.now().millisecondsSinceEpoch
-            ..schedule = 70);
-          list.add(ActivityEntity(null)
-            ..activityType = TYPE_MEDICAL_SURVEY
-            ..status = STATUS_EXECUTING
-            ..activityName = '靖江宾馆冠心病相关问题讨论'
-            ..companyName = '重庆易药云科技有限公司'
-            ..endTime = DateTime.now().millisecondsSinceEpoch
-            ..schedule = 10);
-          list.add(ActivityEntity(null)
-            ..activityType = TYPE_CASE_COLLECTION
-            ..status = STATUS_FINISH
-            ..activityName = '靖江宾馆冠心病相关问题讨论'
-            ..companyName = '重庆易药云科技有限公司'
-            ..endTime = DateTime.now().millisecondsSinceEpoch
-            ..schedule = 70);
-          return Future.value(list);
+        getData: (page) async{
+          var list = await API.shared.activity.packageList(page);
+          print(list);
+          var result = list['records']
+              .map<ActivityEntity>((item) => ActivityEntity(item))
+              .toList();
+          return Future.value(result);
         },
       ),
     );

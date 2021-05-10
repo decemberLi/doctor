@@ -20,22 +20,22 @@ class Activity extends SubAPI {
       );
 
   /// 活动任务包分页列表
-  packageList(int page, {int pn = 10}) async => await normalPost(
+  packageList(int pageNumber, {int pageSize = 10}) async => await normalPost(
         "/activity-package/list",
         params: {
-          "ps": page,
-          "pn": pn,
+          "ps":  pageSize,
+          "pn": pageNumber,
         },
       );
 
   /// 活动子任务列表
-  activityTaskList(int activityPackageId, int page, {int pn = 10}) async =>
+  activityTaskList(int activityPackageId, int pageNumber, {int pageSize = 10}) async =>
       normalPost(
         "/activity-task/list",
         params: {
           "activityPackageId": activityPackageId,
-          "ps": page,
-          "pn": pn,
+          "ps": pageSize,
+          "pn": pageNumber,
         },
       );
 

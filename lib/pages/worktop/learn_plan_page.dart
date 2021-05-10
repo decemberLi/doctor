@@ -1,4 +1,5 @@
 import 'package:doctor/http/server.dart';
+import 'package:doctor/pages/activity/activity_list_page.dart';
 import 'package:doctor/pages/doctors/tab_indicator.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
 import 'package:doctor/theme/theme.dart';
@@ -52,6 +53,25 @@ class _LearnPlanPageState extends State<LearnPlanPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(APP_NAME),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ActivityListPage()));
+            },
+            child: Container(
+              height: 20,
+              padding: EdgeInsets.symmetric(vertical: 1, horizontal: 4),
+              decoration: BoxDecoration(
+                  color: ThemeColor.color5d9df7,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Text(
+                '活动入口',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ),
+          )
+        ],
         elevation: 1,
         bottom: PreferredSize(
             child: Container(

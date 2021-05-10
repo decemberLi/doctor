@@ -459,8 +459,9 @@ class _WorktopPageState extends State<WorktopPage>
       child: AceButton(
         height: 42,
         text: isEmpty ? '暂无待处理学习计划' : '处理一下',
+        textColor: Colors.white,
         type: _isLearnPlanEmpty(entity)
-            ? AceButtonType.grey
+            ? AceButtonType.secondary
             : AceButtonType.primary,
         onPressed: isEmpty ? () => {} : () => {_goLearnPlanPage(0)},
       ),
