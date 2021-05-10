@@ -40,17 +40,17 @@ class Activity extends SubAPI {
       );
 
   /// 保存病例收集任务
-  saveActivityCaseCollection(int activityPackageId,
-      {int activityTaskId, List<Map<String, dynamic>> attachments}) async {
+  saveActivityCaseCollection(int activityPackageId, List<Map<String,dynamic>> attachments,
+      {int activityTaskId}) async {
     var params = {};
     params["activityPackageId"] = activityPackageId;
     if (activityTaskId != null) {
       params["activityTaskId"] = activityTaskId;
     }
-    params[attachments] = attachments;
+    params['attachments'] = attachments;
     return await normalPost(
       "/activity-task/case-collection/save-or-update",
-      params: params,
+      params: Map<String,dynamic>.from(params),
     );
   }
 
@@ -99,15 +99,17 @@ class Activity extends SubAPI {
   }
 
   /// 医学调研保存问卷
-  activityQuestionnaireSave(int activityPackageId, int resourceId,
-      int activityTaskId,
-        int questionnaireId,
-        String title,
-        String summary,
-        String noteInfo,
-        String questions,
-      String sort,
-      ) async {
+  activityQuestionnaireSave(
+    int activityPackageId,
+    int resourceId,
+    int activityTaskId,
+    int questionnaireId,
+    String title,
+    String summary,
+    String noteInfo,
+    String questions,
+    String sort,
+  ) async {
     var params = {};
     params["activityPackageId"] = activityPackageId;
     params["resourceId"] = resourceId;
@@ -125,7 +127,9 @@ class Activity extends SubAPI {
   }
 
   /// 医学调研查询资源问卷详情
-  activityQuestionnaireDetail(int activityPackageId,int questionnaireId ,int resourceId,{int activityTaskId}) async {
+  activityQuestionnaireDetail(
+      int activityPackageId, int questionnaireId, int resourceId,
+      {int activityTaskId}) async {
     var params = {};
     params["activityPackageId"] = activityPackageId;
     params["questionnaireId"] = questionnaireId;

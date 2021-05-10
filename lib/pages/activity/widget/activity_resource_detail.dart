@@ -1,3 +1,8 @@
+import 'dart:collection';
+import 'dart:convert';
+
+import 'package:doctor/http/oss_service.dart';
+import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/theme.dart';
@@ -7,14 +12,17 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/enhance_photo_viewer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
+import 'package:doctor/http/activity.dart';
 
 class _ImageResource {
   // 0 is local path, 1 is url
   int type;
   String uri;
+  OssFileEntity ossRes;
 
-  _ImageResource(this.type, this.uri);
+  _ImageResource(this.type, this.uri, {this.ossRes});
 }
 
 class _ImageResourceModel extends ChangeNotifier {
@@ -22,8 +30,11 @@ class _ImageResourceModel extends ChangeNotifier {
 
   // ignore: non_constant_identifier_names
   int MAX_COUNT = 30;
+  int activityId;
+  int taskId;
 
-  _ImageResourceModel({List<_ImageResource> images}) {
+  _ImageResourceModel(this.activityId, this.taskId,
+      {List<_ImageResource> images}) {
     if (images != null) {
       _list.addAll(images);
     }
@@ -49,10 +60,31 @@ class _ImageResourceModel extends ChangeNotifier {
 
   List<_ImageResource> getAllImage() => _list;
 
-  void submit() {
+  void submit() async {
+    var localRes = _list.where((element) => element.type == 0).toList();
     // upload pic
+    Map<int, _ImageResource> map = HashMap();
+    List<Future<OssFileEntity>> futires = [];
+    for (int i = 0; i < length; i++) {
+      var toBeUploadEntity = localRes[i];
+      var eachF = OssService.upload(localRes[i].uri);
+      futires.add(eachF);
+      eachF.then((OssFileEntity entity) => toBeUploadEntity.ossRes = entity);
+    }
+    await Future.wait(futires);
+    List<Map<String, dynamic>> picList = [];
+    for (int index = 0; index < length; index++) {
+      var r = _list[index].ossRes;
+      r.name = '病例图片-${index + 1}';
+      r.type = 'CASE_COLLECTION';
+    }
+    _list.forEach((element) {
+      picList.add(element.ossRes.toJson());
+    });
 
     // post to server
+    await API.shared.activity.saveActivityCaseCollection(activityId, picList,
+        activityTaskId: taskId);
   }
 }
 
@@ -62,10 +94,10 @@ class ActivityResourceDetailPage extends StatefulWidget {
   final bool _isNotPass;
   final int activityPackageId;
   final int activityTaskId;
-  List<String> images;
+  List<OssFileEntity> images;
 
   ActivityResourceDetailPage(this.activityPackageId, this.activityTaskId,
-      {this.status, List<String> imgs})
+      {this.status, List<OssFileEntity> imgs})
       : _titleText = status == null ? '新增病例征集' : '病例详情',
         _isNotPass = status == VERIFY_STATUS_REJECT,
         images = imgs == null ? [] : imgs;
@@ -82,7 +114,10 @@ class _ActivityResourceDetailPageState
   void initState() {
     super.initState();
     _model = _ImageResourceModel(
-        images: widget.images.map((e) => _ImageResource(1, e)).toList());
+        widget.activityPackageId, widget.activityTaskId,
+        images: widget.images
+            .map((e) => _ImageResource(1, e.url, ossRes: e))
+            .toList());
   }
 
   @override
