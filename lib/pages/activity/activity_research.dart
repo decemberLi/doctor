@@ -402,9 +402,6 @@ class _ActivityResearch extends State<ActivityResearch>
     );
     return GestureDetector(
       onTap: () {
-        if(item.status != "REJECT" || widget.status == "END"){
-          return;
-        }
         var url =
             "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market";
         MedcloudsNativeApi.instance().openWebPage(url);
