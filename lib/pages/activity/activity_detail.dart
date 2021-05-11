@@ -12,6 +12,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:doctor/http/activity.dart';
+import "package:dio/dio.dart";
 
 import 'activity_constants.dart';
 
@@ -57,7 +58,11 @@ class _ActivityState extends State<ActivityDetail> {
       }
       _list = list;
       _page = 1;
-    } catch (e,stack) {
+    } on DioError catch (e) {
+      setState(() {
+        _error = "${e.message}";
+      });
+    } catch(e){
       setState(() {
         _error = "${e}";
       });
