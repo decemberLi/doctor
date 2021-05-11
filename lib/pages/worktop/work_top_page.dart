@@ -494,8 +494,8 @@ class _WorktopPageState extends State<WorktopPage>
           topRight: Radius.circular(28),
         ),
       ),
-      child: TextButton(
-        onPressed: () {
+      child: GestureDetector(
+        onTap: () {
           print(
               "the identityStatus is ${doctorInfoEntity
                   ?.identityStatus} - ${doctorInfoEntity?.authStatus} ");
