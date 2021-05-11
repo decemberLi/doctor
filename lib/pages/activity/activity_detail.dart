@@ -391,7 +391,7 @@ class _ActivityState extends State<ActivityDetail> {
         Container(
           padding: EdgeInsets.symmetric(vertical: 5),
           child: Text(
-            "last${_data.waitExecuteTask}",
+            "$last${_data.waitExecuteTask}",
             style: TextStyle(
               color: Color(0xff107BFD),
               fontWeight: FontWeight.w400,
