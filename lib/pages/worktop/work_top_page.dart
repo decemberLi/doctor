@@ -91,10 +91,7 @@ class _WorktopPageState extends State<WorktopPage>
                 ),
                 onRefresh: model.refresh,
                 controller: model.refreshController,
-                child: Consumer<UserInfoViewModel>(
-                  builder: (_, model, __) {
-                    return bodyWidget(entity,model.data);
-                  }),
+                child: bodyWidget(entity),
               );
             },
           ),
@@ -103,7 +100,7 @@ class _WorktopPageState extends State<WorktopPage>
     );
   }
 
-  Widget bodyWidget(WorktopPageEntity entity,DoctorDetailInfoEntity info ) {
+  Widget bodyWidget(WorktopPageEntity entity) {
     var learnPlanListCount = entity?.learnPlanList?.length ?? 0;
     var activityCount = entity?.activityPackages?.length ?? 0;
     _buildSliverBuildDelegate() {
