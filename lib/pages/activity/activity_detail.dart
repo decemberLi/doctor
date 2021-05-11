@@ -196,6 +196,9 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   Widget buildDesc() {
+    if (_data.activityContent == null ){
+      return Container();
+    }
     return card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
