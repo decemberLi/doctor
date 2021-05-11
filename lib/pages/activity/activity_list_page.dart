@@ -25,7 +25,7 @@ class _ActivityListPageState extends State<ActivityListPage> {
         itemBuilder: (BuildContext context, dynamic entity) {
           return Container(
             padding: EdgeInsets.fromLTRB(16, 12, 16, 0),
-            child: ActivityWidget(entity, true),
+            child: ActivityWidget(entity),
           );
         },
         getData: (page) async{

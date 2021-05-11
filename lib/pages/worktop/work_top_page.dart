@@ -93,7 +93,7 @@ class _WorktopPageState extends State<WorktopPage>
                 controller: model.refreshController,
                 child: Consumer<UserInfoViewModel>(
                   builder: (_, model, __) {
-                    return bodyWidget(entity,model.data)
+                    return bodyWidget(entity,model.data);
                   }),
               );
             },
@@ -137,7 +137,7 @@ class _WorktopPageState extends State<WorktopPage>
             },
           ) : Container(
             margin: EdgeInsets.only(left: 16,right: 16,bottom: 10),
-            child: ActivityWidget(item, info?.authStatus == 'PASS'),
+            child: ActivityWidget(item),
           ),
         );
       }, childCount: learnPlanListCount + activityCount);
