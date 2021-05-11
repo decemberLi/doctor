@@ -126,8 +126,10 @@ class Activity extends SubAPI {
     );
   }
 
-  activityQuestionnaireSaveWithJson(
-      Map params) async {
+  activityQuestionnaireSaveWithJson(int activityPackageId,
+      Map params,{int activityTaskId}) async {
+    params["activityPackageId"] = activityPackageId;
+    params["activityTaskId"] = activityTaskId;
     return await normalPost(
       "/activity-task/questionnaire/save-or-update",
       params: params,

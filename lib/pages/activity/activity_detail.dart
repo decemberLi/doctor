@@ -279,6 +279,7 @@ class _ActivityState extends State<ActivityDetail> {
             Navigator.of(context).push(MaterialPageRoute(builder: (c) {
               return ActivityResearch(
                 _data.activityPackageId,
+                _data.status,
                 activityTaskId: taskId,
               );
             }));
@@ -378,7 +379,7 @@ class _ActivityState extends State<ActivityDetail> {
               } else {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return ActivityResearch(_data.activityPackageId);
+                  return ActivityResearch(_data.activityPackageId,_data.status);
                 }));
               }
             },

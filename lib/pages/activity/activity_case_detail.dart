@@ -13,9 +13,13 @@ import 'package:doctor/http/activity.dart';
 
 class ActivityCaseDetail extends StatefulWidget {
   final ActivityIllnessCaseEntity data;
+  final int activityPackageId;
+  final int activityTaskId;
   final bool canSubmit;
 
-  ActivityCaseDetail(this.data, this.canSubmit);
+  ActivityCaseDetail(
+      this.data, this.activityPackageId, this.canSubmit,
+      {this.activityTaskId});
 
   @override
   State<StatefulWidget> createState() {
@@ -38,24 +42,16 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     _codeController.text = data.patientCode;
 
     _nameController.addListener(() {
-      setState(() {
-
-      });
+      setState(() {});
     });
     _ageController.addListener(() {
-      setState(() {
-
-      });
+      setState(() {});
     });
     _hospitalController.addListener(() {
-      setState(() {
-
-      });
+      setState(() {});
     });
     _codeController.addListener(() {
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
@@ -69,7 +65,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         minHeight: 10,
         maxHeight: 100,
       ),
-      child:TextField(
+      child: TextField(
         maxLines: null,
         enabled: widget.canSubmit,
         maxLength: maxLength,
@@ -140,9 +136,9 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
             cancelText: '取消',
             confirmText: '确认',
             cancelTextStyle:
-            TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
+                TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
             confirmTextStyle:
-            TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
+                TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
             onConfirm: (picker, list) {
               setState(() {
                 data.sex = listData[list.first].value;
@@ -170,7 +166,9 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               children: [
-                Text(name,),
+                Text(
+                  name,
+                ),
                 Container(
                   width: 10,
                 ),
@@ -193,34 +191,33 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
   Widget build(BuildContext context) {
     List<Widget> showList = [];
     bool canSave = true;
-    for(int i=0;i<data.showFields.length;i++){
+    for (int i = 0; i < data.showFields.length; i++) {
       var item = data.showFields[i];
       Widget one;
       //"patientName","patientCode","age","sex","hospital"
       if (item == "patientName") {
-        one = buildItem("患者姓名",
-            buildText(_nameController, 10, TextInputType.text));
+        one = buildItem(
+            "患者姓名", buildText(_nameController, 10, TextInputType.text));
         canSave = canSave && _nameController.text.length > 0;
-      }else if (item == "patientCode") {
-        one = buildItem("患者编码",
-            buildText(_codeController, 20, TextInputType.text));
+      } else if (item == "patientCode") {
+        one = buildItem(
+            "患者编码", buildText(_codeController, 20, TextInputType.text));
         canSave = canSave && _codeController.text.length > 0;
-      }else if (item  == "age") {
-        one = buildItem("年龄",
-            buildText(_ageController, 5, TextInputType.number));
+      } else if (item == "age") {
+        one =
+            buildItem("年龄", buildText(_ageController, 5, TextInputType.number));
         canSave = canSave && _ageController.text.length > 0;
-      }else if (item  == "sex") {
+      } else if (item == "sex") {
         one = buildItem("性别", buildPicker());
         canSave = canSave && data.sex != null;
-      }else if (item == "hospital") {
-        one = buildItem("就诊医院",
-            buildText(_hospitalController, 30, TextInputType.text));
+      } else if (item == "hospital") {
+        one = buildItem(
+            "就诊医院", buildText(_hospitalController, 30, TextInputType.text));
         canSave = canSave && _hospitalController.text.length > 0;
       }
       if (one != null) {
         showList.add(one);
       }
-
     }
     var upColor = Color(0xFFBCBCBC);
     var shadowColor = Color(0xFFBCBCBC).withOpacity(0.4);
@@ -263,16 +260,17 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
                     data.hospital = _hospitalController.text;
                     data.patientName = _nameController.text;
 
-                    if (_ageController.text != null && _ageController.text.length > 0) {
+                    if (_ageController.text != null &&
+                        _ageController.text.length > 0) {
                       try {
                         int age = int.parse(_ageController.text);
                         if (age < 0) {
                           throw "-1";
                         }
                         data.age = age;
-                      }catch(e) {
-                        EasyLoading.showToast(
-                            '请输入正确的年龄', duration: Duration(seconds: 1));
+                      } catch (e) {
+                        EasyLoading.showToast('请输入正确的年龄',
+                            duration: Duration(seconds: 1));
 
                         await Future.delayed(Duration(seconds: 1));
                         return;
@@ -281,7 +279,11 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
 
                     data.patientCode = _codeController.text;
                     print("the data is ${data.toJson()}");
-                    await API.shared.activity.activityQuestionnaireSaveWithJson(data.toJson());
+                    await API.shared.activity.activityQuestionnaireSaveWithJson(
+                      widget.activityPackageId,
+                      data.toJson(),
+                      activityTaskId: widget.activityTaskId,
+                    );
                     data.status = "COMPLETE";
                     await EasyLoading.showToast("保存成功");
                     await Future.delayed(Duration(seconds: 1));

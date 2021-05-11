@@ -21,8 +21,9 @@ import 'entity/activity_questionnaire_entity.dart';
 class ActivityResearch extends StatefulWidget {
   final int activityPackageId;
   final int activityTaskId;
+  final String status;
 
-  ActivityResearch(this.activityPackageId, {this.activityTaskId});
+  ActivityResearch(this.activityPackageId, this.status,{this.activityTaskId});
 
   @override
   State<StatefulWidget> createState() {
@@ -226,7 +227,7 @@ class _ActivityResearch extends State<ActivityResearch>
             child: GestureDetector(
               onTap: () async {
                 await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => ActivityCaseDetail(item, canEdit),
+                  builder: (ctx) => ActivityCaseDetail(item,widget.activityPackageId, canEdit,activityTaskId: widget.activityTaskId,),
                 ));
                 freshData();
               },
@@ -399,10 +400,9 @@ class _ActivityResearch extends State<ActivityResearch>
     );
     return GestureDetector(
       onTap: () {
-        // if (item.disable) {
-        //   EasyLoading.showToast("问卷已下架，请联系管理员处理");
-        //   return;
-        // }
+        if(item.status != "REJECT" || widget.status == "END"){
+          return;
+        }
         var url =
             "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market";
         MedcloudsNativeApi.instance().openWebPage(url);
