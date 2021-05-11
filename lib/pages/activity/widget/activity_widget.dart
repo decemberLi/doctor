@@ -88,13 +88,14 @@ class ActivityWidget extends StatelessWidget {
             ),
             Row(
               children: [
-                Expanded(child: Container(
+                Expanded(
+                    child: Container(
                   padding: EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border(
                           right:
-                          BorderSide(color: Color(0xFFF3F5F8), width: 1))),
+                              BorderSide(color: Color(0xFFF3F5F8), width: 1))),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -132,13 +133,19 @@ class ActivityWidget extends StatelessWidget {
                     ],
                   ),
                 )),
-                Padding(padding: EdgeInsets.only(right: 10),child: progressWidget(),)
+                Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: progressWidget(),
+                )
               ],
             )
           ],
         ),
       ),
       onTap: () {
+        if (!_isAuth) {
+          return;
+        }
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ActivityDetail(_data.activityPackageId, _data.activityType);
         }));
