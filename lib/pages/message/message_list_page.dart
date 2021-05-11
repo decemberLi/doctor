@@ -1,5 +1,6 @@
 import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/activity_detail.dart';
+import 'package:doctor/pages/activity/activity_research.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/message/model/message_list_entity.dart';
 import 'package:doctor/pages/message/view_model/message_list_view_model.dart';
@@ -265,9 +266,9 @@ class _MessageListPageState extends State<MessageListPage> {
         "learnPlanId": entity.params['learnPlanId'],
         'from': 'MESSAGE_CENTER'
       });
-    } else if (type == MessageType.TYPE_ACTIVITY) {
-      if (entity.params['bizType'] == 'REJECT_ACTIVITY_TASK') {
-        // go 资料详情
+    } else if (type == 'REJECT_ACTIVITY_TASK') {
+      if (entity.params['activityType'] == 'CASE_COLLECTION') {
+        // go 病例驳回 资料详情
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ActivityResourceDetailPage(
             entity.params['activityPackageId'],
@@ -275,11 +276,20 @@ class _MessageListPageState extends State<MessageListPage> {
             status: VERIFY_STATUS_REJECT,
           );
         }));
-        return;
+      } else if (entity.params['activityType'] == 'MEDICAL_SURVEY') {
+        // go 医学调研驳回 资料详情
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return ActivityResearch(
+            entity.params['activityPackageId'],
+            activityTaskId: entity.params['activityTaskId'],
+          );
+        }));
       }
+    } else if (type == 'ASSIGN_STUDY_ACTIVITY') {
+      // 指派活动进活动详情页
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return ActivityDetail(
-            entity.params['activityPackageId'], entity.params['activityType']);
+            entity.params['activityId'], entity.params['activityPackageId']);
       }));
     }
     _model.mark('${entity.messageId}');
