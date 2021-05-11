@@ -405,7 +405,7 @@ class _ActivityResearch extends State<ActivityResearch>
     return GestureDetector(
       onTap: () {
         var url =
-            "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market&packageStatus=${widget.status}";
+            "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market&packageStatus=${widget.status}&activityTaskId=${activityTaskId}";
         MedcloudsNativeApi.instance().openWebPage(url);
       },
       child: all,
