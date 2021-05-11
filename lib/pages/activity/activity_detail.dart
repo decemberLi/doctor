@@ -379,10 +379,13 @@ class _ActivityState extends State<ActivityDetail> {
       ];
     } else if (_data.status == "EXECUTING") {
       var last = "";
+      var title = "";
       if (widget.type == TYPE_CASE_COLLECTION){
         last = "剩余病例数";
+        title = "填写病例信息";
       }else{
         last = "剩余调研数";
+        title = "填写医学调研";
       }
       bottoms = [
         Container(
@@ -399,7 +402,7 @@ class _ActivityState extends State<ActivityDetail> {
         Container(
           padding: EdgeInsets.only(bottom: 53),
           child: AceButton(
-            text: "填写病例信息",
+            text: title,
             onPressed: () async{
               if(_data.waitExecuteTask <= 0){
                 EasyLoading.showToast("没有剩余调研数");
