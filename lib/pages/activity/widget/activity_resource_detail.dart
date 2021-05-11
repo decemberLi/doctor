@@ -131,7 +131,9 @@ class _ActivityResourceDetailPageState
     super.initState();
     _model =
         _ImageResourceModel(widget.activityPackageId, widget.activityTaskId);
-    _model.obtainTaskResources();
+    if(widget.activityTaskId !=null) {
+      _model.obtainTaskResources();
+    }
   }
 
   @override
