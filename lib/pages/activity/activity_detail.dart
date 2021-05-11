@@ -297,25 +297,32 @@ class _ActivityState extends State<ActivityDetail> {
       } else {
         Map<String, dynamic> illnessCase = item["illnessCase"];
         desc = "病例${i+1}:";
-
-
+        var needLine = false;
         if(illnessCase["sex"] != null){
+          needLine = true;
           var name = "";
           if (illnessCase["sex"] == 0){
             name = "女";
-            desc += "|$name";
+            desc += "$name";
           }else if (illnessCase["sex"] == 1){
             name = "男";
-            desc += "|$name";
+            desc += "$name";
           }
         }
 
         if (illnessCase["age"] != null){
+          if (needLine){
+            desc += "|";
+          }
           desc += "${illnessCase["age"]}";
+          needLine = true;
         }
 
         if(illnessCase["patientName"] != null){
-          desc += "|${illnessCase["patientName"]}";
+          if (needLine){
+            desc += "|";
+          }
+          desc += "${illnessCase["patientName"]}";
         }
       }
       var itemWidget =
