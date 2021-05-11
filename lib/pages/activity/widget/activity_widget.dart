@@ -169,6 +169,10 @@ class ActivityWidget extends StatelessWidget {
 
   Widget progressWidget(DoctorDetailInfoEntity entity) {
     if (entity?.authStatus  == 'PASS') {
+      double percent = (_data.schedule ?? 0) / 100;
+      if (percent > 1) {
+        percent = 1;
+      }
       return Container(
         width: 60,
         margin: EdgeInsets.only(left: 16),
@@ -178,7 +182,7 @@ class ActivityWidget extends StatelessWidget {
               radius: 60.0,
               lineWidth: "HISTORY" == 'HISTORY' ? 5 : 8.0,
               animation: false,
-              percent: _data.schedule / 100,
+              percent: percent,
               center: Text('${_data.schedule}%'),
               circularStrokeCap: CircularStrokeCap.round,
               backgroundColor: Color(0xFFDEDEE1),

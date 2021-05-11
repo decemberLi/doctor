@@ -152,7 +152,7 @@ class _ActivityState extends State<ActivityDetail> {
         return [
           line("活动名称", _data.activityName),
           line("来自企业", _data.companyName),
-          line("截止日期", "${_data.endTime}"),
+          line("截止日期", "${normalDateFormate(_data.endTime)}"),
         ];
       }
       return [];
@@ -209,7 +209,7 @@ class _ActivityState extends State<ActivityDetail> {
             padding: EdgeInsets.only(top: 12),
           ),
           Text(
-            _data.activityContent,
+            _data.activityContent ?? "",
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -293,15 +293,23 @@ class _ActivityState extends State<ActivityDetail> {
       var item = _list[i];
       String desc = "";
       if (widget.type == TYPE_CASE_COLLECTION) {
-        desc = "${item["activityTaskName"]}:已上传${item["pictureNum"]}张图片";
+        desc = "病例$i:已上传${item["pictureNum"]}张图片";
       } else {
         Map<String, dynamic> illnessCase = item["illnessCase"];
-        desc = "${item["activityTaskName"]}:";
+        desc = "病例$i:";
         if (illnessCase["sex"] != null){
           desc += "${illnessCase["sex"]}";
         }
+
         if(illnessCase["age"] != null){
-          desc += "|${illnessCase["age"]}";
+          var name = "";
+          if (illnessCase["age"] == 0){
+            name = "女";
+            desc += "|$name";
+          }else if (illnessCase["age"] == 1){
+            name = "男";
+            desc += "|$name";
+          }
         }
         if(illnessCase["patientName"] != null){
           desc += "|${illnessCase["patientName"]}";
@@ -315,12 +323,16 @@ class _ActivityState extends State<ActivityDetail> {
     if (_list.length == 0) {
       return Container();
     }
+    var title = "病例列表";
+    if (_data.activityType == TYPE_CASE_COLLECTION){
+      title = "调研列表";
+    }
     return card(
       child: Column(
         children: [
           Row(
             children: [
-              cardTitle("病例列表"),
+              cardTitle(title),
             ],
           ),
           ...lines,
@@ -368,7 +380,7 @@ class _ActivityState extends State<ActivityDetail> {
           child: AceButton(
             text: "填写病例信息",
             onPressed: () async{
-              if(_data.waitExecuteTask == 0){
+              if(_data.waitExecuteTask <= 0){
                 EasyLoading.showToast("没有剩余调研数");
                 return;
               }
