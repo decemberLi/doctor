@@ -91,7 +91,10 @@ class _WorktopPageState extends State<WorktopPage>
                 ),
                 onRefresh: model.refresh,
                 controller: model.refreshController,
-                child: bodyWidget(entity),
+                child: Consumer<UserInfoViewModel>(
+                  builder: (_, model, __) {
+                    return bodyWidget(entity,model.data)
+                  }),
               );
             },
           ),
@@ -100,7 +103,7 @@ class _WorktopPageState extends State<WorktopPage>
     );
   }
 
-  Widget bodyWidget(WorktopPageEntity entity) {
+  Widget bodyWidget(WorktopPageEntity entity,DoctorDetailInfoEntity info ) {
     var learnPlanListCount = entity?.learnPlanList?.length ?? 0;
     var activityCount = entity?.activityPackages?.length ?? 0;
     _buildSliverBuildDelegate() {
@@ -134,7 +137,7 @@ class _WorktopPageState extends State<WorktopPage>
             },
           ) : Container(
             margin: EdgeInsets.only(left: 16,right: 16,bottom: 10),
-            child: ActivityWidget(item,true),
+            child: ActivityWidget(item, info?.authStatus == 'PASS'),
           ),
         );
       }, childCount: learnPlanListCount + activityCount);
