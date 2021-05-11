@@ -78,7 +78,7 @@ class AuthStatusPassPage extends StatelessWidget {
                 onTap: () {
                   EasyLoading.instance.flash(() async {
                     var ret = await _getPdfFileUrl();
-                    MedcloudsNativeApi.instance().openFile("https://mp.weixin.qq.com/s/YprfqD8GdSHCMvtW_LJx9Q", title: '协议');
+                    MedcloudsNativeApi.instance().openFile(ret, title: '协议');
                   });
                 },
               )
