@@ -113,7 +113,7 @@ class DoctorAuthenticationStepTwoPageState
                                 width: double.infinity,
                                 type: model.canNext
                                     ? AceButtonType.primary
-                                    : AceButtonType.grey,
+                                    : AceButtonType.secondary,
                                 text: TextUtil.isEmpty(model.data.rejectReson)
                                     ? "提交"
                                     : "重新提交",
