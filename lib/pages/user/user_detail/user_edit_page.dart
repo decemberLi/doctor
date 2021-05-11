@@ -36,7 +36,7 @@ class _UserEditPageState extends State<UserEditPage> {
         minLines: widget.lable == '姓名' ? 1 : 6,
         maxLines: 10,
         maxLength: widget.lable == '姓名'
-            ? 10
+            ? 15
             : widget.lable == '个人简介'
                 ? 500
                 : 200,
