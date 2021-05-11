@@ -297,20 +297,23 @@ class _ActivityState extends State<ActivityDetail> {
       } else {
         Map<String, dynamic> illnessCase = item["illnessCase"];
         desc = "病例${i+1}:";
-        if (illnessCase["sex"] != null){
-          desc += "${illnessCase["sex"]}";
-        }
 
-        if(illnessCase["age"] != null){
+
+        if(illnessCase["sex"] != null){
           var name = "";
-          if (illnessCase["age"] == 0){
+          if (illnessCase["sex"] == 0){
             name = "女";
             desc += "|$name";
-          }else if (illnessCase["age"] == 1){
+          }else if (illnessCase["sex"] == 1){
             name = "男";
             desc += "|$name";
           }
         }
+
+        if (illnessCase["age"] != null){
+          desc += "${illnessCase["age"]}";
+        }
+
         if(illnessCase["patientName"] != null){
           desc += "|${illnessCase["patientName"]}";
         }
