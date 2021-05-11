@@ -1,6 +1,7 @@
 import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/activity_detail.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
@@ -142,8 +143,12 @@ class ActivityWidget extends StatelessWidget {
           ],
         ),
       ),
-      onTap: () {
+      onTap: () async {
         if (!_isAuth) {
+          await Navigator.pushNamed(
+            context,
+            RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE,
+          );
           return;
         }
         Navigator.push(context, MaterialPageRoute(builder: (context) {
