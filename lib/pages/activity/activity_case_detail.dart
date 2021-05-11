@@ -279,15 +279,16 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
 
                     data.patientCode = _codeController.text;
                     print("the data is ${data.toJson()}");
-                    await API.shared.activity.activityIllnessCaseSaveWithJson(
+                    var result = await API.shared.activity.activityIllnessCaseSaveWithJson(
                       widget.activityPackageId,
                       data.toJson(),
                       activityTaskId: widget.activityTaskId,
                     );
+                    var activityTaskId = result["activityTaskId"] as int;
                     data.status = "COMPLETE";
                     await EasyLoading.showToast("保存成功");
                     await Future.delayed(Duration(seconds: 1));
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(activityTaskId);
                   });
                 },
                 child: Container(

@@ -27,14 +27,15 @@ class ActivityResearch extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _ActivityResearch();
+    return _ActivityResearch(activityTaskId);
   }
 }
 
 class _ActivityResearch extends State<ActivityResearch>
     with WidgetsBindingObserver {
   bool collapsed = true;
-
+  int activityTaskId;
+  _ActivityResearch(this.activityTaskId);
   // LearnDetailViewModel _model = LearnDetailViewModel(137574);
   ActivityQuestionnaireEntity _data;
   String error;
@@ -65,7 +66,7 @@ class _ActivityResearch extends State<ActivityResearch>
     try {
       Map<String, dynamic> json = await API.shared.activity
           .activityQuestionnaireList(widget.activityPackageId,
-          activityTaskId: widget.activityTaskId);
+          activityTaskId: activityTaskId);
       _data = ActivityQuestionnaireEntity.fromJson(json);
       error = null;
       setState(() {});
@@ -226,9 +227,10 @@ class _ActivityResearch extends State<ActivityResearch>
             ),
             child: GestureDetector(
               onTap: () async {
-                await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => ActivityCaseDetail(item,widget.activityPackageId, canEdit,activityTaskId: widget.activityTaskId,),
+                var taskId = await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) => ActivityCaseDetail(item,widget.activityPackageId, canEdit,activityTaskId: activityTaskId,),
                 ));
+                activityTaskId = taskId;
                 freshData();
               },
               child: Container(
