@@ -15,8 +15,8 @@ class WorktopPageEntity {
       return WorktopPageEntity();
     }
     return WorktopPageEntity()
-      ..learnPlanList = json["learnPlanList"] != null
-          ? (json["learnPlanList"] as List)
+      ..learnPlanList = json["learnPlans"] != null
+          ? (json["learnPlans"] as List)
               .map((e) => LearnListItem.fromJson(e))
               .toList()
           : []
