@@ -375,7 +375,7 @@ class _ActivityResearch extends State<ActivityResearch>
         //   return;
         // }
         var url =
-            "${UrlProvider.mHost(Environment.instance)}mpost/#/marketpreview?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}";
+            "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market";
         MedcloudsNativeApi.instance().openWebPage(url);
         print("on tap $url");
       },
