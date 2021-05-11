@@ -247,7 +247,10 @@ class _ActivityResourceDetailPageState
               ],
             );
           }),
-    ), onWillPop: ()=> EasyLoading.dismiss());
+    ), onWillPop: (){
+      EasyLoading.dismiss();
+      return Future.value(true);
+    });
   }
 
   Widget _pictureArea(index) {
