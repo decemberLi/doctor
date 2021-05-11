@@ -230,7 +230,9 @@ class _ActivityResearch extends State<ActivityResearch>
                 var taskId = await Navigator.of(context).push(MaterialPageRoute(
                   builder: (ctx) => ActivityCaseDetail(item,widget.activityPackageId, canEdit,activityTaskId: activityTaskId,),
                 ));
-                activityTaskId = taskId;
+                if (taskId != null){
+                  activityTaskId = taskId;
+                }
                 freshData();
               },
               child: Container(
