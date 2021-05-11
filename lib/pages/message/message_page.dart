@@ -172,7 +172,7 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
                       messageItem(
                         '活动通知',
                         'assets/images/active_notice.png',
-                        leanPlanCount + interactiveCount,
+                        activityCount,
                             () {
                               goMessageList(MessageType.TYPE_ACTIVITY);
                         },
