@@ -333,9 +333,9 @@ class _ActivityState extends State<ActivityDetail> {
     if (_list.length == 0) {
       return Container();
     }
-    var title = "病例列表";
+    var title = "调研列表";
     if (_data.activityType == TYPE_CASE_COLLECTION){
-      title = "调研列表";
+      title = "病例列表";
     }
     return card(
       child: Column(
@@ -373,11 +373,17 @@ class _ActivityState extends State<ActivityDetail> {
         )
       ];
     } else if (_data.status == "EXECUTING") {
+      var last = "";
+      if (widget.type == TYPE_CASE_COLLECTION){
+        last = "剩余病例数";
+      }else{
+        last = "剩余调研数";
+      }
       bottoms = [
         Container(
           padding: EdgeInsets.symmetric(vertical: 5),
           child: Text(
-            "剩余调研数${_data.waitExecuteTask}",
+            "last${_data.waitExecuteTask}",
             style: TextStyle(
               color: Color(0xff107BFD),
               fontWeight: FontWeight.w400,
