@@ -187,7 +187,7 @@ class RootWidget extends StatelessWidget {
         if (userAuthCode.contains(errorCode)) {
           throw data;
         }
-        throw data["errorMsg"] ?? "请求错误";
+        throw NetError(data["errorMsg"] ?? "请求错误");
       }
       response.data = response.data["content"] ?? response.data;
       return response;
