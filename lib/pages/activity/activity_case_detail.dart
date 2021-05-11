@@ -256,6 +256,9 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
                   if (!canSave) {
                     return;
                   }
+                  if (EasyLoading.isShow){
+                    return;
+                  }
                   EasyLoading.instance.flash(() async {
                     data.hospital = _hospitalController.text;
                     data.patientName = _nameController.text;
