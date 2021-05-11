@@ -293,10 +293,10 @@ class _ActivityState extends State<ActivityDetail> {
       var item = _list[i];
       String desc = "";
       if (widget.type == TYPE_CASE_COLLECTION) {
-        desc = "病例$i:已上传${item["pictureNum"]}张图片";
+        desc = "病例${i+1}:已上传${item["pictureNum"]}张图片";
       } else {
         Map<String, dynamic> illnessCase = item["illnessCase"];
-        desc = "病例$i:";
+        desc = "病例${i+1}:";
         if (illnessCase["sex"] != null){
           desc += "${illnessCase["sex"]}";
         }
