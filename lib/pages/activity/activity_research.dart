@@ -1,4 +1,5 @@
 import 'package:doctor/provider/provider_widget.dart';
+import 'package:doctor/provider/view_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
@@ -12,16 +13,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/activity.dart';
+import 'package:dio/dio.dart';
 
 import 'activity_case_detail.dart';
 import 'entity/activity_questionnaire_entity.dart';
 
 class ActivityResearch extends StatefulWidget {
-  final bool canEdit;
   final int activityPackageId;
   final int activityTaskId;
 
-  ActivityResearch(this.canEdit, this.activityPackageId, {this.activityTaskId});
+  ActivityResearch(this.activityPackageId, {this.activityTaskId});
 
   @override
   State<StatefulWidget> createState() {
@@ -35,6 +36,8 @@ class _ActivityResearch extends State<ActivityResearch>
 
   // LearnDetailViewModel _model = LearnDetailViewModel(137574);
   ActivityQuestionnaireEntity _data;
+  String error;
+  bool _loading = true;
 
   @override
   void initState() {
@@ -57,11 +60,29 @@ class _ActivityResearch extends State<ActivityResearch>
   }
 
   void freshData() async {
-    Map<String, dynamic> json = await API.shared.activity
-        .activityQuestionnaireList(widget.activityPackageId,
-            activityTaskId: widget.activityTaskId);
-    _data = ActivityQuestionnaireEntity.fromJson(json);
-    setState(() {});
+    _loading = true;
+    try {
+      Map<String, dynamic> json = await API.shared.activity
+          .activityQuestionnaireList(widget.activityPackageId,
+          activityTaskId: widget.activityTaskId);
+      _data = ActivityQuestionnaireEntity.fromJson(json);
+      error = null;
+      setState(() {});
+    }on DioError catch(e){
+      error = e.message;
+      setState(() {
+
+      });
+    }catch(e){
+      error = "$e";
+      setState(() {
+
+      });
+    }finally {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   Widget item(Widget content) {
@@ -126,7 +147,14 @@ class _ActivityResearch extends State<ActivityResearch>
     var statusText = "待完成";
     var statusColor = Color(0xff489DFE);
     var borderColor = Color(0xff888888);
-    var canEdit = widget.canEdit;
+    var canEdit = _data.activityTaskId == null;
+    var itemCanEdit = true;
+    _data.questionnaires.forEach((element) {
+      print("the status is - ${element.status}");
+      itemCanEdit = itemCanEdit && (element.status == "NOT_OPEN" || element.status == "PROCEEDING" || element.status == null);
+    });
+    canEdit = canEdit || itemCanEdit;
+    print("can edit is --- $canEdit");
     if (!canEdit) {
       buttonText = "查看病例信息";
       statusText = "已完成";
@@ -233,29 +261,30 @@ class _ActivityResearch extends State<ActivityResearch>
       statusText = "待完成";
       statusColor = Color(0xff489DFE);
       borderColor = Color(0xff888888);
+    } if (item.status == "WAIT_VERIFY") {
+      statusText = "待审核";
+      statusColor = Color(0xff489DFE);
+      borderColor = Color(0xff888888);
     } else if (item.status == "COMPLETE") {
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
     }
-    var statusWidget = Container();
-    if (statusText == "已完成") {
-      statusWidget = Container(
-        margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-        padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
-        decoration: BoxDecoration(
-          color: statusColor,
-          borderRadius: BorderRadius.all(Radius.circular(4)),
+    var statusWidget = Container(
+      margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+      padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
+      decoration: BoxDecoration(
+        color: statusColor,
+        borderRadius: BorderRadius.all(Radius.circular(4)),
+      ),
+      child: Text(
+        statusText,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 12,
         ),
-        child: Text(
-          statusText,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-          ),
-        ),
-      );
-    }
+      ),
+    );
     var timeText = "";
     if (item.submitTime != null) {
       timeText = "${RelativeDateFormat.format(item.submitTime)}完成";
@@ -417,7 +446,13 @@ class _ActivityResearch extends State<ActivityResearch>
   }
 
   Widget buildContent() {
-    if (_data == null) {
+    if (_loading){
+      return loading();
+    }else if (error != null){
+      return ViewStateEmptyWidget(
+        message: error,
+      );
+    }else if (_data == null) {
       return Container();
     }
     return SingleChildScrollView(
@@ -428,6 +463,30 @@ class _ActivityResearch extends State<ActivityResearch>
             height: 20,
           )
         ],
+      ),
+    );
+  }
+
+  Widget loading() {
+    return Container(
+      child: Center(
+        child: Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: Theme(
+            data: ThemeData(
+                cupertinoOverrideTheme: CupertinoThemeData(
+                  brightness: Brightness.dark,
+                )),
+            child: CupertinoActivityIndicator(
+              radius: 14,
+            ),
+          ),
+        ),
       ),
     );
   }

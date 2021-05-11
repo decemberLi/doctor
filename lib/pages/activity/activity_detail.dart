@@ -277,12 +277,7 @@ class _ActivityState extends State<ActivityDetail> {
             }));
           } else {
             Navigator.of(context).push(MaterialPageRoute(builder: (c) {
-              bool canEdit = status == "REJECT" ||
-                  (schedule != null &&
-                      schedule < 100 &&
-                      _data.status == "EXECUTING");
               return ActivityResearch(
-                canEdit,
                 _data.activityPackageId,
                 activityTaskId: taskId,
               );
@@ -300,8 +295,16 @@ class _ActivityState extends State<ActivityDetail> {
         desc = "${item["activityTaskName"]}:已上传${item["pictureNum"]}张图片";
       } else {
         Map<String, dynamic> illnessCase = item["illnessCase"];
-        desc =
-            "${item["activityTaskName"]}:${illnessCase["sex"]}|${illnessCase["age"]}|${illnessCase["patientName"]}";
+        desc = "${item["activityTaskName"]}:";
+        if (illnessCase["sex"] != null){
+          desc += "${illnessCase["sex"]}";
+        }
+        if(illnessCase["age"] != null){
+          desc += "|${illnessCase["age"]}";
+        }
+        if(illnessCase["patientName"] != null){
+          desc += "|${illnessCase["patientName"]}";
+        }
       }
       var itemWidget =
           line(desc, item["status"], item["schedule"], item["activityTaskId"]);
@@ -375,7 +378,7 @@ class _ActivityState extends State<ActivityDetail> {
               } else {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return ActivityResearch(true, _data.activityPackageId);
+                  return ActivityResearch(_data.activityPackageId);
                 }));
               }
             },
