@@ -35,6 +35,7 @@ class _ActivityState extends State<ActivityDetail> {
   List _list = [];
   bool _isLoading = true;
   String _error;
+  int _page = 1;
 
   @override
   void initState() {
@@ -46,13 +47,18 @@ class _ActivityState extends State<ActivityDetail> {
     try {
       var result =
           await API.shared.activity.packageDetail(widget.activityPackageId);
-      print("the result is - $result");
+
 
       _data = ActivityDetailEntity(result);
       var rawData = await API.shared.activity
           .activityTaskList(widget.activityPackageId, 1);
       var list = rawData["records"];
+      var allPage = rawData["pages"] as int;
+      if (allPage == _page){
+        _refreshController.loadNoData();
+      }
       _list = list;
+      _page = 1;
     } catch (e) {
       setState(() {
         _error = "${e}";
@@ -64,11 +70,20 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   void loadMoreData() async {
+    _page ++;
     var rawData =
-        await API.shared.activity.activityTaskList(widget.activityPackageId, 1);
+        await API.shared.activity.activityTaskList(widget.activityPackageId, _page);
     List list = rawData["records"];
-    _refreshController.loadComplete();
-    _list.addAll(list);
+    var allPage = rawData["pages"] as int;
+    print("all page is - $allPage");
+    if (allPage == _page){
+      _refreshController.loadNoData();
+    }else{
+      _refreshController.loadComplete();
+    }
+    setState(() {
+      _list.addAll(list);
+    });
   }
 
   Widget cardTitle(String data) {
@@ -406,8 +421,7 @@ class _ActivityState extends State<ActivityDetail> {
               ),
             ),
             onLoading: () async {
-              await Future.delayed(Duration(seconds: 2));
-              _refreshController.loadComplete();
+              loadMoreData();
             },
           ),
         ),
