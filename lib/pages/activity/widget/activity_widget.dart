@@ -168,7 +168,6 @@ class ActivityWidget extends StatelessWidget {
   }
 
   Widget progressWidget(DoctorDetailInfoEntity entity) {
-    entity?.authStatus='Not';
     if (entity?.authStatus  == 'PASS') {
       return Container(
         width: 60,
