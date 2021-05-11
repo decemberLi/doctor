@@ -63,7 +63,7 @@ class Activity extends SubAPI {
       );
 
   /// 医学调研保存患者病例
-  activityIllnessCaseSave(int activityPackageId, int resourceId,
+  activityIllnessCaseSave(int activityPackageId,
       {int activityTaskId,
       String patientName,
       String patientCode,
@@ -72,13 +72,22 @@ class Activity extends SubAPI {
       String hospital}) async {
     var params = {};
     params["activityPackageId"] = activityPackageId;
-    params["resourceId"] = resourceId;
     params["activityTaskId"] = activityTaskId;
     params["patientName"] = patientName;
     params["patientCode"] = patientCode;
     params["age"] = age;
     params["sex"] = sex;
     params["hospital"] = hospital;
+    return await normalPost(
+      "/activity-task/illness-case/save-or-update",
+      params: params,
+    );
+  }
+
+  activityIllnessCaseSaveWithJson(int activityPackageId,
+      Map params,{int activityTaskId}) async {
+    params["activityPackageId"] = activityPackageId;
+    params["activityTaskId"] = activityTaskId;
     return await normalPost(
       "/activity-task/illness-case/save-or-update",
       params: params,
@@ -120,16 +129,6 @@ class Activity extends SubAPI {
     params["noteInfo"] = noteInfo;
     params["questions"] = questions;
     params["sort"] = sort;
-    return await normalPost(
-      "/activity-task/questionnaire/save-or-update",
-      params: params,
-    );
-  }
-
-  activityQuestionnaireSaveWithJson(int activityPackageId,
-      Map params,{int activityTaskId}) async {
-    params["activityPackageId"] = activityPackageId;
-    params["activityTaskId"] = activityTaskId;
     return await normalPost(
       "/activity-task/questionnaire/save-or-update",
       params: params,

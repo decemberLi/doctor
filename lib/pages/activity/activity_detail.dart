@@ -59,7 +59,7 @@ class _ActivityState extends State<ActivityDetail> {
       }
       _list = list;
       _page = 1;
-    } catch (e) {
+    } catch (e,stack) {
       setState(() {
         _error = "${e}";
       });
@@ -367,21 +367,22 @@ class _ActivityState extends State<ActivityDetail> {
           padding: EdgeInsets.only(bottom: 53),
           child: AceButton(
             text: "填写病例信息",
-            onPressed: () {
+            onPressed: () async{
               if(_data.waitExecuteTask == 0){
                 EasyLoading.showToast("没有剩余调研数");
                 return;
               }
               if (_data.activityType == TYPE_CASE_COLLECTION) {
-                Navigator.of(context).push(MaterialPageRoute(builder: (c) {
-                  return ActivityResourceDetailPage(_data.activityPackageId,0);
+                await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
+                  return ActivityResourceDetailPage(_data.activityPackageId,null);
                 }));
               } else {
-                Navigator.of(context)
+                await Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return ActivityResearch(_data.activityPackageId,_data.status);
                 }));
               }
+              firstGetData();
             },
           ),
         )
@@ -494,7 +495,13 @@ class _ActivityState extends State<ActivityDetail> {
       appBar: AppBar(
         title: Text("${activityName(widget.type)}活动"),
       ),
-      body: realBody(),
+      body: WillPopScope(
+        child: realBody(),
+        onWillPop: () async{
+          firstGetData();
+          return true;
+        },
+      ),
     );
   }
 }

@@ -279,7 +279,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
 
                     data.patientCode = _codeController.text;
                     print("the data is ${data.toJson()}");
-                    await API.shared.activity.activityQuestionnaireSaveWithJson(
+                    await API.shared.activity.activityIllnessCaseSaveWithJson(
                       widget.activityPackageId,
                       data.toJson(),
                       activityTaskId: widget.activityTaskId,

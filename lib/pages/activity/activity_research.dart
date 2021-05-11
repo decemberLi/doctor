@@ -498,7 +498,7 @@ class _ActivityResearch extends State<ActivityResearch>
       appBar: AppBar(
         title: Text("医学调研详情"),
       ),
-      body: buildContent(),
+      body:  buildContent(),
     );
   }
 }
