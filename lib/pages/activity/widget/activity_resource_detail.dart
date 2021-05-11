@@ -81,7 +81,7 @@ class _ImageResourceModel extends ChangeNotifier {
     for (int index = 0; index < length; index++) {
       var r = _list[index].ossRes;
       r.name = '病例图片-${index + 1}';
-      r.type = 'CASE_COLLECTION';
+      r.type = 'CASE_COLLECTION_PIC';
     }
     _list.forEach((element) {
       picList.add(element.ossRes.toJson());
