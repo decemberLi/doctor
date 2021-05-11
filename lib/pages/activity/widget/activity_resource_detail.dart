@@ -138,7 +138,7 @@ class _ActivityResourceDetailPageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(child: Scaffold(
       backgroundColor: Color(0xFFF3F5F8),
       appBar: AppBar(
         title: Text(widget._titleText),
@@ -159,7 +159,7 @@ class _ActivityResourceDetailPageState
                         width: double.infinity,
                         margin: EdgeInsets.only(left: 16, right: 16, top: 10),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                        EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -167,7 +167,7 @@ class _ActivityResourceDetailPageState
                         child: Text(
                           '驳回理由：病例征集信息不完整',
                           style:
-                              TextStyle(color: Color(0xFFFECE35), fontSize: 14),
+                          TextStyle(color: Color(0xFFFECE35), fontSize: 14),
                         ),
                       ),
                     Container(
@@ -199,7 +199,7 @@ class _ActivityResourceDetailPageState
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisSpacing: 35,
                                   mainAxisSpacing: 12,
                                   crossAxisCount: 3,
@@ -247,7 +247,7 @@ class _ActivityResourceDetailPageState
               ],
             );
           }),
-    );
+    ), onWillPop: ()=> EasyLoading.dismiss());
   }
 
   Widget _pictureArea(index) {
