@@ -158,7 +158,7 @@ class RootWidget extends StatelessWidget {
             } else if (obj['activityType'] == 'MEDICAL_SURVEY') {
               // go 医学调研驳回 资料详情
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return ActivityResearch(obj['activityPackageId'], null, activityTaskId: obj['activityTaskId'],);
+                return ActivityResearch(obj['activityPackageId'], activityTaskId: obj['activityTaskId'],);
               }));
             }
           }else if(type == 'ASSIGN_STUDY_ACTIVITY'){

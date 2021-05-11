@@ -281,7 +281,6 @@ class _MessageListPageState extends State<MessageListPage> {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ActivityResearch(
             entity.params['activityPackageId'],
-            null,
             activityTaskId: entity.params['activityTaskId'],
           );
         }));
