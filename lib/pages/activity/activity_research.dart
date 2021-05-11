@@ -16,14 +16,14 @@ import 'package:doctor/http/activity.dart';
 import 'package:dio/dio.dart';
 
 import 'activity_case_detail.dart';
+import 'entity/activity_entity.dart';
 import 'entity/activity_questionnaire_entity.dart';
 
 class ActivityResearch extends StatefulWidget {
   final int activityPackageId;
   final int activityTaskId;
-  final String status;
 
-  ActivityResearch(this.activityPackageId, this.status,{this.activityTaskId});
+  ActivityResearch(this.activityPackageId,{this.activityTaskId});
 
   @override
   State<StatefulWidget> createState() {
@@ -35,6 +35,7 @@ class _ActivityResearch extends State<ActivityResearch>
     with WidgetsBindingObserver {
   bool collapsed = true;
   int activityTaskId;
+  String status;
   _ActivityResearch(this.activityTaskId);
   // LearnDetailViewModel _model = LearnDetailViewModel(137574);
   ActivityQuestionnaireEntity _data;
@@ -64,6 +65,10 @@ class _ActivityResearch extends State<ActivityResearch>
   void freshData() async {
     _loading = true;
     try {
+      var result =
+      await API.shared.activity.packageDetail(widget.activityPackageId);
+      var parentData = ActivityDetailEntity(result);
+      status = parentData.status;
       Map<String, dynamic> json = await API.shared.activity
           .activityQuestionnaireList(widget.activityPackageId,
           activityTaskId: activityTaskId);
@@ -405,7 +410,7 @@ class _ActivityResearch extends State<ActivityResearch>
     return GestureDetector(
       onTap: () {
         var url =
-            "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market&packageStatus=${widget.status}&activityTaskId=${activityTaskId}";
+            "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market&packageStatus=${status}&activityTaskId=${activityTaskId}";
         MedcloudsNativeApi.instance().openWebPage(url);
       },
       child: all,

@@ -47,8 +47,6 @@ class _ActivityState extends State<ActivityDetail> {
     try {
       var result =
           await API.shared.activity.packageDetail(widget.activityPackageId);
-
-
       _data = ActivityDetailEntity(result);
       var rawData = await API.shared.activity
           .activityTaskList(widget.activityPackageId, 1);
@@ -232,7 +230,7 @@ class _ActivityState extends State<ActivityDetail> {
       if (schedule != null && schedule < 100) {
         text = "$schedule%";
       } else if (status == "WAIT_VERIFY") {
-        text = "审核中";
+        text = "待审核";
       } else if (status == "REJECT") {
         color = Color(0xffFAAD14);
         text = "审核未通过";
@@ -282,7 +280,6 @@ class _ActivityState extends State<ActivityDetail> {
             Navigator.of(context).push(MaterialPageRoute(builder: (c) {
               return ActivityResearch(
                 _data.activityPackageId,
-                _data.status,
                 activityTaskId: taskId,
               );
             }));
@@ -404,7 +401,7 @@ class _ActivityState extends State<ActivityDetail> {
               } else {
                 await Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return ActivityResearch(_data.activityPackageId,_data.status);
+                  return ActivityResearch(_data.activityPackageId);
                 }));
               }
               firstGetData();
