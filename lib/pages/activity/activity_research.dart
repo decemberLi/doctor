@@ -359,7 +359,7 @@ class _ActivityResearch extends State<ActivityResearch>
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(bottom: 5),
             child: Text(
-              item.rejectReason,
+              "驳回理由:${item.rejectReason}",
               style: TextStyle(
                 color: Color(0xffFECE35),
                 fontSize: 12,
