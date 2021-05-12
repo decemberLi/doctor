@@ -108,8 +108,12 @@ class ImageHelper {
       if (list != null) {
         List<File> originFiles = [];
         await EasyLoading.instance.flash(() async {
-          for (var element in list) {
-            originFiles.add(await compressImage(await element.file));
+          try {
+            for (var element in list) {
+              originFiles.add(await compressImage(await element.file));
+            }
+          } catch (e) {
+            throw '文件不存在';
           }
         });
         return originFiles;
