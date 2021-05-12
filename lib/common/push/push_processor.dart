@@ -15,11 +15,9 @@ class QualificationMessageProcessor
   @override
   Future process(BuildContext context, QualificationMessageEntity param) {
     if (param.authStatus == "FAIL") {
-      print("the obj is ---- fail");
       return Navigator.of(context)
           .pushNamed(RouteManager.DOCTOR_AUTHENTICATION_PAGE);
     } else {
-      print("the obj is ---- success");
       return Navigator.of(context)
           .pushNamed(RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
     }
