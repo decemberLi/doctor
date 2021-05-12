@@ -1,6 +1,6 @@
-import 'dart:collection';
-
+import 'package:doctor/common/push/entity/push_message_entity.dart';
 import 'package:doctor/common/push/push_processor.dart';
+import 'package:flutter/cupertino.dart';
 
 class PushMessageDispatcher {
   PushMessageDispatcher._();
@@ -13,9 +13,11 @@ class PushMessageDispatcher {
   ///
   /// {\"bizType\":\"QUALIFICATION_AUTH\",\"authStatus\":\"FAIL\",\"messageId\":1,"userId":111}
   ///
-  void dispatch(Map<String, dynamic> json) {
-    AbsMessageProcessor processor = getProcessor(json['bizType']);
-    processor.process(null, processor.getType(json));
+  void dispatch(BuildContext context, Map<String, dynamic> json) {
+    var entity = MessageEntity(json);
+    AbsMessageProcessor processor = getProcessor(entity.bizType);
+    // 强制定义数据实体结构，避免使用 object['key'] 方式取值
+    processor.process(context, processor.getType(entity.data));
   }
 
   AbsMessageProcessor getProcessor(String bizType) {
