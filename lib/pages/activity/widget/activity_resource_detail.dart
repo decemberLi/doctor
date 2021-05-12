@@ -79,8 +79,14 @@ class _ImageResourceModel extends ChangeNotifier {
     await Future.wait(futires);
     List<Map<String, dynamic>> picList = [];
     for (int index = 0; index < length; index++) {
-      var r = _list[index].ossRes;
-      r.name = '病例图片-${index + 1}';
+      var each = _list[index];
+      var r = each.ossRes;
+      var pos = each.uri.lastIndexOf('.');
+      String suffix = '';
+      if (pos > 0 && pos < each.uri.length) {
+        suffix = each.uri.substring(pos);
+      }
+      r.name = '病例图片-${index + 1}$suffix';
       r.type = 'CASE_COLLECTION_PIC';
     }
     _list.forEach((element) {
@@ -88,7 +94,8 @@ class _ImageResourceModel extends ChangeNotifier {
     });
 
     // post to server
-    return await API.shared.activity.saveActivityCaseCollection(activityId, picList,
+    return await API.shared.activity.saveActivityCaseCollection(
+        activityId, picList,
         activityTaskId: taskId);
   }
 
@@ -131,126 +138,130 @@ class _ActivityResourceDetailPageState
     super.initState();
     _model =
         _ImageResourceModel(widget.activityPackageId, widget.activityTaskId);
-    if(widget.activityTaskId !=null) {
+    if (widget.activityTaskId != null) {
       _model.obtainTaskResources();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(child: Scaffold(
-      backgroundColor: Color(0xFFF3F5F8),
-      appBar: AppBar(
-        title: Text(widget._titleText),
-        elevation: 0,
-      ),
-      body: ChangeNotifierProvider(
-          create: (context) => _model,
-          builder: (context, child) {
-            return Stack(
-              alignment: AlignmentDirectional.topCenter,
-              children: [
-                ListView(
-                  padding: EdgeInsets.only(bottom: 100),
+    return WillPopScope(
+        child: Scaffold(
+          backgroundColor: Color(0xFFF3F5F8),
+          appBar: AppBar(
+            title: Text(widget._titleText),
+            elevation: 0,
+          ),
+          body: ChangeNotifierProvider(
+              create: (context) => _model,
+              builder: (context, child) {
+                return Stack(
+                  alignment: AlignmentDirectional.topCenter,
                   children: [
-                    // 审核未通过展示驳回理由
-                    if (widget._isNotPass)
-                      Container(
-                        width: double.infinity,
-                        margin: EdgeInsets.only(left: 16, right: 16, top: 10),
-                        padding:
-                        EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
-                        child: Text(
-                          '驳回理由：病例征集信息不完整',
-                          style:
-                          TextStyle(color: Color(0xFFFECE35), fontSize: 14),
-                        ),
-                      ),
-                    Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(left: 16, right: 16, top: 10),
-                      padding: EdgeInsets.fromLTRB(25, 0, 10, 25),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 20, bottom: 12),
+                    ListView(
+                      padding: EdgeInsets.only(bottom: 100),
+                      children: [
+                        // 审核未通过展示驳回理由
+                        if (widget._isNotPass)
+                          Container(
+                            width: double.infinity,
+                            margin:
+                                EdgeInsets.only(left: 16, right: 16, top: 10),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 25, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
                             child: Text(
-                              '病例列表',
+                              '驳回理由：病例征集信息不完整',
                               style: TextStyle(
-                                  fontSize: 16,
-                                  color: ThemeColor.primaryColor,
-                                  fontWeight: FontWeight.bold),
+                                  color: Color(0xFFFECE35), fontSize: 14),
                             ),
                           ),
-                          Consumer(
-                            builder:
-                                (context, _ImageResourceModel model, child) {
-                              return GridView.builder(
-                                clipBehavior: Clip.none,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisSpacing: 35,
-                                  mainAxisSpacing: 12,
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 1.0,
+                        Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(left: 16, right: 16, top: 10),
+                          padding: EdgeInsets.fromLTRB(25, 0, 10, 25),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 20, bottom: 12),
+                                child: Text(
+                                  '病例列表',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: ThemeColor.primaryColor,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                itemCount: _model.imagesSize,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    alignment: Alignment.center,
-                                    child: _pictureArea(index),
+                              ),
+                              Consumer(
+                                builder: (context, _ImageResourceModel model,
+                                    child) {
+                                  return GridView.builder(
+                                    clipBehavior: Clip.none,
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisSpacing: 35,
+                                      mainAxisSpacing: 12,
+                                      crossAxisCount: 3,
+                                      childAspectRatio: 1.0,
+                                    ),
+                                    itemCount: _model.imagesSize,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        alignment: Alignment.center,
+                                        child: _pictureArea(index),
+                                      );
+                                    },
                                   );
                                 },
-                              );
-                            },
+                              ),
+                            ],
                           ),
-                        ],
+                        )
+                      ],
+                    ),
+                    Positioned(
+                      bottom: 28,
+                      child: Consumer<_ImageResourceModel>(
+                        builder: (context, _ImageResourceModel model, child) {
+                          bool enable = model.length > 0;
+                          return AceButton(
+                            type: enable
+                                ? AceButtonType.primary
+                                : AceButtonType.secondary,
+                            textColor: Colors.white,
+                            text: '提交病例',
+                            onPressed: () {
+                              if (!enable) {
+                                return;
+                              }
+                              EasyLoading.instance.flash(() async {
+                                await _model.submit();
+                                Navigator.pop(context, true);
+                              });
+                            },
+                          );
+                        },
                       ),
                     )
                   ],
-                ),
-                Positioned(
-                  bottom: 28,
-                  child: Consumer<_ImageResourceModel>(
-                    builder: (context, _ImageResourceModel model, child) {
-                      bool enable = model.length > 0;
-                      return AceButton(
-                        type: enable
-                            ? AceButtonType.primary
-                            : AceButtonType.secondary,
-                        textColor: Colors.white,
-                        text: '提交病例',
-                        onPressed: () {
-                          if (!enable) {
-                            return;
-                          }
-                          EasyLoading.instance.flash(() async {
-                            await _model.submit();
-                            Navigator.pop(context, true);
-                          });
-                        },
-                      );
-                    },
-                  ),
-                )
-              ],
-            );
-          }),
-    ), onWillPop: (){
-      EasyLoading.dismiss();
-      return Future.value(true);
-    });
+                );
+              }),
+        ),
+        onWillPop: () {
+          EasyLoading.dismiss();
+          return Future.value(true);
+        });
   }
 
   Widget _pictureArea(index) {
