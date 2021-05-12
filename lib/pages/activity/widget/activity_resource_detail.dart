@@ -8,6 +8,7 @@ import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/entity/activity_resources_entity.dart';
 import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/debounce.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:doctor/widgets/ace_button.dart';
@@ -175,7 +176,7 @@ class _ActivityResourceDetailPageState
                         // 审核未通过展示驳回理由
                         Consumer<_ImageResourceModel>(
                           builder: (context, _ImageResourceModel model, child) {
-                            if(model.status != VERIFY_STATUS_REJECT){
+                            if (model.status != VERIFY_STATUS_REJECT) {
                               return Container();
                             }
                             return Container(
@@ -251,7 +252,7 @@ class _ActivityResourceDetailPageState
                     Consumer<_ImageResourceModel>(
                       builder: (context, _ImageResourceModel model, child) {
                         bool enable = model.length > 0;
-                        if(!model.canEdit()){
+                        if (!model.canEdit()) {
                           return Container();
                         }
                         return Positioned(
@@ -263,13 +264,15 @@ class _ActivityResourceDetailPageState
                             textColor: Colors.white,
                             text: '提交病例',
                             onPressed: () {
-                              if (!enable) {
-                                return;
-                              }
-                              EasyLoading.instance.flash(() async {
-                                await _model.submit();
-                                Navigator.pop(context, true);
-                              });
+                              debounce(() {
+                                if (!enable) {
+                                  return;
+                                }
+                                EasyLoading.instance.flash(() async {
+                                  await _model.submit();
+                                  Navigator.pop(context, true);
+                                });
+                              })();
                             },
                           ),
                         );
