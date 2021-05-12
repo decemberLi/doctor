@@ -110,13 +110,11 @@ class _ActivityResearch extends State<ActivityResearch>
     var template = data;
     if (template == null || template.questionnaires == null) return Container();
     List<Widget> sources = [];
-    var canUp = false;
     for (int i = 0; i < template.questionnaires.length; i++) {
       var item = template.questionnaires[i];
       var cell = buildPlanItem(
           template.resourceId, item, i == template.questionnaires.length - 1);
       sources.add(cell);
-      canUp = canUp || item.status == "COMPLETE";
     }
 
     return Container(
@@ -211,14 +209,6 @@ class _ActivityResearch extends State<ActivityResearch>
                   ),
                 ),
               ),
-              // Expanded(child: Container()),
-              // Text(
-              //   "12月11日完成",
-              //   style: TextStyle(
-              //     color: Color(0xff888888),
-              //     fontSize: 10,
-              //   ),
-              // ),
             ],
           ),
           Container(
@@ -269,26 +259,16 @@ class _ActivityResearch extends State<ActivityResearch>
     var statusText = "未开启";
     var statusColor = Color(0xffDEDEE1);
     var borderColor = Color(0xff888888);
-    if (item.status == "PROCEEDING") {
+    if (item.status == "PROCEEDING" || item .status == "REJECT") {
       timeText = "";
       statusText = "待完成";
       statusColor = Color(0xff489DFE);
       borderColor = Color(0xff888888);
-    } if (item.status == "WAIT_VERIFY") {
-      timeText = "";
-      statusText = "待审核";
-      statusColor = Color(0xff489DFE);
-      borderColor = Color(0xff888888);
-    } else if (item.status == "COMPLETE") {
+    }else if (item.status == "COMPLETE" || item.status == "WAIT_VERIFY") {
       timeText = "${dateFormat(item.submitTime)}完成";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
-    }else if (item .status == "REJECT"){
-      timeText = "";
-      statusText = "待完成";
-      statusColor = Color(0xff489DFE);
-      borderColor = Color(0xff888888);
     }
     var statusWidget = Container(
       margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
