@@ -81,7 +81,9 @@ class ActivityWidget extends StatelessWidget {
                         margin: EdgeInsets.only(top: 1, right: 2),
                       ),
                       Text(
-                        _data.activityType == TYPE_CASE_COLLECTION ? '上传图片' : '问卷',
+                        _data.activityType == TYPE_CASE_COLLECTION
+                            ? '上传图片'
+                            : '问卷',
                         style: TextStyle(fontSize: 12, color: Colors.white),
                       )
                     ],
@@ -95,49 +97,49 @@ class ActivityWidget extends StatelessWidget {
                   children: [
                     Expanded(
                         child: Container(
-                          padding: EdgeInsets.only(right: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border(
-                                  right:
-                                  BorderSide(color: Color(0xFFF3F5F8), width: 1))),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _data.activityName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    color: Color(0xFF222222),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Container(
-                                width: 12,
-                                height: 12,
-                              ),
-                              Text(
-                                '来自企业：${_data.companyName}',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 12, color: ThemeColor.colorFF666666),
-                              ),
-                              Container(
-                                width: 12,
-                                height: 12,
-                              ),
-                              Text(
-                                '截止日期：${_endTimeFormat(_data.endTime)} ',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 12, color: ThemeColor.colorFF666666),
-                              ),
-                            ],
+                      padding: EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                              right: BorderSide(
+                                  color: Color(0xFFF3F5F8), width: 1))),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _data.activityName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Color(0xFF222222),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
                           ),
-                        )),
+                          Container(
+                            width: 12,
+                            height: 12,
+                          ),
+                          Text(
+                            '来自企业：${_data.companyName}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 12, color: ThemeColor.colorFF666666),
+                          ),
+                          Container(
+                            width: 12,
+                            height: 12,
+                          ),
+                          Text(
+                            '截止日期：${_endTimeFormat(_data.endTime)} ',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 12, color: ThemeColor.colorFF666666),
+                          ),
+                        ],
+                      ),
+                    )),
                     Padding(
                       padding: EdgeInsets.only(right: 10),
                       child: progressWidget(model.data),
@@ -148,19 +150,21 @@ class ActivityWidget extends StatelessWidget {
             ),
           ),
           onTap: () async {
-            if (model?.data?.authStatus  != 'PASS') {
-              await Navigator.pushNamed(
-                context,
-                RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE,
-              );
-              UserInfoViewModel model =
-              Provider.of<UserInfoViewModel>(context, listen: false);
-              await model.queryDoctorInfo();
-              return;
+            if (model?.data?.identityStatus == 'PASS' &&
+                model?.data?.authStatus == 'PASS') {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return ActivityDetail(
+                    _data.activityPackageId, _data.activityType);
+              }));
+            } else if (model?.data?.authStatus == 'WAIT_VERIFY' ||
+                model?.data?.authStatus == 'FAIL') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+            } else if (model?.data?.authStatus == 'VERIFYING') {
+              Navigator.pushNamed(
+                  context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
             }
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ActivityDetail(_data.activityPackageId, _data.activityType);
-            }));
+            await model.queryDoctorInfo();
           },
         );
       },
@@ -168,7 +172,7 @@ class ActivityWidget extends StatelessWidget {
   }
 
   Widget progressWidget(DoctorDetailInfoEntity entity) {
-    if (entity?.authStatus  == 'PASS') {
+    if (entity?.authStatus == 'PASS') {
       double percent = (_data.schedule ?? 0) / 100;
       if (percent > 1) {
         percent = 1;
