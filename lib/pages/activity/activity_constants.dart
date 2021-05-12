@@ -31,7 +31,7 @@ String activityStatus(String status) {
     case STATUS_EXECUTING:
       return '进行中';
     case STATUS_FINISH:
-      return '结束';
+      return '已结束';
   }
   return '';
 }
