@@ -150,19 +150,23 @@ class ActivityWidget extends StatelessWidget {
             ),
           ),
           onTap: () async {
-            if (model?.data?.identityStatus == 'PASS' &&
-                model?.data?.authStatus == 'PASS') {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return ActivityDetail(
-                    _data.activityPackageId, _data.activityType);
-              }));
-            } else if (model?.data?.authStatus == 'WAIT_VERIFY' ||
-                model?.data?.authStatus == 'FAIL') {
+            if (model?.data?.identityStatus == 'PASS') {
+              if (model.data.authStatus == 'WAIT_VERIFY' ||
+                  model.data.authStatus == 'FAIL') {
+                Navigator.pushNamed(
+                    context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+              } else if (model.data.authStatus == 'VERIFYING') {
+                Navigator.pushNamed(
+                    context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+              } else if (model.data.authStatus == 'PASS') {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ActivityDetail(
+                      _data.activityPackageId, _data.activityType);
+                }));
+              }
+            } else {
               Navigator.pushNamed(
-                  context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-            } else if (model?.data?.authStatus == 'VERIFYING') {
-              Navigator.pushNamed(
-                  context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                  context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
             }
             await model.queryDoctorInfo();
           },
