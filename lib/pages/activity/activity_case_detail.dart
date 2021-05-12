@@ -225,104 +225,105 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
       upColor = Color(0xff107BFD);
       shadowColor = Color(0xff489DFE).withOpacity(0.4);
     }
+    var body = Column(
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: Container(
+            child: Column(
+              children: showList,
+            ),
+          ),
+        ),
+        // Expanded(child: Container()),
+        Container(height: 20,),
+        if (widget.canSubmit)
+          GestureDetector(
+            onTap: () async {
+              if (!canSave) {
+                return;
+              }
+              if (EasyLoading.isShow){
+                return;
+              }
+              EasyLoading.instance.flash(() async {
+                data.hospital = _hospitalController.text;
+                data.patientName = _nameController.text;
+
+                if (_ageController.text != null &&
+                    _ageController.text.length > 0) {
+                  try {
+                    int age = int.parse(_ageController.text);
+                    if (age < 0) {
+                      throw "-1";
+                    }
+                    data.age = age;
+                  } catch (e) {
+                    EasyLoading.showToast('请输入正确的年龄',
+                        duration: Duration(seconds: 1));
+
+                    await Future.delayed(Duration(seconds: 1));
+                    return;
+                  }
+                }
+
+                data.patientCode = _codeController.text;
+                print("the data is ${data.toJson()}");
+                var result = await API.shared.activity.activityIllnessCaseSaveWithJson(
+                  widget.activityPackageId,
+                  data.toJson(),
+                  activityTaskId: widget.activityTaskId,
+                );
+                var activityTaskId = result["activityTaskId"] as int;
+                data.status = "COMPLETE";
+                await EasyLoading.showToast("保存成功");
+                await Future.delayed(Duration(seconds: 1));
+                Navigator.of(context).pop(activityTaskId);
+              });
+            },
+            child: Container(
+              width: double.infinity,
+              height: 44,
+              alignment: Alignment.center,
+              margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
+              child: Text(
+                "保存",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              decoration: BoxDecoration(
+                color: upColor,
+                borderRadius: BorderRadius.all(Radius.circular(22)),
+                boxShadow: [
+                  BoxShadow(
+                    color: shadowColor,
+                    offset: Offset(0, 4),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        Container(
+          height: 40,
+        )
+      ],
+    );
     return Scaffold(
+      backgroundColor: Color(0xffefefef),
       appBar: AppBar(
         elevation: 0,
         title: Text("病例信息详情"),
       ),
-      body: Container(
-        color: Color(0xfff3f5f8),
-        height: double.infinity,
-        child: Column(
-          children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-              ),
-              child: Container(
-                child: Column(
-                  children: showList,
-                ),
-              ),
-            ),
-            Expanded(child: Container()),
-            if (widget.canSubmit)
-              GestureDetector(
-                onTap: () async {
-                  if (!canSave) {
-                    return;
-                  }
-                  if (EasyLoading.isShow){
-                    return;
-                  }
-                  EasyLoading.instance.flash(() async {
-                    data.hospital = _hospitalController.text;
-                    data.patientName = _nameController.text;
-
-                    if (_ageController.text != null &&
-                        _ageController.text.length > 0) {
-                      try {
-                        int age = int.parse(_ageController.text);
-                        if (age < 0) {
-                          throw "-1";
-                        }
-                        data.age = age;
-                      } catch (e) {
-                        EasyLoading.showToast('请输入正确的年龄',
-                            duration: Duration(seconds: 1));
-
-                        await Future.delayed(Duration(seconds: 1));
-                        return;
-                      }
-                    }
-
-                    data.patientCode = _codeController.text;
-                    print("the data is ${data.toJson()}");
-                    var result = await API.shared.activity.activityIllnessCaseSaveWithJson(
-                      widget.activityPackageId,
-                      data.toJson(),
-                      activityTaskId: widget.activityTaskId,
-                    );
-                    var activityTaskId = result["activityTaskId"] as int;
-                    data.status = "COMPLETE";
-                    await EasyLoading.showToast("保存成功");
-                    await Future.delayed(Duration(seconds: 1));
-                    Navigator.of(context).pop(activityTaskId);
-                  });
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 44,
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.fromLTRB(25, 5, 25, 10),
-                  child: Text(
-                    "保存",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  decoration: BoxDecoration(
-                    color: upColor,
-                    borderRadius: BorderRadius.all(Radius.circular(22)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: shadowColor,
-                        offset: Offset(0, 4),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            Container(
-              height: 40,
-            )
-          ],
-        ),
+      body: SingleChildScrollView(
+        child: body,
       ),
     );
   }
