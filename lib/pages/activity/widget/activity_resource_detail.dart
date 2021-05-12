@@ -251,6 +251,9 @@ class _ActivityResourceDetailPageState
                     Consumer<_ImageResourceModel>(
                       builder: (context, _ImageResourceModel model, child) {
                         bool enable = model.length > 0;
+                        if(!model.canEdit()){
+                          return Container();
+                        }
                         return Positioned(
                           bottom: 28,
                           child: AceButton(
