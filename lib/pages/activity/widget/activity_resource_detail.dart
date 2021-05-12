@@ -69,23 +69,28 @@ class _ImageResourceModel extends ChangeNotifier {
   submit() async {
     var localRes = _list.where((element) => element.type == 0).toList();
     // upload pic
-    Map<int, _ImageResource> map = HashMap();
     List<Future<OssFileEntity>> futires = [];
     for (int i = 0; i < localRes.length; i++) {
       var toBeUploadEntity = localRes[i];
-      var eachF = OssService.upload(localRes[i].uri);
+      var eachF = OssService.upload(localRes[i].uri, showLoading: false);
       futires.add(eachF);
-      eachF.then((OssFileEntity entity) => toBeUploadEntity.ossRes = entity);
+      eachF.then((OssFileEntity entity) {
+        toBeUploadEntity.ossRes = entity;
+      });
+      if (futires.length == 4) {
+        await Future.wait(futires);
+        futires.clear();
+      }
     }
     await Future.wait(futires);
     List<Map<String, dynamic>> picList = [];
     for (int index = 0; index < length; index++) {
       var each = _list[index];
       var r = each.ossRes;
-      var pos = each.uri.lastIndexOf('.');
+      var pos = r.name.lastIndexOf('.');
       String suffix = '';
       if (pos > 0 && pos < each.uri.length) {
-        suffix = each.uri.substring(pos);
+        suffix = each.ossRes.name.substring(pos);
       }
       r.name = '病例图片-${index + 1}$suffix';
       r.type = 'CASE_COLLECTION_PIC';
@@ -120,7 +125,7 @@ class ActivityResourceDetailPage extends StatefulWidget {
   final bool _canEdit;
   final int activityPackageId;
   final int activityTaskId;
-  final String rejectReason ;
+  final String rejectReason;
 
   ActivityResourceDetailPage(this.activityPackageId, this.activityTaskId,
       {this.status, this.rejectReason})
@@ -164,7 +169,8 @@ class _ActivityResourceDetailPageState
                       padding: EdgeInsets.only(bottom: 100),
                       children: [
                         // 审核未通过展示驳回理由
-                        if (!TextUtil.isEmpty(widget.rejectReason))
+                        if (widget.status == 'VERIFY_STATUS_REJECT' &&
+                            !TextUtil.isEmpty(widget.rejectReason))
                           Container(
                             width: double.infinity,
                             margin:
