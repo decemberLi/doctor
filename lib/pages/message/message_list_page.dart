@@ -274,6 +274,7 @@ class _MessageListPageState extends State<MessageListPage> {
             entity.params['activityPackageId'],
             entity.params['activityTaskId'],
             status: VERIFY_STATUS_REJECT,
+            rejectReason: entity.params['rejectReason'],
           );
         }));
       } else if (entity.params['activityType'] == 'MEDICAL_SURVEY') {
@@ -289,7 +290,7 @@ class _MessageListPageState extends State<MessageListPage> {
       // 指派活动进活动详情页
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return ActivityDetail(
-            entity.params['activityId'], entity.params['activityPackageId']);
+            entity.params['activityPackageId'], entity.params['activityType']);
       }));
     }
     _model.mark('${entity.messageId}');

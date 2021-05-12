@@ -153,6 +153,7 @@ class RootWidget extends StatelessWidget {
                   obj['activityPackageId'],
                   obj['activityTaskId'],
                   status: VERIFY_STATUS_REJECT,
+                  rejectReason: obj['rejectReason'],
                 );
               }));
             } else if (obj['activityType'] == 'MEDICAL_SURVEY') {
@@ -165,7 +166,7 @@ class RootWidget extends StatelessWidget {
             // 指派活动进活动详情页
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ActivityDetail(
-                  obj['activityId'], obj['activityPackageId']);
+                  obj['activityPackageId'], obj['activityType']);
             }));
           } else if (type == "") {}
         } catch (e) {}

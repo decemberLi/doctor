@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/http/activity.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
@@ -116,14 +117,15 @@ class _ImageResourceModel extends ChangeNotifier {
 class ActivityResourceDetailPage extends StatefulWidget {
   final String _titleText;
   final String status;
-  final bool _isNotPass;
+  final bool _canEdit;
   final int activityPackageId;
   final int activityTaskId;
+  final String rejectReason ;
 
   ActivityResourceDetailPage(this.activityPackageId, this.activityTaskId,
-      {this.status})
+      {this.status, this.rejectReason})
       : _titleText = status == null ? '新增病例征集' : '病例详情',
-        _isNotPass = status == VERIFY_STATUS_REJECT;
+        _canEdit = status == VERIFY_STATUS_REJECT || status == null;
 
   @override
   State<StatefulWidget> createState() => _ActivityResourceDetailPageState();
@@ -162,7 +164,7 @@ class _ActivityResourceDetailPageState
                       padding: EdgeInsets.only(bottom: 100),
                       children: [
                         // 审核未通过展示驳回理由
-                        if (widget._isNotPass)
+                        if (!TextUtil.isEmpty(widget.rejectReason))
                           Container(
                             width: double.infinity,
                             margin:
@@ -175,7 +177,7 @@ class _ActivityResourceDetailPageState
                                   BorderRadius.all(Radius.circular(8)),
                             ),
                             child: Text(
-                              '驳回理由：病例征集信息不完整',
+                              '驳回理由：${widget.rejectReason}',
                               style: TextStyle(
                                   color: Color(0xFFFECE35), fontSize: 14),
                             ),
@@ -230,30 +232,31 @@ class _ActivityResourceDetailPageState
                         )
                       ],
                     ),
-                    Positioned(
-                      bottom: 28,
-                      child: Consumer<_ImageResourceModel>(
-                        builder: (context, _ImageResourceModel model, child) {
-                          bool enable = model.length > 0;
-                          return AceButton(
-                            type: enable
-                                ? AceButtonType.primary
-                                : AceButtonType.secondary,
-                            textColor: Colors.white,
-                            text: '提交病例',
-                            onPressed: () {
-                              if (!enable) {
-                                return;
-                              }
-                              EasyLoading.instance.flash(() async {
-                                await _model.submit();
-                                Navigator.pop(context, true);
-                              });
-                            },
-                          );
-                        },
-                      ),
-                    )
+                    if (widget._canEdit)
+                      Positioned(
+                        bottom: 28,
+                        child: Consumer<_ImageResourceModel>(
+                          builder: (context, _ImageResourceModel model, child) {
+                            bool enable = model.length > 0;
+                            return AceButton(
+                              type: enable
+                                  ? AceButtonType.primary
+                                  : AceButtonType.secondary,
+                              textColor: Colors.white,
+                              text: '提交病例',
+                              onPressed: () {
+                                if (!enable) {
+                                  return;
+                                }
+                                EasyLoading.instance.flash(() async {
+                                  await _model.submit();
+                                  Navigator.pop(context, true);
+                                });
+                              },
+                            );
+                          },
+                        ),
+                      )
                   ],
                 );
               }),
@@ -266,34 +269,38 @@ class _ActivityResourceDetailPageState
 
   Widget _pictureArea(index) {
     if (index < 0 || index >= _model.length) {
-      return GestureDetector(
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Color(0xFFD9E6F0), width: 1)),
-          child: Icon(
-            Icons.add,
-            color: ThemeColor.colorLine,
+      if (widget._canEdit) {
+        return GestureDetector(
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Color(0xFFD9E6F0), width: 1)),
+            child: Icon(
+              Icons.add,
+              color: ThemeColor.colorLine,
+            ),
           ),
-        ),
-        onTap: () async {
-          int witch = await DialogHelper.showBottom(context);
-          List<_ImageResource> selectedImg = [];
-          if (witch == 0) {
-            var result = await ImageHelper.pickSingleImage(context);
-            if (result != null) {
-              selectedImg.add(_ImageResource(0, result.path));
+          onTap: () async {
+            int witch = await DialogHelper.showBottom(context);
+            List<_ImageResource> selectedImg = [];
+            if (witch == 0) {
+              var result = await ImageHelper.pickSingleImage(context);
+              if (result != null) {
+                selectedImg.add(_ImageResource(0, result.path));
+              }
+            } else if (witch == 1) {
+              var result = await ImageHelper.pickMultiImageFromGallery(context,
+                  max: _model.enableAddImageSize);
+              selectedImg.addAll(
+                  result.map((e) => _ImageResource(0, e.path)).toList());
             }
-          } else if (witch == 1) {
-            var result = await ImageHelper.pickMultiImageFromGallery(context,
-                max: _model.enableAddImageSize);
-            selectedImg
-                .addAll(result.map((e) => _ImageResource(0, e.path)).toList());
-          }
-          _model.addImages(selectedImg);
-        },
-      );
+            _model.addImages(selectedImg);
+          },
+        );
+      } else {
+        return Container();
+      }
     }
     var res = _model.getImage(index);
     Widget imgWidget;
@@ -321,19 +328,20 @@ class _ActivityResourceDetailPageState
             },
           ),
         ),
-        Positioned(
-          right: -10,
-          top: -10,
-          child: GestureDetector(
-            child: Icon(
-              Icons.remove_circle,
-              color: Colors.red,
+        if (widget._canEdit)
+          Positioned(
+            right: -10,
+            top: -10,
+            child: GestureDetector(
+              child: Icon(
+                Icons.remove_circle,
+                color: Colors.red,
+              ),
+              onTap: () {
+                _model.remove(index);
+              },
             ),
-            onTap: () {
-              _model.remove(index);
-            },
-          ),
-        )
+          )
       ],
     );
   }
