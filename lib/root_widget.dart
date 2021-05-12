@@ -166,7 +166,7 @@ class RootWidget extends StatelessWidget {
             // 指派活动进活动详情页
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ActivityDetail(
-                  obj['activityId'], obj['activityPackageId']);
+                  obj['activityPackageId'], obj['activityType']);
             }));
           } else if (type == "") {}
         } catch (e) {}
