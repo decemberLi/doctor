@@ -264,15 +264,14 @@ class _ActivityResourceDetailPageState
                             textColor: Colors.white,
                             text: '提交病例',
                             onPressed: () {
-                              debounce(() {
-                                if (!enable) {
-                                  return;
-                                }
-                                EasyLoading.instance.flash(() async {
-                                  await _model.submit();
-                                  Navigator.pop(context, true);
-                                });
-                              })();
+                              if (!enable || EasyLoading.isShow) {
+                                print('--------------------${EasyLoading.isShow}');
+                                return;
+                              }
+                              EasyLoading.instance.flash(() async {
+                                await _model.submit();
+                                Navigator.pop(context, true);
+                              });
                             },
                           ),
                         );
@@ -335,6 +334,8 @@ class _ActivityResourceDetailPageState
     } else {
       imgWidget = Image.network(
         res.uri,
+        width: 74,
+        height: 60,
         fit: BoxFit.cover,
       );
     }
