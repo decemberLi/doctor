@@ -35,6 +35,8 @@ class _ImageResourceModel extends ChangeNotifier {
   int MAX_COUNT = 30;
   int activityId;
   int taskId;
+  String status;
+  String rejectReason;
 
   _ImageResourceModel(this.activityId, this.taskId,
       {List<_ImageResource> images}) {
@@ -112,25 +114,27 @@ class _ImageResourceModel extends ChangeNotifier {
       var entity = ActivityResourceEntity(result);
       taskId = entity.activityTaskId;
       activityId = entity.activityPackageId;
+      rejectReason = entity.rejectReason;
+      status = entity.status;
       addImages(entity.attachments
           .map((e) => _ImageResource(1, e.url, ossRes: e))
           .toList());
     });
   }
+
+  bool canEdit() => status == VERIFY_STATUS_REJECT || status == null;
 }
 
 class ActivityResourceDetailPage extends StatefulWidget {
   final String _titleText;
   final String status;
-  final bool _canEdit;
   final int activityPackageId;
   final int activityTaskId;
   final String rejectReason;
 
   ActivityResourceDetailPage(this.activityPackageId, this.activityTaskId,
       {this.status, this.rejectReason})
-      : _titleText = status == null ? '新增病例征集' : '病例详情',
-        _canEdit = status == VERIFY_STATUS_REJECT || status == null;
+      : _titleText = status == null ? '新增病例征集' : '病例详情';
 
   @override
   State<StatefulWidget> createState() => _ActivityResourceDetailPageState();
@@ -169,25 +173,30 @@ class _ActivityResourceDetailPageState
                       padding: EdgeInsets.only(bottom: 100),
                       children: [
                         // 审核未通过展示驳回理由
-                        if (widget.status == 'VERIFY_STATUS_REJECT' &&
-                            !TextUtil.isEmpty(widget.rejectReason))
-                          Container(
-                            width: double.infinity,
-                            margin:
-                                EdgeInsets.only(left: 16, right: 16, top: 10),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 25, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
-                            ),
-                            child: Text(
-                              '驳回理由：${widget.rejectReason}',
-                              style: TextStyle(
-                                  color: Color(0xFFFECE35), fontSize: 14),
-                            ),
-                          ),
+                        Consumer<_ImageResourceModel>(
+                          builder: (context, _ImageResourceModel model, child) {
+                            if(model.status != VERIFY_STATUS_REJECT){
+                              return Container();
+                            }
+                            return Container(
+                              width: double.infinity,
+                              margin:
+                                  EdgeInsets.only(left: 16, right: 16, top: 10),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 25, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                              ),
+                              child: Text(
+                                '驳回理由：${_model.rejectReason}',
+                                style: TextStyle(
+                                    color: Color(0xFFFECE35), fontSize: 14),
+                              ),
+                            );
+                          },
+                        ),
                         Container(
                           width: double.infinity,
                           margin: EdgeInsets.only(left: 16, right: 16, top: 10),
@@ -227,7 +236,8 @@ class _ActivityResourceDetailPageState
                                     itemBuilder: (context, index) {
                                       return Container(
                                         alignment: Alignment.center,
-                                        child: _pictureArea(index),
+                                        child: _pictureArea(
+                                            index, model.canEdit()),
                                       );
                                     },
                                   );
@@ -238,31 +248,30 @@ class _ActivityResourceDetailPageState
                         )
                       ],
                     ),
-                    if (widget._canEdit)
-                      Positioned(
-                        bottom: 28,
-                        child: Consumer<_ImageResourceModel>(
-                          builder: (context, _ImageResourceModel model, child) {
-                            bool enable = model.length > 0;
-                            return AceButton(
-                              type: enable
-                                  ? AceButtonType.primary
-                                  : AceButtonType.secondary,
-                              textColor: Colors.white,
-                              text: '提交病例',
-                              onPressed: () {
-                                if (!enable) {
-                                  return;
-                                }
-                                EasyLoading.instance.flash(() async {
-                                  await _model.submit();
-                                  Navigator.pop(context, true);
-                                });
-                              },
-                            );
-                          },
-                        ),
-                      )
+                    Consumer<_ImageResourceModel>(
+                      builder: (context, _ImageResourceModel model, child) {
+                        bool enable = model.length > 0;
+                        return Positioned(
+                          bottom: 28,
+                          child: AceButton(
+                            type: enable
+                                ? AceButtonType.primary
+                                : AceButtonType.secondary,
+                            textColor: Colors.white,
+                            text: '提交病例',
+                            onPressed: () {
+                              if (!enable) {
+                                return;
+                              }
+                              EasyLoading.instance.flash(() async {
+                                await _model.submit();
+                                Navigator.pop(context, true);
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    )
                   ],
                 );
               }),
@@ -273,9 +282,9 @@ class _ActivityResourceDetailPageState
         });
   }
 
-  Widget _pictureArea(index) {
+  Widget _pictureArea(index, bool canEdit) {
     if (index < 0 || index >= _model.length) {
-      if (widget._canEdit) {
+      if (canEdit) {
         return GestureDetector(
           child: Container(
             alignment: Alignment.center,
@@ -334,7 +343,7 @@ class _ActivityResourceDetailPageState
             },
           ),
         ),
-        if (widget._canEdit)
+        if (canEdit)
           Positioned(
             right: -10,
             top: -10,
