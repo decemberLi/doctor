@@ -53,7 +53,7 @@ class _ActivityState extends State<ActivityDetail> {
           .activityTaskList(widget.activityPackageId, 1);
       var list = rawData["records"];
       var allPage = rawData["pages"] as int;
-      if (allPage == _page){
+      if (allPage == _page) {
         _refreshController.loadNoData();
       }
       _list = list;
@@ -62,7 +62,7 @@ class _ActivityState extends State<ActivityDetail> {
       setState(() {
         _error = "${e.message}";
       });
-    } catch(e){
+    } catch (e) {
       setState(() {
         _error = "${e}";
       });
@@ -73,15 +73,15 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   void loadMoreData() async {
-    _page ++;
-    var rawData =
-        await API.shared.activity.activityTaskList(widget.activityPackageId, _page);
+    _page++;
+    var rawData = await API.shared.activity
+        .activityTaskList(widget.activityPackageId, _page);
     List list = rawData["records"];
     var allPage = rawData["pages"] as int;
     print("all page is - $allPage");
-    if (allPage == _page){
+    if (allPage == _page) {
       _refreshController.loadNoData();
-    }else{
+    } else {
       _refreshController.loadComplete();
     }
     setState(() {
@@ -199,7 +199,7 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   Widget buildDesc() {
-    if (_data.activityContent == null ){
+    if (_data.activityContent == null) {
       return Container();
     }
     return card(
@@ -228,7 +228,8 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   Widget buildList() {
-    Widget line(String desc, String status, int schedule, int taskId,String rejectReason) {
+    Widget line(String desc, String status, int schedule, int taskId,
+        String rejectReason) {
       Color color = Color(0xff444444);
       String text = "";
       print("$status --  status is ");
@@ -253,15 +254,18 @@ class _ActivityState extends State<ActivityDetail> {
         ),
         child: Row(
           children: [
-            Text(
-              desc,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff444444),
+            Expanded(
+              child: Text(
+                desc,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff444444),
+                ),
               ),
             ),
-            Expanded(child: Container()),
+            Padding(padding: EdgeInsets.only(left: 5)),
             Text(
               text,
               style: TextStyle(
@@ -278,8 +282,12 @@ class _ActivityState extends State<ActivityDetail> {
         onTap: () async {
           if (_data.activityType == TYPE_CASE_COLLECTION) {
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
-              return ActivityResourceDetailPage(_data.activityPackageId, taskId,
-                  status: status,rejectReason: rejectReason,);
+              return ActivityResourceDetailPage(
+                _data.activityPackageId,
+                taskId,
+                status: status,
+                rejectReason: rejectReason,
+              );
             }));
           } else {
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
@@ -299,40 +307,41 @@ class _ActivityState extends State<ActivityDetail> {
       var item = _list[i];
       String desc = "";
       if (widget.type == TYPE_CASE_COLLECTION) {
-        desc = "病例${i+1}:已上传${item["pictureNum"]}张图片";
+        desc = "病例${i + 1}:已上传${item["pictureNum"]}张图片";
       } else {
         Map<String, dynamic> illnessCase = item["illnessCase"];
-        desc = "病例${i+1}:";
+        desc = "病例${i + 1}:";
         var needLine = false;
-        if(illnessCase["sex"] != null){
+        if (illnessCase["patientName"] != null) {
+          desc += "${illnessCase["patientName"]}";
           needLine = true;
-          var name = "";
-          if (illnessCase["sex"] == 0){
-            name = "女";
-            desc += "$name";
-          }else if (illnessCase["sex"] == 1){
-            name = "男";
-            desc += "$name";
-          }
         }
 
-        if (illnessCase["age"] != null){
-          if (needLine){
+        if (illnessCase["age"] != null) {
+          if (needLine) {
             desc += "|";
           }
           desc += "${illnessCase["age"]}";
           needLine = true;
         }
 
-        if(illnessCase["patientName"] != null){
-          if (needLine){
+        if (illnessCase["sex"] != null) {
+          if (needLine) {
             desc += "|";
           }
-          desc += "${illnessCase["patientName"]}";
+          needLine = true;
+          var name = "";
+          if (illnessCase["sex"] == 0) {
+            name = "女";
+            desc += "$name";
+          } else if (illnessCase["sex"] == 1) {
+            name = "男";
+            desc += "$name";
+          }
         }
       }
-      var itemWidget =
-          line(desc, item["status"], item["schedule"], item["activityTaskId"], item["rejectReason"]);
+      var itemWidget = line(desc, item["status"], item["schedule"],
+          item["activityTaskId"], item["rejectReason"]);
       lines.add(itemWidget);
     }
 
@@ -340,7 +349,7 @@ class _ActivityState extends State<ActivityDetail> {
       return Container();
     }
     var title = "调研列表";
-    if (_data.activityType == TYPE_CASE_COLLECTION){
+    if (_data.activityType == TYPE_CASE_COLLECTION) {
       title = "病例列表";
     }
     return card(
@@ -371,20 +380,23 @@ class _ActivityState extends State<ActivityDetail> {
               color: Color(0xff888888),
               borderRadius: BorderRadius.all(Radius.circular(22)),
             ),
-            child: Text("活动于${normalDateFormate(_data.startTime)}开始",style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),),
+            child: Text(
+              "活动于${normalDateFormate(_data.startTime)}开始",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
           ),
         )
       ];
     } else if (_data.status == "EXECUTING") {
       var last = "";
       var title = "";
-      if (widget.type == TYPE_CASE_COLLECTION){
+      if (widget.type == TYPE_CASE_COLLECTION) {
         last = "剩余病例数";
         title = "填写病例信息";
-      }else{
+      } else {
         last = "剩余调研数";
         title = "填写医学调研";
       }
@@ -404,14 +416,16 @@ class _ActivityState extends State<ActivityDetail> {
           padding: EdgeInsets.only(bottom: 53),
           child: AceButton(
             text: title,
-            onPressed: () async{
-              if(_data.waitExecuteTask <= 0){
+            onPressed: () async {
+              if (_data.waitExecuteTask <= 0) {
                 EasyLoading.showToast("没有剩余调研数");
                 return;
               }
               if (_data.activityType == TYPE_CASE_COLLECTION) {
-                await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
-                  return ActivityResourceDetailPage(_data.activityPackageId,null);
+                await Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (c) {
+                  return ActivityResourceDetailPage(
+                      _data.activityPackageId, null);
                 }));
               } else {
                 await Navigator.of(context)
@@ -436,10 +450,13 @@ class _ActivityState extends State<ActivityDetail> {
               color: Color(0xff888888),
               borderRadius: BorderRadius.all(Radius.circular(22)),
             ),
-            child: Text("活动已结束",style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),),
+            child: Text(
+              "活动已结束",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
           ),
         )
       ];
@@ -534,7 +551,7 @@ class _ActivityState extends State<ActivityDetail> {
       ),
       body: WillPopScope(
         child: realBody(),
-        onWillPop: () async{
+        onWillPop: () async {
           firstGetData();
           return true;
         },
