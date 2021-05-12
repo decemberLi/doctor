@@ -24,7 +24,7 @@ import UserNotificationsUI
         AppDelegate.shared = self
         let vc = FlutterViewController()
         rootVC = vc
-        navi = UINavigationController(rootViewController: vc)
+        navi = BaseNavigationController(rootViewController: vc)
         navi?.interactivePopGestureRecognizer?.delegate = self
         navi?.setNavigationBarHidden(true, animated: false)
         window = UIWindow()

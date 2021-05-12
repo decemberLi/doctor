@@ -13,6 +13,7 @@
 		6A0B7C74259320CD0018D252 /* ShareVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0B7C73259320CD0018D252 /* ShareVC.swift */; };
 		6A0B7C762593219E0018D252 /* ShareVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A0B7C752593219E0018D252 /* ShareVC.xib */; };
 		6A0B7CCA25934D3C0018D252 /* color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0B7CC925934D3C0018D252 /* color.swift */; };
+		6A33BA52264BA4530080D880 /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A33BA51264BA4530080D880 /* BaseNavigationController.swift */; };
 		6A3A470925A86FFF0025C014 /* UIViewCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3A470825A86FFF0025C014 /* UIViewCorner.swift */; };
 		6A612F3425F636BC00D14E55 /* modelType.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A612F3125F636BC00D14E55 /* modelType.plist */; };
 		6A612F3525F636BC00D14E55 /* ocrType.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A612F3225F636BC00D14E55 /* ocrType.plist */; };
@@ -55,6 +56,7 @@
 		6A0B7C73259320CD0018D252 /* ShareVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareVC.swift; sourceTree = "<group>"; };
 		6A0B7C752593219E0018D252 /* ShareVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareVC.xib; sourceTree = "<group>"; };
 		6A0B7CC925934D3C0018D252 /* color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = color.swift; sourceTree = "<group>"; };
+		6A33BA51264BA4530080D880 /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
 		6A3A470825A86FFF0025C014 /* UIViewCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewCorner.swift; sourceTree = "<group>"; };
 		6A48EB212599C8E00086F5F2 /* RunnerApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerApp.entitlements; sourceTree = "<group>"; };
 		6A612F3125F636BC00D14E55 /* modelType.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = modelType.plist; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 				6A3A470825A86FFF0025C014 /* UIViewCorner.swift */,
 				6ABA8A8825C79DFC0090BC4C /* WebVC.swift */,
 				6ABA8A8925C79DFC0090BC4C /* WebVC.xib */,
+				6A33BA51264BA4530080D880 /* BaseNavigationController.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -370,6 +373,7 @@
 				6A655EB325A461F6003251FB /* RecordsVC.swift in Sources */,
 				6ABA8A8A25C79DFC0090BC4C /* WebVC.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				6A33BA52264BA4530080D880 /* BaseNavigationController.swift in Sources */,
 				6A0B7C74259320CD0018D252 /* ShareVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
