@@ -22,6 +22,16 @@ class GuidePage extends StatefulWidget {
 class _GuidePageState extends State<GuidePage> {
   int curIndex = 0;
   double _height = Adapt.screenH();
+  PageController _controller = PageController();
+  @override
+  void initState() {
+    _controller.addListener(() {
+      setState(() {
+        curIndex = _controller.page.floor();
+      });
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,19 +39,19 @@ class _GuidePageState extends State<GuidePage> {
       child: Stack(
         alignment: Alignment(0, 0.87),
         children: <Widget>[
-          Swiper(
-              itemBuilder: (ctx, index) => Image.asset(
-                  'assets/images/${GuidePage.images[index]}',
-                  fit: BoxFit.cover),
-              itemCount: GuidePage.images.length,
-              loop: false,
-              pagination: new SwiperPagination(
-                  margin: EdgeInsets.only(bottom: _height * 0.02)),
-              onIndexChanged: (index) {
-                setState(() {
-                  curIndex = index;
-                });
-              }),
+          PageView.builder(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (ctx, index) => Image.asset(
+              'assets/images/${GuidePage.images[index]}',
+              fit: BoxFit.cover,
+            ),
+            itemCount: GuidePage.images.length,
+            controller: _controller,
+          ),
+          Positioned(child: Indicator(
+            controller: _controller,
+            itemCount: GuidePage.images.length,
+          )),
           Offstage(
             offstage: curIndex != GuidePage.images.length - 1,
             child: Container(
@@ -73,5 +83,63 @@ class _GuidePageState extends State<GuidePage> {
         ],
       ),
     ));
+  }
+}
+
+class Indicator extends StatelessWidget {
+  Indicator({
+    this.controller,
+    this.itemCount: 0,
+  }) : assert(controller != null);
+
+  /// PageView的控制器
+  final PageController controller;
+
+  /// 指示器的个数
+  final int itemCount;
+
+  /// 普通的颜色
+  final Color normalColor = Colors.white;
+
+  /// 选中的颜色
+  final Color selectedColor = Colors.blue;
+
+  /// 点的大小
+  final double size = 8.0;
+
+  /// 点的间距
+  final double spacing = 4.0;
+
+  /// 点的Widget
+  Widget _buildIndicator(
+      int index, int pageCount, double dotSize, double spacing) {
+    // 是否是当前页面被选中
+    bool isCurrentPageSelected = index ==
+        (controller.page != null ? controller.page.round() % pageCount : 0);
+
+    return new Container(
+      height: size,
+      width: size + (2 * spacing),
+      child: new Center(
+        child: new Material(
+          color: isCurrentPageSelected ? selectedColor : normalColor,
+          type: MaterialType.circle,
+          child: new Container(
+            width: dotSize,
+            height: dotSize,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: new List<Widget>.generate(itemCount, (int index) {
+        return _buildIndicator(index, itemCount, size, spacing);
+      }),
+    );
   }
 }
