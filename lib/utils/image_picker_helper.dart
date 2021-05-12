@@ -110,7 +110,12 @@ class ImageHelper {
         await EasyLoading.instance.flash(() async {
           try {
             for (var element in list) {
-              originFiles.add(await compressImage(await element.file));
+              if (Platform.isAndroid){
+                originFiles.add(await compressImage(await element.file));
+              }else{
+                originFiles.add(await element.file);
+              }
+
             }
           } catch (e) {
             throw '文件不存在';
