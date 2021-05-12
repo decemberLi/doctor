@@ -1,6 +1,7 @@
 import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
+import 'package:doctor/utils/pdf_Viewer_adapter.dart';
 import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +79,7 @@ class AuthStatusPassPage extends StatelessWidget {
                 onTap: () {
                   EasyLoading.instance.flash(() async {
                     var ret = await _getPdfFileUrl();
-                    MedcloudsNativeApi.instance().openFile(ret, title: '协议');
+                    PdfViewerAdapter.openFile(ret,title:'协议');
                   });
                 },
               )
