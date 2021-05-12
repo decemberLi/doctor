@@ -266,7 +266,7 @@ class _MessageListPageState extends State<MessageListPage> {
         "learnPlanId": entity.params['learnPlanId'],
         'from': 'MESSAGE_CENTER'
       });
-    } else if (type == 'REJECT_ACTIVITY_TASK') {
+    } else if (type == 'ACTIVITY') {
       if (entity.params['activityType'] == 'CASE_COLLECTION') {
         // go 病例驳回 资料详情
         Navigator.push(context, MaterialPageRoute(builder: (context) {

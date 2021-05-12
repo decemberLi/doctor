@@ -20,7 +20,8 @@ class MessageCenterEntity {
       this.interactiveCount,
       this.total,
       this.likeCount,
-      this.commentCount);
+      this.commentCount,
+      this.activityCount);
 
   factory MessageCenterEntity.create() =>
       _$MessageCenterEntityFromJson(Map<String, dynamic>());
