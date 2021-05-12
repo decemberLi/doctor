@@ -153,6 +153,7 @@ class RootWidget extends StatelessWidget {
                   obj['activityPackageId'],
                   obj['activityTaskId'],
                   status: VERIFY_STATUS_REJECT,
+                  rejectReason: obj['rejectReason'],
                 );
               }));
             } else if (obj['activityType'] == 'MEDICAL_SURVEY') {

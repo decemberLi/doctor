@@ -274,6 +274,7 @@ class _MessageListPageState extends State<MessageListPage> {
             entity.params['activityPackageId'],
             entity.params['activityTaskId'],
             status: VERIFY_STATUS_REJECT,
+            rejectReason: entity.params['rejectReason'],
           );
         }));
       } else if (entity.params['activityType'] == 'MEDICAL_SURVEY') {

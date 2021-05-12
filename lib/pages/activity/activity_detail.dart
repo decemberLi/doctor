@@ -228,7 +228,7 @@ class _ActivityState extends State<ActivityDetail> {
   }
 
   Widget buildList() {
-    Widget line(String desc, String status, int schedule, int taskId) {
+    Widget line(String desc, String status, int schedule, int taskId,String rejectReason) {
       Color color = Color(0xff444444);
       String text = "";
       print("$status --  status is ");
@@ -279,7 +279,7 @@ class _ActivityState extends State<ActivityDetail> {
           if (_data.activityType == TYPE_CASE_COLLECTION) {
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
               return ActivityResourceDetailPage(_data.activityPackageId, taskId,
-                  status: status);
+                  status: status,rejectReason: rejectReason,);
             }));
           } else {
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
@@ -332,7 +332,7 @@ class _ActivityState extends State<ActivityDetail> {
         }
       }
       var itemWidget =
-          line(desc, item["status"], item["schedule"], item["activityTaskId"]);
+          line(desc, item["status"], item["schedule"], item["activityTaskId"], item["rejectReason"]);
       lines.add(itemWidget);
     }
 
