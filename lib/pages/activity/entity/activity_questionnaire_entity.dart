@@ -15,7 +15,8 @@ class ActivityQuestionnaireEntity {
       ..activityTaskId = json["activityTaskId"] as int
       ..resourceId = json["resourceId"] as int
       ..questionnaires = (json["questionnaires"] as List)
-          .map((e) => ActivityQuestionnairesSubEntity.fromJson(e)).toList()
+          .map((e) => ActivityQuestionnairesSubEntity.fromJson(e))
+          .toList()
       ..illnessCase = ActivityIllnessCaseEntity.fromJson(json["illnessCase"]);
   }
 }
@@ -29,6 +30,7 @@ class ActivityQuestionnairesSubEntity {
   String status;
   int sort;
   int submitTime;
+  int openTime;
   String rejectReason;
 
   ActivityQuestionnairesSubEntity();
@@ -43,7 +45,8 @@ class ActivityQuestionnairesSubEntity {
       ..status = json["status"] as String
       ..sort = json["sort"] as int
       ..submitTime = json["submitTime"] as int
-      ..rejectReason = json["rejectReason"] as String;
+      ..rejectReason = json["rejectReason"] as String
+      ..openTime = json["openTime"] as int;
   }
 }
 
@@ -72,17 +75,18 @@ class ActivityIllnessCaseEntity {
       ..schedule = json["schedule"]
       ..completeTime = json["completeTime"];
   }
-  Map<String,dynamic> toJson(){
+
+  Map<String, dynamic> toJson() {
     return {
-      "showFields" : showFields,
-      "patientName":patientName,
-      "patientCode":patientCode,
-      "age":age,
-      "sex":sex,
-      "hospital":hospital,
-      "status":status,
-      "schedule":schedule,
-      "completeTime":completeTime,
+      "showFields": showFields,
+      "patientName": patientName,
+      "patientCode": patientCode,
+      "age": age,
+      "sex": sex,
+      "hospital": hospital,
+      "status": status,
+      "schedule": schedule,
+      "completeTime": completeTime,
     };
   }
 }

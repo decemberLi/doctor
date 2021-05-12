@@ -233,7 +233,7 @@ class _ActivityState extends State<ActivityDetail> {
       String text = "";
       print("$status --  status is ");
       if (schedule != null && schedule < 100) {
-        text = "$schedule%";
+        text = "完成度$schedule%";
       } else if (status == "WAIT_VERIFY") {
         text = "待审核";
       } else if (status == "REJECT") {
@@ -275,20 +275,21 @@ class _ActivityState extends State<ActivityDetail> {
       );
       return GestureDetector(
         child: content,
-        onTap: () {
+        onTap: () async {
           if (_data.activityType == TYPE_CASE_COLLECTION) {
-            Navigator.of(context).push(MaterialPageRoute(builder: (c) {
+            await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
               return ActivityResourceDetailPage(_data.activityPackageId, taskId,
                   status: status);
             }));
           } else {
-            Navigator.of(context).push(MaterialPageRoute(builder: (c) {
+            await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
               return ActivityResearch(
                 _data.activityPackageId,
                 activityTaskId: taskId,
               );
             }));
           }
+          firstGetData();
         },
       );
     }

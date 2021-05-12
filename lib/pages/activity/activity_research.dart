@@ -1,5 +1,6 @@
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/utils/data_format_util.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
@@ -264,21 +265,30 @@ class _ActivityResearch extends State<ActivityResearch>
   Widget buildPlanItem(
       int resourceID, ActivityQuestionnairesSubEntity item, bool isEnd) {
     ActivityQuestionnaireEntity data = _data;
+    var timeText = "${dateFormat(item.openTime)}开启填写";
     var statusText = "未开启";
     var statusColor = Color(0xffDEDEE1);
     var borderColor = Color(0xff888888);
     if (item.status == "PROCEEDING") {
+      timeText = "";
       statusText = "待完成";
       statusColor = Color(0xff489DFE);
       borderColor = Color(0xff888888);
     } if (item.status == "WAIT_VERIFY") {
+      timeText = "";
       statusText = "待审核";
       statusColor = Color(0xff489DFE);
       borderColor = Color(0xff888888);
     } else if (item.status == "COMPLETE") {
+      timeText = "${dateFormat(item.submitTime)}完成";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
+    }else if (item .status == "REJECT"){
+      timeText = "";
+      statusText = "待完成";
+      statusColor = Color(0xff489DFE);
+      borderColor = Color(0xff888888);
     }
     var statusWidget = Container(
       margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
@@ -295,10 +305,6 @@ class _ActivityResearch extends State<ActivityResearch>
         ),
       ),
     );
-    var timeText = "";
-    if (item.submitTime != null) {
-      timeText = "${RelativeDateFormat.format(item.submitTime)}完成";
-    }
 
     var content = Stack(
       children: [
@@ -346,6 +352,23 @@ class _ActivityResearch extends State<ActivityResearch>
         ),
       ],
     );
+    var bottom = Column(
+      children: [
+        if (item.rejectReason != null)
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.only(bottom: 5),
+            child: Text(
+              item.rejectReason,
+              style: TextStyle(
+                color: Color(0xffFECE35),
+                fontSize: 12,
+              ),
+            ),
+          ),
+        content,
+      ],
+    );
     var all = Container(
       margin: EdgeInsets.fromLTRB(0, 0, 25, 0),
       child: Column(
@@ -379,17 +402,6 @@ class _ActivityResearch extends State<ActivityResearch>
               ),
             ],
           ),
-          if (item.rejectReason != null)
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 5),
-              child: Text(
-                item.rejectReason,
-                style: TextStyle(
-                  color: Color(0xffFECE35),
-                  fontSize: 12,
-                ),
-              ),
-            ),
           Container(
             margin: EdgeInsets.fromLTRB(25, 0, 0, 0),
             padding: EdgeInsets.fromLTRB(25, 5, 0, 20),
@@ -402,7 +414,7 @@ class _ActivityResearch extends State<ActivityResearch>
                       ),
                     ),
                   ),
-            child: content,
+            child: bottom,
           ),
         ],
       ),
