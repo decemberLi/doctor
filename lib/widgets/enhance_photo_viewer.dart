@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -53,28 +54,41 @@ class _PhotoViewGalleryScreenState extends State<EnhancePhotoViewer> {
             bottom: 0,
             right: 0,
             child: Container(
-                child: PhotoViewGallery.builder(
-              scrollPhysics: const BouncingScrollPhysics(),
-              builder: (BuildContext context, int index) {
-                var res = widget.images[index];
-                return PhotoViewGalleryPageOptions(
-                  imageProvider: res.type == 0 ? FileImage(File(res.uri)):NetworkImage(res.uri),
-                  heroAttributes: widget.heroTag.isNotEmpty
-                      ? PhotoViewHeroAttributes(tag: widget.heroTag)
-                      : null,
-                );
-              },
-              itemCount: widget.images.length,
-              // loadingBuilder: ,
-              backgroundDecoration: null,
-              pageController: widget.controller,
-              enableRotation: true,
-              onPageChanged: (index) {
-                setState(() {
-                  currentIndex = index;
-                });
-              },
-            )),
+              child: PhotoViewGallery.builder(
+                scrollPhysics: const BouncingScrollPhysics(),
+                builder: (BuildContext context, int index) {
+                  var res = widget.images[index];
+                  return PhotoViewGalleryPageOptions(
+                    imageProvider: res.type == 0
+                        ? FileImage(File(res.uri))
+                        : CachedNetworkImageProvider(res.uri,
+                            errorListener: () {
+                            return (context, url, error) => Icon(Icons.error);
+                          }),
+                    heroAttributes: widget.heroTag.isNotEmpty
+                        ? PhotoViewHeroAttributes(tag: widget.heroTag)
+                        : null,
+                    onTapDown: (  BuildContext context,
+                        TapDownDetails details,
+                        PhotoViewControllerValue controllerValue,){
+                      Navigator.pop(context);
+                    }
+                  );
+                },
+                itemCount: widget.images.length,
+                // loadingBuilder: ,
+                backgroundDecoration: null,
+                pageController: widget.controller,
+                enableRotation: true,
+                onPageChanged: (index) {
+                  setState(
+                    () {
+                      currentIndex = index;
+                    },
+                  );
+                },
+              ),
+            ),
           ),
           Positioned(
             //图片index显示

@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:common_utils/common_utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:doctor/http/activity.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/oss_file_entity.dart';
@@ -332,11 +332,30 @@ class _ActivityResourceDetailPageState
         fit: BoxFit.cover,
       );
     } else {
-      imgWidget = Image.network(
-        res.uri,
+      imgWidget = CachedNetworkImage(
+        imageUrl: res.uri,
         width: 74,
         height: 60,
         fit: BoxFit.cover,
+        progressIndicatorBuilder: (
+          BuildContext context,
+          String url,
+          DownloadProgress progress,
+        ) {
+          return Container(
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  value: progress.progress,
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
+          );
+        },
+        errorWidget: (context, url, error) => Icon(Icons.error),
       );
     }
     return Stack(
