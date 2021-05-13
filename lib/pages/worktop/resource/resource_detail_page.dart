@@ -96,7 +96,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
           widget.meetingEndTime, widget.taskDetailId, widget.learnPlanId);
     }
     if (data.contentType == 'ATTACHMENT') {
-      return Attacement(data, openTimer, closeTimer, _clickWebView);
+      return AttacementWidget(data, openTimer, closeTimer, _clickWebView);
     }
     if (data.resourceType == 'QUESTIONNAIRE') {
       return QuestionPage(data);

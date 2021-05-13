@@ -7,35 +7,49 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class Attacement extends StatelessWidget {
+class AttacementWidget extends StatefulWidget {
   final ResourceModel data;
   final openTimer;
   final closeTimer;
   final _clickWebView;
 
-  Attacement(this.data, this.openTimer, this.closeTimer, this._clickWebView);
+  AttacementWidget(
+      this.data, this.openTimer, this.closeTimer, this._clickWebView);
+
+  @override
+  State<StatefulWidget> createState() => Attacement();
+}
+
+class Attacement extends State<AttacementWidget> with WidgetsBindingObserver {
 
   _openFile(BuildContext context) async {
     var files = await CommonService.getFile({
-      'ossIds': [data.attachmentOssId]
+      'ossIds': [widget.data.attachmentOssId]
     });
     if (files.isEmpty) {
       EasyLoading.showToast('打开失败');
     }
     //计时器
-    openTimer();
+    widget.openTimer();
     await PdfViewerAdapter.openFile(
       files[0]['tmpUrl'],
-      title: data.title ?? data.resourceName,
+      title: widget.data.title ?? widget.data.resourceName,
     );
-    closeTimer();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if(state == AppLifecycleState.resumed){
+      widget.closeTimer();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _clickWebView();
+        widget._clickWebView();
       },
       child: Container(
         color: Colors.transparent,
@@ -53,7 +67,7 @@ class Attacement extends StatelessWidget {
               height: 16,
             ),
             Text(
-              data.title ?? data.resourceName,
+              widget.data.title ?? widget.data.resourceName,
               style: TextStyle(
                 color: ThemeColor.colorFF444444,
                 fontSize: 16,
