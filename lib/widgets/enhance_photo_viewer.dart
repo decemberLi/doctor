@@ -64,7 +64,6 @@ class _PhotoViewGalleryScreenState extends State<EnhancePhotoViewer> {
                           ? Image(image: FileImage(File(res.uri)))
                           : CachedNetworkImage(
                           imageUrl: res.uri,
-                          fit: BoxFit.cover,
                           filterQuality: FilterQuality.high,
                           cacheKey: '${res.uri.hashCode}',
                           progressIndicatorBuilder: (
