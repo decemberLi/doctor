@@ -59,11 +59,8 @@ class _ImageResourceModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  int imagesSize(){
-    if(taskId == null){
-      return length + 1;
-    }
-    return length < MAX_COUNT ? length + (canEdit() ?1:0) : length;
+  int imagesSize() {
+    return length < MAX_COUNT ? length + 1 : length;
   }
 
   int get enableAddImageSize => MAX_COUNT - length;
@@ -270,7 +267,6 @@ class _ActivityResourceDetailPageState
                             text: '提交病例',
                             onPressed: () {
                               if (!enable || EasyLoading.isShow) {
-                                print('--------------------${EasyLoading.isShow}');
                                 return;
                               }
                               EasyLoading.instance.flash(() async {
@@ -342,6 +338,8 @@ class _ActivityResourceDetailPageState
         width: 74,
         height: 60,
         fit: BoxFit.cover,
+        memCacheWidth:74,
+        memCacheHeight: 60,
         progressIndicatorBuilder: (
           BuildContext context,
           String url,
@@ -361,7 +359,7 @@ class _ActivityResourceDetailPageState
                 ),
               ),
             ),
-            onTap: (){},
+            onTap: () {},
           );
         },
         errorWidget: (context, url, error) => Icon(Icons.error),
