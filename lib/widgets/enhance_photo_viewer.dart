@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class ImageResources {
@@ -58,21 +58,43 @@ class _PhotoViewGalleryScreenState extends State<EnhancePhotoViewer> {
                 scrollPhysics: const BouncingScrollPhysics(),
                 builder: (BuildContext context, int index) {
                   var res = widget.images[index];
-                  return PhotoViewGalleryPageOptions(
-                    imageProvider: res.type == 0
-                        ? FileImage(File(res.uri))
-                        : CachedNetworkImageProvider(res.uri,
-                            errorListener: () {
-                            return (context, url, error) => Icon(Icons.error);
-                          }),
-                    heroAttributes: widget.heroTag.isNotEmpty
-                        ? PhotoViewHeroAttributes(tag: widget.heroTag)
-                        : null,
-                    onTapDown: (  BuildContext context,
-                        TapDownDetails details,
-                        PhotoViewControllerValue controllerValue,){
-                      Navigator.pop(context);
-                    }
+                  return PhotoViewGalleryPageOptions.customChild(
+                    child: GestureDetector(
+                      child: res.type == 0
+                          ? Image(image: FileImage(File(res.uri)))
+                          : CachedNetworkImage(
+                          imageUrl: res.uri,
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
+                          cacheKey: '${res.uri.hashCode}',
+                          progressIndicatorBuilder: (
+                              BuildContext context,
+                              String url,
+                              DownloadProgress progress,
+                              ) {
+                            return GestureDetector(
+                              child: Container(
+                                color: ThemeColor.colorFFEDEDED,
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      value: progress.progress,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onTap: () {},
+                            );
+                          },
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error)),
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                    ),
                   );
                 },
                 itemCount: widget.images.length,

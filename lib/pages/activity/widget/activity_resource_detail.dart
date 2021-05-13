@@ -1,4 +1,3 @@
-import 'dart:collection';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:doctor/http/activity.dart';
@@ -8,9 +7,9 @@ import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/entity/activity_resources_entity.dart';
 import 'package:doctor/route/fade_route.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/utils/debounce.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/utils/platform_utils.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/enhance_photo_viewer.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class _ImageResource {
   // 0 is local path, 1 is url
@@ -340,6 +338,8 @@ class _ActivityResourceDetailPageState
         fit: BoxFit.cover,
         memCacheWidth:74,
         memCacheHeight: 60,
+        filterQuality: FilterQuality.high,
+        cacheKey: '${res.uri.hashCode}',
         progressIndicatorBuilder: (
           BuildContext context,
           String url,
