@@ -21,7 +21,6 @@ class AttacementWidget extends StatefulWidget {
 }
 
 class Attacement extends State<AttacementWidget> with WidgetsBindingObserver {
-
   _openFile(BuildContext context) async {
     var files = await CommonService.getFile({
       'ossIds': [widget.data.attachmentOssId]
@@ -40,9 +39,22 @@ class Attacement extends State<AttacementWidget> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if(state == AppLifecycleState.resumed){
+    print('--------------------$state');
+    if (state == AppLifecycleState.resumed) {
       widget.closeTimer();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
