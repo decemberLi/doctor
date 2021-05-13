@@ -140,10 +140,7 @@ class ActivityWidget extends StatelessWidget {
                         ],
                       ),
                     )),
-                    Padding(
-                      padding: EdgeInsets.only(right: 10),
-                      child: progressWidget(model.data),
-                    )
+                    progressWidget(model.data)
                   ],
                 )
               ],
@@ -182,13 +179,12 @@ class ActivityWidget extends StatelessWidget {
         percent = 1;
       }
       return Container(
-        width: 60,
-        margin: EdgeInsets.only(left: 16),
+        width: 108,
         child: Column(
           children: [
             CircularPercentIndicator(
               radius: 60.0,
-              lineWidth: "HISTORY" == 'HISTORY' ? 5 : 8.0,
+              lineWidth: 8.0,
               animation: false,
               percent: percent,
               center: Text('${_data.schedule}%'),
@@ -210,8 +206,7 @@ class ActivityWidget extends StatelessWidget {
     }
 
     return Container(
-      width: 60,
-      margin: EdgeInsets.only(left: 16),
+      width: 108,
       child: Column(
         children: [
           Container(
