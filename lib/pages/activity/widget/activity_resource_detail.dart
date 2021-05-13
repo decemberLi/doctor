@@ -59,7 +59,12 @@ class _ImageResourceModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get imagesSize => length < MAX_COUNT ? length + 1 : length;
+  int imagesSize(){
+    if(taskId == null){
+      return length + 1;
+    }
+    return length < MAX_COUNT ? length + (canEdit() ?1:0) : length;
+  }
 
   int get enableAddImageSize => MAX_COUNT - length;
 
@@ -123,7 +128,7 @@ class _ImageResourceModel extends ChangeNotifier {
     });
   }
 
-  bool canEdit() => status == VERIFY_STATUS_REJECT || status == null;
+  bool canEdit() => status == VERIFY_STATUS_REJECT || taskId == null;
 }
 
 class ActivityResourceDetailPage extends StatefulWidget {
@@ -233,7 +238,7 @@ class _ActivityResourceDetailPageState
                                       crossAxisCount: 3,
                                       childAspectRatio: 1.0,
                                     ),
-                                    itemCount: _model.imagesSize,
+                                    itemCount: _model.imagesSize(),
                                     itemBuilder: (context, index) {
                                       return Container(
                                         alignment: Alignment.center,
@@ -342,17 +347,21 @@ class _ActivityResourceDetailPageState
           String url,
           DownloadProgress progress,
         ) {
-          return Container(
-            child: Center(
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  value: progress.progress,
-                  strokeWidth: 2,
+          return GestureDetector(
+            child: Container(
+              color: ThemeColor.colorFFEDEDED,
+              child: Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    value: progress.progress,
+                    strokeWidth: 2,
+                  ),
                 ),
               ),
             ),
+            onTap: (){},
           );
         },
         errorWidget: (context, url, error) => Icon(Icons.error),
