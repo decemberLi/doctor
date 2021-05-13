@@ -115,7 +115,7 @@ class ImageHelper {
               }else{
                 originFiles.add(await element.file);
               }
-
+              await Future.delayed(Duration(milliseconds: 33));
             }
           } catch (e) {
             throw '文件不存在';
