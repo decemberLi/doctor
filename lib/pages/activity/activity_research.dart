@@ -255,7 +255,10 @@ class _ActivityResearch extends State<ActivityResearch>
   Widget buildPlanItem(
       int resourceID, ActivityQuestionnairesSubEntity item, bool isEnd) {
     ActivityQuestionnaireEntity data = _data;
-    var timeText = "${dateFormat(item.openTime)}开启填写";
+    var timeText = "";
+    if (item.openTime != null){
+      timeText = "${normalDateFormate(item.openTime)}开启填写";
+    }
     var statusText = "未开启";
     var statusColor = Color(0xffDEDEE1);
     var borderColor = Color(0xff888888);

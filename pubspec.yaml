@@ -32,9 +32,9 @@ dependencies:
   shared_preferences: ^2.0.5
   # 下拉刷新 https://github.com/peng8350/flutter_pulltorefresh
   pull_to_refresh: 1.6.4-nullsafety.1
-#  pull_to_refresh:
-#    git:
-#      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_pulltorefresh.git
+  #  pull_to_refresh:
+  #    git:
+  #      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/flutter_pulltorefresh.git
   # State
   provider: ^5.0.0
   # 常用工具 https://github.com/Sky24n/common_utils
@@ -109,6 +109,9 @@ dependencies:
   cached_network_image: ^3.0.0
 
 dependency_overrides:
+  photo_manager:
+   git:
+    url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/flutter_photo_manager.git
 #  http_parser: 4.0.0
 #  plugin_platform_interface: 2.0.0
 dev_dependencies:
