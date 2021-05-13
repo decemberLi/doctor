@@ -1,6 +1,7 @@
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/utils/data_format_util.dart';
+import 'package:doctor/utils/debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
@@ -403,11 +404,11 @@ class _ActivityResearch extends State<ActivityResearch>
       ),
     );
     return GestureDetector(
-      onTap: () {
+      onTap: debounce(() {
         var url =
             "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market&packageStatus=${status}&activityTaskId=${activityTaskId}";
         MedcloudsNativeApi.instance().openWebPage(url);
-      },
+      }),
       child: all,
     );
   }
