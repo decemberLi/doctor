@@ -338,6 +338,8 @@ class _ActivityResourceDetailPageState
         width: 74,
         height: 60,
         fit: BoxFit.cover,
+        memCacheWidth:74,
+        memCacheHeight: 60,
         progressIndicatorBuilder: (
           BuildContext context,
           String url,
