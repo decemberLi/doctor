@@ -176,8 +176,8 @@ class _ActivityState extends State<ActivityDetail> {
               Expanded(child: Container()),
               IconButton(
                 icon: showInfo
-                    ? Icon(Icons.arrow_drop_down)
-                    : Icon(Icons.arrow_drop_up),
+                    ? Icon(Icons.arrow_drop_up)
+                    : Icon(Icons.arrow_drop_down),
                 onPressed: () {
                   setState(() {
                     showInfo = !showInfo;

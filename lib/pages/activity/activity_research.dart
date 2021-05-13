@@ -405,6 +405,10 @@ class _ActivityResearch extends State<ActivityResearch>
     );
     return GestureDetector(
       onTap: debounce(() {
+        if(status == "END") {
+          EasyLoading.showToast("活动已过期，无法开启此问卷");
+          return;
+        }
         var url =
             "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market&packageStatus=${status}&activityTaskId=${activityTaskId}";
         MedcloudsNativeApi.instance().openWebPage(url);
