@@ -101,6 +101,9 @@ class _WorktopPageState extends State<WorktopPage>
   }
 
   Widget bodyWidget(WorktopPageEntity entity) {
+    if (entity == null){
+      return Container();
+    }
     var learnPlanListCount = entity?.learnPlanList?.length ?? 0;
     var activityCount = entity?.activityPackages?.length ?? 0;
     _buildSliverBuildDelegate() {

@@ -109,14 +109,25 @@ class ImageHelper {
         List<File> originFiles = [];
         await EasyLoading.instance.flash(() async {
           try {
+            List<Future> fence = [];
             for (var element in list) {
-              if (Platform.isAndroid){
+              if (Platform.isAndroid) {
                 originFiles.add(await compressImage(await element.file));
-              }else{
-                originFiles.add(await element.file);
+              } else {
+                var action = element.file
+                  ..then((value) {
+                    originFiles.add(value);
+                  });
+                fence.add(action);
+                if (fence.length == 5) {
+                  await Future.wait(fence);
+                  await Future.delayed(Duration(milliseconds: 40));
+                  fence.clear();
+                }
               }
-              await Future.delayed(Duration(milliseconds: 33));
             }
+            await Future.wait(fence);
+            fence.clear();
           } catch (e) {
             throw '文件不存在';
           }
