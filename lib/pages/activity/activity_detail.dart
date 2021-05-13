@@ -58,6 +58,11 @@ class _ActivityState extends State<ActivityDetail> {
       }
       _list = list;
       _page = 1;
+      if (_list.length >= 10){
+        _refreshController.loadComplete();
+      }else{
+        _refreshController.loadNoData();
+      }
     } on DioError catch (e) {
       setState(() {
         _error = "${e.message}";
