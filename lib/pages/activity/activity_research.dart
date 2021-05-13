@@ -269,7 +269,7 @@ class _ActivityResearch extends State<ActivityResearch>
       statusColor = Color(0xff489DFE);
       borderColor = Color(0xff888888);
     }else if (item.status == "COMPLETE" || item.status == "WAIT_VERIFY") {
-      timeText = "${dateFormat(item.submitTime)}完成";
+      timeText = "${normalDateFormate(item.submitTime)}完成";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
