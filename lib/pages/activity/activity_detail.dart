@@ -53,16 +53,14 @@ class _ActivityState extends State<ActivityDetail> {
           .activityTaskList(widget.activityPackageId, 1);
       var list = rawData["records"];
       var allPage = rawData["pages"] as int;
+      _page = 1;
       if (allPage == _page) {
         _refreshController.loadNoData();
+      }else{
+        _refreshController.loadComplete();
       }
       _list = list;
-      _page = 1;
-      if (_list.length >= 10){
-        _refreshController.loadComplete();
-      }else{
-        _refreshController.loadNoData();
-      }
+
     } on DioError catch (e) {
       setState(() {
         _error = "${e.message}";
