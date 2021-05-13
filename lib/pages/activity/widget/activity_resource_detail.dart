@@ -267,7 +267,6 @@ class _ActivityResourceDetailPageState
                             text: '提交病例',
                             onPressed: () {
                               if (!enable || EasyLoading.isShow) {
-                                print(
                                 return;
                               }
                               EasyLoading.instance.flash(() async {
