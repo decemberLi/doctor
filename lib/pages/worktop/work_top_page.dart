@@ -60,7 +60,7 @@ class _WorktopPageState extends State<WorktopPage>
   @override
   void didPopNext() async {
     UserInfoViewModel model =
-    Provider.of<UserInfoViewModel>(context, listen: false);
+        Provider.of<UserInfoViewModel>(context, listen: false);
     await model.queryDoctorInfo();
     _model.initData();
     super.didPopNext();
@@ -76,9 +76,9 @@ class _WorktopPageState extends State<WorktopPage>
           child: Consumer<WorkTopViewModel>(
             builder: (context, model, child) {
               WorktopPageEntity entity =
-              model?.list != null && model?.list.length >= 1
-                  ? model.list[0]
-                  : null;
+                  model?.list != null && model?.list.length >= 1
+                      ? model.list[0]
+                      : null;
               return SmartRefresher(
                 physics: AlwaysScrollableScrollPhysics(),
                 header: ClassicHeader(
@@ -86,7 +86,7 @@ class _WorktopPageState extends State<WorktopPage>
                   failedIcon: const Icon(Icons.error, color: Colors.white),
                   completeIcon: const Icon(Icons.done, color: Colors.white),
                   idleIcon:
-                  const Icon(Icons.arrow_downward, color: Colors.white),
+                      const Icon(Icons.arrow_downward, color: Colors.white),
                   releaseIcon: const Icon(Icons.refresh, color: Colors.white),
                 ),
                 onRefresh: model.refresh,
@@ -106,36 +106,38 @@ class _WorktopPageState extends State<WorktopPage>
     _buildSliverBuildDelegate() {
       return SliverChildBuilderDelegate((context, index) {
         var item;
-        if(index >= activityCount){
-          item = entity.learnPlanList[index-activityCount];
-        }else{
+        if (index >= activityCount) {
+          item = entity.learnPlanList[index - activityCount];
+        } else {
           item = entity.activityPackages[index];
         }
 
         return Container(
           color: Color(0xFFF3F5F8),
-          child: index >= activityCount ? LearnListItemWiget(
-            item,
-            'LEARNING',
-                () {
-              _model.initData();
-            },
-                () async {
-              await Navigator.of(context).pushNamed(
-                RouteManager.LEARN_DETAIL,
-                arguments: {
-                  'learnPlanId': item.learnPlanId,
-                  'listStatus': 'LEARNING',
-                  'from': 'work_top',
-                },
-              );
-              // 无脑刷新数据，从详情页回来后不刷新数据
-              // _model.initData();
-            },
-          ) : Container(
-            margin: EdgeInsets.only(left: 16,right: 16,bottom: 10),
-            child: ActivityWidget(item),
-          ),
+          child: index >= activityCount
+              ? LearnListItemWiget(
+                  item,
+                  'LEARNING',
+                  () {
+                    _model.initData();
+                  },
+                  () async {
+                    await Navigator.of(context).pushNamed(
+                      RouteManager.LEARN_DETAIL,
+                      arguments: {
+                        'learnPlanId': item.learnPlanId,
+                        'listStatus': 'LEARNING',
+                        'from': 'work_top',
+                      },
+                    );
+                    // 无脑刷新数据，从详情页回来后不刷新数据
+                    // _model.initData();
+                  },
+                )
+              : Container(
+                  margin: EdgeInsets.only(left: 16, right: 16, bottom: 10),
+                  child: ActivityWidget(item),
+                ),
         );
       }, childCount: learnPlanListCount + activityCount);
     }
@@ -166,20 +168,21 @@ class _WorktopPageState extends State<WorktopPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 cardPart(entity),
-                _isLearnPlanEmpty(entity)
+                entity.learnPlanList.length != 0 &&
+                        entity.activityPackages.length != 0
                     ? Container()
                     : Container(
-                  width: double.infinity,
-                  color: Color(0xFFF3F5F8),
-                  padding: EdgeInsets.only(left: 16, top: 11, bottom: 10),
-                  child: const Text(
-                    "最近收到",
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF222222),
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
+                        width: double.infinity,
+                        color: Color(0xFFF3F5F8),
+                        padding: EdgeInsets.only(left: 16, top: 11, bottom: 10),
+                        child: const Text(
+                          "最近收到",
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF222222),
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
                 _buildEmptyContainer(),
               ],
             ),
@@ -206,25 +209,23 @@ class _WorktopPageState extends State<WorktopPage>
             alignment: Alignment.center,
             child: doctorInfoEntity?.fullFacePhoto == null
                 ? Image.asset(
-              "assets/images/doctorHeader.png",
-              width: 40,
-              height: 40,
-            )
+                    "assets/images/doctorHeader.png",
+                    width: 40,
+                    height: 40,
+                  )
                 : Container(
-              width: 68,
-              height: 68,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  fit: BoxFit.fitWidth,
-                  image: NetworkImage(
-                      '${doctorInfoEntity?.fullFacePhoto
-                          ?.url}?status=${doctorInfoEntity?.fullFacePhoto
-                          ?.ossId}'),
-                ),
-              ),
-            ),
+                    width: 68,
+                    height: 68,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: NetworkImage(
+                            '${doctorInfoEntity?.fullFacePhoto?.url}?status=${doctorInfoEntity?.fullFacePhoto?.ossId}'),
+                      ),
+                    ),
+                  ),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -307,7 +308,7 @@ class _WorktopPageState extends State<WorktopPage>
                 Text(
                   '${value ?? 0}',
                   style:
-                  TextStyle(fontSize: 36, color: ThemeColor.primaryColor),
+                      TextStyle(fontSize: 36, color: ThemeColor.primaryColor),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 4),
@@ -343,9 +344,9 @@ class _WorktopPageState extends State<WorktopPage>
       var leftLineDecoration = BoxDecoration(
           border: new Border(
               left: BorderSide(
-                color: ThemeColor.colorFFE7E7E7,
-                width: 0.5,
-              )));
+        color: ThemeColor.colorFFE7E7E7,
+        width: 0.5,
+      )));
       return Container(
         margin: EdgeInsets.only(top: 10, left: 10),
         child: Row(
@@ -494,8 +495,7 @@ class _WorktopPageState extends State<WorktopPage>
       child: GestureDetector(
         onTap: () {
           print(
-              "the identityStatus is ${doctorInfoEntity
-                  ?.identityStatus} - ${doctorInfoEntity?.authStatus} ");
+              "the identityStatus is ${doctorInfoEntity?.identityStatus} - ${doctorInfoEntity?.authStatus} ");
           if (doctorInfoEntity?.identityStatus == 'PASS') {
             if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' ||
                 doctorInfoEntity.authStatus == 'FAIL') {
