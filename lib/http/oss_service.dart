@@ -8,10 +8,11 @@ import 'package:http_manager/manager.dart';
 /// 上传服务
 class OssService {
   static final OssService _instance = OssService._internal();
+
   factory OssService() => _instance;
 
   static Future<OssFileEntity> upload(path, {bool showLoading = true}) async {
-    return await _instance._upload(path, showLoading:showLoading);
+    return await _instance._upload(path, showLoading: showLoading);
   }
 
   static Future getFile(params) async {
@@ -35,29 +36,31 @@ class OssService {
   Future<OssFileEntity> _upload(
     String path, {
     String loadingText = '上传中...',
-        bool showLoading = true,
+    bool showLoading = true,
     bool publicRead = false,
   }) async {
     await _querySignature();
     String originName = path.substring(path.lastIndexOf('/') + 1, path.length);
     String suffix = path.substring(path.lastIndexOf('.') + 1, path.length);
+    var postFileName = '${originName.hashCode}${DateTime.now().millisecondsSinceEpoch}.$suffix';
 
-    String ossFileName = '${_policy.fileNamePrefix}$originName';
-    if(showLoading){
+    String ossFileName =
+        '${_policy.fileNamePrefix}$postFileName';
+    if (showLoading) {
       EasyLoading.show(status: loadingText);
     }
 
     await _uploadToOss(path, originName, ossFileName);
     Map<String, dynamic> param = {
       'ossFileName': ossFileName,
-      'attachName': originName,
+      'attachName': postFileName,
       'publicRead': publicRead,
       'type': suffix,
     };
     OssFileEntity entity = await _saveFile(param);
     entity.type = suffix;
     entity.name = originName;
-    if(showLoading){
+    if (showLoading) {
       EasyLoading.dismiss();
     }
 
