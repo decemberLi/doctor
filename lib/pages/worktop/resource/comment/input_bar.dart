@@ -29,26 +29,20 @@ class InputBarHelper {
     await showModalBottomSheet(
       backgroundColor: ThemeColor.colorFFFAFAFA,
       context: context,
-      isScrollControlled: true,
+      isScrollControlled: false,
       builder: (context) {
-        return StatefulBuilder(builder: (ctx, state) {
-          return AnimatedPadding(
-            padding: MediaQuery.of(context).viewInsets,
-            duration: Duration(milliseconds: 20),
-            child: IntrinsicHeight(
-              child: InputBarWidget(
-                commentTo,
-                replayContent,
-                hintText,
-                _cachedContent,
-                callback,
+        return IntrinsicHeight(
+          child: InputBarWidget(
+            commentTo,
+            replayContent,
+            hintText,
+            _cachedContent,
+            callback,
                 (text) {
-                  _cachedContent = text;
-                },
-              ),
-            ),
-          );
-        });
+              _cachedContent = text;
+            },
+          ),
+        );
       },
     );
     return _cachedContent;
