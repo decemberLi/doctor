@@ -315,7 +315,7 @@ class _ActivityState extends State<ActivityDetail> {
         Map<String, dynamic> illnessCase = item["illnessCase"];
         desc = "病例${i + 1}:";
         var needLine = false;
-        if (illnessCase["patientName"] != null) {
+        if (illnessCase["patientName"] != null && (illnessCase["patientName"] as String).length > 0) {
           desc += "${illnessCase["patientName"]}";
           needLine = true;
         }
@@ -332,7 +332,6 @@ class _ActivityState extends State<ActivityDetail> {
           if (needLine) {
             desc += "|";
           }
-          needLine = true;
           var name = "";
           if (illnessCase["sex"] == 0) {
             name = "女";
