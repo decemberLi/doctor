@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:doctor/pages/user/user_detail/uploadImage.dart';
 import 'package:doctor/theme/theme.dart';
@@ -56,6 +57,11 @@ class DialogHelper {
   }
 }
 
+class FileData {
+  File originFile;
+  Uint8List thumbData;
+}
+
 class ImageHelper {
   static Map<String, CompressFormat> _suffixMap = {
     'jpg': CompressFormat.jpeg,
@@ -99,35 +105,53 @@ class ImageHelper {
     return originFile;
   }
 
-  static Future<List<File>> pickMultiImageFromGallery(BuildContext context,
+  /// source: 0 camera， 1 gallery
+  static Future<FileData> ehancePickSingleImage(BuildContext context,
+      {int source = 0, bool needCompress = true}) async {
+    await Future.delayed(Duration(milliseconds: 500));
+    var originFile ;
+    var thumbData ;
+    if (0 == source && await PermissionHelper.checkCameraPermission(context)) {
+      var assetEntity = await CameraPicker.pickFromCamera(context);
+      originFile = await assetEntity.file;
+      thumbData = await assetEntity.thumbData;
+    } else if (source == 1 &&
+        await PermissionHelper.checkPhotosPermission(context)) {
+      var assetEntity = await AssetPicker.pickAssets(context,
+          maxAssets: 1, requestType: RequestType.image);
+      originFile = await assetEntity.first.file;
+      thumbData = await assetEntity.first.thumbData;
+    }
+
+    // 压缩
+    if (originFile == null) {
+      return Future.value(null);
+    }
+
+    if (needCompress) {
+      return FileData()
+      ..thumbData = thumbData
+      ..originFile = await _compressImage(originFile);
+    }
+    return originFile;
+  }
+
+  static Future<List<FileData>> pickMultiImageFromGallery(BuildContext context,
       {bool needCompress = true, int max = 9}) async {
     await Future.delayed(Duration(milliseconds: 500));
     if (await PermissionHelper.checkPhotosPermission(context)) {
       var list = await AssetPicker.pickAssets(context,
           maxAssets: max, requestType: RequestType.image);
       if (list != null) {
-        List<File> originFiles = [];
+        List<FileData> originFiles = [];
         await EasyLoading.instance.flash(() async {
           try {
-            List<Future> fence = [];
             for (var element in list) {
-              if (Platform.isAndroid) {
-                originFiles.add(await compressImage(await element.file));
-              } else {
-                var action = element.file
-                  ..then((value) {
-                    originFiles.add(value);
-                  });
-                fence.add(action);
-                if (fence.length == 5) {
-                  await Future.wait(fence);
-                  await Future.delayed(Duration(milliseconds: 40));
-                  fence.clear();
-                }
-              }
+              var data = FileData()
+                ..thumbData = await element.thumbData
+                ..originFile = await element.file; //await compressImage(await element.file);
+              originFiles.add(data);
             }
-            await Future.wait(fence);
-            fence.clear();
           } catch (e) {
             throw '文件不存在';
           }
