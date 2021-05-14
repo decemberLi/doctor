@@ -151,28 +151,49 @@ class ImageHelper {
   static Future<List<FileData>> pickMultiImageFromGallery(BuildContext context,
       {bool needCompress = true, int max = 9}) async {
     await Future.delayed(Duration(milliseconds: 500));
-    if (await PermissionHelper.checkPhotosPermission(context)) {
-      var list = await AssetPicker.pickAssets(context,
-          maxAssets: max, requestType: RequestType.image);
-      if (list != null) {
-        List<FileData> originFiles = [];
-        await EasyLoading.instance.flash(() async {
-          try {
-            for (var element in list) {
-              var data = FileData()
-                ..thumbData = await element.thumbData
-                ..originFile = await element.file; //await compressImage(await element.file);
-              originFiles.add(data);
-            }
-          } catch (e) {
-            throw '文件不存在';
-          }
-        });
-        return originFiles;
-      }
+    if (!await PermissionHelper.checkPhotosPermission(context)) {
+      return [];
     }
-
-    return [];
+    var list = await AssetPicker.pickAssets(context,
+        maxAssets: max, requestType: RequestType.image);
+    if (list == null) {
+      return [];
+    }
+    List<FileData> originFiles = [];
+    await EasyLoading.instance.flash(() async {
+      try {
+        List<Future> fence = [];
+        for (var element in list) {
+          if (Platform.isAndroid) {
+            var data = FileData()
+              ..thumbData = await element.thumbData
+              ..originFile =
+              await element.file; //await compressImage(await element.file);
+            originFiles.add(data);
+          } else {
+            var fileData = FileData();
+            originFiles.add(fileData);
+            var thumbAction = element.thumbData.then((value){
+              fileData.thumbData = value;
+            });
+            var action = element.file.then((value) async {
+              fileData.originFile = value;
+            });
+            fence.add(thumbAction);
+            fence.add(action);
+            if (fence.length == 10) {
+              await Future.wait(fence);
+              await Future.delayed(Duration(milliseconds: 40));
+              fence.clear();
+            }
+          }
+        }
+        await Future.wait(fence);
+      } catch (e) {
+        throw '文件不存在';
+      }
+    });
+    return originFiles;
   }
 
   /// source: 0 camera， 1 gallery
