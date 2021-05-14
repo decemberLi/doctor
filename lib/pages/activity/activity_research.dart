@@ -25,7 +25,7 @@ class ActivityResearch extends StatefulWidget {
   final int activityPackageId;
   final int activityTaskId;
 
-  ActivityResearch(this.activityPackageId,{this.activityTaskId});
+  ActivityResearch(this.activityPackageId, {this.activityTaskId});
 
   @override
   State<StatefulWidget> createState() {
@@ -38,7 +38,9 @@ class _ActivityResearch extends State<ActivityResearch>
   bool collapsed = true;
   int activityTaskId;
   String status;
+
   _ActivityResearch(this.activityTaskId);
+
   // LearnDetailViewModel _model = LearnDetailViewModel(137574);
   ActivityQuestionnaireEntity _data;
   String error;
@@ -68,26 +70,22 @@ class _ActivityResearch extends State<ActivityResearch>
     _loading = true;
     try {
       var result =
-      await API.shared.activity.packageDetail(widget.activityPackageId);
+          await API.shared.activity.packageDetail(widget.activityPackageId);
       var parentData = ActivityDetailEntity(result);
       status = parentData.status;
       Map<String, dynamic> json = await API.shared.activity
           .activityQuestionnaireList(widget.activityPackageId,
-          activityTaskId: activityTaskId);
+              activityTaskId: activityTaskId);
       _data = ActivityQuestionnaireEntity.fromJson(json);
       error = null;
       setState(() {});
-    }on DioError catch(e){
+    } on DioError catch (e) {
       error = e.message;
-      setState(() {
-
-      });
-    }catch(e){
+      setState(() {});
+    } catch (e) {
       error = "$e";
-      setState(() {
-
-      });
-    }finally {
+      setState(() {});
+    } finally {
       setState(() {
         _loading = false;
       });
@@ -158,7 +156,10 @@ class _ActivityResearch extends State<ActivityResearch>
     var itemCanEdit = true;
     _data.questionnaires.forEach((element) {
       print("the status is - ${element.status}");
-      itemCanEdit = itemCanEdit && (element.status == "NOT_OPEN" || element.status == "PROCEEDING" || element.status == null);
+      itemCanEdit = itemCanEdit &&
+          (element.status == "NOT_OPEN" ||
+              element.status == "PROCEEDING" ||
+              element.status == null);
     });
     canEdit = canEdit || itemCanEdit;
     print("can edit is --- $canEdit");
@@ -225,9 +226,14 @@ class _ActivityResearch extends State<ActivityResearch>
             child: GestureDetector(
               onTap: () async {
                 var taskId = await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => ActivityCaseDetail(item,widget.activityPackageId, canEdit,activityTaskId: activityTaskId,),
+                  builder: (ctx) => ActivityCaseDetail(
+                    item,
+                    widget.activityPackageId,
+                    canEdit,
+                    activityTaskId: activityTaskId,
+                  ),
                 ));
-                if (taskId != null){
+                if (taskId != null) {
                   activityTaskId = taskId;
                 }
                 freshData();
@@ -257,18 +263,18 @@ class _ActivityResearch extends State<ActivityResearch>
       int resourceID, ActivityQuestionnairesSubEntity item, bool isEnd) {
     ActivityQuestionnaireEntity data = _data;
     var timeText = "";
-    if (item.openTime != null){
+    if (item.openTime != null) {
       timeText = "${normalDateFormate(item.openTime)}开启填写";
     }
     var statusText = "未开启";
     var statusColor = Color(0xffDEDEE1);
     var borderColor = Color(0xff888888);
-    if (item.status == "PROCEEDING" || item .status == "REJECT") {
+    if (item.status == "PROCEEDING" || item.status == "REJECT") {
       timeText = "";
       statusText = "待完成";
       statusColor = Color(0xff489DFE);
       borderColor = Color(0xff888888);
-    }else if (item.status == "COMPLETE" || item.status == "WAIT_VERIFY") {
+    } else if (item.status == "COMPLETE" || item.status == "WAIT_VERIFY") {
       timeText = "${normalDateFormate(item.submitTime)}完成";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
@@ -405,7 +411,10 @@ class _ActivityResearch extends State<ActivityResearch>
     );
     return GestureDetector(
       onTap: debounce(() {
-        if(status == "END") {
+        if (status == "END" &&
+            (item.status == "NOT_OPEN" ||
+                item.status == "PROCEEDING" ||
+                item.status == "WAIT_VERIFY")) {
           EasyLoading.showToast("活动已过期，无法开启此问卷");
           return;
         }
@@ -451,13 +460,13 @@ class _ActivityResearch extends State<ActivityResearch>
   }
 
   Widget buildContent() {
-    if (_loading){
+    if (_loading) {
       return loading();
-    }else if (error != null){
+    } else if (error != null) {
       return ViewStateEmptyWidget(
         message: error,
       );
-    }else if (_data == null) {
+    } else if (_data == null) {
       return Container();
     }
     return SingleChildScrollView(
@@ -485,8 +494,8 @@ class _ActivityResearch extends State<ActivityResearch>
           child: Theme(
             data: ThemeData(
                 cupertinoOverrideTheme: CupertinoThemeData(
-                  brightness: Brightness.dark,
-                )),
+              brightness: Brightness.dark,
+            )),
             child: CupertinoActivityIndicator(
               radius: 14,
             ),
@@ -503,7 +512,7 @@ class _ActivityResearch extends State<ActivityResearch>
       appBar: AppBar(
         title: Text("医学调研详情"),
       ),
-      body:  buildContent(),
+      body: buildContent(),
     );
   }
 }
