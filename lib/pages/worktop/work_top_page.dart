@@ -171,8 +171,8 @@ class _WorktopPageState extends State<WorktopPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 cardPart(entity),
-                entity.learnPlanList.length != 0 &&
-                        entity.activityPackages.length != 0
+                entity.learnPlanList.length == 0 &&
+                        entity.activityPackages.length == 0
                     ? Container()
                     : Container(
                         width: double.infinity,
