@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:doctor/http/activity.dart';
@@ -20,6 +21,7 @@ import 'package:provider/provider.dart';
 
 class _ImageResource {
   // 0 is local path, 1 is url
+  Uint8List thumbData;
   int type;
   String uri;
   OssFileEntity ossRes;
@@ -311,8 +313,10 @@ class _ActivityResourceDetailPageState
             } else if (witch == 1) {
               var result = await ImageHelper.pickMultiImageFromGallery(context,
                   max: _model.enableAddImageSize);
-              selectedImg.addAll(
-                  result.map((e) => _ImageResource(0, e.path)).toList());
+              selectedImg.addAll(result
+                  .map((e) => _ImageResource(0, e.originFile.path)
+                    ..thumbData = e.thumbData)
+                  .toList());
             }
             _model.addImages(selectedImg);
           },
@@ -324,19 +328,30 @@ class _ActivityResourceDetailPageState
     var res = _model.getImage(index);
     Widget imgWidget;
     if (res.type == 0) {
-      imgWidget = Image.file(
-        File(res.uri),
-        width: 74,
-        height: 60,
-        fit: BoxFit.cover,
-      );
+      if (res.thumbData == null) {
+        debugPrint("YYYPicture -> thumbData is null");
+        imgWidget = Image.file(
+          File(res.uri),
+          width: 74,
+          height: 60,
+          fit: BoxFit.cover,
+        );
+      } else {
+        debugPrint("YYYPicture -> load picture is thumb Data");
+        imgWidget = Image.memory(
+          res.thumbData,
+          width: 74,
+          height: 60,
+          fit: BoxFit.cover,
+        );
+      }
     } else {
       imgWidget = CachedNetworkImage(
         imageUrl: res.uri,
         width: 74,
         height: 60,
         fit: BoxFit.cover,
-        memCacheWidth:74,
+        memCacheWidth: 74,
         memCacheHeight: 60,
         filterQuality: FilterQuality.high,
         cacheKey: '${res.uri.hashCode}',
