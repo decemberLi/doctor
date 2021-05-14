@@ -77,6 +77,10 @@
 	<string>为了您使用纸质处方上传、医师资质认证等服务，请允许易学术访问所有照片</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>禁止后将无法使用语音转换文字</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>禁止后无法使用蓝牙</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>禁止后无法使用蓝牙</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
