@@ -6,6 +6,7 @@ import 'package:doctor/utils/permission_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart';
@@ -79,7 +80,18 @@ class ImageHelper {
     await Future.delayed(Duration(milliseconds: 500));
     var originFile;
     if (0 == source && await PermissionHelper.checkCameraPermission(context)) {
-      var assetEntity = await CameraPicker.pickFromCamera(context);
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+      var assetEntity =
+          await CameraPicker.pickFromCamera(context,shouldLockPortrait: false);
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
       originFile = await assetEntity.file;
     } else if (source == 1 &&
         await PermissionHelper.checkPhotosPermission(context)) {
