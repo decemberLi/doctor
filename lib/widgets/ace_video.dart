@@ -1,15 +1,11 @@
 import 'dart:async';
 
-// import 'package:chewie/chewie.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/app_utils.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/no_wifi_notice_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 /// 项目通用视频播放

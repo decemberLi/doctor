@@ -8,7 +8,7 @@ class PermissionHelper {
     var status = await Permission.camera.status;
     print('Is camera permission granted --> $status');
     // 从未申请过权限, 申请权限
-    if (status.isUndetermined && await Permission.camera.request().isGranted ||
+    if (await Permission.camera.request().isGranted ||
         status.isGranted) {
       print('undetermined & request permission && isGranted');
       return true;
@@ -32,7 +32,7 @@ class PermissionHelper {
     print('Is camera permission granted --> $status');
 
     // 从未申请过权限, 申请权限
-    if (status.isUndetermined && await Permission.photos.request().isGranted ||
+    if (await Permission.photos.request().isGranted ||
         status.isGranted) {
       print('undetermined & request permission && isGranted');
       return true;
@@ -64,7 +64,7 @@ class PermissionHelper {
               child: Text(hintText),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: Text(
                   "好的",
                   style: TextStyle(

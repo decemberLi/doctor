@@ -15,6 +15,7 @@ MessageCenterEntity _$MessageCenterEntityFromJson(Map<String, dynamic> json) {
     json['total'] as int,
     json['likeCount'] as int,
     json['commentCount'] as int,
+    json['activityCount'] as int,
   );
 }
 
@@ -28,4 +29,5 @@ Map<String, dynamic> _$MessageCenterEntityToJson(
       'total': instance.total,
       'likeCount': instance.likeCount,
       'commentCount': instance.commentCount,
+      'activityCount': instance.activityCount,
     };

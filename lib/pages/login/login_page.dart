@@ -42,14 +42,15 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () => {EasyLoading.showToast('暂未开放')},
                     ),
                     AceButton(
-                      type: AceButtonType.grey,
-                      text: '输入手机号码登录',
+                      type: AceButtonType.secondary,
+                      textColor: Colors.white,
                       onPressed: () => {
                         Navigator.pushNamed(context, RouteManager.LOGIN_CAPTCHA)
                       },
                     ),
                     AceButton(
-                      type: AceButtonType.grey,
+                      type: AceButtonType.secondary,
+                      textColor: Colors.white,
                       text: '使用密码登录',
                       onPressed: () => {
                         Navigator.pushNamed(context, RouteManager.LOGIN_PWD,arguments: {})

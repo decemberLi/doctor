@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:doctor/http/common_service.dart';
+import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/worktop/resource/model/resource_model.dart';
 import 'package:doctor/theme/theme.dart';
 // import 'package:doctor/widgets/ace_video.dart';
 import 'package:doctor/widgets/video/chewie_video.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:video_player/video_player.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/server.dart';
+import 'package:video_player/video_player.dart';
 
 class VideoDetail extends StatefulWidget {
   final ResourceModel data;
@@ -82,8 +82,7 @@ class _VideoDetailState extends State<VideoDetail> {
           margin: EdgeInsets.only(top: 10),
           height: 20,
           alignment: Alignment.center,
-          child: FlatButton(
-            textColor: ThemeColor.primaryColor,
+          child: TextButton(
             onPressed: () {
               //签到接口
               API.shared.server.meetingSign({'taskDetailId': widget.taskDetailId}).then((res) {
@@ -95,7 +94,7 @@ class _VideoDetailState extends State<VideoDetail> {
             },
             child: Text(
               '签到',
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: 14,color: ThemeColor.primaryColor),
             ),
           ),
         )

@@ -4,31 +4,30 @@ import 'package:dio/dio.dart';
 import 'package:doctor/common/statistics/biz_tracker.dart';
 import 'package:doctor/http/common_service.dart';
 import 'package:doctor/http/oss_service.dart';
+import 'package:doctor/http/server.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
+import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/research_detail/research_detail.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/platform_utils.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/widgets/ace_button.dart';
-import 'package:doctor/utils/constants.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:doctor/theme/theme.dart';
-import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
 import 'package:http_manager/api.dart';
-import 'package:provider/provider.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
-import 'package:doctor/http/server.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 // * @Desc: 计划详情页  */
 /// 科室会议
@@ -226,50 +225,30 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     }
   }
 
-  _uploadVideo(model, arguments, data) async {
-    if (data.taskTemplate == 'DOCTOR_LECTURE') {
-      var result = await Navigator.of(context).pushNamed(
-        RouteManager.LECTURE_VIDEOS,
-        arguments: {
-          'reLearn': data.reLearn,
-          'resourceId': data.resources[0].resourceId,
-          'learnPlanId': data.learnPlanId,
-          'doctorName': userInfo?.doctorName ?? '',
-          'taskName': data.taskName,
-          'from': arguments['from'],
-          'upFinished': (lectureID) {
-            _uploadFinish(lectureID);
-          }
-        },
-      );
-      if (result == true) {
-        model.initData();
-      }
+  _submit(model, arguments, data) async {
+    // EasyLoading.showToast('暂未开放'),
+    if (data.learnProgress == 0) {
+      String _text = '当前学习计划尚未学习，请在学习后提交';
+      EasyLoading.showToast(_text);
     } else {
-      // EasyLoading.showToast('暂未开放'),
-      if (data.learnProgress == 0) {
-        String _text = '当前学习计划尚未学习，请在学习后提交';
-        EasyLoading.showToast(_text);
-      } else {
-        bool success = await model.bindLearnPlan(
-          learnPlanId: data.learnPlanId,
+      bool success = await model.bindLearnPlan(
+        learnPlanId: data.learnPlanId,
+      );
+      if (success) {
+        UserInfoViewModel model =
+            Provider.of<UserInfoViewModel>(context, listen: false);
+        eventTracker(Event.PLAN_SUBMIT, {
+          "learn_plan_id": "${data?.learnPlanId}",
+          "user_id": "${model?.data?.doctorUserId}"
+        });
+        EasyLoading.showSuccess('提交成功');
+        // 延时1s执行返回
+        Future.delayed(
+          Duration(seconds: 1),
+          () {
+            Navigator.of(context).pop();
+          },
         );
-        if (success) {
-          UserInfoViewModel model =
-              Provider.of<UserInfoViewModel>(context, listen: false);
-          eventTracker(Event.PLAN_SUBMIT, {
-            "learn_plan_id": "${data?.learnPlanId}",
-            "user_id": "${model?.data?.doctorUserId}"
-          });
-          EasyLoading.showSuccess('提交成功');
-          // 延时1s执行返回
-          Future.delayed(
-            Duration(seconds: 1),
-            () {
-              Navigator.of(context).pop();
-            },
-          );
-        }
       }
     }
   }
@@ -277,7 +256,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   _uploadFinish(lectureID) {
     EasyLoading.instance.flash(() async {
       print("-------------");
-      print("the lectureID == ${lectureID}");
+      print("the lectureID == $lectureID");
       var result = await API.shared.server.doctorLectureSharePic("$lectureID");
       var appDocDir = await getApplicationDocumentsDirectory();
       if (Platform.isAndroid) {
@@ -371,11 +350,11 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
       "uploadLearnVideo",
       (args) async {
         try{
-          print("call uploadLearnVideo ${args}");
+          print("call uploadLearnVideo $args");
           var obj = json.decode(args);
-          print("call 1111111 ${obj}");
+          print("call 1111111 $obj");
           var entity = await OssService.upload(obj["path"], showLoading: false);
-          print("call 22222 ${entity}");
+          print("call 22222 $entity");
           var result = await API.shared.server.addLectureSubmit(
             {
               'learnPlanId': data.learnPlanId,
@@ -411,7 +390,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               flex: 1,
               child: Container(
                 height: 44,
-                child: FlatButton(
+                child: TextButton(
                   onPressed: () {
                     Navigator.of(context).pushNamed(
                         RouteManager.LOOK_LECTURE_VIDEOS,
@@ -466,7 +445,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 if (data.taskTemplate == 'DOCTOR_LECTURE') {
                   _gotoRecord(data);
                 } else {
-                  this._uploadVideo(model, arguments, data);
+                  _submit(model, arguments, data);
                 }
               },
             ),

@@ -1,5 +1,7 @@
 import 'package:doctor/model/biz/learn_plan_statistical_entity.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
+import 'package:doctor/pages/activity/entity/activity_entity.dart';
+import 'package:doctor/pages/activity/widget/activity_widget.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_item_wiget.dart';
 import 'package:doctor/pages/worktop/model/work_top_entity.dart';
@@ -9,7 +11,6 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
-import 'package:doctor/widgets/image_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -17,7 +18,6 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../root_widget.dart';
-import 'learn/research_detail/research_detail.dart';
 
 class WorktopPage extends StatefulWidget {
   @override
@@ -101,38 +101,56 @@ class _WorktopPageState extends State<WorktopPage>
   }
 
   Widget bodyWidget(WorktopPageEntity entity) {
+    if (entity == null){
+      return Container();
+    }
+    var learnPlanListCount = entity?.learnPlanList?.length ?? 0;
+    var activityCount = entity?.activityPackages?.length ?? 0;
     _buildSliverBuildDelegate() {
       return SliverChildBuilderDelegate((context, index) {
-        var item = entity.learnPlanList[index];
+        var item;
+        if (index >= activityCount) {
+          item = entity.learnPlanList[index - activityCount];
+        } else {
+          item = entity.activityPackages[index];
+        }
+
         return Container(
           color: Color(0xFFF3F5F8),
-          child: LearnListItemWiget(
-            item,
-            'LEARNING',
-            () {
-              _model.initData();
-            },
-            () async {
-              await Navigator.of(context).pushNamed(
-                RouteManager.LEARN_DETAIL,
-                arguments: {
-                  'learnPlanId': item.learnPlanId,
-                  'listStatus': 'LEARNING',
-                  'from': 'work_top',
-                },
-              );
-              // 无脑刷新数据，从详情页回来后不刷新数据
-              // _model.initData();
-            },
-          ),
+          child: index >= activityCount
+              ? LearnListItemWiget(
+                  item,
+                  'LEARNING',
+                  () {
+                    _model.initData();
+                  },
+                  () async {
+                    await Navigator.of(context).pushNamed(
+                      RouteManager.LEARN_DETAIL,
+                      arguments: {
+                        'learnPlanId': item.learnPlanId,
+                        'listStatus': 'LEARNING',
+                        'from': 'work_top',
+                      },
+                    );
+                    // 无脑刷新数据，从详情页回来后不刷新数据
+                    // _model.initData();
+                  },
+                )
+              : Container(
+                  margin: EdgeInsets.only(left: 16, right: 16, bottom: 10),
+                  child: ActivityWidget(item),
+                ),
         );
-      }, childCount: entity?.learnPlanList?.length ?? 0);
+      }, childCount: learnPlanListCount + activityCount);
     }
 
     _buildEmptyContainer() {
+      var learnPlanListCount = entity?.learnPlanList?.length ?? 0;
+      var activityCount = entity?.activityPackages?.length ?? 0;
       if (entity == null ||
           entity.learnPlanList == null ||
-          entity.learnPlanList.length == 0) {
+          learnPlanListCount + activityCount == 0) {
         return Container(
           padding: EdgeInsets.only(top: 60),
           child: ViewStateEmptyWidget(
@@ -153,7 +171,8 @@ class _WorktopPageState extends State<WorktopPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 cardPart(entity),
-                _isLearnPlanEmpty(entity)
+                entity.learnPlanList.length == 0 &&
+                        entity.activityPackages.length == 0
                     ? Container()
                     : Container(
                         width: double.infinity,
@@ -178,21 +197,6 @@ class _WorktopPageState extends State<WorktopPage>
   }
 
   doctorAvatarWidget(DoctorDetailInfoEntity doctorInfoEntity) {
-    var avatar;
-    if (doctorInfoEntity?.fullFacePhoto?.url != null) {
-      avatar = ImageWidget(
-        url: doctorInfoEntity.fullFacePhoto.url,
-        width: 70,
-        height: 70,
-        fit: BoxFit.fill,
-      );
-    } else {
-      avatar = Image.asset(
-        "assets/images/doctorAva.png",
-        width: 70,
-        fit: BoxFit.fill,
-      );
-    }
     // 医生个人信息部分
     var doctorName = doctorInfoEntity?.doctorName ?? '';
     if (doctorInfoEntity?.basicInfoAuthStatus == 'NOT_COMPLETE') {
@@ -303,7 +307,6 @@ class _WorktopPageState extends State<WorktopPage>
             ),
             Row(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
               children: [
                 Text(
                   '${value ?? 0}',
@@ -410,7 +413,7 @@ class _WorktopPageState extends State<WorktopPage>
                     padding: EdgeInsets.only(left: 24),
                     child: Consumer<UserInfoViewModel>(
                       builder: (_, model, __) {
-                        if(model.data == null){
+                        if (model.data == null) {
                           model.queryDoctorInfo();
                         }
                         return doctorAvatarWidget(model.data);
@@ -460,8 +463,9 @@ class _WorktopPageState extends State<WorktopPage>
       child: AceButton(
         height: 42,
         text: isEmpty ? '暂无待处理学习计划' : '处理一下',
+        textColor: Colors.white,
         type: _isLearnPlanEmpty(entity)
-            ? AceButtonType.grey
+            ? AceButtonType.secondary
             : AceButtonType.primary,
         onPressed: isEmpty ? () => {} : () => {_goLearnPlanPage(0)},
       ),
@@ -491,8 +495,8 @@ class _WorktopPageState extends State<WorktopPage>
           topRight: Radius.circular(28),
         ),
       ),
-      child: FlatButton(
-        onPressed: () {
+      child: GestureDetector(
+        onTap: () {
           print(
               "the identityStatus is ${doctorInfoEntity?.identityStatus} - ${doctorInfoEntity?.authStatus} ");
           if (doctorInfoEntity?.identityStatus == 'PASS') {

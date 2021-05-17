@@ -43,7 +43,7 @@ class ImageSelectWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       children: [
         GestureDetector(
           child: Container(
@@ -89,7 +89,7 @@ class ImageSelectWidget extends StatelessWidget {
     );
   }
 
-  _doLoadImage(FacePhoto photo, {double aspectRatio = 1 / 1}) {
+  _doLoadImage(FacePhoto photo) {
     Widget icon;
     Widget hintWidget = Container(
         margin: EdgeInsets.only(top: 6),

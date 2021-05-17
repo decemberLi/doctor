@@ -2,17 +2,17 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:common_utils/common_utils.dart';
+import 'package:doctor/http/developer.dart';
+import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/model/face_photo.dart';
 import 'package:doctor/model/uploaded_file_entity.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/utils/upload_file_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:doctor/http/ucenter.dart';
 import 'package:http_manager/api.dart';
 
 import '../entity/auth_basic_info.dart';
-import 'package:doctor/http/developer.dart';
 
 class AuthenticationViewModel extends ViewStateModel {
   AuthBasicInfoEntity _entity = new AuthBasicInfoEntity();

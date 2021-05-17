@@ -1,6 +1,6 @@
-import 'package:doctor/http/host_provider.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:http_manager/manager.dart';
+
 import 'host.dart';
 
 extension founAPI on API {
@@ -72,6 +72,5 @@ class Foundation extends SubAPI {
   }
   sendSMS(params) async => normalPost('/sms/send-captcha', params: params);
   pushDeviceSubmit(params) async => normalPost('/push-device/submit',params: params);
-  pushDeviceLoginSubmit(params) async => normalPost('/push-device/submit',params: params);
   pushDeviceDel() async => doctorPost('/push-device/del');
 }

@@ -1,12 +1,12 @@
+import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:http_manager/api.dart';
-import 'package:doctor/http/server.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:http_manager/api.dart';
 
 class CaseDetail extends StatefulWidget {
   final IllnessCase data;

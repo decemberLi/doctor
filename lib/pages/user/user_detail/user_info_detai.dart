@@ -1,6 +1,9 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:doctor/http/foundation.dart';
 import 'package:doctor/http/oss_service.dart';
+import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/model/oss_file_entity.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/qualification/doctor_physician_qualification_page.dart';
@@ -9,19 +12,14 @@ import 'package:doctor/pages/qualification/view_model/doctor_qualification_view_
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_picker/Picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/foundation.dart';
-import 'package:doctor/http/ucenter.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
-
-import 'uploadImage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final uploadData = {
   '性别': 'sex',
@@ -82,7 +80,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
 
     File imageFile = await ImageHelper.cropImage(context, value.path);
     if (imageFile == null) {
-      Toast.show('图片处理失败', context);
+      EasyLoading.showToast("图片处理失败");
       return;
     }
 
@@ -243,7 +241,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
       hintText: '输入医院名称',
       searchConditionCallback: <T extends Search>(condition, streamSink) async {
         if (condition == null || condition.length == 0) {
-          streamSink.add(List());
+          streamSink.add([]);
           return;
         }
         var hospitals = await _model.queryHospital(condition);

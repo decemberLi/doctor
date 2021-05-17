@@ -9,8 +9,8 @@ import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/time_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -307,20 +307,21 @@ class _CommentListPageState extends State<CommentListPage>
   String commentContent = ''; //评论内容
   int parentId = 0; //顶级id
   int commentId = 0; //回复id
+  KeyboardVisibilityController _controller;
   @override
   void initState() {
     //初始化数据
     model = CommentListViewModel(widget.resourceId, widget.learnPlanId);
     model.initData();
     //监听键盘高度变化
-    subscribeId = KeyboardVisibilityNotification().addNewListener(
-      onChange: (bool visible) {
-        if (!visible) {
-          //键盘下降失去焦点
-          commentFocusNode.unfocus();
-        }
-      },
-    );
+    _controller = KeyboardVisibilityController()
+        ..onChange.listen((event) {
+      if (!event) {
+        //键盘下降失去焦点
+        commentFocusNode.unfocus();
+      }
+    });
+
     super.initState();
     controller = AutoScrollController(
         viewportBoundaryGetter: () =>
@@ -331,7 +332,6 @@ class _CommentListPageState extends State<CommentListPage>
   @override
   void dispose() {
     model.dispose();
-    KeyboardVisibilityNotification().removeListener(subscribeId);
     super.dispose();
   }
 

@@ -28,3 +28,8 @@ dateFormat(num timeMillis) {
     return '${_format(msgDateTime.year)}/${_format(msgDateTime.month)}/${_format(msgDateTime.day)}';
   }
 }
+
+normalDateFormate(int timeMillis){
+  var msgDateTime = DateTime.fromMillisecondsSinceEpoch(timeMillis);
+  return '${_format(msgDateTime.year)}年${_format(msgDateTime.month)}月${_format(msgDateTime.day)}日';
+}

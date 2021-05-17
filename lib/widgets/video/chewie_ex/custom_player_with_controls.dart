@@ -1,6 +1,6 @@
+import 'package:doctor/widgets/video/chewie/src/chewie_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:doctor/widgets/video/chewie/src/chewie_player.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomPlayerWithControls extends StatelessWidget {
@@ -70,7 +70,7 @@ class VideoPlayerContainer extends StatefulWidget {
   final double maxHeight;
 
   ///根据入参的宽高，计算得到容器宽高比
-  double _viewRatio;
+  final double _viewRatio;
 
   VideoPlayerContainer(
     this.maxWidth,

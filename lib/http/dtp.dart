@@ -1,4 +1,5 @@
 import 'package:http_manager/manager.dart';
+
 import 'host.dart';
 
 extension dtpAPI on API {
@@ -75,7 +76,7 @@ class Dtp extends SubAPI {
   }
 
   /// 处方绑定校验
-  Future checkPrescriptionBeforeBind(String prescriptionNo) async {
+  Future<bool> checkPrescriptionBeforeBind(String prescriptionNo) async {
     try {
       await normalPost('/patient-prescription-check', params: {
         'prescriptionNo': prescriptionNo,
@@ -84,6 +85,5 @@ class Dtp extends SubAPI {
     } catch (e) {
       rethrow;
     }
-    return false;
   }
 }

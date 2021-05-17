@@ -1,6 +1,6 @@
+import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/worktop/resource/model/comment_list_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
-import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/http/server.dart';
 import 'package:http_manager/manager.dart';
 

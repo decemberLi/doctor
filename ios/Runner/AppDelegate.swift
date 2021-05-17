@@ -24,7 +24,7 @@ import UserNotificationsUI
         AppDelegate.shared = self
         let vc = FlutterViewController()
         rootVC = vc
-        navi = UINavigationController(rootViewController: vc)
+        navi = BaseNavigationController(rootViewController: vc)
         navi?.interactivePopGestureRecognizer?.delegate = self
         navi?.setNavigationBarHidden(true, animated: false)
         window = UIWindow()
@@ -88,6 +88,18 @@ import UserNotificationsUI
                     self.naviChannel.invokeMethod("ocrIdCardFaceSide", arguments: obj)
                 }
                 result(true)
+            }else if call.method == "brightness" {
+                result(UIScreen.main.brightness)
+            }else if call.method == "setBrightness"{
+                let string = call.arguments as? String ?? "0"
+                let brightness = CGFloat(Double(string) ?? 0)
+                UIScreen.main.brightness = brightness
+                result(true)
+            }else if call.method == "isKeptOn" {
+                result(UIApplication.shared.isIdleTimerDisabled)
+            }else if call.method == "keepOn" {
+                let b = call.arguments as? String ?? "0"
+                UIApplication.shared.isIdleTimerDisabled = b == "1"
             }
         }
         vc.setFlutterViewDidRenderCallback {
@@ -105,7 +117,8 @@ import UserNotificationsUI
                 }
             }
             JPUSHService.registrationIDCompletionHandler { (code, id) in
-                let map = ["registerId":id ?? "error id"]
+                guard let real = id else {return}
+                let map = ["registerId":real]
                 guard let data = try? JSONSerialization.data(withJSONObject: map, options: .fragmentsAllowed) else { return }
                 let upload = String(data: data, encoding: .utf8)
                 self.naviChannel.invokeMethod("uploadDeviceInfo", arguments: upload)
@@ -275,6 +288,7 @@ extension AppDelegate {
         vc.initData = map
         navi?.pushViewController(vc, animated: true)
     }
+    
 }
 
 extension AppDelegate : UIGestureRecognizerDelegate {
@@ -337,6 +351,10 @@ extension AppDelegate : JPUSHRegisterDelegate {
         naviChannel.invokeMethod("receiveNotification", arguments: value)
         
     }
+    func jpushNotificationAuthorization(_ status: JPAuthorizationStatus, withInfo info: [AnyHashable : Any]!) {
+        
+    }
+    
     func jpushNotificationCenter(_ center: UNUserNotificationCenter!, willPresent notification: UNNotification!, withCompletionHandler completionHandler: ((Int) -> Void)!) {
         let info = notification.request.content.userInfo
         JPUSHService.handleRemoteNotification(info)

@@ -37,11 +37,11 @@ class NoWifiNoticeHelper {
             child: Text(message ?? ''),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text("取消"),
               onPressed: () => Navigator.of(context).pop(false), // 关闭对话框
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 "确定",
                 style: TextStyle(

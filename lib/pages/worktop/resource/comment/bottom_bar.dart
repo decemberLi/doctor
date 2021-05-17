@@ -228,8 +228,8 @@ class BottomBarWidgetState extends State<BottomBarWidget> {
   _operatorWidget(String asstPath, String text, int number) {
     return Container(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: AlignmentDirectional.topEnd,
-        overflow: Overflow.visible,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -5,7 +5,7 @@
 -dontwarn dalvik.**
 -dontwarn com.tencent.smtt.**
 -keep class com.tencent.smtt.** {*;}
--keep class com.tencent.tbs.** {*;}
+-keep class com.tencent.** {*;}
 
 -dontwarn com.zzaning.**
 -keep public class com.zzaning.**
@@ -75,3 +75,4 @@ public static final int *;
 #第三方 jar 包不被混淆
 -keep class com.tencent.youtu.** {*;}
 -keep class com.tencent.mars.xlog.** {*;}
+-keep class com.emedclouds.doctor.common.document.**{*;}

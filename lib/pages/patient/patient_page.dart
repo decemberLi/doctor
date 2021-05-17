@@ -8,7 +8,7 @@ import 'package:doctor/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /// 随诊患者列表
@@ -22,7 +22,7 @@ class PatientListPage extends StatefulWidget {
 class _PatientListPageState extends State<PatientListPage>
     with AutomaticKeepAliveClientMixin {
   // 保持不被销毁
-  int subscribeId;
+  KeyboardVisibilityController subscribeId;
   @override
   bool get wantKeepAlive => true;
 
@@ -37,11 +37,11 @@ class _PatientListPageState extends State<PatientListPage>
             child: Text("确定要发送处方给$name吗?"),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text("取消"),
               onPressed: () => Navigator.of(context).pop(false), // 关闭对话框
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 "确定",
                 style: TextStyle(
@@ -62,8 +62,9 @@ class _PatientListPageState extends State<PatientListPage>
   @override
   void initState() {
     //监听键盘高度变化
-    subscribeId = KeyboardVisibilityNotification().addNewListener(
-      onChange: (bool visible) {
+    subscribeId = KeyboardVisibilityController()
+        ..onChange.listen(
+      (bool visible) {
         if (!visible) {
           //键盘下降失去焦点
           FocusScope.of(context).requestFocus(FocusNode());
@@ -76,7 +77,6 @@ class _PatientListPageState extends State<PatientListPage>
   @override
   void dispose() {
     super.dispose();
-    KeyboardVisibilityNotification().removeListener(subscribeId);
   }
 
   @override

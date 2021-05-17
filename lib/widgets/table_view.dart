@@ -1,13 +1,11 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:doctor/pages/qualification/doctor_physician_qualification_page.dart';
 import 'package:doctor/provider/view_state_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class NormalTableViewController {
   _SubCollectState _inState;
@@ -159,7 +157,7 @@ class _SubCollectState<T> extends State<NormalTableView>
           );
 
     return Center(
-      child: FlatButton(
+      child: TextButton(
         child: child,
         onPressed: () {
           _loadingGetData();

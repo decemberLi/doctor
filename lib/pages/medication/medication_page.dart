@@ -7,7 +7,6 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
-import 'package:doctor/widgets/common_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
@@ -308,7 +307,7 @@ class _MedicationPageState extends State<MedicationPage>
         },
       ),
       floatingActionButton: Stack(
-        overflow: Overflow.visible,
+        clipBehavior: Clip.none,
         children: [
           FloatingActionButton(
             backgroundColor: Color(0xFFFDA705),

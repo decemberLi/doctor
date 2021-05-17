@@ -1,18 +1,18 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:doctor/common/statistics/biz_tracker.dart';
+import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
-import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
-import 'package:doctor/http/server.dart';
 import 'package:provider/provider.dart';
 
 /// 渲染资源列表
@@ -143,7 +143,7 @@ class LearnListItemWiget extends StatelessWidget {
           fontWeight: FontWeight.bold),
     );
     if (text == "立即提交") {
-      learn = FlatButton(
+      learn = TextButton(
         onPressed: () {
 
           EasyLoading.instance.flash(

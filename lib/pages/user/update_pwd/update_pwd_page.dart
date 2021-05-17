@@ -1,11 +1,14 @@
+import 'dart:async';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
+import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/ucenter.dart';
-import 'dart:async';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
+
 import 'common_style.dart';
 
 
@@ -30,21 +33,16 @@ class _UpdatePwdState extends State<UpdatePwdPage> {
       if (newPassword != confirmPassword) {
         EasyLoading.showToast('两次新密码不一致，请重新输入');
       } else {
-        API.shared.ucenter.changePassword({
-          'oldPassword': oldPassword,
-          'newPassword': newPassword
-        }).then((response) {
-          if (response is! DioError) {
-            SessionManager.shared.session = null;
-            const timeout = const Duration(seconds: 1);
-            Timer(timeout, () {
-              EasyLoading.showToast('密码更新成功，请重新登录');
-            });
-          }
-        },onError: (e) {
-          if (!TextUtil.isEmpty(e.error)) {
-            EasyLoading.showToast(e.error);
-          }
+        EasyLoading.instance.flash(() async {
+          await API.shared.ucenter.changePassword({
+            'oldPassword': oldPassword,
+            'newPassword': newPassword
+          });
+          SessionManager.shared.session = null;
+          const timeout = const Duration(seconds: 1);
+          Timer(timeout, () {
+            EasyLoading.showToast('密码更新成功，请重新登录');
+          });
         });
       }
     }

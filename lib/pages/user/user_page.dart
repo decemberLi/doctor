@@ -1,20 +1,14 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
+import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
-import 'package:doctor/pages/doctors/doctors_banner.dart';
-import 'package:doctor/pages/doctors/doctors_banner_item.dart';
-import 'package:doctor/pages/doctors/doctors_list_page.dart';
-import 'package:doctor/pages/doctors/doctors_list_page2.dart';
+import 'package:doctor/pages/activity/activity_constants.dart';
+import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/adapt.dart';
 import 'package:doctor/utils/constants.dart';
-import 'package:doctor/widgets/common_stack.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/http/ucenter.dart';
-import 'package:flutter/services.dart';
 import 'package:http_manager/manager.dart';
 
 import '../../root_widget.dart';
@@ -130,7 +124,10 @@ class _UserPageState extends State<UserPage> with RouteAware {
                           fontSize: 14,
                         ),
                       ),
-                    Icon(Icons.keyboard_arrow_right,color: Color(0x35000000),),
+                    Icon(
+                      Icons.keyboard_arrow_right,
+                      color: Color(0x35000000),
+                    ),
                   ],
                 ),
               ),
@@ -140,7 +137,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
       ),
     );
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         callBack();
       },
       child: content,
@@ -277,21 +274,31 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                   fontWeight: FontWeight.bold),
                             ),
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 if (doctorData?.identityStatus == 'PASS') {
-                                  if (doctorData?.authStatus == 'WAIT_VERIFY' || doctorData.authStatus == 'FAIL') {
+                                  if (doctorData?.authStatus == 'WAIT_VERIFY' ||
+                                      doctorData.authStatus == 'FAIL') {
                                     Navigator.pushNamed(
-                                        context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
-                                  }else if (doctorData.authStatus == 'VERIFYING') {
+                                        context,
+                                        RouteManager
+                                            .DOCTOR_AUTHENTICATION_PAGE);
+                                  } else if (doctorData.authStatus ==
+                                      'VERIFYING') {
                                     Navigator.pushNamed(
-                                        context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-                                  }else if (doctorData.authStatus == 'PASS') {
+                                        context,
+                                        RouteManager
+                                            .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                                  } else if (doctorData.authStatus == 'PASS') {
                                     Navigator.pushNamed(
-                                        context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+                                        context,
+                                        RouteManager
+                                            .DOCTOR_AUTH_STATUS_PASS_PAGE);
                                   }
-                                }else{
+                                } else {
                                   Navigator.pushNamed(
-                                      context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+                                      context,
+                                      RouteManager
+                                          .DOCTOR_AUTHENTICATION_INFO_PAGE);
                                 }
                               },
                               child: Container(
@@ -342,7 +349,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                         width: Adapt.screenW() * 0.6,
                         padding: EdgeInsets.only(top: 8, bottom: 8),
                         child: Text(
-                          "${doctorData?.hospitalName??''}",
+                          "${doctorData?.hospitalName ?? ''}",
                           softWrap: true,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

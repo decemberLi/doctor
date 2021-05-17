@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:doctor/widgets/video/chewie/src/chewie_player.dart';
 import 'package:doctor/widgets/video/chewie/src/chewie_progress_colors.dart';
 import 'package:doctor/widgets/video/chewie/src/material_progress_bar.dart';
 import 'package:doctor/widgets/video/chewie/src/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomControls extends StatefulWidget {
@@ -351,7 +352,7 @@ class _CustomControlsState extends State<CustomControls> {
       } else {
         _cancelAndRestartTimer();
 
-        if (!controller.value.initialized) {
+        if (!controller.value.isInitialized) {
           controller.initialize().then((_) {
             controller.play();
           });

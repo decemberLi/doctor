@@ -1,13 +1,13 @@
+import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
-import 'package:flutter/material.dart';
-import 'package:doctor/utils/constants.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:provider/provider.dart';
-import 'package:doctor/http/server.dart';
 import 'package:http_manager/manager.dart';
+import 'package:provider/provider.dart';
 
 /// 渲染列表
 class PlanDetailList extends StatelessWidget {

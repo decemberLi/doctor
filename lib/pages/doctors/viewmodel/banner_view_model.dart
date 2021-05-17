@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:doctor/http/foundationSystem.dart';
 import 'package:doctor/pages/doctors/model/banner_entity.dart';
 import 'package:http_manager/api.dart';
-import 'package:doctor/http/foundationSystem.dart';
 
 class BannerViewModel {
   final String bannerType;
@@ -17,6 +17,7 @@ class BannerViewModel {
           .toList();
       return Future.value(result);
     } on DioError catch (e) {
+      print("the error is $e");
       return Future.value(null);
     } catch (e) {
       print(e);

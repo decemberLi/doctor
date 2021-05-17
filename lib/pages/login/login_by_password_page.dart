@@ -15,8 +15,8 @@ import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'common_style.dart';
@@ -35,7 +35,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
 
   String _mobile, _password;
   bool _agree = false;
-  int subscribeId;
+  KeyboardVisibilityController subscribeId;
   var _phoneController = TextEditingController();
 
   Future _submit() async {
@@ -77,8 +77,8 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
           }
           params['deviceId'] = GlobalData.shared.registerId;
           params['registerId'] = GlobalData.shared.registerId;
-          print("the params is -- ${params}");
-          await API.shared.foundation.pushDeviceLoginSubmit(params);
+          print("the params is -- $params");
+          await API.shared.foundation.pushDeviceSubmit(params);
         }catch(e){
 
         }
@@ -89,8 +89,9 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
   @override
   void initState() {
     //监听键盘高度变化
-    subscribeId = KeyboardVisibilityNotification().addNewListener(
-      onChange: (bool visible) {
+    subscribeId = KeyboardVisibilityController()
+        ..onChange.listen(
+      (bool visible) {
         if (!visible) {
           //键盘下降失去焦点
           FocusScope.of(context).requestFocus(FocusNode());
@@ -116,7 +117,6 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
 
   @override
   void dispose() {
-    KeyboardVisibilityNotification().removeListener(subscribeId);
     super.dispose();
   }
 

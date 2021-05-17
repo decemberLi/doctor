@@ -1,13 +1,12 @@
-import 'dart:async';
 import 'dart:convert';
 
+import 'package:doctor/http/dtp.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/widgets/table_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/dtp.dart';
-import 'package:provider/provider.dart';
 
 import 'model/doctor_circle_entity.dart';
 import 'viewmodel/doctors_view_model.dart';
@@ -30,7 +29,7 @@ class _DoctorsListStates extends State<DoctorsListPage> {
     super.initState();
     try {
       var data = json.decode(widget.args);
-      print("the data is ${data}");
+      print("the data is $data");
       title = data["title"];
       code = data["code"];
     } catch (e) {}
@@ -67,14 +66,14 @@ class _DoctorsListStates extends State<DoctorsListPage> {
         children: [
           Container(
             width: 44,
-            child: FlatButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Icon(
+            child: IconButton(
+              icon:  Icon(
                 Icons.arrow_back,
                 color: Colors.white,
               ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
           ),
           Expanded(

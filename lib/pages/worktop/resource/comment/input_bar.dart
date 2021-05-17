@@ -3,7 +3,7 @@ import 'package:doctor/utils/debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 typedef OnPublishCallback = bool Function(String text);
 
@@ -29,26 +29,20 @@ class InputBarHelper {
     await showModalBottomSheet(
       backgroundColor: ThemeColor.colorFFFAFAFA,
       context: context,
-      isScrollControlled: true,
+      isScrollControlled: false,
       builder: (context) {
-        return StatefulBuilder(builder: (ctx, state) {
-          return AnimatedPadding(
-            padding: MediaQuery.of(context).viewInsets,
-            duration: Duration(milliseconds: 20),
-            child: IntrinsicHeight(
-              child: InputBarWidget(
-                commentTo,
-                replayContent,
-                hintText,
-                _cachedContent,
-                callback,
+        return IntrinsicHeight(
+          child: InputBarWidget(
+            commentTo,
+            replayContent,
+            hintText,
+            _cachedContent,
+            callback,
                 (text) {
-                  _cachedContent = text;
-                },
-              ),
-            ),
-          );
-        });
+              _cachedContent = text;
+            },
+          ),
+        );
       },
     );
     return _cachedContent;
@@ -86,7 +80,7 @@ class InputBarWidget extends StatefulWidget {
 
 class InputBarWidgetState extends State<InputBarWidget> {
   FocusNode _commentFocusNode = FocusNode();
-  final _kvn = KeyboardVisibilityNotification();
+  final _kvn = KeyboardVisibilityController();
   var length = 0;
   int _subscribeId;
   final TextEditingController _controller = TextEditingController();
@@ -96,8 +90,8 @@ class InputBarWidgetState extends State<InputBarWidget> {
     super.initState();
     _controller.text = widget.cachedContent;
     length = widget?.cachedContent?.length ?? 0;
-    _subscribeId = _kvn.addNewListener(
-      onChange: (bool visible) {
+    _kvn.onChange.listen(
+       (visible) {
         if (!visible) {
           _commentFocusNode.unfocus();
           if (ModalRoute.of(context).isCurrent) {
@@ -111,9 +105,6 @@ class InputBarWidgetState extends State<InputBarWidget> {
 
   @override
   void dispose() {
-    if (_kvn != null) {
-      _kvn.removeListener(_subscribeId);
-    }
     super.dispose();
   }
 

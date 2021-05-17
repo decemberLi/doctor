@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/model/face_photo.dart';
 import 'package:doctor/model/uploaded_file_entity.dart';
 import 'package:doctor/pages/user/auth/entity/auth_qualification.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/utils/upload_file_helper.dart';
-import 'package:doctor/http/ucenter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http_manager/api.dart';
 
@@ -29,7 +29,7 @@ class AuthenticationStep2ViewModel extends ViewStateModel {
     UploadFileEntity entity = await uploadImageToOss(path.path);
 
     if (_data.qualifications == null) {
-      _data.qualifications = List();
+      _data.qualifications = [];
     }
     FacePhoto img;
     if (value == null) {

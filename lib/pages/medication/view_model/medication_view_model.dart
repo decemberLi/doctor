@@ -1,9 +1,9 @@
 import 'package:common_utils/common_utils.dart';
+import 'package:doctor/http/dtp.dart';
 import 'package:doctor/pages/medication/model/drug_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:doctor/http/dtp.dart';
 import 'package:http_manager/manager.dart';
 
 class MedicationViewModel extends ViewStateRefreshListModel<DrugModel> {

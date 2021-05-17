@@ -1,12 +1,11 @@
-import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
+import 'package:doctor/http/dtp.dart';
 import 'package:doctor/pages/prescription/model/prescription_template_model.dart';
 import 'package:doctor/pages/prescription/widgets/clinica_diag_input.dart';
 import 'package:doctor/pages/prescription/widgets/prescripion_card.dart';
 import 'package:doctor/pages/prescription/widgets/rp_list.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
-import 'package:doctor/utils/app_regex_util.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_modal.dart';
 import 'package:doctor/widgets/form_item.dart';
@@ -14,7 +13,6 @@ import 'package:doctor/widgets/remove_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
-import 'package:doctor/http/dtp.dart';
 
 class PrescriptionTemplageAddPage extends StatefulWidget {
   final String action;

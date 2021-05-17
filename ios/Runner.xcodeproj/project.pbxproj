@@ -13,6 +13,7 @@
 		6A0B7C74259320CD0018D252 /* ShareVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0B7C73259320CD0018D252 /* ShareVC.swift */; };
 		6A0B7C762593219E0018D252 /* ShareVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A0B7C752593219E0018D252 /* ShareVC.xib */; };
 		6A0B7CCA25934D3C0018D252 /* color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0B7CC925934D3C0018D252 /* color.swift */; };
+		6A33BA52264BA4530080D880 /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A33BA51264BA4530080D880 /* BaseNavigationController.swift */; };
 		6A3A470925A86FFF0025C014 /* UIViewCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3A470825A86FFF0025C014 /* UIViewCorner.swift */; };
 		6A612F3425F636BC00D14E55 /* modelType.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A612F3125F636BC00D14E55 /* modelType.plist */; };
 		6A612F3525F636BC00D14E55 /* ocrType.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A612F3225F636BC00D14E55 /* ocrType.plist */; };
@@ -29,6 +30,7 @@
 		6A8CE77425EE293400BFE666 /* OCRManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A8CE77325EE293400BFE666 /* OCRManager.mm */; };
 		6ABA8A8A25C79DFC0090BC4C /* WebVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABA8A8825C79DFC0090BC4C /* WebVC.swift */; };
 		6ABA8A8B25C79DFC0090BC4C /* WebVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6ABA8A8925C79DFC0090BC4C /* WebVC.xib */; };
+		6ABC99A526044370006C7119 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ABC99A426044370006C7119 /* StoreKit.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -54,6 +56,7 @@
 		6A0B7C73259320CD0018D252 /* ShareVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareVC.swift; sourceTree = "<group>"; };
 		6A0B7C752593219E0018D252 /* ShareVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareVC.xib; sourceTree = "<group>"; };
 		6A0B7CC925934D3C0018D252 /* color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = color.swift; sourceTree = "<group>"; };
+		6A33BA51264BA4530080D880 /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
 		6A3A470825A86FFF0025C014 /* UIViewCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewCorner.swift; sourceTree = "<group>"; };
 		6A48EB212599C8E00086F5F2 /* RunnerApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerApp.entitlements; sourceTree = "<group>"; };
 		6A612F3125F636BC00D14E55 /* modelType.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = modelType.plist; sourceTree = "<group>"; };
@@ -72,6 +75,7 @@
 		6A8CE77525EE295E00BFE666 /* OCRManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OCRManager.h; sourceTree = "<group>"; };
 		6ABA8A8825C79DFC0090BC4C /* WebVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebVC.swift; sourceTree = "<group>"; };
 		6ABA8A8925C79DFC0090BC4C /* WebVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WebVC.xib; sourceTree = "<group>"; };
+		6ABC99A426044370006C7119 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		6ADFEEB925AFF3BC00372E8B /* RunnerDebug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = RunnerDebug.entitlements; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -94,6 +98,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A8CE77125EE286F00BFE666 /* opencv2.framework in Frameworks */,
+				6ABC99A526044370006C7119 /* StoreKit.framework in Frameworks */,
 				41C78659D7500331E9C419B0 /* Pods_Runner.framework in Frameworks */,
 				6A8CE76F25EE286F00BFE666 /* OcrSDKKit.framework in Frameworks */,
 				6A8CE77025EE286F00BFE666 /* YTImageRefiner_pub.framework in Frameworks */,
@@ -108,6 +113,7 @@
 		2438F14B526E88AD1BD6F547 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6ABC99A426044370006C7119 /* StoreKit.framework */,
 				CB3CD1E0B1D6B992AB94E592 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -201,6 +207,7 @@
 				6A3A470825A86FFF0025C014 /* UIViewCorner.swift */,
 				6ABA8A8825C79DFC0090BC4C /* WebVC.swift */,
 				6ABA8A8925C79DFC0090BC4C /* WebVC.xib */,
+				6A33BA51264BA4530080D880 /* BaseNavigationController.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -366,6 +373,7 @@
 				6A655EB325A461F6003251FB /* RecordsVC.swift in Sources */,
 				6ABA8A8A25C79DFC0090BC4C /* WebVC.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				6A33BA52264BA4530080D880 /* BaseNavigationController.swift in Sources */,
 				6A0B7C74259320CD0018D252 /* ShareVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -444,7 +452,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20300;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 44SDL2RZYX;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -462,7 +470,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.8;
+				MARKETING_VERSION = 2.4.9;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -598,7 +606,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20300;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 44SDL2RZYX;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -616,7 +624,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.8;
+				MARKETING_VERSION = 2.4.9;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -644,7 +652,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/RunnerApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20300;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 44SDL2RZYX;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -662,7 +670,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 2.4.8;
+				MARKETING_VERSION = 2.4.9;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",

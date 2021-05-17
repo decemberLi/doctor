@@ -1,5 +1,6 @@
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:http_manager/manager.dart';
+
 import 'host.dart';
 
 extension ucenterAPI on API {

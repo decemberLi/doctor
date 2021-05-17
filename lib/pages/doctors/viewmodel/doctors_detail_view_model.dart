@@ -1,6 +1,6 @@
+import 'package:doctor/http/dtp.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:doctor/http/dtp.dart';
 import 'package:http_manager/api.dart';
 
 import '../model/doctor_article_detail_entity.dart';

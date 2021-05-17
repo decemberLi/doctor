@@ -1,25 +1,30 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:doctor/common/statistics/biz_tracker.dart';
+import 'package:doctor/http/Sso.dart';
+import 'package:doctor/http/foundation.dart';
 import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
-import 'package:doctor/pages/login/model/login_user.dart';
 import 'package:doctor/provider/GlobalData.dart';
 import 'package:doctor/route/route_manager.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
-import 'package:doctor/utils/adapt.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/material.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http_manager/manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'common_style.dart';
-import 'package:http_manager/manager.dart';
 import 'package:doctor/http/foundation.dart';
 import 'package:doctor/http/Sso.dart';
 import 'package:doctor/widgets/YYYEasyLoading.dart';
@@ -35,7 +40,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   Timer _timer;
   int _maxCount = 0;
   String _mobile, _captcha;
-  int subscribeId;
+  KeyboardVisibilityController subscribeId;
   bool _agree = false;
   var _phoneController = TextEditingController();
 
@@ -78,8 +83,8 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
           }
           params['deviceId'] = GlobalData.shared.registerId;
           params['registerId'] = GlobalData.shared.registerId;
-          print("the params is -- ${params}");
-          await API.shared.foundation.pushDeviceLoginSubmit(params);
+          print("the params is -- $params");
+          await API.shared.foundation.pushDeviceSubmit(params);
         }catch(e){
 
         }
@@ -134,8 +139,9 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
 
   void initState() {
     //监听键盘高度变化
-    subscribeId = KeyboardVisibilityNotification().addNewListener(
-      onChange: (bool visible) {
+    subscribeId = KeyboardVisibilityController()
+        ..onChange.listen(
+      (bool visible) {
         if (!visible) {
           //键盘下降失去焦点
           FocusScope.of(context).requestFocus(FocusNode());
@@ -157,7 +163,6 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   @override
   void dispose() {
     super.dispose();
-    KeyboardVisibilityNotification().removeListener(subscribeId);
     if (_timer != null) {
       _timer.cancel();
     }

@@ -1,18 +1,17 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:doctor/pages/doctors/viewmodel/banner_view_model.dart';
+import 'package:doctor/http/dtp.dart';
 import 'package:doctor/pages/doctors/widget/circleflow/hot_post_widget.dart';
 import 'package:doctor/provider/refreshable_view_state_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/manager.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
+
 import '../model/doctor_circle_entity.dart';
 import '../model/doctor_article_detail_entity.dart';
-import 'package:http_manager/manager.dart';
-import 'package:doctor/http/dtp.dart';
-
+import '../model/doctor_circle_entity.dart';
 import 'academic_circle_view_model.dart';
 import 'gossip_view_model.dart';
 
@@ -94,7 +93,7 @@ class DoctorsViewMode extends RefreshableViewStateModel<DoctorCircleEntity> {
       await _academicCircleViewModel.refreshData();
       var listData = await super.refresh(init: init);
       if (listData.length > 3) {
-        List<HotPostEntity> results = List<HotPostEntity>();
+        List<HotPostEntity> results = [];
         for (DoctorCircleEntity each in listData.sublist(0,3)) {
             results.add(HotPostEntity(
               each.postId,

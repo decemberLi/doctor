@@ -1,19 +1,18 @@
-import 'package:doctor/pages/login/model/login_info.dart';
+import 'package:doctor/http/dtp.dart';
 import 'package:doctor/pages/prescription/view_model/prescription_view_model.dart';
 import 'package:doctor/pages/prescription/widgets/prescription_qr_code.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/common_style.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:provider/provider.dart';
-import 'package:doctor/http/dtp.dart';
 import 'package:http_manager/manager.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 class PrescriptionSuccessPage extends StatefulWidget {
   @override
@@ -36,7 +35,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
             child: Text("系统检测到您还未设置新密码，为了您的账户安全，请重新设置!"),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(
                 "取消",
                 style: TextStyle(
@@ -47,7 +46,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                 Navigator.of(context).pop(false);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(
                 "去设置",
                 style: TextStyle(
