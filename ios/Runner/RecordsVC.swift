@@ -66,6 +66,8 @@ class RecordsVC: UIViewController {
         session.stopRunning()
         timer?.invalidate()
         timer = nil
+        try? AVAudioSession.sharedInstance().setCategory(.playback)
+        try? AVAudioSession.sharedInstance().overrideOutputAudioPort(.none)
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -213,6 +215,7 @@ class RecordsVC: UIViewController {
     
     private func initRecord(){
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
+        try? AVAudioSession.sharedInstance().overrideOutputAudioPort(.none)
         try? AVAudioSession.sharedInstance().setActive(true)
         let dir = NSHomeDirectory() + "/Documents/records"
         let path = dir + "/record_\(paths.count).mp4"
