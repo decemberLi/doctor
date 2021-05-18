@@ -57,9 +57,8 @@ class MediaRecorderThread(
         val profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P)
         mMediaRecorder.apply {
             // 设置视频来源
-            setAudioChannels(2)
             setVideoSource(MediaRecorder.VideoSource.SURFACE)
-            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setOutputFile(File(mDstPath, "${mFileSequence++}.mp4").absolutePath)
             setVideoSize(mWidth, mHeight)
