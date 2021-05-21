@@ -344,7 +344,7 @@ class LearnListItemWiget extends StatelessWidget {
                     ),
                     Text(
                       timeRender(),
-                      style: TextStyle(color: Color(0xFF666666), fontSize: 10),
+                      style: TextStyle(color: Color(0xFF666666), fontSize: 12),
                     ),
                   ],
                 ),

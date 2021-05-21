@@ -342,6 +342,10 @@ class _CustomControlsState extends State<CustomControls> {
   }
 
   void _playPause() {
+    if(!controller.value.isInitialized){
+      debugPrint("播放控制器未初始化...");
+      return;
+    }
     bool isFinished = _latestValue.position >= _latestValue.duration;
 
     setState(() {
