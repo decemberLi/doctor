@@ -3,9 +3,11 @@ import 'package:doctor/pages/activity/activity_research.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/utils/time_text.dart';
 import 'package:doctor/widgets/ace_button.dart';
+import 'package:doctor/widgets/new_text_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -158,10 +160,19 @@ class _ActivityState extends State<ActivityDetail> {
         return [
           line("活动名称", _data.activityName),
           line("来自企业", _data.companyName),
-          line("截止日期", "${normalDateFormate(_data.endTime)}"),
+          line("截止日期", "${normalFullDateFormate(_data.endTime)}"),
         ];
       }
       return [];
+    }
+    Color _statusColor(String status) {
+      if (status == STATUS_WAIT) {
+        return ThemeColor.primaryColor;
+      } else if (status == STATUS_EXECUTING) {
+        return Color(0xFF5AC624);
+      } else {
+        return ThemeColor.colorFFD9D5D5;
+      }
     }
 
     return card(
@@ -171,6 +182,10 @@ class _ActivityState extends State<ActivityDetail> {
           Row(
             children: [
               cardTitle("${activityName(widget.type)}信息"),
+              LearnTextIcon(
+                  text: activityStatus(_data.status),
+                  color: _statusColor(_data.status),
+                  margin: EdgeInsets.only(left: 10)),
               Expanded(child: Container()),
               IconButton(
                 icon: showInfo
