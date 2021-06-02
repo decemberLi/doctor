@@ -7,6 +7,7 @@ import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/http/server.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/pages/worktop/learn/cache_learn_detail_video_helper.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
@@ -149,8 +150,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                     decorationStyle: TextDecorationStyle.solid),
               ),
               onTap: () {
-                MedcloudsNativeApi.instance().openWebPage(
-                    "https://mp.weixin.qq.com/s/YprfqD8GdSHCMvtW_LJx9Q");
+                MedcloudsNativeApi.instance().openWebPage("https://mp.weixin.qq.com/s/YprfqD8GdSHCMvtW_LJx9Q");
                 print('如何录制讲课视频？');
               },
             ),
@@ -350,26 +350,18 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     MedcloudsNativeApi.instance().addProcessor(
       "uploadLearnVideo",
       (args) async {
-        try {
-          print("call uploadLearnVideo $args");
+        try{
           var obj = json.decode(args);
-          print("call 1111111 $obj");
-          var entity = await OssService.upload(obj["path"], showLoading: false);
-          print("call 22222 $entity");
-          var result = await API.shared.server.addLectureSubmit(
-            {
-              'learnPlanId': data.learnPlanId,
-              'resourceId': pdf.resourceId,
-              'videoTitle': obj['title'] ?? data.taskName,
-              'duration': obj['duration'] ?? 0,
-              'presenter': userInfo?.doctorName ?? '',
-              'videoOssId': entity.ossId,
-            },
-          );
-          print("the result is --- $result");
-          _model.initData();
-          _uploadFinish(result["lectureId"]);
-        } catch (e) {
+          CachedVideoInfo info = CachedVideoInfo();
+          info.learnPlanId = data.learnPlanId;
+          info.resourceId = pdf.resourceId;
+          info.videoTitle = obj['title'] ?? data.taskName;
+          info.duration = obj['duration'] ?? 0;
+          info.presenter= userInfo?.doctorName ?? '';
+          info.path = obj["path"];
+          CachedLearnDetailVideoHelper.cacheVideoInfo(userInfo.doctorUserId, info);
+          _doUpload(info);
+        }catch(e){
           return "网络错误";
         }
         return null;
@@ -378,19 +370,26 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     );
   }
 
+  _doUpload(CachedVideoInfo data) async{
+    var entity = await OssService.upload(data.path, showLoading: false);
+    var result = await API.shared.server.addLectureSubmit(
+      {
+        'learnPlanId': data.learnPlanId,
+        'resourceId': data.resourceId,
+        'videoTitle': data.videoTitle,
+        'duration': data.duration,
+        'presenter': data.presenter,
+        'videoOssId': entity.ossId,
+      },
+    );
+    CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
+    _model.initData();
+    _uploadFinish(result["lectureId"]);
+  }
+
   Widget _renderUploadButton(
       LearnDetailViewModel model, arguments, LearnDetailItem data) {
-    if (data.taskTemplate == "DOCTOR_LECTURE" && true) {
-      return Container(
-        height: 50,
-        color: Color(0xff444444),
-        child: Row(
-          children: [
-            Text("当前有一个未上传的讲课视频...",style: TextStyle(),),
-          ],
-        ),
-      );
-    } else if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
+    if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
       return Container(
         alignment: Alignment.center,
         // margin: EdgeInsets.fromLTRB(20, 10, 20, 40),
@@ -523,8 +522,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          if ( //data.taskTemplate == 'DOCTOR_LECTURE' &&
-                          data.reLearnReason != null &&
+                          if (//data.taskTemplate == 'DOCTOR_LECTURE' &&
+                              data.reLearnReason != null &&
                               data.status != 'SUBMIT_LEARN' &&
                               data.status != 'ACCEPTED')
                             Container(

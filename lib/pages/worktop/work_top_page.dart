@@ -1,8 +1,10 @@
+import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/model/biz/learn_plan_statistical_entity.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
 import 'package:doctor/pages/activity/widget/activity_widget.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/pages/worktop/learn/cache_learn_detail_video_helper.dart';
 import 'package:doctor/pages/worktop/learn/learn_list/learn_list_item_wiget.dart';
 import 'package:doctor/pages/worktop/model/work_top_entity.dart';
 import 'package:doctor/pages/worktop/resource/view_model/work_top_view_model.dart';
@@ -11,6 +13,7 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/common_stack.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -32,6 +35,7 @@ class _WorktopPageState extends State<WorktopPage>
 
   @override
   bool get wantKeepAlive => true;
+  bool isShowed = false;
 
   init() async {
     await _model.initData();
@@ -41,6 +45,76 @@ class _WorktopPageState extends State<WorktopPage>
   void initState() {
     this.init();
     super.initState();
+    eventBus.on().listen((event) {
+      if (event is EventTabIndex && event.index == 0) {
+        _showUploadVideoDialogIfNeeded();
+      }
+    });
+  }
+
+  void _showUploadVideoDialogIfNeeded() async {
+    if(isShowed){
+      return;
+    }
+    UserInfoViewModel model =
+        Provider.of<UserInfoViewModel>(context, listen: false);
+    await model.queryDoctorInfo();
+    var needShow = await CachedLearnDetailVideoHelper.hasCachedVideo(model.data.doctorUserId);
+    if (!needShow) {
+      return;
+    }
+    _showUploadVideoAlert(model.data.doctorUserId);
+  }
+
+  _showUploadVideoAlert(int userId) {
+    isShowed = true;
+    showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return WillPopScope(
+          child: CupertinoAlertDialog(
+            content: Container(
+              padding: EdgeInsets.only(top: 12),
+              child: Text("您有一个未完成的讲课邀请任务\n是否立即查看详情"),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  "暂不查看",
+                  style: TextStyle(
+                    color: ThemeColor.colorFF444444,
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text(
+                  "查看详情",
+                  style: TextStyle(
+                    color: ThemeColor.colorFF52C41A,
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.of(context).pop(false);
+                  CachedVideoInfo videoInfo =
+                      await CachedLearnDetailVideoHelper.getCachedVideoInfo(
+                          userId);
+                  await Navigator.of(context).pushNamed(
+                    RouteManager.LEARN_DETAIL,
+                    arguments: {
+                      'learnPlanId': videoInfo.learnPlanId,
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+          onWillPop: () async => false,
+        );
+      },
+    );
   }
 
   @override
@@ -101,7 +175,7 @@ class _WorktopPageState extends State<WorktopPage>
   }
 
   Widget bodyWidget(WorktopPageEntity entity) {
-    if (entity == null){
+    if (entity == null) {
       return Container();
     }
     var learnPlanListCount = entity?.learnPlanList?.length ?? 0;
