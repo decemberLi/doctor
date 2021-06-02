@@ -7,6 +7,7 @@ import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/http/server.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/pages/worktop/learn/cache_learn_detail_video_helper.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/constants.dart';
 import 'package:doctor/pages/worktop/learn/learn_detail/learn_detail_item_wiget.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
@@ -350,24 +351,16 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
       "uploadLearnVideo",
       (args) async {
         try{
-          print("call uploadLearnVideo $args");
           var obj = json.decode(args);
-          print("call 1111111 $obj");
-          var entity = await OssService.upload(obj["path"], showLoading: false);
-          print("call 22222 $entity");
-          var result = await API.shared.server.addLectureSubmit(
-            {
-              'learnPlanId': data.learnPlanId,
-              'resourceId': pdf.resourceId,
-              'videoTitle': obj['title'] ?? data.taskName,
-              'duration': obj['duration'] ?? 0,
-              'presenter': userInfo?.doctorName ?? '',
-              'videoOssId': entity.ossId,
-            },
-          );
-          print("the result is --- $result");
-          _model.initData();
-          _uploadFinish(result["lectureId"]);
+          CachedVideoInfo info = CachedVideoInfo();
+          info.learnPlanId = data.learnPlanId;
+          info.resourceId = pdf.resourceId;
+          info.videoTitle = obj['title'] ?? data.taskName;
+          info.duration = obj['duration'] ?? 0;
+          info.presenter= userInfo?.doctorName ?? '';
+          info.path = obj["path"];
+          CachedLearnDetailVideoHelper.cacheVideoInfo(userInfo.doctorUserId, info);
+          _doUpload(info);
         }catch(e){
           return "网络错误";
         }
@@ -375,6 +368,23 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         //print("the result is ${result}");
       },
     );
+  }
+
+  _doUpload(CachedVideoInfo data) async{
+    var entity = await OssService.upload(data.path, showLoading: false);
+    var result = await API.shared.server.addLectureSubmit(
+      {
+        'learnPlanId': data.learnPlanId,
+        'resourceId': data.resourceId,
+        'videoTitle': data.videoTitle,
+        'duration': data.duration,
+        'presenter': data.presenter,
+        'videoOssId': entity.ossId,
+      },
+    );
+    CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
+    _model.initData();
+    _uploadFinish(result["lectureId"]);
   }
 
   Widget _renderUploadButton(
