@@ -57,7 +57,7 @@ class CachedLearnDetailVideoHelper {
   static Future<bool> hasCachedVideo(int userId, {int learnPlanId = -1}) async {
     var refs = await SharedPreferences.getInstance();
     var cacheStr = refs.getString('$_keyVideoInfo-$userId');
-    if (cacheStr == null) {
+    if (cacheStr == null || TextUtil.isEmpty(cacheStr)) {
       return false;
     }
     CachedVideoInfo info =
