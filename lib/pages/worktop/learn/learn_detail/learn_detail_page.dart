@@ -56,10 +56,12 @@ class LearnDetailPage extends StatefulWidget {
 class _LearnDetailPageState extends State<LearnDetailPage> {
   DoctorDetailInfoEntity userInfo;
   LearnDetailViewModel _model;
+  bool hasVideo = false;
 
   @override
   void initState() {
     super.initState();
+    checkVideo();
     updateDoctorInfo();
   }
 
@@ -150,7 +152,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                     decorationStyle: TextDecorationStyle.solid),
               ),
               onTap: () {
-                MedcloudsNativeApi.instance().openWebPage("https://mp.weixin.qq.com/s/YprfqD8GdSHCMvtW_LJx9Q");
+                MedcloudsNativeApi.instance().openWebPage(
+                    "https://mp.weixin.qq.com/s/YprfqD8GdSHCMvtW_LJx9Q");
                 print('如何录制讲课视频？');
               },
             ),
@@ -350,18 +353,19 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     MedcloudsNativeApi.instance().addProcessor(
       "uploadLearnVideo",
       (args) async {
-        try{
+        try {
           var obj = json.decode(args);
           CachedVideoInfo info = CachedVideoInfo();
           info.learnPlanId = data.learnPlanId;
           info.resourceId = pdf.resourceId;
           info.videoTitle = obj['title'] ?? data.taskName;
           info.duration = obj['duration'] ?? 0;
-          info.presenter= userInfo?.doctorName ?? '';
+          info.presenter = userInfo?.doctorName ?? '';
           info.path = obj["path"];
-          CachedLearnDetailVideoHelper.cacheVideoInfo(userInfo.doctorUserId, info);
+          CachedLearnDetailVideoHelper.cacheVideoInfo(
+              userInfo.doctorUserId, info);
           _doUpload(info);
-        }catch(e){
+        } catch (e) {
           return "网络错误";
         }
         return null;
@@ -370,7 +374,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     );
   }
 
-  _doUpload(CachedVideoInfo data) async{
+  _doUpload(CachedVideoInfo data) async {
     var entity = await OssService.upload(data.path, showLoading: false);
     var result = await API.shared.server.addLectureSubmit(
       {
@@ -387,9 +391,72 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     _uploadFinish(result["lectureId"]);
   }
 
+  checkVideo() async {
+    dynamic arguments = ModalRoute.of(context).settings.arguments;
+    var learnPlanId = arguments['learnPlanId'];
+    bool has = await CachedLearnDetailVideoHelper.hasCachedVideo(
+        userInfo.doctorUserId,
+        learnPlanId: learnPlanId);
+    setState(() {
+      hasVideo = has;
+    });
+  }
+
   Widget _renderUploadButton(
       LearnDetailViewModel model, arguments, LearnDetailItem data) {
-    if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
+    hasVideo = true;
+    if (data.taskTemplate == 'DOCTOR_LECTURE' && hasVideo) {
+      return Container(
+        height: 50,
+        color: Color(0xff444444),
+        child: Row(
+          children: [
+            Container(
+              width: 18,
+            ),
+            Text(
+              "当前有一个未上传的讲课视频...",
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+            Expanded(child: Container()),
+            GestureDetector(
+              onTap: (){
+                CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
+                setState(() {
+                  hasVideo = false;
+                });
+              },
+              child: Container(
+                alignment: Alignment.center,
+                height: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 18),
+                child: Text(
+                  "删除",
+                  style: TextStyle(color: Color(0xffFECE35), fontSize: 12),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                EasyLoading.instance.flash(() async{
+                  var data = await CachedLearnDetailVideoHelper.getCachedVideoInfo(userInfo.doctorUserId);
+                  await _doUpload(data);
+                });
+              },
+              child: Container(
+                alignment: Alignment.center,
+                height: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 18),
+                child: Text(
+                  "重新上传",
+                  style: TextStyle(color: Color(0xff489DFE), fontSize: 12),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
       return Container(
         alignment: Alignment.center,
         // margin: EdgeInsets.fromLTRB(20, 10, 20, 40),
@@ -522,8 +589,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          if (//data.taskTemplate == 'DOCTOR_LECTURE' &&
-                              data.reLearnReason != null &&
+                          if ( //data.taskTemplate == 'DOCTOR_LECTURE' &&
+                          data.reLearnReason != null &&
                               data.status != 'SUBMIT_LEARN' &&
                               data.status != 'ACCEPTED')
                             Container(
