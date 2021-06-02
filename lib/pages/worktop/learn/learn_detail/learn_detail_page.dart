@@ -149,7 +149,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                     decorationStyle: TextDecorationStyle.solid),
               ),
               onTap: () {
-                MedcloudsNativeApi.instance().openWebPage("https://mp.weixin.qq.com/s/YprfqD8GdSHCMvtW_LJx9Q");
+                MedcloudsNativeApi.instance().openWebPage(
+                    "https://mp.weixin.qq.com/s/YprfqD8GdSHCMvtW_LJx9Q");
                 print('如何录制讲课视频？');
               },
             ),
@@ -349,7 +350,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     MedcloudsNativeApi.instance().addProcessor(
       "uploadLearnVideo",
       (args) async {
-        try{
+        try {
           print("call uploadLearnVideo $args");
           var obj = json.decode(args);
           print("call 1111111 $obj");
@@ -368,7 +369,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           print("the result is --- $result");
           _model.initData();
           _uploadFinish(result["lectureId"]);
-        }catch(e){
+        } catch (e) {
           return "网络错误";
         }
         return null;
@@ -379,7 +380,17 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   Widget _renderUploadButton(
       LearnDetailViewModel model, arguments, LearnDetailItem data) {
-    if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
+    if (data.taskTemplate == "DOCTOR_LECTURE" && true) {
+      return Container(
+        height: 50,
+        color: Color(0xff444444),
+        child: Row(
+          children: [
+            Text("当前有一个未上传的讲课视频...",style: TextStyle(),),
+          ],
+        ),
+      );
+    } else if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
       return Container(
         alignment: Alignment.center,
         // margin: EdgeInsets.fromLTRB(20, 10, 20, 40),
@@ -512,8 +523,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          if (//data.taskTemplate == 'DOCTOR_LECTURE' &&
-                              data.reLearnReason != null &&
+                          if ( //data.taskTemplate == 'DOCTOR_LECTURE' &&
+                          data.reLearnReason != null &&
                               data.status != 'SUBMIT_LEARN' &&
                               data.status != 'ACCEPTED')
                             Container(
