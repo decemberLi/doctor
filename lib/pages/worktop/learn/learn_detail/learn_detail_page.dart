@@ -276,8 +276,25 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     });
   }
 
-  _gotoRecord(LearnDetailItem data) {
+  _gotoRecord(LearnDetailItem data) async {
     if (EasyLoading.isShow) {
+      return;
+    }
+    var videoData = await CachedLearnDetailVideoHelper.getCachedVideoInfo(
+        userInfo.doctorUserId);
+    if (videoData != null) {
+      _showUploadVideoAlert(
+        "您暂时无法录制新的讲课视频",
+        "您有一个未完成的讲课邀请任务是否立即查看详情",
+        () {
+          Navigator.of(context).pushNamed(
+            RouteManager.LEARN_DETAIL,
+            arguments: {
+              'learnPlanId': videoData.learnPlanId,
+            },
+          );
+        },
+      );
       return;
     }
     UserInfoViewModel model =
@@ -391,6 +408,64 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     _uploadFinish(result["lectureId"]);
   }
 
+  _showUploadVideoAlert(String title, String desc, Function action) {
+    showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return WillPopScope(
+          child: CupertinoAlertDialog(
+            content: Container(
+              padding: EdgeInsets.only(top: 12),
+              child: Column(
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xff444444),
+                    ),
+                  ),
+                  Text(
+                    desc,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Color(0xfff57575),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  "取消",
+                  style: TextStyle(
+                    color: ThemeColor.colorFF444444,
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text(
+                  "确定",
+                  style: TextStyle(
+                    color: ThemeColor.colorFF52C41A,
+                  ),
+                ),
+                onPressed: () async {
+                  action();
+                },
+              ),
+            ],
+          ),
+          onWillPop: () async => false,
+        );
+      },
+    );
+  }
+
   checkVideo() async {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
     var learnPlanId = arguments['learnPlanId'];
@@ -420,11 +495,21 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             ),
             Expanded(child: Container()),
             GestureDetector(
-              onTap: (){
-                CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
-                setState(() {
-                  hasVideo = false;
-                });
+              onTap: () async {
+                var data =
+                    await CachedLearnDetailVideoHelper.getCachedVideoInfo(
+                        userInfo.doctorUserId);
+                _showUploadVideoAlert(
+                  "确定删除已录制的讲课视频吗？",
+                  "录制时长${data.duration / 60}:${(data.duration % 60).toStringAsPrecision(2)}",
+                  () {
+                    CachedLearnDetailVideoHelper.cleanVideoCache(
+                        userInfo.doctorUserId);
+                    setState(() {
+                      hasVideo = false;
+                    });
+                  },
+                );
               },
               child: Container(
                 alignment: Alignment.center,
@@ -438,8 +523,10 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             ),
             GestureDetector(
               onTap: () {
-                EasyLoading.instance.flash(() async{
-                  var data = await CachedLearnDetailVideoHelper.getCachedVideoInfo(userInfo.doctorUserId);
+                EasyLoading.instance.flash(() async {
+                  var data =
+                      await CachedLearnDetailVideoHelper.getCachedVideoInfo(
+                          userInfo.doctorUserId);
                   await _doUpload(data);
                 });
               },
