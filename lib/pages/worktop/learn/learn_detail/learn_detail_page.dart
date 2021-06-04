@@ -843,7 +843,15 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   bool _mIsBack = false;
-
+  updateCheck(LearnDetailViewModel model,dynamic learnPlanId) async {
+    if (model.data.status == "COMPLETE") {
+      var has = await CachedLearnDetailVideoHelper.hasCachedVideo(userInfo.doctorUserId,learnPlanId: learnPlanId);
+      if (has){
+        CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
+      }
+    }
+    checkVideo();
+  }
   @override
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
@@ -856,6 +864,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             if (model.data?.taskTemplate == 'MEDICAL_SURVEY') {
               return ResearchDetail();
             } else {
+              updateCheck(model, arguments['learnPlanId']);
               return buildDetail(model);
             }
           },
