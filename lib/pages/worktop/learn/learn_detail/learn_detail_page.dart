@@ -61,7 +61,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   @override
   void initState() {
     super.initState();
-    checkVideo();
     updateDoctorInfo();
   }
 
@@ -479,7 +478,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   Widget _renderUploadButton(
       LearnDetailViewModel model, arguments, LearnDetailItem data) {
-    hasVideo = true;
     if (data.taskTemplate == 'DOCTOR_LECTURE' && hasVideo) {
       return Container(
         height: 50,
@@ -844,7 +842,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   bool _mIsBack = false;
   updateCheck(LearnDetailViewModel model,dynamic learnPlanId) async {
-    if (model.data.status == "COMPLETE") {
+    if (model.data?.status == "COMPLETE") {
       var has = await CachedLearnDetailVideoHelper.hasCachedVideo(userInfo.doctorUserId,learnPlanId: learnPlanId);
       if (has){
         CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
