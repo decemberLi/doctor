@@ -526,6 +526,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                       await CachedLearnDetailVideoHelper.getCachedVideoInfo(
                           userInfo.doctorUserId);
                   await _doUpload(data);
+                  _model.initData();
                 });
               },
               child: Container(
