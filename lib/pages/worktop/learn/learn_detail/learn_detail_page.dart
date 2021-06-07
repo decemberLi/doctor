@@ -380,7 +380,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           info.path = obj["path"];
           CachedLearnDetailVideoHelper.cacheVideoInfo(
               userInfo.doctorUserId, info);
-          _doUpload(info);
+          await _doUpload(info);
         } catch (e) {
           return "网络错误";
         }
@@ -403,7 +403,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
       },
     );
     CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
-    _model.initData();
+    await _model.initData();
     _uploadFinish(result["lectureId"]);
   }
 
@@ -527,7 +527,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                       await CachedLearnDetailVideoHelper.getCachedVideoInfo(
                           userInfo.doctorUserId);
                   await _doUpload(data);
-                  _model.initData();
                 });
               },
               child: Container(
@@ -844,7 +843,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   bool _mIsBack = false;
   updateCheck(LearnDetailViewModel model,dynamic learnPlanId) async {
-    if (model.data?.status == "COMPLETE") {
+    if (model.data?.status == "LEARN_COMPLETE") {
       var has = await CachedLearnDetailVideoHelper.hasCachedVideo(userInfo.doctorUserId,learnPlanId: learnPlanId);
       if (has){
         CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
