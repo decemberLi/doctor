@@ -51,6 +51,7 @@ class LearnDetailViewModel extends ViewStateModel {
       setIdle();
     } catch (e, s) {
       setError(e, s);
+      throw e;
     }
   }
 
