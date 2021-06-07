@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CachedVideoInfo {
@@ -30,6 +31,8 @@ class CachedVideoInfo {
     result["resourceId"] = this.resourceId;
     result["videoTitle"] = this.videoTitle;
     result["path"] = this.path;
+    result["duration"] = this.duration;
+    result["presenter"] = this.presenter;
     return result;
   }
 }
@@ -70,6 +73,9 @@ class CachedLearnDetailVideoHelper {
   }
 
   static Future<CachedVideoInfo> getCachedVideoInfo(int userId) async {
+    if(!await hasCachedVideo(userId)){
+      return null;
+    }
     var refs = await SharedPreferences.getInstance();
     return CachedVideoInfo.fromJson(json.decode(refs.getString('$_keyVideoInfo-$userId'))
         as Map<String, dynamic>);
