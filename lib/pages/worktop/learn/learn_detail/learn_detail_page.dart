@@ -454,6 +454,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                   ),
                 ),
                 onPressed: () async {
+                  Navigator.of(context).pop(false);
                   action();
                 },
               ),
