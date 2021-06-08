@@ -372,7 +372,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
       "uploadLearnVideo",
       (args) async {
         try {
-          print("the upload file is ---");
           var obj = json.decode(args);
           CachedVideoInfo info = CachedVideoInfo();
           info.learnPlanId = data.learnPlanId;
@@ -383,7 +382,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           info.path = obj["path"];
           CachedLearnDetailVideoHelper.cacheVideoInfo(
               userInfo.doctorUserId, info);
-          print("the upload file is --- begin");
           await _doUpload(info);
         } catch (e) {
           print("e is $e");
