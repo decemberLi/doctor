@@ -482,6 +482,7 @@ class RecordsVC: UIViewController {
     }
     
     @IBAction func onReStart(){
+        AppDelegate.shared?.clearVideoCache()
         alertBG.isHidden = true
         view.endEditing(true)
         paths.removeAll()

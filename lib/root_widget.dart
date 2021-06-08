@@ -10,6 +10,7 @@ import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:doctor/pages/message/message_list_page.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/pages/worktop/learn/cache_learn_detail_video_helper.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/route/navigation_service.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -29,6 +30,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:doctor/http/foundationSystem.dart';
 import 'package:doctor/pages/activity/activity_research.dart';
 
+import 'model/ucenter/doctor_detail_info_entity.dart';
 import 'utils/app_utils.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -172,6 +174,13 @@ class RootWidget extends StatelessWidget {
         } catch (e) {}
       },
     );
+    MedcloudsNativeApi.instance().addProcessor("clearVideo", (args){
+      var context = NavigationService().navigatorKey.currentContext;
+      DoctorDetailInfoEntity userInfo = Provider.of<UserInfoViewModel>(context, listen: false).data;
+      var userId = userInfo.doctorUserId;
+      CachedLearnDetailVideoHelper.cleanVideoCache(userId);
+      return;
+    });
     HttpManager.shared.onRequest = (options) async {
       debugPrint("$options");
       debugPrint("ticket:${SessionManager.shared.session}");
