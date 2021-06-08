@@ -61,6 +61,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   @override
   void initState() {
     super.initState();
+    dynamic arguments = ModalRoute.of(context).settings.arguments;
+    _model = LearnDetailViewModel(arguments['learnPlanId']);
     updateDoctorInfo();
   }
 
@@ -862,7 +864,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   @override
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
-    _model = LearnDetailViewModel(arguments['learnPlanId']);
     return WillPopScope(
         child: ProviderWidget<LearnDetailViewModel>(
           model: _model,
