@@ -61,12 +61,10 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   @override
   void initState() {
     super.initState();
-    dynamic arguments = ModalRoute.of(context).settings.arguments;
-    _model = LearnDetailViewModel(arguments['learnPlanId']);
     updateDoctorInfo();
   }
 
-  updateDoctorInfo() {
+  updateDoctorInfo() async{
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     if (model?.data != null) {
@@ -374,18 +372,21 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
       "uploadLearnVideo",
       (args) async {
         try {
+          print("the upload file is ---");
           var obj = json.decode(args);
           CachedVideoInfo info = CachedVideoInfo();
           info.learnPlanId = data.learnPlanId;
           info.resourceId = pdf.resourceId;
           info.videoTitle = obj['title'] ?? data.taskName;
-          info.duration = obj['duration'] ?? 0;
+          info.duration = int.parse("${obj['duration'] ?? 0}");
           info.presenter = userInfo?.doctorName ?? '';
           info.path = obj["path"];
           CachedLearnDetailVideoHelper.cacheVideoInfo(
               userInfo.doctorUserId, info);
+          print("the upload file is --- begin");
           await _doUpload(info);
         } catch (e) {
+          print("e is $e");
           return "网络错误";
         }
         return null;
@@ -395,6 +396,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   _doUpload(CachedVideoInfo data) async {
+    print("do upload");
     var entity = await OssService.upload(data.path, showLoading: false);
     var result = await API.shared.server.addLectureSubmit(
       {
@@ -406,8 +408,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         'videoOssId': entity.ossId,
       },
     );
+    print("upload finished");
     CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
-    await _model.initData();
+    _model.initData();
     _uploadFinish(result["lectureId"]);
   }
 
@@ -864,6 +867,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   @override
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
+    if (_model == null){
+      _model = LearnDetailViewModel(arguments['learnPlanId']);
+    }
     return WillPopScope(
         child: ProviderWidget<LearnDetailViewModel>(
           model: _model,
