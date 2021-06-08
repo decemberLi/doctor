@@ -483,6 +483,7 @@ class LessonRecordActivity : AppCompatActivity() {
             timerView.text = formatTime(mDuration)
             updateBtnStatus()
             stopRecord()
+            ChannelManager.instance.callFlutter("clearVideo", "", object : MethodChannelResultAdapter(){})
             if (dialog.isShowing) {
                 dialog.dismiss()
             }
