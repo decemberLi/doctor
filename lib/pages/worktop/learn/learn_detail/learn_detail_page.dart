@@ -293,6 +293,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             },
           );
         },
+        cancel: "暂不查看",
+        done: "查看详情",
       );
       return;
     }
@@ -407,7 +409,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     _uploadFinish(result["lectureId"]);
   }
 
-  _showUploadVideoAlert(String title, String desc, Function action) {
+  _showUploadVideoAlert(String title, String desc, Function action,
+      {String cancel = "取消", String done = "确定"}) {
     showCupertinoDialog<bool>(
       context: context,
       builder: (context) {
@@ -437,7 +440,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             actions: <Widget>[
               TextButton(
                 child: Text(
-                  "取消",
+                  cancel,
                   style: TextStyle(
                     color: ThemeColor.colorFF444444,
                   ),
@@ -448,7 +451,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               ),
               TextButton(
                 child: Text(
-                  "确定",
+                  done,
                   style: TextStyle(
                     color: ThemeColor.colorFF52C41A,
                   ),
@@ -500,7 +503,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                         userInfo.doctorUserId);
                 _showUploadVideoAlert(
                   "确定删除已录制的讲课视频吗？",
-                  "录制时长${data.duration / 60}:${(data.duration % 60).toStringAsPrecision(2)}",
+                  "录制时长${(data.duration / 60).round()}:${(data.duration % 60).toStringAsPrecision(2)}",
                   () {
                     CachedLearnDetailVideoHelper.cleanVideoCache(
                         userInfo.doctorUserId);
@@ -842,15 +845,20 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   bool _mIsBack = false;
-  updateCheck(LearnDetailViewModel model,dynamic learnPlanId) async {
-    if (model.data?.status == "LEARN_COMPLETE") {
-      var has = await CachedLearnDetailVideoHelper.hasCachedVideo(userInfo.doctorUserId,learnPlanId: learnPlanId);
-      if (has){
+
+  updateCheck(LearnDetailViewModel model, dynamic learnPlanId) async {
+    var status = model.data?.status;
+    if (status == 'SUBMIT_LEARN' || status == 'ACCEPTED') {
+      var has = await CachedLearnDetailVideoHelper.hasCachedVideo(
+          userInfo.doctorUserId,
+          learnPlanId: learnPlanId);
+      if (has) {
         CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
       }
     }
     checkVideo();
   }
+
   @override
   Widget build(BuildContext context) {
     dynamic arguments = ModalRoute.of(context).settings.arguments;
