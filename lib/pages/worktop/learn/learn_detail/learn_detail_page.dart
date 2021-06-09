@@ -511,7 +511,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "当前有一个未上传的讲课视频...",
+                    "当前有一个未上传的讲课视频",
                     style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
                   Text("时长${(videoDuration/60).round()}:$secondString",style: TextStyle(color: Color(0xff489DFE), fontSize: 12),),
