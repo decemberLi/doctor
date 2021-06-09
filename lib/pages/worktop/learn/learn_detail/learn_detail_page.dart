@@ -801,10 +801,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   Widget _buildVideoBottom(){
     var second = videoDuration%60;
-    var secondString = "$second";
-    if (second < 10){
-      secondString = "0$second";
-    }
+    var secondString = second.toString().padLeft(2,'0');
     return Container(
       height: 60,
       color: Color(0xff444444),

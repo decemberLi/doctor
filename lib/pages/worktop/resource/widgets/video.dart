@@ -82,8 +82,8 @@ class _VideoDetailState extends State<VideoDetail> {
           margin: EdgeInsets.only(top: 10),
           height: 20,
           alignment: Alignment.center,
-          child: TextButton(
-            onPressed: () {
+          child: GestureDetector(
+            onTap: () {
               //签到接口
               API.shared.server.meetingSign({'taskDetailId': widget.taskDetailId}).then((res) {
                 if (res is! DioError) {
