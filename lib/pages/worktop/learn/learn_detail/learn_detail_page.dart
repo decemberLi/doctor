@@ -514,15 +514,14 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                     "当前有一个未上传的讲课视频",
                     style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
-                  Text("时长${(videoDuration/60).round()}:$secondString",style: TextStyle(color: Color(0xff489DFE), fontSize: 12),),
+                  Text("时长${(videoDuration/60).floor()}:$secondString",style: TextStyle(color: Color(0xff489DFE), fontSize: 12),),
                 ],
               ),),
               GestureDetector(
                 onTap: () async {
-
                   _showUploadVideoAlert(
                     "确定删除已录制的讲课视频吗？",
-                    "录制时长${(videoDuration / 60).round()}:$secondString",
+                    "录制时长${(videoDuration / 60).floor()}:$secondString",
                         () {
                       CachedLearnDetailVideoHelper.cleanVideoCache(
                           userInfo.doctorUserId);
