@@ -57,6 +57,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   DoctorDetailInfoEntity userInfo;
   LearnDetailViewModel _model;
   bool hasVideo = false;
+  int videoDuration = 0;
 
   @override
   void initState() {
@@ -478,76 +479,92 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     bool has = await CachedLearnDetailVideoHelper.hasCachedVideo(
         userInfo.doctorUserId,
         learnPlanId: learnPlanId);
+    var data = await CachedLearnDetailVideoHelper.getCachedVideoInfo(userInfo.doctorUserId);
     setState(() {
       hasVideo = has;
+      if (has){
+        videoDuration = data.duration;
+      }
     });
   }
 
   Widget _renderUploadButton(
       LearnDetailViewModel model, arguments, LearnDetailItem data) {
     if (data.taskTemplate == 'DOCTOR_LECTURE' && hasVideo) {
-      return Container(
-        height: 50,
-        color: Color(0xff444444),
-        child: Row(
-          children: [
-            Container(
-              width: 18,
-            ),
-            Text(
-              "当前有一个未上传的讲课视频...",
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
-            Expanded(child: Container()),
-            GestureDetector(
-              onTap: () async {
-                var data =
+      var second = videoDuration%60;
+      var secondString = "$second";
+      if (second < 10){
+        secondString = "0$second";
+      }
+      return Expanded(child: Container(
+        alignment: Alignment.bottomLeft,
+        child: Container(
+          height: 60,
+          color: Color(0xff444444),
+          child: Row(
+            children: [
+              Container(
+                width: 18,
+              ),
+              Expanded(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "当前有一个未上传的讲课视频...",
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                  Text("时长${(videoDuration/60).round()}:$secondString",style: TextStyle(color: Color(0xff489DFE), fontSize: 12),),
+                ],
+              ),),
+              GestureDetector(
+                onTap: () async {
+
+                  _showUploadVideoAlert(
+                    "确定删除已录制的讲课视频吗？",
+                    "录制时长${(videoDuration / 60).round()}:$secondString",
+                        () {
+                      CachedLearnDetailVideoHelper.cleanVideoCache(
+                          userInfo.doctorUserId);
+                      setState(() {
+                        hasVideo = false;
+                      });
+                    },
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  height: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 18),
+                  child: Text(
+                    "删除",
+                    style: TextStyle(color: Color(0xffFECE35), fontSize: 12),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  EasyLoading.instance.flash(() async {
+                    var data =
                     await CachedLearnDetailVideoHelper.getCachedVideoInfo(
                         userInfo.doctorUserId);
-                _showUploadVideoAlert(
-                  "确定删除已录制的讲课视频吗？",
-                  "录制时长${(data.duration / 60).round()}:${(data.duration % 60).toStringAsPrecision(2)}",
-                  () {
-                    CachedLearnDetailVideoHelper.cleanVideoCache(
-                        userInfo.doctorUserId);
-                    setState(() {
-                      hasVideo = false;
-                    });
-                  },
-                );
-              },
-              child: Container(
-                alignment: Alignment.center,
-                height: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 18),
-                child: Text(
-                  "删除",
-                  style: TextStyle(color: Color(0xffFECE35), fontSize: 12),
+                    await _doUpload(data);
+                  });
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  height: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 18),
+                  child: Text(
+                    "重新上传",
+                    style: TextStyle(color: Color(0xff489DFE), fontSize: 12),
+                  ),
                 ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                EasyLoading.instance.flash(() async {
-                  var data =
-                      await CachedLearnDetailVideoHelper.getCachedVideoInfo(
-                          userInfo.doctorUserId);
-                  await _doUpload(data);
-                });
-              },
-              child: Container(
-                alignment: Alignment.center,
-                height: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 18),
-                child: Text(
-                  "重新上传",
-                  style: TextStyle(color: Color(0xff489DFE), fontSize: 12),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      );
+      ));
     } else if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
       return Container(
         alignment: Alignment.center,
