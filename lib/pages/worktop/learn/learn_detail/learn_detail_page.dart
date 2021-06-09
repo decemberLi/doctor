@@ -380,7 +380,15 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           info.videoTitle = obj['title'] ?? data.taskName;
           info.duration = int.parse("${obj['duration'] ?? 0}");
           info.presenter = userInfo?.doctorName ?? '';
-          info.path = obj["path"];
+          if (Platform.isAndroid){
+            info.path = obj["path"];
+          }else{
+            String path = obj["path"];
+            var prefix = await getApplicationDocumentsDirectory();
+            path = path.replaceAll(prefix.path, "");
+            info.path = path;
+            print("the path is ${path}");
+          }
           CachedLearnDetailVideoHelper.cacheVideoInfo(
               userInfo.doctorUserId, info);
           await _doUpload(info);
@@ -396,7 +404,12 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   _doUpload(CachedVideoInfo data) async {
     print("do upload");
-    var entity = await OssService.upload(data.path, showLoading: false);
+    var path = data.path;
+    if (Platform.isIOS){
+      var prefix = await getApplicationDocumentsDirectory();
+      path = prefix.path + path;
+    }
+    var entity = await OssService.upload(path, showLoading: false);
     var result = await API.shared.server.addLectureSubmit(
       {
         'learnPlanId': data.learnPlanId,
