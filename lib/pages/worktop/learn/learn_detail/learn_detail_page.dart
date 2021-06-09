@@ -491,79 +491,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   Widget _renderUploadButton(
       LearnDetailViewModel model, arguments, LearnDetailItem data) {
     if (data.taskTemplate == 'DOCTOR_LECTURE' && hasVideo) {
-      var second = videoDuration%60;
-      var secondString = "$second";
-      if (second < 10){
-        secondString = "0$second";
-      }
-      return Expanded(child: Container(
-        alignment: Alignment.bottomLeft,
-        child: Container(
-          height: 60,
-          color: Color(0xff444444),
-          child: Row(
-            children: [
-              Container(
-                width: 18,
-              ),
-              Expanded(child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "当前有一个未上传的讲课视频",
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                  Text("时长${(videoDuration/60).floor()}:$secondString",style: TextStyle(color: Color(0xff489DFE), fontSize: 12),),
-                ],
-              ),),
-              GestureDetector(
-                onTap: () async {
-                  _showUploadVideoAlert(
-                    "确定删除已录制的讲课视频吗？",
-                    "录制时长${(videoDuration / 60).floor()}:$secondString",
-                        () {
-                      CachedLearnDetailVideoHelper.cleanVideoCache(
-                          userInfo.doctorUserId);
-                      setState(() {
-                        hasVideo = false;
-                      });
-                    },
-                  );
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  height: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 18),
-                  child: Text(
-                    "删除",
-                    style: TextStyle(color: Color(0xffFECE35), fontSize: 12),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  EasyLoading.instance.flash(() async {
-                    var data =
-                    await CachedLearnDetailVideoHelper.getCachedVideoInfo(
-                        userInfo.doctorUserId);
-                    await _doUpload(data);
-                  });
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  height: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 18),
-                  child: Text(
-                    "重新上传",
-                    style: TextStyle(color: Color(0xff489DFE), fontSize: 12),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ));
+      return Container();
     } else if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
       return Container(
         alignment: Alignment.center,
@@ -683,182 +611,263 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           ),
         ),
       ),
-      body: Container(
-        color: ThemeColor.colorFFF3F5F8,
-        alignment: Alignment.topCenter,
-        child: Flex(
-          direction: Axis.vertical,
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  Flexible(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          if ( //data.taskTemplate == 'DOCTOR_LECTURE' &&
-                          data.reLearnReason != null &&
-                              data.status != 'SUBMIT_LEARN' &&
-                              data.status != 'ACCEPTED')
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                              padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text('${data.representName}推广员给您留言了：',
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18,
-                                              color: ThemeColor.colorFFfece35,
-                                            )),
-                                      ]),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          '${data.reLearnReason}',
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14,
-                                            color: ThemeColor.colorFFfece35,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                            // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
-                            ),
-                            child: Column(
-                              children: [
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+            color: ThemeColor.colorFFF3F5F8,
+            alignment: Alignment.topCenter,
+            child: Flex(
+              direction: Axis.vertical,
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      Flexible(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              if ( //data.taskTemplate == 'DOCTOR_LECTURE' &&
+                              data.reLearnReason != null &&
+                                  data.status != 'SUBMIT_LEARN' &&
+                                  data.status != 'ACCEPTED')
                                 Container(
                                   alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                                  padding: EdgeInsets.fromLTRB(0, 14, 0, 0),
-                                  child: GestureDetector(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
+                                  margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                                  padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                          crossAxisAlignment:
                                           CrossAxisAlignment.center,
-                                      children: [
-                                        Row(
                                           children: [
-                                            Text('学习计划信息',
-                                                textAlign: TextAlign.center,
+                                            Text('${data.representName}推广员给您留言了：',
+                                                textAlign: TextAlign.left,
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 18,
-                                                  color:
-                                                      ThemeColor.primaryColor,
+                                                  color: ThemeColor.colorFFfece35,
                                                 )),
-                                            // 新
-                                            if (data.taskTemplate == 'SALON' ||
-                                                data.taskTemplate == 'DEPART')
-                                              _meetingStatus(
-                                                  data.meetingStartTime,
-                                                  data.meetingEndTime)
-                                          ],
-                                        ),
-                                        Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                model.collapsed
-                                                    ? Icons.keyboard_arrow_down
-                                                    : Icons.keyboard_arrow_up,
-                                                color: ThemeColor.primaryColor,
+                                          ]),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              '${data.reLearnReason}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14,
+                                                color: ThemeColor.colorFFfece35,
                                               ),
-                                            ]),
-                                      ],
-                                    ),
-                                    onTap: () {
-                                      model.toggleCollapsed();
-                                    },
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
                                   ),
                                 ),
-                                ...learnListFields.map((e) {
-                                  if (model.collapsed &&
-                                      e['notCollapse'] == null) {
-                                    return Container();
-                                  }
-                                  return _buildListItem(
-                                      label: e['label'],
-                                      value: dataMap[e['field']],
-                                      format: e['format']);
-                                }).toList(),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
-                                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                  child: Column(children: [
-                                    _buildLookCourse(data),
-                                  ]),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                                // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
                                 ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                              alignment: Alignment.centerLeft,
-                              margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                              padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                                      padding: EdgeInsets.fromLTRB(0, 14, 0, 0),
+                                      child: GestureDetector(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text('学习计划信息',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.w600,
+                                                      fontSize: 18,
+                                                      color:
+                                                      ThemeColor.primaryColor,
+                                                    )),
+                                                // 新
+                                                if (data.taskTemplate == 'SALON' ||
+                                                    data.taskTemplate == 'DEPART')
+                                                  _meetingStatus(
+                                                      data.meetingStartTime,
+                                                      data.meetingEndTime)
+                                              ],
+                                            ),
+                                            Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    model.collapsed
+                                                        ? Icons.keyboard_arrow_down
+                                                        : Icons.keyboard_arrow_up,
+                                                    color: ThemeColor.primaryColor,
+                                                  ),
+                                                ]),
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          model.toggleCollapsed();
+                                        },
+                                      ),
+                                    ),
+                                    ...learnListFields.map((e) {
+                                      if (model.collapsed &&
+                                          e['notCollapse'] == null) {
+                                        return Container();
+                                      }
+                                      return _buildListItem(
+                                          label: e['label'],
+                                          value: dataMap[e['field']],
+                                          format: e['format']);
+                                    }).toList(),
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                      child: Column(children: [
+                                        _buildLookCourse(data),
+                                      ]),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              child: Text('资料列表',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18,
-                                    color: ThemeColor.primaryColor,
-                                  ))),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                            child: PlanDetailList(data),
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                                  padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                                  ),
+                                  child: Text('资料列表',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: ThemeColor.primaryColor,
+                                      ))),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                                child: PlanDetailList(data),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      _renderLookRecording(data),
+                      if (data.status != 'SUBMIT_LEARN' &&
+                          data.status != 'ACCEPTED')
+                        _renderUploadButton(model, arguments, data),
+                    ],
                   ),
-                  _renderLookRecording(data),
-                  if (data.status != 'SUBMIT_LEARN' &&
-                      data.status != 'ACCEPTED')
-                    _renderUploadButton(model, arguments, data),
-                ],
+                )
+              ],
+            ),
+          ),
+          ),
+          if (data.taskTemplate == 'DOCTOR_LECTURE' && hasVideo)
+            _buildVideoBottom(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVideoBottom(){
+    var second = videoDuration%60;
+    var secondString = "$second";
+    if (second < 10){
+      secondString = "0$second";
+    }
+    return Container(
+      height: 60,
+      color: Color(0xff444444),
+      child: Row(
+        children: [
+          Container(
+            width: 18,
+          ),
+          Expanded(child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "当前有一个未上传的讲课视频",
+                style: TextStyle(color: Colors.white, fontSize: 12),
               ),
-            )
-          ],
-        ),
+              Text("时长${(videoDuration/60).floor()}:$secondString",style: TextStyle(color: Color(0xff489DFE), fontSize: 12),),
+            ],
+          ),),
+          GestureDetector(
+            onTap: () async {
+              _showUploadVideoAlert(
+                "确定删除已录制的讲课视频吗？",
+                "录制时长${(videoDuration / 60).floor()}:$secondString",
+                    () {
+                  CachedLearnDetailVideoHelper.cleanVideoCache(
+                      userInfo.doctorUserId);
+                  setState(() {
+                    hasVideo = false;
+                  });
+                },
+              );
+            },
+            child: Container(
+              alignment: Alignment.center,
+              height: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 18),
+              child: Text(
+                "删除",
+                style: TextStyle(color: Color(0xffFECE35), fontSize: 12),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              EasyLoading.instance.flash(() async {
+                var data =
+                await CachedLearnDetailVideoHelper.getCachedVideoInfo(
+                    userInfo.doctorUserId);
+                await _doUpload(data);
+              });
+            },
+            child: Container(
+              alignment: Alignment.center,
+              height: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 18),
+              child: Text(
+                "重新上传",
+                style: TextStyle(color: Color(0xff489DFE), fontSize: 12),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
