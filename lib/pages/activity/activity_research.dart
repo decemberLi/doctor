@@ -413,8 +413,7 @@ class _ActivityResearch extends State<ActivityResearch>
       onTap: debounce(() {
         if (status == "END" &&
             (item.status == "NOT_OPEN" ||
-                item.status == "PROCEEDING" ||
-                item.status == "WAIT_VERIFY")) {
+                item.status == "PROCEEDING" )) {
           EasyLoading.showToast("活动已过期，无法开启此问卷");
           return;
         }
