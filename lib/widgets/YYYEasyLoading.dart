@@ -5,7 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 extension falshEx on EasyLoading {
   flash(Future Function() load, {String text = "加载中..."}) async {
-    EasyLoading.show(status: text);
+    EasyLoading.show(status: text,maskType: EasyLoadingMaskType.black);
     try {
       await load();
       EasyLoading.dismiss();

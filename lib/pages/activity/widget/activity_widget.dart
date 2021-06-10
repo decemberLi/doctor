@@ -182,15 +182,18 @@ class ActivityWidget extends StatelessWidget {
         width: 108,
         child: Column(
           children: [
-            CircularPercentIndicator(
-              radius: 60.0,
-              lineWidth: 8.0,
-              animation: false,
-              percent: percent,
-              center: Text('${_data.schedule}%'),
-              circularStrokeCap: CircularStrokeCap.round,
-              backgroundColor: Color(0xFFDEDEE1),
-              progressColor: ThemeColor.primaryColor,
+            Container(
+              margin: EdgeInsets.only(bottom: 5),
+              child: CircularPercentIndicator(
+                radius: 60.0,
+                lineWidth: 8.0,
+                animation: false,
+                percent: percent,
+                center: Text('${_data.schedule}%'),
+                circularStrokeCap: CircularStrokeCap.round,
+                backgroundColor: Color(0xFFDEDEE1),
+                progressColor: ThemeColor.primaryColor,
+              ),
             ),
             Text(
               "活动详情",

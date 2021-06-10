@@ -33,3 +33,8 @@ normalDateFormate(int timeMillis){
   var msgDateTime = DateTime.fromMillisecondsSinceEpoch(timeMillis);
   return '${_format(msgDateTime.year)}年${_format(msgDateTime.month)}月${_format(msgDateTime.day)}日';
 }
+
+normalFullDateFormate(int timeMillis){
+  var msgDateTime = DateTime.fromMillisecondsSinceEpoch(timeMillis);
+  return '${_format(msgDateTime.year)}年${_format(msgDateTime.month)}月${_format(msgDateTime.day)}日${_format(msgDateTime.hour)}时${_format(msgDateTime.minute)}分';
+}

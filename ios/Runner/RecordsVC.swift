@@ -46,11 +46,13 @@ class RecordsVC: UIViewController {
     private var videoInput:AVAssetWriterInput?
     private var audioInput:AVAssetWriterInput?
     
-    
     private var paths : [URL] = []
     private var recordTime : TimeInterval = 0
     private var startDate : Date?
     private var timer : Timer?
+    private var rootPath : String {
+        return NSHomeDirectory() + "/Documents/records_\(data["userID"] ?? "")"
+    }
     
     override var shouldAutorotate: Bool { true }
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -78,9 +80,9 @@ class RecordsVC: UIViewController {
         } else {
             // Fallback on earlier versions
         }
-        let dir = NSHomeDirectory() + "/Documents/records"
-        try? FileManager.default.removeItem(atPath: dir)
-        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true, attributes: nil)
+        
+        try? FileManager.default.removeItem(atPath: rootPath)
+        try? FileManager.default.createDirectory(atPath: rootPath, withIntermediateDirectories: true, attributes: nil)
         // Do any additional setup after loading the view.
         NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(enterBackground), name: AVAudioSession.interruptionNotification, object: nil)
@@ -217,8 +219,8 @@ class RecordsVC: UIViewController {
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
         try? AVAudioSession.sharedInstance().overrideOutputAudioPort(.none)
         try? AVAudioSession.sharedInstance().setActive(true)
-        let dir = NSHomeDirectory() + "/Documents/records"
-        let path = dir + "/record_\(paths.count).mp4"
+        
+        let path = rootPath + "/record_\(paths.count).mp4"
         let fileURL = URL(fileURLWithPath: path)
         paths.append(fileURL)
         try? FileManager.default.removeItem(at: fileURL)
@@ -374,8 +376,8 @@ class RecordsVC: UIViewController {
     }
     
     private func merge(finished:(()->Void)?){
-        let dir = NSHomeDirectory() + "/Documents/records"
-        let path = dir + "/allRecord.mp4"
+        
+        let path = rootPath + "/allRecord.mp4"
         let fileURL = URL(fileURLWithPath: path)
         try? FileManager.default.removeItem(at: fileURL)
         let mixComposition = AVMutableComposition()
@@ -409,8 +411,8 @@ class RecordsVC: UIViewController {
     }
     
     private func submitFile(_ title : String,hud:MBProgressHUD){
-        let dir = NSHomeDirectory() + "/Documents/records"
-        let path = dir + "/allRecord.mp4"
+        
+        let path = rootPath + "/allRecord.mp4"
         let vc = AppDelegate.shared?.rootVC
         let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
         naviChannel.invokeMethod("uploadLearnVideo", arguments: "{\"path\":\"\(path)\",\"title\":\"\(title)\",\"duration\":\"\(Int(recordTime))\"}") { (error) in
@@ -480,12 +482,13 @@ class RecordsVC: UIViewController {
     }
     
     @IBAction func onReStart(){
+        AppDelegate.shared?.clearVideoCache()
         alertBG.isHidden = true
         view.endEditing(true)
         paths.removeAll()
-        let dir = NSHomeDirectory() + "/Documents/records"
-        try? FileManager.default.removeItem(atPath: dir)
-        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true, attributes: nil)
+        
+        try? FileManager.default.removeItem(atPath: rootPath)
+        try? FileManager.default.createDirectory(atPath: rootPath, withIntermediateDirectories: true, attributes: nil)
         changeToIdle()
     }
     

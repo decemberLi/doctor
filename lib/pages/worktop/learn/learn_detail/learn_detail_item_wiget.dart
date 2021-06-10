@@ -245,7 +245,6 @@ class PlanDetailList extends StatelessWidget {
       return content;
     }
     for (var item in resources) {
-      print(item);
       tiles.add(new GestureDetector(
           onTap: () async {
             //是会议类型

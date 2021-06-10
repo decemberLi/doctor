@@ -289,6 +289,10 @@ extension AppDelegate {
         navi?.pushViewController(vc, animated: true)
     }
     
+    func clearVideoCache(){
+        naviChannel.invokeMethod("clearVideo", arguments: nil)
+    }
+    
 }
 
 extension AppDelegate : UIGestureRecognizerDelegate {
