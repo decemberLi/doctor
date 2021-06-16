@@ -509,8 +509,7 @@ class _WorktopPageState extends State<WorktopPage>
               padding: EdgeInsets.only(top: 18),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+                borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
