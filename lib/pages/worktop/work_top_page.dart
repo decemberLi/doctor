@@ -53,13 +53,14 @@ class _WorktopPageState extends State<WorktopPage>
   }
 
   void _showUploadVideoDialogIfNeeded() async {
-    if(isShowed){
+    if (isShowed) {
       return;
     }
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     await model.queryDoctorInfo();
-    var needShow = await CachedLearnDetailVideoHelper.hasCachedVideo(model.data.doctorUserId);
+    var needShow = await CachedLearnDetailVideoHelper.hasCachedVideo(
+        model.data.doctorUserId);
     if (!needShow) {
       return;
     }
@@ -401,12 +402,11 @@ class _WorktopPageState extends State<WorktopPage>
         ),
       );
     }
+    var visitCount = 0;
+    var surveyCount = 0;
+    var meetingCount = 0;
 
-    _buildStaticsWidget(List<LearnPlanStatisticalEntity> lists) {
-      var visitCount = 0;
-      var surveyCount = 0;
-      var meetingCount = 0;
-
+    _statics(List<LearnPlanStatisticalEntity> lists){
       if (lists != null && lists.isNotEmpty) {
         for (var each in lists) {
           if (each.taskTemplate == 'VISIT') {
@@ -418,6 +418,10 @@ class _WorktopPageState extends State<WorktopPage>
           }
         }
       }
+    }
+    _statics(entity?.learnPlanStatisticalEntity);
+
+    _buildStaticsWidget(List<LearnPlanStatisticalEntity> lists) {
       var leftLineDecoration = BoxDecoration(
           border: new Border(
               left: BorderSide(
@@ -467,7 +471,6 @@ class _WorktopPageState extends State<WorktopPage>
         ),
       );
     }
-
     return Container(
       padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Column(
@@ -497,12 +500,30 @@ class _WorktopPageState extends State<WorktopPage>
                   Container(
                     width: double.infinity,
                     margin: EdgeInsets.only(left: 24, top: 13),
-                    child: Text(
-                      "您收到了",
-                      style: TextStyle(
-                          color: Color(0xFF222222),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
+                    child: Row(
+                      children: [
+                        Text(
+                          "您有",
+                          style: TextStyle(
+                              color: Color(0xFF222222),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "${visitCount + surveyCount + meetingCount}个待处理",
+                          style: TextStyle(
+                              color: ThemeColor.primaryColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "的学习计划",
+                          style: TextStyle(
+                              color: Color(0xFF222222),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ],
                     ),
                   ),
                   _buildStaticsWidget(entity?.learnPlanStatisticalEntity),
