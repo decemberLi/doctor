@@ -144,40 +144,63 @@ class _WorktopPageState extends State<WorktopPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return CommonStack(
-      body: SafeArea(
-        child: ChangeNotifierProvider<WorkTopViewModel>.value(
-          value: _model,
-          child: Consumer<WorkTopViewModel>(
-            builder: (context, model, child) {
-              WorktopPageEntity entity =
-                  model?.list != null && model?.list.length >= 1
-                      ? model.list[0]
-                      : null;
-              return SmartRefresher(
-                physics: AlwaysScrollableScrollPhysics(),
-                header: ClassicHeader(
-                  textStyle: TextStyle(color: Colors.white),
-                  failedIcon: const Icon(Icons.error, color: Colors.white),
-                  completeIcon: const Icon(Icons.done, color: Colors.white),
-                  idleIcon:
-                      const Icon(Icons.arrow_downward, color: Colors.white),
-                  releaseIcon: const Icon(Icons.refresh, color: Colors.white),
-                ),
-                onRefresh: model.refresh,
-                controller: model.refreshController,
-                child: bodyWidget(entity),
-              );
-            },
+    return Container(
+      color: Color(0xFFF3F5F8),
+      child: Stack(
+        children: [
+          Positioned(
+            child: Container(
+              color: Color(0xFF3AA7FF),
+              alignment: Alignment.topCenter,
+              child: Image.asset(
+                'assets/images/common_statck_bg.png',
+                fit: BoxFit.cover,
+                width: MediaQuery.of(context).size.width,
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 232.0,
+            ),
           ),
-        ),
+          Positioned(
+            child: SafeArea(
+              child: ChangeNotifierProvider<WorkTopViewModel>.value(
+                value: _model,
+                child: Consumer<WorkTopViewModel>(
+                  builder: (context, model, child) {
+                    WorktopPageEntity entity =
+                        model?.list != null && model?.list.length >= 1
+                            ? model.list[0]
+                            : null;
+                    return SmartRefresher(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      header: ClassicHeader(
+                        textStyle: TextStyle(color: Colors.white),
+                        failedIcon: const Icon(Icons.error, color: Colors.white),
+                        completeIcon: const Icon(Icons.done, color: Colors.white),
+                        idleIcon:
+                            const Icon(Icons.arrow_downward, color: Colors.white),
+                        releaseIcon:
+                            const Icon(Icons.refresh, color: Colors.white),
+                      ),
+                      onRefresh: model.refresh,
+                      controller: model.refreshController,
+                      child: bodyWidget(entity),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget bodyWidget(WorktopPageEntity entity) {
     if (entity == null) {
-      return Container();
+      return Container(
+        color: Color(0xFFF3F5F8),
+      );
     }
     var learnPlanListCount = entity?.learnPlanList?.length ?? 0;
     var activityCount = entity?.activityPackages?.length ?? 0;
@@ -191,7 +214,7 @@ class _WorktopPageState extends State<WorktopPage>
         }
 
         return Container(
-          color: Color(0xFFF3F5F8),
+          margin: EdgeInsets.only(left: 16, right: 16),
           child: index >= activityCount
               ? LearnListItemWiget(
                   item,
@@ -211,6 +234,7 @@ class _WorktopPageState extends State<WorktopPage>
                     // 无脑刷新数据，从详情页回来后不刷新数据
                     // _model.initData();
                   },
+                  margin: EdgeInsets.only(bottom: 10),
                 )
               : Container(
                   margin: EdgeInsets.only(left: 16, right: 16, bottom: 10),
@@ -251,8 +275,9 @@ class _WorktopPageState extends State<WorktopPage>
                     ? Container()
                     : Container(
                         width: double.infinity,
-                        color: Color(0xFFF3F5F8),
+                        color: Colors.transparent,
                         padding: EdgeInsets.only(left: 16, top: 11, bottom: 10),
+                        margin: EdgeInsets.only(left: 16, right: 16),
                         child: const Text(
                           "最近收到",
                           style: TextStyle(
@@ -402,11 +427,12 @@ class _WorktopPageState extends State<WorktopPage>
         ),
       );
     }
+
     var visitCount = 0;
     var surveyCount = 0;
     var meetingCount = 0;
 
-    _statics(List<LearnPlanStatisticalEntity> lists){
+    _statics(List<LearnPlanStatisticalEntity> lists) {
       if (lists != null && lists.isNotEmpty) {
         for (var each in lists) {
           if (each.taskTemplate == 'VISIT') {
@@ -419,6 +445,7 @@ class _WorktopPageState extends State<WorktopPage>
         }
       }
     }
+
     _statics(entity?.learnPlanStatisticalEntity);
 
     _buildStaticsWidget(List<LearnPlanStatisticalEntity> lists) {
@@ -471,6 +498,7 @@ class _WorktopPageState extends State<WorktopPage>
         ),
       );
     }
+
     return Container(
       padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Column(
@@ -481,7 +509,8 @@ class _WorktopPageState extends State<WorktopPage>
               padding: EdgeInsets.only(top: 18),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(8)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8), topRight: Radius.circular(8)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
