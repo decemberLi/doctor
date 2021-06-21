@@ -76,11 +76,12 @@ class _LearnListPageState extends State<LearnListPage>
         });
       },
       child: Container(
+        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.all(Radius.circular(34)),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
         ),
-        padding: EdgeInsets.fromLTRB(12, 4, 12, 4),
+        padding: EdgeInsets.symmetric(vertical: 6),
         margin: EdgeInsets.only(
           right: 10,
         ),
@@ -171,9 +172,11 @@ class _LearnListPageState extends State<LearnListPage>
             child: Row(
               children: TASK_TYPE_MAP
                   .map(
-                    (e) => _renderTop(
-                      e['text'],
-                      TASK_TYPE_MAP.indexOf(e),
+                    (e) => Expanded(
+                      child: _renderTop(
+                        e['text'],
+                        TASK_TYPE_MAP.indexOf(e),
+                      ),
                     ),
                   )
                   .toList(),

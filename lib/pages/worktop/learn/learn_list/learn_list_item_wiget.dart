@@ -79,8 +79,9 @@ class LearnListItemWiget extends StatelessWidget {
   final String listStatus;
   final Function onSubmit;
   final Function gotoDetail;
+  final EdgeInsetsGeometry margin;
 
-  LearnListItemWiget(this.item, this.listStatus, this.onSubmit,this.gotoDetail);
+  LearnListItemWiget(this.item, this.listStatus, this.onSubmit,this.gotoDetail,{this.margin});
 
   String timeRender() {
     if (this.item.taskTemplate == 'SALON' ||
@@ -368,7 +369,7 @@ class LearnListItemWiget extends StatelessWidget {
   Widget build(BuildContext context) {
     var content = Container(
       alignment: Alignment.centerLeft,
-      margin: EdgeInsets.fromLTRB(16, 0, 16, 16),
+      margin: margin == null ?EdgeInsets.fromLTRB(16, 0, 16, 16): margin,
       padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
       decoration: BoxDecoration(
         color: Colors.white,

@@ -84,14 +84,13 @@ class _LearnPlanPageState extends State<LearnPlanPage>
                 unselectedLabelColor: ThemeColor.secondaryGeryColor,
                 indicatorWeight: 4,
                 // indicatorSize: TabBarIndicatorSize.label,
-                indicatorPadding: EdgeInsets.only(left: 80, right: 80),
                 indicatorColor: ThemeColor.primaryColor,
                 indicator: LinearGradientTabIndicatorDecoration(
                     borderSide: BorderSide(
                       width: 6,
                       color: ThemeColor.primaryColor,
                     ),
-                    insets: EdgeInsets.only(left: 80, right: 80),
+                    insets: EdgeInsets.only(left: 74, right: 74),
                     gradient: const LinearGradient(
                       colors: [
                         ThemeColor.primaryColor,
