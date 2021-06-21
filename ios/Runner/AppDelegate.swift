@@ -19,7 +19,11 @@ import UserNotificationsUI
     ) -> Bool {
         addCookie()
         initThird(launchOptions: launchOptions)
+        #if DEBUG
+        #else
         Bugly.start(withAppId: "463f24e2f9")
+        #endif
+        
         WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
         AppDelegate.shared = self
         let vc = FlutterViewController()

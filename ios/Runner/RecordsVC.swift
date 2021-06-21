@@ -203,6 +203,11 @@ class RecordsVC: UIViewController {
         guard let cinput = try? AVCaptureDeviceInput(device: device) else {
             return
         }
+        if let inputs = session.inputs as? [AVCaptureDeviceInput] {
+            for item in inputs {
+                session.removeInput(item)
+            }
+        }
         session.addInput(cinput)
         let out = AVCapturePhotoOutput()
         session.addOutput(out)

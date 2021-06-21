@@ -385,6 +385,7 @@ class _ActivityState extends State<ActivityDetail> {
 
   Widget buildBody() {
     List<Widget> bottoms = [];
+    List<Widget> headers = [];
     if (_data.status == "WAIT_START") {
       bottoms = [
         Container(
@@ -456,6 +457,21 @@ class _ActivityState extends State<ActivityDetail> {
         )
       ];
     } else {
+      headers = [
+        Container(
+          height: 50,
+          color: Color(0xfff8cc76),
+          alignment: Alignment.center,
+          child: Text(
+            "${activityName(widget.type)}已达目标，活动已结束",
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+        )
+      ];
       bottoms = [
         Container(
           padding: EdgeInsets.only(bottom: 53),
