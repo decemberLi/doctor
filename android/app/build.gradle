@@ -154,6 +154,7 @@ dependencies {
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.6'
     // bugly
     implementation "com.tencent.bugly:crashreport:$bugly_version"
+    compile "com.tencent.bugly:nativecrashreport:$bugly_native_sdk_version"
     // umeng 统计
     implementation "com.umeng.umsdk:common:9.3.3"
     implementation "com.umeng.umsdk:asms:1.1.4"
