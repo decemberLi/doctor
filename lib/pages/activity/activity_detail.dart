@@ -165,7 +165,10 @@ class _ActivityState extends State<ActivityDetail> {
       }
       return [];
     }
-    Color _statusColor(String status) {
+    Color _statusColor(String status,bool disable) {
+      if(disable){
+        return ThemeColor.colorFFD9D5D5;
+      }
       if (status == STATUS_WAIT) {
         return ThemeColor.primaryColor;
       } else if (status == STATUS_EXECUTING) {
@@ -183,8 +186,8 @@ class _ActivityState extends State<ActivityDetail> {
             children: [
               cardTitle("${activityName(widget.type)}信息"),
               LearnTextIcon(
-                  text: activityStatus(_data.status),
-                  color: _statusColor(_data.status),
+                  text: activityStatus(_data.status, _data.disable),
+                  color: _statusColor(_data.status, _data.disable),
                   margin: EdgeInsets.only(left: 10)),
               Expanded(child: Container()),
               IconButton(

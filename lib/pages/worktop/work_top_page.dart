@@ -237,7 +237,7 @@ class _WorktopPageState extends State<WorktopPage>
                   margin: EdgeInsets.only(bottom: 10),
                 )
               : Container(
-                  margin: EdgeInsets.only(left: 16, right: 16, bottom: 10),
+                  margin: EdgeInsets.only(bottom: 10),
                   child: ActivityWidget(item),
                 ),
         );

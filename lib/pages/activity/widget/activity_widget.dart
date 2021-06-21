@@ -16,7 +16,10 @@ class ActivityWidget extends StatelessWidget {
 
   ActivityWidget(this._data);
 
-  Color _statusColor(String status) {
+  Color _statusColor(String status, bool disable) {
+    if(disable){
+      return ThemeColor.colorFFD9D5D5;
+    }
     if (status == STATUS_WAIT) {
       return ThemeColor.primaryColor;
     } else if (status == STATUS_EXECUTING) {
@@ -52,8 +55,8 @@ class ActivityWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     LearnTextIcon(
-                        text: activityStatus(_data.status),
-                        color: _statusColor(_data.status),
+                        text: activityStatus(_data.status, _data.disable),
+                        color: _statusColor(_data.status, _data.disable),
                         margin: EdgeInsets.only(left: 10))
                   ],
                 ),

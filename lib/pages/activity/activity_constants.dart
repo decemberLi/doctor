@@ -24,7 +24,10 @@ String activityName(String type) {
   return type == TYPE_CASE_COLLECTION ? '病例征集' : '医学调研';
 }
 
-String activityStatus(String status) {
+String activityStatus(String status, bool disable) {
+  if(disable){
+    return '已结束';
+  }
   switch (status) {
     case STATUS_WAIT:
       return '未开始';

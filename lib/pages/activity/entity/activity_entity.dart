@@ -16,6 +16,9 @@ class ActivityEntity {
   int endTime;
 
   int schedule;
+
+  bool disable;
+
   ActivityEntity(Map<String,dynamic> json){
     if (json == null){
       return;
@@ -27,6 +30,7 @@ class ActivityEntity {
     companyName = json["companyName"] as String;
     endTime = json["endTime"] as int;
     schedule = json["schedule"] as int;
+    disable = json["disable"] as bool;
   }
 }
 
