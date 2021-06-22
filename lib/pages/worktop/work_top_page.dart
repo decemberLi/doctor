@@ -175,10 +175,12 @@ class _WorktopPageState extends State<WorktopPage>
                       physics: AlwaysScrollableScrollPhysics(),
                       header: ClassicHeader(
                         textStyle: TextStyle(color: Colors.white),
-                        failedIcon: const Icon(Icons.error, color: Colors.white),
-                        completeIcon: const Icon(Icons.done, color: Colors.white),
-                        idleIcon:
-                            const Icon(Icons.arrow_downward, color: Colors.white),
+                        failedIcon:
+                            const Icon(Icons.error, color: Colors.white),
+                        completeIcon:
+                            const Icon(Icons.done, color: Colors.white),
+                        idleIcon: const Icon(Icons.arrow_downward,
+                            color: Colors.white),
                         releaseIcon:
                             const Icon(Icons.refresh, color: Colors.white),
                       ),
@@ -304,7 +306,8 @@ class _WorktopPageState extends State<WorktopPage>
     }
     return GestureDetector(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 70,
@@ -341,46 +344,53 @@ class _WorktopPageState extends State<WorktopPage>
               shape: BoxShape.circle,
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(left: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      doctorName,
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 10, right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          doctorName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 22,
+                              color: ThemeColor.colorFF222222,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      if (doctorInfoEntity != null)
+                        _buildAuthStatusWidget(doctorInfoEntity),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 4),
+                    child: Text(
+                      doctorInfoEntity?.jobGradeName ?? '',
                       style: TextStyle(
-                          fontSize: 22,
+                          fontSize: 12,
                           color: ThemeColor.colorFF222222,
                           fontWeight: FontWeight.bold),
                     ),
-                    if (doctorInfoEntity != null)
-                      _buildAuthStatusWidget(doctorInfoEntity),
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 4),
-                  child: Text(
-                    doctorInfoEntity?.jobGradeName ?? '',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: ThemeColor.colorFF222222,
-                        fontWeight: FontWeight.bold),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 4),
-                  child: Text(
-                    "欢迎来到易学术",
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: ThemeColor.colorFF222222,
-                        fontWeight: FontWeight.bold),
+                  Container(
+                    margin: EdgeInsets.only(top: 4),
+                    child: Text(
+                      "欢迎来到易学术",
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: ThemeColor.colorFF222222,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -500,47 +510,41 @@ class _WorktopPageState extends State<WorktopPage>
     }
 
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Padding(
-        padding: EdgeInsets.only(top: 16),
-        child: Container(
-          padding: EdgeInsets.only(top: 18),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+      margin: EdgeInsets.fromLTRB(16, 32, 16, 0),
+      padding: EdgeInsets.only(top: 18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 24),
+            child: Consumer<UserInfoViewModel>(
+              builder: (_, model, __) {
+                if (model.data == null) {
+                  model.queryDoctorInfo();
+                }
+                return doctorAvatarWidget(model.data);
+              },
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Row(
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: 24),
-                child: Consumer<UserInfoViewModel>(
-                  builder: (_, model, __) {
-                    if (model.data == null) {
-                      model.queryDoctorInfo();
-                    }
-                    return doctorAvatarWidget(model.data);
-                  },
-                ),
-              ),
-              Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Color(0xFFF0F7FF),
-                        borderRadius: BorderRadius.all(Radius.circular(4))
-                    ),
-                    padding: EdgeInsets.all(5),
-                    margin: EdgeInsets.only(left: 24, top: 13),
-                    child: notice(visitCount, surveyCount, meetingCount),
-                  )
-                ],
-              ),
-              _buildStaticsWidget(entity?.learnPlanStatisticalEntity),
-              _showOperatorBtn(entity),
+              Container(
+                decoration: BoxDecoration(
+                    color: Color(0xFFF0F7FF),
+                    borderRadius: BorderRadius.all(Radius.circular(4))),
+                padding: EdgeInsets.all(5),
+                margin: EdgeInsets.only(left: 24, top: 13),
+                child: notice(visitCount, surveyCount, meetingCount),
+              )
             ],
           ),
-        ),
+          _buildStaticsWidget(entity?.learnPlanStatisticalEntity),
+          _showOperatorBtn(entity),
+        ],
       ),
     );
   }
