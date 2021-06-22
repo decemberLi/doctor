@@ -240,7 +240,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //阅读时间大于需学习时间显示
-            learnedTime + _learnTime > data.needLearnTime
+            learnedTime + _learnTime >= data.needLearnTime
                 ? Icon(
                     Icons.done,
                     size: 20,
