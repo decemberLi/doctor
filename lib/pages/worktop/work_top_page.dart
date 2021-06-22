@@ -501,67 +501,108 @@ class _WorktopPageState extends State<WorktopPage>
 
     return Container(
       padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: Container(
-              padding: EdgeInsets.only(top: 18),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(8)),
+      child: Padding(
+        padding: EdgeInsets.only(top: 16),
+        child: Container(
+          padding: EdgeInsets.only(top: 18),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 24),
+                child: Consumer<UserInfoViewModel>(
+                  builder: (_, model, __) {
+                    if (model.data == null) {
+                      model.queryDoctorInfo();
+                    }
+                    return doctorAvatarWidget(model.data);
+                  },
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              Row(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 24),
-                    child: Consumer<UserInfoViewModel>(
-                      builder: (_, model, __) {
-                        if (model.data == null) {
-                          model.queryDoctorInfo();
-                        }
-                        return doctorAvatarWidget(model.data);
-                      },
-                    ),
-                  ),
                   Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.only(left: 24, top: 13),
-                    child: Row(
-                      children: [
-                        Text(
-                          "您有",
-                          style: TextStyle(
-                              color: Color(0xFF222222),
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "${visitCount + surveyCount + meetingCount}个待处理",
-                          style: TextStyle(
-                              color: ThemeColor.primaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "的学习计划",
-                          style: TextStyle(
-                              color: Color(0xFF222222),
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
+                    decoration: BoxDecoration(
+                        color: Color(0xFFF0F7FF),
+                        borderRadius: BorderRadius.all(Radius.circular(4))
                     ),
-                  ),
-                  _buildStaticsWidget(entity?.learnPlanStatisticalEntity),
-                  _showOperatorBtn(entity),
+                    padding: EdgeInsets.all(5),
+                    margin: EdgeInsets.only(left: 24, top: 13),
+                    child: notice(visitCount, surveyCount, meetingCount),
+                  )
                 ],
               ),
+              _buildStaticsWidget(entity?.learnPlanStatisticalEntity),
+              _showOperatorBtn(entity),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget notice(int visitCount, int surveyCount, int meetingCount) {
+    var count = visitCount + surveyCount + meetingCount;
+    if (count > 0) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(right: 4),
+            child: Image.asset(
+              'assets/images/icon_voice.png',
+              width: 16,
+              fit: BoxFit.fitWidth,
             ),
           ),
+          Text(
+            "您有",
+            style: TextStyle(
+                color: Color(0xFF222222),
+                fontSize: 16,
+                fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "${visitCount + surveyCount + meetingCount}个待处理",
+            style: TextStyle(
+                color: ThemeColor.primaryColor,
+                fontSize: 16,
+                fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "的学习计划",
+            style: TextStyle(
+                color: Color(0xFF222222),
+                fontSize: 16,
+                fontWeight: FontWeight.bold),
+          ),
         ],
-      ),
+      );
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(right: 4),
+          child: Image.asset(
+            'assets/images/icon_voice.png',
+            width: 16,
+            fit: BoxFit.fitWidth,
+          ),
+        ),
+        Text(
+          "您暂无待处理的学习计划",
+          style: TextStyle(
+              color: Color(0xFF222222),
+              fontSize: 16,
+              fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 
