@@ -389,7 +389,44 @@ class _ActivityState extends State<ActivityDetail> {
   Widget buildBody() {
     List<Widget> bottoms = [];
     List<Widget> headers = [];
-    if (_data.status == "WAIT_START") {
+    if (_data.disable == true) {
+      headers = [
+        Container(
+          height: 50,
+          color: Color(0xfff8cc76),
+          alignment: Alignment.center,
+          child: Text(
+            _data.reason,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+        )
+      ];
+      bottoms = [
+        Container(
+          padding: EdgeInsets.only(bottom: 53),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 33),
+            alignment: Alignment.center,
+            height: 44,
+            decoration: BoxDecoration(
+              color: Color(0xff888888),
+              borderRadius: BorderRadius.all(Radius.circular(22)),
+            ),
+            child: Text(
+              "活动已结束",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        )
+      ];
+    }else if (_data.status == "WAIT_START") {
       bottoms = [
         Container(
           padding: EdgeInsets.only(bottom: 53),
@@ -460,21 +497,6 @@ class _ActivityState extends State<ActivityDetail> {
         )
       ];
     } else {
-      headers = [
-        Container(
-          height: 50,
-          color: Color(0xfff8cc76),
-          alignment: Alignment.center,
-          child: Text(
-            "${activityName(widget.type)}已达目标，活动已结束",
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-          ),
-        )
-      ];
       bottoms = [
         Container(
           padding: EdgeInsets.only(bottom: 53),
