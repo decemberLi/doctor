@@ -284,7 +284,8 @@ class _ActivityResearch extends State<ActivityResearch>
         borderColor = Color(0xff888888);
       }
       var now = DateTime.now().millisecondsSinceEpoch;
-      if (item.openTime != null && now < item.openTime) {
+      // 产品要求加1天
+      if (item.openTime != null && now < item.openTime + 24 * 60 * 60 * 1000) {
         if(!isFirst){
           timeText = "${normalDateFormate(item.openTime)}开启填写";
         }
