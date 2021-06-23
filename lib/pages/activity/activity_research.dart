@@ -275,9 +275,6 @@ class _ActivityResearch extends State<ActivityResearch>
       borderColor = Color(0xff52C41A);
     }else{
       if (item.status == "PROCEEDING" || item.status == "REJECT") {
-        if (item.endTime != null){
-          timeText = "${normalDateFormate(item.openTime)}截止填写";
-        }
         statusText = "待完成";
         statusColor = Color(0xff489DFE);
         borderColor = Color(0xff888888);
@@ -287,7 +284,7 @@ class _ActivityResearch extends State<ActivityResearch>
         borderColor = Color(0xff888888);
       }
       var now = DateTime.now().millisecondsSinceEpoch;
-      if (item.openTime != null && now > item.openTime) {
+      if (item.openTime != null && now < item.openTime) {
         if(!isFirst){
           timeText = "${normalDateFormate(item.openTime)}开启填写";
         }
