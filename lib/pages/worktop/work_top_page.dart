@@ -352,7 +352,7 @@ class _WorktopPageState extends State<WorktopPage>
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Flexible(
                         child: Text(
@@ -360,7 +360,7 @@ class _WorktopPageState extends State<WorktopPage>
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                              fontSize: 22,
+                              fontSize: 20,
                               color: ThemeColor.colorFF222222,
                               fontWeight: FontWeight.bold),
                         ),
@@ -554,6 +554,7 @@ class _WorktopPageState extends State<WorktopPage>
     if (count > 0) {
       return Row(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
             padding: EdgeInsets.only(right: 4),
@@ -590,6 +591,7 @@ class _WorktopPageState extends State<WorktopPage>
 
     return Row(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
           padding: EdgeInsets.only(right: 4),
