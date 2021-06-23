@@ -427,7 +427,7 @@ class _ActivityResearch extends State<ActivityResearch>
     );
     return GestureDetector(
       onTap: debounce(() {
-        if (disable && item.status == "NOT_OPEN"){
+        if (disable && (item.status == "PROCEEDING" || item.status == "REJECT")){
           EasyLoading.showToast("活动已结束，无法开启此问卷");
           return;
         }
