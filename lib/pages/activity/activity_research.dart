@@ -292,6 +292,11 @@ class _ActivityResearch extends State<ActivityResearch>
         timeText = "${normalDateFormate(item.openTime)}截止填写";
       }
     }
+    if (item.expire){
+      statusText = "已过期";
+      statusColor = Color(0xffDEDEE1);
+      borderColor = Color(0xff888888);
+    }
 
     var statusWidget = Container(
       margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),

@@ -33,6 +33,7 @@ class ActivityQuestionnairesSubEntity {
   int openTime;
   int endTime;
   String rejectReason;
+  bool expire;
 
   ActivityQuestionnairesSubEntity();
 
@@ -48,7 +49,8 @@ class ActivityQuestionnairesSubEntity {
       ..submitTime = json["submitTime"] as int
       ..rejectReason = json["rejectReason"] as String
       ..openTime = json["openTime"] as int
-      ..endTime = json["endTime"] as int;
+      ..endTime = json["endTime"] as int
+    ..expire = json['expire'] as bool;
   }
 }
 
