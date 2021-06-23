@@ -31,6 +31,7 @@ class ActivityQuestionnairesSubEntity {
   int sort;
   int submitTime;
   int openTime;
+  int endTime;
   String rejectReason;
 
   ActivityQuestionnairesSubEntity();
@@ -46,7 +47,8 @@ class ActivityQuestionnairesSubEntity {
       ..sort = json["sort"] as int
       ..submitTime = json["submitTime"] as int
       ..rejectReason = json["rejectReason"] as String
-      ..openTime = json["openTime"] as int;
+      ..openTime = json["openTime"] as int
+      ..endTime = json["endTime"] as int;
   }
 }
 

@@ -38,6 +38,7 @@ class _ActivityResearch extends State<ActivityResearch>
   bool collapsed = true;
   int activityTaskId;
   String status;
+  bool disable = false;
 
   _ActivityResearch(this.activityTaskId);
 
@@ -73,6 +74,7 @@ class _ActivityResearch extends State<ActivityResearch>
           await API.shared.activity.packageDetail(widget.activityPackageId);
       var parentData = ActivityDetailEntity(result);
       status = parentData.status;
+      disable = parentData.disable;
       Map<String, dynamic> json = await API.shared.activity
           .activityQuestionnaireList(widget.activityPackageId,
               activityTaskId: activityTaskId);
@@ -112,7 +114,7 @@ class _ActivityResearch extends State<ActivityResearch>
     for (int i = 0; i < template.questionnaires.length; i++) {
       var item = template.questionnaires[i];
       var cell = buildPlanItem(
-          template.resourceId, item, i == template.questionnaires.length - 1);
+          template.resourceId, item, i == template.questionnaires.length - 1,i == 0);
       sources.add(cell);
     }
 
@@ -260,26 +262,40 @@ class _ActivityResearch extends State<ActivityResearch>
   }
 
   Widget buildPlanItem(
-      int resourceID, ActivityQuestionnairesSubEntity item, bool isEnd) {
+      int resourceID, ActivityQuestionnairesSubEntity item, bool isEnd, bool isFirst) {
     ActivityQuestionnaireEntity data = _data;
     var timeText = "";
-    if (item.openTime != null) {
-      timeText = "${normalDateFormate(item.openTime)}开启填写";
-    }
     var statusText = "未开启";
     var statusColor = Color(0xffDEDEE1);
     var borderColor = Color(0xff888888);
-    if (item.status == "PROCEEDING" || item.status == "REJECT") {
-      timeText = "";
-      statusText = "待完成";
-      statusColor = Color(0xff489DFE);
-      borderColor = Color(0xff888888);
-    } else if (item.status == "COMPLETE" || item.status == "WAIT_VERIFY") {
+    if (item.status == "COMPLETE" || item.status == "WAIT_VERIFY") {
       timeText = "${normalDateFormate(item.submitTime)}完成";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
+    }else{
+      if (item.status == "PROCEEDING" || item.status == "REJECT") {
+        if (item.endTime != null){
+          timeText = "${normalDateFormate(item.openTime)}截止填写";
+        }
+        statusText = "待完成";
+        statusColor = Color(0xff489DFE);
+        borderColor = Color(0xff888888);
+      } else{
+        statusText = "未开启";
+        statusColor = Color(0xffDEDEE1);
+        borderColor = Color(0xff888888);
+      }
+      var now = DateTime.now().millisecondsSinceEpoch;
+      if (item.openTime != null && now > item.openTime) {
+        if(!isFirst){
+          timeText = "${normalDateFormate(item.openTime)}开启填写";
+        }
+      }else if (item.endTime != null){
+        timeText = "${normalDateFormate(item.openTime)}截止填写";
+      }
     }
+
     var statusWidget = Container(
       margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
       padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
@@ -411,9 +427,13 @@ class _ActivityResearch extends State<ActivityResearch>
     );
     return GestureDetector(
       onTap: debounce(() {
+        if (disable && item.status == "NOT_OPEN"){
+          EasyLoading.showToast("活动已结束，无法开启此问卷");
+          return;
+        }
         if (status == "END" &&
             (item.status == "NOT_OPEN" ||
-                item.status == "PROCEEDING" )) {
+                item.status == "PROCEEDING")) {
           EasyLoading.showToast("活动已过期，无法开启此问卷");
           return;
         }

@@ -311,10 +311,6 @@ class _ActivityState extends State<ActivityDetail> {
               );
             }));
           } else {
-            if (_data.disable && status == "WAIT_VERIFY"){
-              EasyLoading.showToast("活动已结束，无法开启此问卷");
-              return;
-            }
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
               return ActivityResearch(
                 _data.activityPackageId,
