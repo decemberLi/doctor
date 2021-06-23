@@ -107,17 +107,14 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
       //   type = 'USER_CREATE';
       // }
       // 获取验证码
-      EasyLoading.show(status: "发送中...");
-      var params = {'phone': _mobile, 'system': system, 'type': 'LOGIN'};
-      API.shared.foundation.sendSMS(params).then((response) {
-        EasyLoading.dismiss();
-        if (response is! DioError) {
-          setState(() {
-            _maxCount = 60;
-          });
-          startCountTimer();
-        }
-      });
+      EasyLoading.instance.flash(() async {
+        var params = {'phone': _mobile, 'system': system, 'type': 'LOGIN'};
+        await API.shared.foundation.sendSMS(params);
+        setState(() {
+          _maxCount = 60;
+        });
+        startCountTimer();
+      }, text: "发送中...");
     } else {
       EasyLoading.showToast('请输入正确的手机号');
     }
