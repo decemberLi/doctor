@@ -274,6 +274,7 @@ class _ActivityResearch extends State<ActivityResearch>
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
     }else{
+      print("the ${item.title} is ${item.status}");
       if (item.status == "PROCEEDING" || item.status == "REJECT") {
         statusText = "待完成";
         statusColor = Color(0xff489DFE);
@@ -284,7 +285,6 @@ class _ActivityResearch extends State<ActivityResearch>
         borderColor = Color(0xff888888);
       }
       var now = DateTime.now().millisecondsSinceEpoch;
-      // 产品要求，开启时间的当天也要显示 //+ 24 * 60 * 60 * 1000
       if (item.openTime != null && now < item.openTime ) {
         if(!isFirst){
           timeText = "${normalDateFormate(item.openTime)}开启填写";
@@ -292,11 +292,11 @@ class _ActivityResearch extends State<ActivityResearch>
       }else if (item.endTime != null){
         timeText = "${normalDateFormate(item.openTime)}截止填写";
       }
-    }
-    if (item.expire){
-      statusText = "已过期";
-      statusColor = Color(0xffDEDEE1);
-      borderColor = Color(0xff888888);
+      if (item.expire){
+        statusText = "已过期";
+        statusColor = Color(0xffDEDEE1);
+        borderColor = Color(0xff888888);
+      }
     }
 
     var statusWidget = Container(
@@ -430,7 +430,7 @@ class _ActivityResearch extends State<ActivityResearch>
     );
     return GestureDetector(
       onTap: debounce(() {
-        if (disable && (item.status == "PROCEEDING" || item.status == "REJECT")){
+        if (disable && (item.status == "PROCEEDING" || item.status == "NOT_OPEN")){
           EasyLoading.showToast("活动已结束，无法开启此问卷");
           return;
         }
