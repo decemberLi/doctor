@@ -257,21 +257,27 @@ class _UserPageState extends State<UserPage> with RouteAware {
                     shape: BoxShape.circle,
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 23),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Row(
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 23, right: 16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              doctorData?.doctorName ?? "",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
+                            Flexible(
+                              child: Text(
+                                doctorData?.doctorName ?? "",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                             GestureDetector(
                               onTap: () {
@@ -344,27 +350,27 @@ class _UserPageState extends State<UserPage> with RouteAware {
                             ),
                           ],
                         ),
-                      ),
-                      Container(
-                        width: Adapt.screenW() * 0.6,
-                        padding: EdgeInsets.only(top: 8, bottom: 8),
-                        child: Text(
-                          "${doctorData?.hospitalName ?? ''}",
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
+                        Container(
+                          width: Adapt.screenW() * 0.6,
+                          padding: EdgeInsets.only(top: 8, bottom: 8),
+                          child: Text(
+                            "${doctorData?.hospitalName ?? ''}",
+                            softWrap: true,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
-                        child: Text(
-                          '${doctorData?.departmentsName} ${doctorData?.jobGradeName}',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        Container(
+                          child: Text(
+                            '${doctorData?.departmentsName} ${doctorData?.jobGradeName}',
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
