@@ -11,10 +11,10 @@ import Flutter
 class YYYFVC: FlutterViewController {
     override var shouldAutorotate: Bool { true }
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
+        super.supportedInterfaceOrientations
     }
     
     override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
-        return .portrait
+         .portrait
     }
 }
