@@ -26,7 +26,8 @@ import UserNotificationsUI
         
         WXApi.registerApp("wxe4e9693e772d44fd", universalLink: "https://site-dev.e-medclouds.com/");
         AppDelegate.shared = self
-        let vc = FlutterViewController()
+        let vc = YYYFVC()
+//        let vc = FlutterViewController()
         rootVC = vc
         navi = BaseNavigationController(rootViewController: vc)
         navi?.interactivePopGestureRecognizer?.delegate = self
