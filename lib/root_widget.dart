@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:doctor/common/event/event_home_tab.dart';
 import 'package:doctor/http/foundationSystem.dart';
+import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/activity_detail.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
@@ -60,6 +61,9 @@ class RootWidget extends StatelessWidget {
     MedcloudsNativeApi.instance().addProcessor("uploadDeviceInfo",
         (args) async {
       MedcloudsNativeApi.instance().uploadDeviceInfo(args);
+    });
+    MedcloudsNativeApi.instance().addProcessor("uploadFile", (args) async {
+      return jsonEncode(await OssService.uploadBatchToOss(jsonDecode(args)));
     });
     MedcloudsNativeApi.instance().addProcessor("wifiStatus", (args) async {
       if (AppUtils.sp.getBool(ONLY_WIFI) ?? true) {

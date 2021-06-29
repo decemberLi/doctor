@@ -1,5 +1,6 @@
 package com.emedclouds.doctor.common.web
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -17,6 +18,7 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import com.emedclouds.doctor.R
+import com.emedclouds.doctor.common.gallery.GalleryHelper
 import com.emedclouds.doctor.common.web.api.BaseApi
 import com.emedclouds.doctor.common.web.api.JsApiCaller
 import com.emedclouds.doctor.common.web.api.NativeApiProvider
@@ -26,10 +28,12 @@ import com.emedclouds.doctor.utils.StatusBarUtil
 import com.emedclouds.doctor.widgets.CommonInputDialog
 import com.emedclouds.doctor.widgets.OnTextInputCallback
 import com.emedclouds.doctor.widgets.OnTextInputCallback.Companion.ACTION_PUBLISH
+import com.google.gson.Gson
 import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
+import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.activity_web_doctor_detail_layout.*
 import kotlinx.android.synthetic.main.activity_web_layout.*
 import org.json.JSONObject
@@ -42,8 +46,11 @@ open class WebActivity : ComponentActivity() {
 
     private lateinit var mBackBtnListener: OnBackBtnListener
 
+    private lateinit var mFileUploadCallback: OnTaskCallback<String>
+
     companion object {
         const val TAG = "YWeb.WebActivity"
+        const val REQUEST_CODE_GALLERY = 1000;
     }
 
     @LayoutRes
@@ -172,8 +179,65 @@ open class WebActivity : ComponentActivity() {
                             })
                         }
                     }
-                }
-        )
+                })
+        ApiManager.instance.addApi("openGallery",
+                object : BaseApi(apiCaller) {
+                    override fun doAction(bizType: String, param: String?) {
+                        if (param == null) {
+                            return
+                        }
+                        val json = JSONObject(param)
+                        val maxCount = json.getInt("maxCount")
+                        val enableCapture = json.getBoolean("enableCapture")
+                        if (maxCount < 1 || maxCount > 9) {
+                            errorCallJavaScript(bizType, -2, "参数错误")
+                            return
+                        }
+                        runOnUiThread {
+                            GalleryHelper.openGallery(
+                                    this@WebActivity,
+                                    maxSelectable = maxCount,
+                                    captureEnable = enableCapture,
+                                    requestCode = REQUEST_CODE_GALLERY
+                            )
+                            mFileUploadCallback = object : OnTaskCallback<String> {
+                                override fun success(param: String) {
+                                    successCallJavaScript(bizType, param)
+                                }
+
+                                override fun error(errorCode: Int, errorMsg: String) {
+                                    errorCallJavaScript(bizType, errorCode, errorMsg)
+                                }
+                            }
+                        }
+                    }
+                })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_GALLERY) {
+            if (RESULT_OK != resultCode || data == null) {
+                mFileUploadCallback.error(0, "图片选择异常")
+                return
+            }
+            val list = Matisse.obtainPathResult(data)
+            if (list != null && list.size != 0) {
+                ChannelManager.instance.callFlutter("uploadFile", Gson().toJson(list), object : MethodChannelResultAdapter() {
+                    override fun success(result: Any?) {
+                        if (result != null && result is String && this@WebActivity::mFileUploadCallback.isInitialized) {
+                            mFileUploadCallback.success(result)
+                        }
+                    }
+
+                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                        if (this@WebActivity::mFileUploadCallback.isInitialized) {
+                            mFileUploadCallback.error(-1, errorMessage ?: "接口错误")
+                        }
+                    }
+                })
+            }
+        }
     }
 
     private fun toast(text: String) {
@@ -378,5 +442,11 @@ open class WebActivity : ComponentActivity() {
         fun onBack(): Unit
 
         fun needBack(): Boolean
+    }
+
+    interface OnTaskCallback<T> {
+        fun success(param: T)
+
+        fun error(errorCode: Int, errorMsg: String)
     }
 }
