@@ -29,6 +29,7 @@ import com.emedclouds.doctor.widgets.CommonInputDialog
 import com.emedclouds.doctor.widgets.OnTextInputCallback
 import com.emedclouds.doctor.widgets.OnTextInputCallback.Companion.ACTION_PUBLISH
 import com.google.gson.Gson
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebView
@@ -36,6 +37,7 @@ import com.tencent.smtt.sdk.WebViewClient
 import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.activity_web_doctor_detail_layout.*
 import kotlinx.android.synthetic.main.activity_web_layout.*
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URLEncoder
 
@@ -202,7 +204,7 @@ open class WebActivity : ComponentActivity() {
                             )
                             mFileUploadCallback = object : OnTaskCallback<String> {
                                 override fun success(param: String) {
-                                    successCallJavaScript(bizType, param)
+                                    successCallJavaScript(bizType, JSONArray(param))
                                 }
 
                                 override fun error(errorCode: Int, errorMsg: String) {
@@ -218,19 +220,27 @@ open class WebActivity : ComponentActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_GALLERY) {
             if (RESULT_OK != resultCode || data == null) {
-                mFileUploadCallback.error(0, "图片选择异常")
+                mFileUploadCallback.error(-1, "图片选择异常")
                 return
             }
             val list = Matisse.obtainPathResult(data)
             if (list != null && list.size != 0) {
+                val kProgressHUD = KProgressHUD.create(this@WebActivity)
+                        .setLabel("图片上传中...")
+                        .setCancellable(false)
+                        .setAnimationSpeed(2)
+                        .setDimAmount(0.5f)
+                        .show()
                 ChannelManager.instance.callFlutter("uploadFile", Gson().toJson(list), object : MethodChannelResultAdapter() {
                     override fun success(result: Any?) {
+                        kProgressHUD.dismiss()
                         if (result != null && result is String && this@WebActivity::mFileUploadCallback.isInitialized) {
                             mFileUploadCallback.success(result)
                         }
                     }
 
                     override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                        kProgressHUD.dismiss()
                         if (this@WebActivity::mFileUploadCallback.isInitialized) {
                             mFileUploadCallback.error(-1, errorMessage ?: "接口错误")
                         }

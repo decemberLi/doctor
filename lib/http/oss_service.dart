@@ -93,11 +93,11 @@ class OssService {
 
   static uploadBatchToOss(List<dynamic> filePath) async {
     List<Future<OssFileEntity>> futires = [];
-    List<OssFileEntity> urlList = [];
+    List<dynamic> urlList = [];
     for (int i = 0; i < filePath.length; i++) {
       var eachF = upload(filePath[i], showLoading: false);
       futires.add(eachF);
-      eachF.then((value) => urlList.add(value));
+      eachF.then((value) => urlList.add(value.toJson()));
       if (futires.length == 4) {
         await Future.wait(futires);
         futires.clear();
