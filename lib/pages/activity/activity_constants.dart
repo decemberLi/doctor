@@ -3,6 +3,7 @@ const String TYPE_CASE_COLLECTION = "CASE_COLLECTION";
 
 /// 医学调研
 const String TYPE_MEDICAL_SURVEY = "MEDICAL_SURVEY";
+const String TYPE_RWS = "RWS";
 
 /// 未开始
 const String STATUS_WAIT = "WAIT_START";
@@ -21,7 +22,16 @@ const String VERIFY_STATUS_REJECT = 'REJECT';
 
 
 String activityName(String type) {
-  return type == TYPE_CASE_COLLECTION ? '病例征集' : '医学调研';
+  if (type == TYPE_RWS) {
+    return 'RWS';
+  }
+  if (type == TYPE_CASE_COLLECTION) {
+    return '病例征集';
+  }
+  if (type == TYPE_MEDICAL_SURVEY) {
+    return '医学调研';
+  }
+  return '';
 }
 
 String activityStatus(String status, bool disable) {

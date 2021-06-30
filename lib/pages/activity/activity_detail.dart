@@ -368,9 +368,9 @@ class _ActivityState extends State<ActivityDetail> {
     if (_list.length == 0) {
       return Container();
     }
-    var title = "调研列表";
-    if (_data.activityType == TYPE_CASE_COLLECTION) {
-      title = "病例列表";
+    var title = "病例列表";
+    if (_data.activityType == TYPE_MEDICAL_SURVEY) {
+      title = "调研列表";
     }
     return card(
       child: Column(
