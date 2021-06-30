@@ -39,7 +39,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     _nameController.text = data.patientName;
     _ageController.text = data.age == null ? "" : "${data.age}";
     _hospitalController.text = data.hospital;
-    _codeController.text = data.patientCode;
+    _codeController.text = data.patientCode != null ? data.patientCode : "No Code";
 
     _nameController.addListener(() {
       setState(() {});
@@ -56,7 +56,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
   }
 
   Widget buildText(TextEditingController controller, int maxLength,
-      TextInputType keyboardType) {
+      TextInputType keyboardType, {bool editAble = true}) {
     var noneBorder = UnderlineInputBorder(
       borderSide: BorderSide(width: 0, color: Colors.transparent),
     );
@@ -67,7 +67,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
       ),
       child: TextField(
         maxLines: null,
-        enabled: widget.canSubmit,
+        enabled: widget.canSubmit && editAble,
         maxLength: maxLength,
         controller: controller,
         textAlign: TextAlign.end,
@@ -191,8 +191,9 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
   Widget build(BuildContext context) {
     List<Widget> showList = [];
     bool canSave = true;
-    for (int i = 0; i < data.showFields.length; i++) {
-      var item = data.showFields[i];
+    var showArray = ["patientCode",...data.showFields];
+    for (int i = 0; i < showArray.length; i++) {
+      var item = showArray[i];
       Widget one;
       //"patientName","patientCode","age","sex","hospital"
       if (item == "patientName") {
@@ -201,7 +202,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         canSave = canSave && _nameController.text.length > 0;
       } else if (item == "patientCode") {
         one = buildItem(
-            "患者编码", buildText(_codeController, 20, TextInputType.text));
+            "患者编码", buildText(_codeController, 20, TextInputType.text,editAble: false));
         canSave = canSave && _codeController.text.length > 0;
       } else if (item == "age") {
         one =
