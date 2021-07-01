@@ -42,6 +42,7 @@ target 'Runner' do
   pod 'UMCommon'
   pod 'JCore', '2.4.0-noidfa'
   pod 'JPush', '3.3.6'
+  pod 'TZImagePickerController' , '3.6.0'
 end
 
 post_install do |installer|

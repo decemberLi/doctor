@@ -1,6 +1,7 @@
 import UIKit
 import Flutter
 import UserNotificationsUI
+import TZImagePickerController
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -297,6 +298,45 @@ extension AppDelegate {
     func clearVideoCache(){
         naviChannel.invokeMethod("clearVideo", arguments: nil)
     }
+    
+    func openAlbum(max:Int,allowTakePicture:Bool,finish:((String)->Void)?){
+        let dir = NSHomeDirectory() + "/Documents/takePicTemp"
+        try? FileManager.default.removeItem(atPath: dir)
+        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: false, attributes: nil)
+        guard let vc = TZImagePickerController(maxImagesCount: max, columnNumber: 4, delegate: self) else {return}
+        vc.allowTakeVideo = false
+        vc.allowPickingVideo = false
+        vc.allowTakePicture = allowTakePicture
+        vc.didFinishPickingPhotosWithInfosHandle = { (photos,assets,isOringal,options) in
+            guard let a = photos else {
+                finish?("[]")
+                return
+            }
+            let json = a.compactMap { item in
+                let path = dir + UUID().uuidString
+                do {
+                    try item.pngData()?.write(to: URL(fileURLWithPath: path))
+                }catch {
+                    return nil
+                }
+                return path
+            }.joined(separator: ",")
+            self.naviChannel.invokeMethod("uploadFile", arguments: json) { result in
+                if let all = result as? String {
+                    finish?(all)
+                }else{
+                    finish?("")
+                }
+            }
+            
+        }
+        vc.modalPresentationStyle = .fullScreen
+        rootVC?.present(vc, animated: true, completion: nil)
+    }
+    
+}
+
+extension AppDelegate : TZImagePickerControllerDelegate {
     
 }
 

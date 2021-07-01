@@ -110,7 +110,7 @@ class WebVC: UIViewController {
             } completion: { (_) in
                 self.textAllBG.isHidden = true
             }
-
+            
         }
     }
     
@@ -256,7 +256,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
                 let status = result ?? 0
                 let bizType = json["bizType"] as? String ?? ""
                 let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":\#(status)}}"#
-//                print("the params is -- \(params)")
+                //                print("the params is -- \(params)")
                 self.inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
             }
         }else if dispatchType == "hookBackBtn" {
@@ -267,6 +267,25 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
                 inVC?.bizType = bizType
             }
             
+        }else if dispatchType == "openGallery" {
+            let bizType = json["bizType"] as? String ?? ""
+            func callError(){
+                let params = #"{"bizType":"\#(bizType)","param":{"code":-2,"content":"参数错误"}}"#
+                inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler:nil)
+            }
+            guard let maxCount = json["maxCount"] as? Int,
+                  let enableCapture = json["enableCapture"] as? Bool else {
+                callError()
+                return
+            }
+            guard maxCount <= 9 && maxCount >= 1 else {
+                callError()
+                return
+            }
+            AppDelegate.shared?.openAlbum(max: maxCount, allowTakePicture: enableCapture, finish: { result in
+                let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":\#(result)}}"#
+                self.inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler:nil)
+            })
         }
     }
 }
@@ -280,7 +299,7 @@ extension WebVC : WKNavigationDelegate {
         progressView.isHidden = false
         progressView.progress = 0
     }
-
+    
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         progressView.isHidden = true
         webview.evaluateJavaScript("document.title") {[weak self] (result, error) in
@@ -288,7 +307,7 @@ extension WebVC : WKNavigationDelegate {
             self.titleLbl.text = result as? String ?? "详情"
         }
     }
-
+    
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         progressView.isHidden = true
         errorView.isHidden = false
