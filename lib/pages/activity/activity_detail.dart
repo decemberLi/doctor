@@ -454,22 +454,25 @@ class _ActivityState extends State<ActivityDetail> {
       if (widget.type == TYPE_CASE_COLLECTION) {
         last = "剩余病例数";
         title = "填写病例信息";
-      } else {
+      } else if(widget.type == TYPE_MEDICAL_SURVEY) {
         last = "剩余调研数";
         title = "填写医学调研";
+      } else {
+        last = "剩余调研数";
+        title = "填写RWS";
       }
       bottoms = [
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 5),
-          child: Text(
-            "$last${_data.waitExecuteTask}",
-            style: TextStyle(
-              color: Color(0xff107BFD),
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-            ),
-          ),
-        ),
+        // Container(
+        //   padding: EdgeInsets.symmetric(vertical: 5),
+        //   child: Text(
+        //     "$last${_data.waitExecuteTask}",
+        //     style: TextStyle(
+        //       color: Color(0xff107BFD),
+        //       fontWeight: FontWeight.w400,
+        //       fontSize: 14,
+        //     ),
+        //   ),
+        // ),
         Container(
           padding: EdgeInsets.only(bottom: 53),
           child: AceButton(
