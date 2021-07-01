@@ -267,7 +267,7 @@ class _MessageListPageState extends State<MessageListPage> {
         'from': 'MESSAGE_CENTER'
       });
     } else if (type == 'ACTIVITY') {
-      if (entity.params['activityType'] == 'CASE_COLLECTION') {
+      if (entity.params['activityType'] == 'CASE_COLLECTION' || entity.params['activityType'] == 'RWS') {
         // go 病例驳回 资料详情
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ActivityResourceDetailPage(

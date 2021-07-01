@@ -153,8 +153,8 @@ class RootWidget extends StatelessWidget {
               },
             );
           } else if (type == 'REJECT_ACTIVITY_TASK') {
-            if (obj['activityType'] == 'CASE_COLLECTION') {
-              // go 病例驳回 资料详情
+            if (obj['activityType'] == 'CASE_COLLECTION' || obj['activityType'] == 'RWS') {
+              // 病例驳回 || RWS 驳回 go 资料详情
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return ActivityResourceDetailPage(
                   obj['activityPackageId'],
