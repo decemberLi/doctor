@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:doctor/common/event/event_home_tab.dart';
 import 'package:doctor/http/foundationSystem.dart';
+import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/activity_detail.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
@@ -17,6 +18,7 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +62,9 @@ class RootWidget extends StatelessWidget {
     MedcloudsNativeApi.instance().addProcessor("uploadDeviceInfo",
         (args) async {
       MedcloudsNativeApi.instance().uploadDeviceInfo(args);
+    });
+    MedcloudsNativeApi.instance().addProcessor("uploadFile", (args) async {
+      return jsonEncode(await OssService.uploadBatchToOss(await ImageHelper.compressImageBatch(jsonDecode(args))));
     });
     MedcloudsNativeApi.instance().addProcessor("wifiStatus", (args) async {
       if (AppUtils.sp.getBool(ONLY_WIFI) ?? true) {
@@ -148,8 +153,8 @@ class RootWidget extends StatelessWidget {
               },
             );
           } else if (type == 'REJECT_ACTIVITY_TASK') {
-            if (obj['activityType'] == 'CASE_COLLECTION') {
-              // go 病例驳回 资料详情
+            if (obj['activityType'] == 'CASE_COLLECTION' || obj['activityType'] == 'RWS') {
+              // 病例驳回 || RWS 驳回 go 资料详情
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return ActivityResourceDetailPage(
                   obj['activityPackageId'],

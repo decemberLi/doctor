@@ -11,6 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 import 'package:doctor/widgets/YYYEasyLoading.dart';
@@ -168,7 +170,7 @@ class ImageHelper {
             var data = FileData()
               ..thumbData = await element.thumbData
               ..originFile =
-              await element.file; //await compressImage(await element.file);
+                  await compressImage(await element.file);
             originFiles.add(data);
           } else {
             var fileData = FileData();
@@ -219,9 +221,17 @@ class ImageHelper {
   }
 
   static Future<File> _compressImage(File originFile) async {
-    var directory = Directory(originFile.path);
+    var targetParentDir = (await getTemporaryDirectory()).path;
+    if (Platform.isAndroid && await Permission.storage.isGranted) {
+      targetParentDir = (await getExternalStorageDirectory()).path;
+    }
+    targetParentDir = join(targetParentDir, "compress_cache_dir");
+    var cacheDir = Directory(targetParentDir);
+    if (!cacheDir.existsSync()) {
+      cacheDir.create(recursive: true);
+    }
     var baseName = basename(originFile.path);
-    var targetPath = join(directory.parent.path, 'compressed_$baseName');
+    var targetPath = join(cacheDir.path, 'compressed_$baseName');
 
     print('origin file path ${originFile.path}');
     print('compressed target file path ${originFile.path}');
@@ -236,6 +246,24 @@ class ImageHelper {
 
   static Future<File> compressImage(File originFile) async {
     return _compressImage(originFile);
+  }
+
+  static Future<List<String>> compressImageBatch(List<dynamic> originFiles) async {
+    List<String> compressedFileList = [];
+    for (var each in originFiles) {
+      if(!(each is String)){
+        throw "不支持的文件类型";
+      }
+      var file = File(each as String);
+      if (!File(each).existsSync()) {
+        throw "文件不存在";
+      }
+      var compressedFile = await compressImage(file);
+      compressedFileList.add(compressedFile.path);
+      debugPrint("CompressImage :: origin file -> $each, compressed file -> ${compressedFile.path}");
+    }
+
+    return compressedFileList;
   }
 
   static _compressFormat(String path) {

@@ -1,5 +1,6 @@
 package com.emedclouds.doctor.common.web
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -18,11 +19,10 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import com.emedclouds.doctor.R
 import com.emedclouds.doctor.common.web.api.BaseApi
+import com.emedclouds.doctor.common.web.api.GalleryApi
 import com.emedclouds.doctor.common.web.api.JsApiCaller
 import com.emedclouds.doctor.common.web.api.NativeApiProvider
-import com.emedclouds.doctor.utils.ChannelManager
-import com.emedclouds.doctor.utils.MethodChannelResultAdapter
-import com.emedclouds.doctor.utils.StatusBarUtil
+import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.widgets.CommonInputDialog
 import com.emedclouds.doctor.widgets.OnTextInputCallback
 import com.emedclouds.doctor.widgets.OnTextInputCallback.Companion.ACTION_PUBLISH
@@ -41,9 +41,12 @@ open class WebActivity : ComponentActivity() {
     private lateinit var mContainer: FrameLayout
 
     private lateinit var mBackBtnListener: OnBackBtnListener
+    private lateinit var mGalleryResultCallback: OnActivityResultCallback
+    private lateinit var mPermissionCallback: OnPermissionCallback
 
     companion object {
         const val TAG = "YWeb.WebActivity"
+        const val REQUEST_CODE_GALLERY = 1000;
     }
 
     @LayoutRes
@@ -116,27 +119,27 @@ open class WebActivity : ComponentActivity() {
                         }
                     }
                 })
-        ApiManager.instance.addApi("hookBackBtn", object : BaseApi(apiCaller) {
-            override fun doAction(bizType: String, param: String?) {
-                if (param == null) {
-                    return
-                }
-                val json = JSONObject(param)
-                val hookBackBtn = json.getBoolean("needHook")
-                mBackBtnListener = object : OnBackBtnListener {
-                    override fun onBack() {
-                        successCallJavaScript(bizType, "")
-                    }
+        ApiManager.instance.addApi("hookBackBtn",
+                object : BaseApi(apiCaller) {
+                    override fun doAction(bizType: String, param: String?) {
+                        if (param == null) {
+                            return
+                        }
+                        val json = JSONObject(param)
+                        val hookBackBtn = json.getBoolean("needHook")
+                        mBackBtnListener = object : OnBackBtnListener {
+                            override fun onBack() {
+                                successCallJavaScript(bizType, "")
+                            }
 
-                    override fun needBack(): Boolean {
-                        return hookBackBtn
-                    }
+                            override fun needBack(): Boolean {
+                                return hookBackBtn
+                            }
 
-                }
-            }
-        })
-        ApiManager.instance.addApi(
-                "showInputBar",
+                        }
+                    }
+                })
+        ApiManager.instance.addApi("showInputBar",
                 object : BaseApi(apiCaller) {
                     override fun doAction(bizType: String, param: String?) {
                         if (param == null) {
@@ -172,8 +175,25 @@ open class WebActivity : ComponentActivity() {
                             })
                         }
                     }
-                }
-        )
+                })
+        val api = GalleryApi(this, apiCaller);
+        mGalleryResultCallback = api
+        mPermissionCallback = api
+        ApiManager.instance.addApi("openGallery", mGalleryResultCallback as GalleryApi)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (this::mGalleryResultCallback.isInitialized) {
+            mGalleryResultCallback.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (this::mPermissionCallback.isInitialized) {
+            mPermissionCallback.permissionCallback(requestCode, permissions, grantResults)
+        }
     }
 
     private fun toast(text: String) {
@@ -185,7 +205,7 @@ open class WebActivity : ComponentActivity() {
     @NonNull
     protected open fun getUrl(): String {
         return intent.getStringExtra("url") ?: ""
-//        return "http://192.168.1.27:9000/#/detail?id=292"
+//        return "http://192.168.1.55:9000/#/questionnaire?type=market&packageStatus=EXECUTING"
     }
 
     private fun bindEvent() {
@@ -194,7 +214,7 @@ open class WebActivity : ComponentActivity() {
                 mWebView.goBack()
                 return@setOnClickListener
             }
-            if(dispatchBackBtnIfNeeded()){
+            if (dispatchBackBtnIfNeeded()) {
                 return@setOnClickListener
             }
             finish()
@@ -227,7 +247,7 @@ open class WebActivity : ComponentActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             // 返回键
-            if (dispatchBackBtnIfNeeded()){
+            if (dispatchBackBtnIfNeeded()) {
                 return true
             }
             if (mWebView.canGoBack()) {
@@ -379,4 +399,13 @@ open class WebActivity : ComponentActivity() {
 
         fun needBack(): Boolean
     }
+
+    interface OnActivityResultCallback {
+        fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    }
+
+    interface OnPermissionCallback {
+        fun permissionCallback(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    }
+
 }

@@ -90,4 +90,20 @@ class OssService {
     var result = await API.shared.foundation.aliossSave(param);
     return OssFileEntity.fromJson(result);
   }
+
+  static uploadBatchToOss(List<String> filePath) async {
+    List<Future<OssFileEntity>> futires = [];
+    List<dynamic> urlList = [];
+    for (int i = 0; i < filePath.length; i++) {
+      var eachF = upload(filePath[i], showLoading: false);
+      futires.add(eachF);
+      eachF.then((value) => urlList.add(value.toJson()));
+      if (futires.length == 4) {
+        await Future.wait(futires);
+        futires.clear();
+      }
+    }
+    await Future.wait(futires);
+    return urlList;
+  }
 }
