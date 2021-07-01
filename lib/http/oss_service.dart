@@ -91,7 +91,7 @@ class OssService {
     return OssFileEntity.fromJson(result);
   }
 
-  static uploadBatchToOss(List<dynamic> filePath) async {
+  static uploadBatchToOss(List<String> filePath) async {
     List<Future<OssFileEntity>> futires = [];
     List<dynamic> urlList = [];
     for (int i = 0; i < filePath.length; i++) {

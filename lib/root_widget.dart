@@ -18,6 +18,7 @@ import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
+import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class RootWidget extends StatelessWidget {
       MedcloudsNativeApi.instance().uploadDeviceInfo(args);
     });
     MedcloudsNativeApi.instance().addProcessor("uploadFile", (args) async {
-      return jsonEncode(await OssService.uploadBatchToOss(jsonDecode(args)));
+      return jsonEncode(await OssService.uploadBatchToOss(await ImageHelper.compressImageBatch(jsonDecode(args))));
     });
     MedcloudsNativeApi.instance().addProcessor("wifiStatus", (args) async {
       if (AppUtils.sp.getBool(ONLY_WIFI) ?? true) {

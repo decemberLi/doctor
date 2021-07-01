@@ -18,26 +18,20 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import com.emedclouds.doctor.R
-import com.emedclouds.doctor.common.gallery.GalleryHelper
 import com.emedclouds.doctor.common.web.api.BaseApi
+import com.emedclouds.doctor.common.web.api.GalleryApi
 import com.emedclouds.doctor.common.web.api.JsApiCaller
 import com.emedclouds.doctor.common.web.api.NativeApiProvider
-import com.emedclouds.doctor.utils.ChannelManager
-import com.emedclouds.doctor.utils.MethodChannelResultAdapter
-import com.emedclouds.doctor.utils.StatusBarUtil
+import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.widgets.CommonInputDialog
 import com.emedclouds.doctor.widgets.OnTextInputCallback
 import com.emedclouds.doctor.widgets.OnTextInputCallback.Companion.ACTION_PUBLISH
-import com.google.gson.Gson
-import com.kaopiz.kprogresshud.KProgressHUD
 import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
-import com.zhihu.matisse.Matisse
 import kotlinx.android.synthetic.main.activity_web_doctor_detail_layout.*
 import kotlinx.android.synthetic.main.activity_web_layout.*
-import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URLEncoder
 
@@ -47,8 +41,8 @@ open class WebActivity : ComponentActivity() {
     private lateinit var mContainer: FrameLayout
 
     private lateinit var mBackBtnListener: OnBackBtnListener
-
-    private lateinit var mFileUploadCallback: OnTaskCallback<String>
+    private lateinit var mGalleryResultCallback: OnActivityResultCallback
+    private lateinit var mPermissionCallback: OnPermissionCallback
 
     companion object {
         const val TAG = "YWeb.WebActivity"
@@ -125,27 +119,27 @@ open class WebActivity : ComponentActivity() {
                         }
                     }
                 })
-        ApiManager.instance.addApi("hookBackBtn", object : BaseApi(apiCaller) {
-            override fun doAction(bizType: String, param: String?) {
-                if (param == null) {
-                    return
-                }
-                val json = JSONObject(param)
-                val hookBackBtn = json.getBoolean("needHook")
-                mBackBtnListener = object : OnBackBtnListener {
-                    override fun onBack() {
-                        successCallJavaScript(bizType, "")
-                    }
+        ApiManager.instance.addApi("hookBackBtn",
+                object : BaseApi(apiCaller) {
+                    override fun doAction(bizType: String, param: String?) {
+                        if (param == null) {
+                            return
+                        }
+                        val json = JSONObject(param)
+                        val hookBackBtn = json.getBoolean("needHook")
+                        mBackBtnListener = object : OnBackBtnListener {
+                            override fun onBack() {
+                                successCallJavaScript(bizType, "")
+                            }
 
-                    override fun needBack(): Boolean {
-                        return hookBackBtn
-                    }
+                            override fun needBack(): Boolean {
+                                return hookBackBtn
+                            }
 
-                }
-            }
-        })
-        ApiManager.instance.addApi(
-                "showInputBar",
+                        }
+                    }
+                })
+        ApiManager.instance.addApi("showInputBar",
                 object : BaseApi(apiCaller) {
                     override fun doAction(bizType: String, param: String?) {
                         if (param == null) {
@@ -182,71 +176,23 @@ open class WebActivity : ComponentActivity() {
                         }
                     }
                 })
-        ApiManager.instance.addApi("openGallery",
-                object : BaseApi(apiCaller) {
-                    override fun doAction(bizType: String, param: String?) {
-                        if (param == null) {
-                            return
-                        }
-                        val json = JSONObject(param)
-                        val maxCount = json.getInt("maxCount")
-                        val enableCapture = json.getBoolean("enableCapture")
-                        if (maxCount < 1 || maxCount > 9) {
-                            errorCallJavaScript(bizType, -2, "参数错误")
-                            return
-                        }
-                        runOnUiThread {
-                            GalleryHelper.openGallery(
-                                    this@WebActivity,
-                                    maxSelectable = maxCount,
-                                    captureEnable = enableCapture,
-                                    requestCode = REQUEST_CODE_GALLERY
-                            )
-                            mFileUploadCallback = object : OnTaskCallback<String> {
-                                override fun success(param: String) {
-                                    successCallJavaScript(bizType, JSONArray(param))
-                                }
-
-                                override fun error(errorCode: Int, errorMsg: String) {
-                                    errorCallJavaScript(bizType, errorCode, errorMsg)
-                                }
-                            }
-                        }
-                    }
-                })
+        val api = GalleryApi(this, apiCaller);
+        mGalleryResultCallback = api
+        mPermissionCallback = api
+        ApiManager.instance.addApi("openGallery", mGalleryResultCallback as GalleryApi)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_GALLERY) {
-            if (RESULT_OK != resultCode || data == null) {
-                mFileUploadCallback.error(-1, "图片选择异常")
-                return
-            }
-            val list = Matisse.obtainPathResult(data)
-            if (list != null && list.size != 0) {
-                val kProgressHUD = KProgressHUD.create(this@WebActivity)
-                        .setLabel("图片上传中...")
-                        .setCancellable(false)
-                        .setAnimationSpeed(2)
-                        .setDimAmount(0.5f)
-                        .show()
-                ChannelManager.instance.callFlutter("uploadFile", Gson().toJson(list), object : MethodChannelResultAdapter() {
-                    override fun success(result: Any?) {
-                        kProgressHUD.dismiss()
-                        if (result != null && result is String && this@WebActivity::mFileUploadCallback.isInitialized) {
-                            mFileUploadCallback.success(result)
-                        }
-                    }
+        if (this::mGalleryResultCallback.isInitialized) {
+            mGalleryResultCallback.onActivityResult(requestCode, resultCode, data)
+        }
+    }
 
-                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                        kProgressHUD.dismiss()
-                        if (this@WebActivity::mFileUploadCallback.isInitialized) {
-                            mFileUploadCallback.error(-1, errorMessage ?: "接口错误")
-                        }
-                    }
-                })
-            }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (this::mPermissionCallback.isInitialized) {
+            mPermissionCallback.permissionCallback(requestCode, permissions, grantResults)
         }
     }
 
@@ -259,7 +205,7 @@ open class WebActivity : ComponentActivity() {
     @NonNull
     protected open fun getUrl(): String {
         return intent.getStringExtra("url") ?: ""
-//        return "http://192.168.1.27:9000/#/detail?id=292"
+//        return "http://192.168.1.55:9000/#/questionnaire?type=market&packageStatus=EXECUTING"
     }
 
     private fun bindEvent() {
@@ -268,7 +214,7 @@ open class WebActivity : ComponentActivity() {
                 mWebView.goBack()
                 return@setOnClickListener
             }
-            if(dispatchBackBtnIfNeeded()){
+            if (dispatchBackBtnIfNeeded()) {
                 return@setOnClickListener
             }
             finish()
@@ -301,7 +247,7 @@ open class WebActivity : ComponentActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             // 返回键
-            if (dispatchBackBtnIfNeeded()){
+            if (dispatchBackBtnIfNeeded()) {
                 return true
             }
             if (mWebView.canGoBack()) {
@@ -454,9 +400,12 @@ open class WebActivity : ComponentActivity() {
         fun needBack(): Boolean
     }
 
-    interface OnTaskCallback<T> {
-        fun success(param: T)
-
-        fun error(errorCode: Int, errorMsg: String)
+    interface OnActivityResultCallback {
+        fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     }
+
+    interface OnPermissionCallback {
+        fun permissionCallback(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    }
+
 }
