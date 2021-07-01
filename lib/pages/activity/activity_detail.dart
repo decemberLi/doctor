@@ -462,17 +462,18 @@ class _ActivityState extends State<ActivityDetail> {
         title = "填写RWS";
       }
       bottoms = [
-        // Container(
-        //   padding: EdgeInsets.symmetric(vertical: 5),
-        //   child: Text(
-        //     "$last${_data.waitExecuteTask}",
-        //     style: TextStyle(
-        //       color: Color(0xff107BFD),
-        //       fontWeight: FontWeight.w400,
-        //       fontSize: 14,
-        //     ),
-        //   ),
-        // ),
+        if(widget.type == TYPE_MEDICAL_SURVEY)
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Text(
+              "$last${_data.waitExecuteTask}",
+              style: TextStyle(
+                color: Color(0xff107BFD),
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
+          ),
         Container(
           padding: EdgeInsets.only(bottom: 53),
           child: AceButton(
