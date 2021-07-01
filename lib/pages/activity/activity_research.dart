@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/utils/data_format_util.dart';
@@ -46,6 +49,7 @@ class _ActivityResearch extends State<ActivityResearch>
   ActivityQuestionnaireEntity _data;
   String error;
   bool _loading = true;
+  Set<int> expandedGroup = Set();
 
   @override
   void initState() {
@@ -79,7 +83,27 @@ class _ActivityResearch extends State<ActivityResearch>
           .activityQuestionnaireList(widget.activityPackageId,
               activityTaskId: activityTaskId);
       _data = ActivityQuestionnaireEntity.fromJson(json);
+      _data.contentType = "QUESTIONNAIRE_GROUP";
+      var group = ActivityQuestionnairesGroup();
+      group.status = "COMPLETE";
+      group.groupId = 123;
+      group.groupName = "测试name";
+      group.schedule = 50;
+      group.totalNum = 4;
+      group.completeNum = 1;
+      group.sort = 1;
+      group.questionnaires = _data.questionnaires;
+      _data.questionnaireGroups = [
+        group,
+        group,
+      ];
       error = null;
+      expandedGroup.clear();
+      _data.questionnaireGroups.forEach((element) {
+        if (element.status == "PROCEEDING") {
+          expandedGroup.add(element.groupId);
+        }
+      });
       setState(() {});
     } on DioError catch (e) {
       error = e.message;
@@ -111,11 +135,20 @@ class _ActivityResearch extends State<ActivityResearch>
     var template = data;
     if (template == null || template.questionnaires == null) return Container();
     List<Widget> sources = [];
-    for (int i = 0; i < template.questionnaires.length; i++) {
-      var item = template.questionnaires[i];
-      var cell = buildPlanItem(
-          template.resourceId, item, i == template.questionnaires.length - 1,i == 0);
-      sources.add(cell);
+    if (template.contentType == "QUESTIONNAIRE_GROUP") {
+      for (int i = 0; i < template.questionnaireGroups.length; i++) {
+        var item = template.questionnaireGroups[i];
+        var cell = buildGroupItem(template.resourceId, item,
+            i == template.questionnaireGroups.length - 1);
+        sources.add(cell);
+      }
+    } else {
+      for (int i = 0; i < template.questionnaires.length; i++) {
+        var item = template.questionnaires[i];
+        var cell = buildPlanItem(template.resourceId, item,
+            i == template.questionnaires.length - 1, i == 0);
+        sources.add(cell);
+      }
     }
 
     return Container(
@@ -154,6 +187,7 @@ class _ActivityResearch extends State<ActivityResearch>
     var statusText = "待完成";
     var statusColor = Color(0xff489DFE);
     var borderColor = Color(0xff888888);
+    var img = "assets/images/progress.png";
     var canEdit = _data.activityTaskId == null;
     var itemCanEdit = true;
     _data.questionnaires.forEach((element) {
@@ -170,11 +204,13 @@ class _ActivityResearch extends State<ActivityResearch>
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
+      img = "assets/images/complete.png";
     } else if (item.status == "COMPLETE") {
       buttonText = "点击此处去重新编辑";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
+      img = "assets/images/complete.png";
     }
     return Container(
       margin: EdgeInsets.fromLTRB(0, 0, 25, 0),
@@ -205,13 +241,19 @@ class _ActivityResearch extends State<ActivityResearch>
                   color: statusColor,
                   borderRadius: BorderRadius.all(Radius.circular(4)),
                 ),
-                child: Text(
-                  statusText,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
+                child: Row(
+                  children: [
+                    Image.asset(img),
+                    Padding(padding: EdgeInsets.only(right: 4)),
+                    Text(
+                      statusText,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                )
               ),
             ],
           ),
@@ -261,10 +303,106 @@ class _ActivityResearch extends State<ActivityResearch>
     );
   }
 
-  Widget buildPlanItem(
-      int resourceID, ActivityQuestionnairesSubEntity item, bool isEnd, bool isFirst) {
+  Widget buildGroupItem(
+      int resourceID, ActivityQuestionnairesGroup item, bool isLast) {
+    var borderColor = Color(0xff888888);
+    var textColor = Color(0xff888888);
+    var groupFinished = false;
+    if (item.status == "COMPLETE" || item.status == "PASS") {
+      borderColor = Color(0xff52C41A);
+      textColor = Color(0xff52C41A);
+      groupFinished = true;
+    } else if (item.status == "PROCEEDING") {
+      textColor = Color(0xff107bfd);
+    }
+    List<Widget> sources = [];
+    bool isExpanded = expandedGroup.contains(item.groupId);
+    if (isExpanded){
+      for (int i = 0; i < item.questionnaires.length; i++) {
+        var one = item.questionnaires[i];
+        var cell = buildPlanItem(
+          resourceID,
+          one,
+          isLast,
+          i == 0,
+          isGroup: true,
+          groupFinished: groupFinished,
+        );
+        sources.add(cell);
+      }
+    }else{
+      var container = Container(
+        height: 10,
+        margin: EdgeInsets.only(left: 25),
+        decoration: isLast ? null : BoxDecoration(
+          border: Border(
+            left: BorderSide(
+              color: borderColor,
+            ),
+          ),
+        ),
+      );
+      sources.add(container);
+    }
+
+    return GestureDetector(
+      onTap: (){
+        setState(() {
+          if (expandedGroup.contains(item.groupId)){
+            expandedGroup.remove(item.groupId);
+          }else{
+            expandedGroup.add(item.groupId);
+          }
+        });
+      },
+      child: Container(
+        margin: EdgeInsets.fromLTRB(0, 0, 25, 0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 50,
+                  alignment: Alignment.center,
+                  child: Text(
+                    "${item.schedule}%",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: borderColor,
+                    ),
+                  ),
+                ),
+                Text(
+                  "${item.groupName}",
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                ),
+                Text(
+                  "（${item.completeNum}/${item.totalNum}份问卷）",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    color: textColor,
+                  ),
+                ),
+                Spacer(),
+                Icon(isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+              ],
+            ),
+            ...sources,
+            Padding(padding: EdgeInsets.only(bottom: 5)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildPlanItem(int resourceID, ActivityQuestionnairesSubEntity item,
+      bool isEnd, bool isFirst,
+      {bool isGroup = false, bool groupFinished = false}) {
     ActivityQuestionnaireEntity data = _data;
     var timeText = "";
+    var img = "assets/images/not_open.png";
     var statusText = "未开启";
     var statusColor = Color(0xffDEDEE1);
     var borderColor = Color(0xff888888);
@@ -273,30 +411,36 @@ class _ActivityResearch extends State<ActivityResearch>
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
-    }else{
-      print("the ${item.title} is ${item.status}");
+      img = "assets/images/complete.png";
+    } else {
       if (item.status == "PROCEEDING" || item.status == "REJECT") {
         statusText = "待完成";
         statusColor = Color(0xff489DFE);
         borderColor = Color(0xff888888);
-      } else{
+        img = "assets/images/progress.png";
+      } else {
         statusText = "未开启";
         statusColor = Color(0xffDEDEE1);
         borderColor = Color(0xff888888);
+        img = "assets/images/not_open.png";
       }
       var now = DateTime.now().millisecondsSinceEpoch;
-      if (item.openTime != null && now < item.openTime ) {
-        if(!isFirst){
+      if (item.openTime != null && now < item.openTime) {
+        if (!isFirst) {
           timeText = "${normalDateFormate(item.openTime)}开启填写";
         }
-      }else if (item.endTime != null){
+      } else if (item.endTime != null) {
         timeText = "${normalDateFormate(item.openTime)}截止填写";
       }
-      if (item.expire){
+      if (item.expire) {
         statusText = "已过期";
         statusColor = Color(0xffDEDEE1);
         borderColor = Color(0xff888888);
+        img = "assets/images/expire.png";
       }
+    }
+    if (isGroup && groupFinished){
+      borderColor = Color(0xff52C41A);
     }
 
     var statusWidget = Container(
@@ -306,12 +450,18 @@ class _ActivityResearch extends State<ActivityResearch>
         color: statusColor,
         borderRadius: BorderRadius.all(Radius.circular(4)),
       ),
-      child: Text(
-        statusText,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-        ),
+      child: Row(
+        children: [
+          Image.asset(img),
+          Padding(padding: EdgeInsets.only(right: 4)),
+          Text(
+            statusText,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+            ),
+          ),
+        ],
       ),
     );
 
@@ -378,65 +528,93 @@ class _ActivityResearch extends State<ActivityResearch>
         content,
       ],
     );
-    var all = Container(
-      margin: EdgeInsets.fromLTRB(0, 0, 25, 0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 50,
-                alignment: Alignment.center,
-                child: Text(
-                  "${item.schedule}%",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+    var paddingContainer = (Widget child, {double bottom = 20}) {
+      return Container(
+        margin: EdgeInsets.fromLTRB(25, 0, 0, 0),
+        padding: EdgeInsets.fromLTRB(25, 5, 0, bottom),
+        decoration: isEnd
+            ? null
+            : BoxDecoration(
+                border: Border(
+                  left: BorderSide(
                     color: borderColor,
                   ),
                 ),
               ),
-              Text(
-                "填写问卷${item.sort}",
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+        child: child,
+      );
+    };
+    Widget head;
+    if (isGroup) {
+      head = paddingContainer(
+        Row(
+          children: [
+            Text(
+              "填写问卷${item.sort}",
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+            ),
+            statusWidget,
+            Spacer(),
+            Text(
+              timeText,
+              style: TextStyle(
+                color: Color(0xff888888),
+                fontSize: 10,
               ),
-              statusWidget,
-              Expanded(child: Container()),
-              Text(
-                timeText,
-                style: TextStyle(
-                  color: Color(0xff888888),
-                  fontSize: 10,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
+        ),
+        bottom: 0,
+      );
+    } else {
+      head = Row(
+        children: [
           Container(
-            margin: EdgeInsets.fromLTRB(25, 0, 0, 0),
-            padding: EdgeInsets.fromLTRB(25, 5, 0, 20),
-            decoration: isEnd
-                ? null
-                : BoxDecoration(
-                    border: Border(
-                      left: BorderSide(
-                        color: borderColor,
-                      ),
-                    ),
-                  ),
-            child: bottom,
+            width: 50,
+            alignment: Alignment.center,
+            child: Text(
+              "${item.schedule}%",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: borderColor,
+              ),
+            ),
           ),
+          Text(
+            "填写问卷${item.sort}",
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+          ),
+          statusWidget,
+          Spacer(),
+          Text(
+            timeText,
+            style: TextStyle(
+              color: Color(0xff888888),
+              fontSize: 10,
+            ),
+          ),
+        ],
+      );
+    }
+    var all = Container(
+      margin: EdgeInsets.fromLTRB(0, 0, 25, 0),
+      child: Column(
+        children: [
+          head,
+          paddingContainer(bottom,bottom:isGroup ? 5:20),
         ],
       ),
     );
     return GestureDetector(
       onTap: debounce(() {
-        if (disable && (item.status == "PROCEEDING" || item.status == "NOT_OPEN")){
+        if (disable &&
+            (item.status == "PROCEEDING" || item.status == "NOT_OPEN")) {
           EasyLoading.showToast("活动已结束，无法开启此问卷");
           return;
         }
         if (status == "END" &&
-            (item.status == "NOT_OPEN" ||
-                item.status == "PROCEEDING")) {
+            (item.status == "NOT_OPEN" || item.status == "PROCEEDING")) {
           EasyLoading.showToast("活动已过期，无法开启此问卷");
           return;
         }
