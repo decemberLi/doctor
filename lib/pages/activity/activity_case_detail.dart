@@ -39,7 +39,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     _nameController.text = data.patientName;
     _ageController.text = data.age == null ? "" : "${data.age}";
     _hospitalController.text = data.hospital;
-    _codeController.text = data.patientCode != null ? data.patientCode : "No Code";
+    _codeController.text = data.patientCode;
 
     _nameController.addListener(() {
       setState(() {});
@@ -56,7 +56,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
   }
 
   Widget buildText(TextEditingController controller, int maxLength,
-      TextInputType keyboardType, {bool editAble = true}) {
+      TextInputType keyboardType, {bool editAble = true,String hintText = "请输入"}) {
     var noneBorder = UnderlineInputBorder(
       borderSide: BorderSide(width: 0, color: Colors.transparent),
     );
@@ -73,7 +73,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         textAlign: TextAlign.end,
         keyboardType: keyboardType,
         decoration: InputDecoration(
-          hintText: "请输入",
+          hintText: hintText,
           hintStyle: TextStyle(
             fontSize: 12,
             color: Color(0xff888888),
@@ -204,7 +204,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         canSave = canSave && _nameController.text.length > 0;
       } else if (item == "patientCode") {
         one = buildItem(
-            "患者编码", buildText(_codeController, 20, TextInputType.text,editAble: false));
+            "患者编码", buildText(_codeController, 20, TextInputType.text,editAble: false,hintText: "自动生成"));
         canSave = canSave && _codeController.text.length > 0;
       } else if (item == "age") {
         one =
