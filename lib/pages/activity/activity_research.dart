@@ -83,20 +83,6 @@ class _ActivityResearch extends State<ActivityResearch>
           .activityQuestionnaireList(widget.activityPackageId,
               activityTaskId: activityTaskId);
       _data = ActivityQuestionnaireEntity.fromJson(json);
-      _data.contentType = "QUESTIONNAIRE_GROUP";
-      var group = ActivityQuestionnairesGroup();
-      group.status = "COMPLETE";
-      group.groupId = 123;
-      group.groupName = "测试name";
-      group.schedule = 50;
-      group.totalNum = 4;
-      group.completeNum = 1;
-      group.sort = 1;
-      group.questionnaires = _data.questionnaires;
-      _data.questionnaireGroups = [
-        group,
-        group,
-      ];
       error = null;
       expandedGroup.clear();
       _data.questionnaireGroups.forEach((element) {
