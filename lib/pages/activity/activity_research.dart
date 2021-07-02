@@ -88,11 +88,13 @@ class _ActivityResearch extends State<ActivityResearch>
       _data = ActivityQuestionnaireEntity.fromJson(json);
       error = null;
       expandedGroup.clear();
-      _data.questionnaireGroups.forEach((element) {
-        if (element.status == "PROCEEDING") {
-          expandedGroup.add(element.groupId);
-        }
-      });
+      if (_data.questionnaireGroups != null){
+        _data.questionnaireGroups.forEach((element) {
+          if (element.status == "PROCEEDING") {
+            expandedGroup.add(element.groupId);
+          }
+        });
+      }
       setState(() {});
     } on DioError catch (e) {
       error = e.message;
