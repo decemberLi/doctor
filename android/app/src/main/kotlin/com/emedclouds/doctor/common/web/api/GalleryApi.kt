@@ -11,6 +11,7 @@ import com.kaopiz.kprogresshud.KProgressHUD
 import com.zhihu.matisse.Matisse
 import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.Exception
 
 interface Callback<T> {
     fun success(param: T)
@@ -51,7 +52,11 @@ class GalleryApi(val activity: WebActivity,
             }
             mCallback = object : Callback<String> {
                 override fun success(param: String) {
-                    successCallJavaScript(bizType, JSONArray(param))
+                    try {
+                        successCallJavaScript(bizType, JSONArray(param))
+                    }catch (e:Exception){
+                        error(-1, "${e.message}")
+                    }
                 }
 
                 override fun error(errorCode: Int, errorMsg: String) {

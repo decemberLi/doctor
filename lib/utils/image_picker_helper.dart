@@ -68,6 +68,7 @@ class FileData {
 class ImageHelper {
   static Map<String, CompressFormat> _suffixMap = {
     'jpg': CompressFormat.jpeg,
+    'jpeg': CompressFormat.jpeg,
     'png': CompressFormat.png,
     'heic': CompressFormat.heic,
     'webp': CompressFormat.webp
@@ -238,6 +239,7 @@ class ImageHelper {
 
     var compressedImageFile = await FlutterImageCompress.compressAndGetFile(
         originFile.path, targetPath,
+        quality: 90,
         format: _compressFormat(originFile.path));
 
     print('compressed image file path is --> ${compressedImageFile?.path}');
@@ -255,12 +257,16 @@ class ImageHelper {
         throw "不支持的文件类型";
       }
       var file = File(each as String);
+      debugPrint("CompressFile origin ->>>>>>>>>>> ${await file.length()}, -> ${file.path}");
       if (!File(each).existsSync()) {
         throw "文件不存在";
       }
       var compressedFile = await compressImage(file);
+      debugPrint("CompressFile ->>>>>>>>>>> ${await compressedFile.length()}, -> ${compressedFile.path}");
+      if(compressedFile.lengthSync() > 31457280){
+        continue;
+      }
       compressedFileList.add(compressedFile.path);
-      debugPrint("CompressImage :: origin file -> $each, compressed file -> ${compressedFile.path}");
     }
 
     return compressedFileList;
