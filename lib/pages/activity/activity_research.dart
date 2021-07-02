@@ -341,6 +341,7 @@ class _ActivityResearch extends State<ActivityResearch>
           i == 0,
           isGroup: true,
           groupFinished: groupFinished,
+          groupId: item.groupId,
         );
         sources.add(cell);
       }
@@ -413,7 +414,7 @@ class _ActivityResearch extends State<ActivityResearch>
 
   Widget buildPlanItem(int resourceID, ActivityQuestionnairesSubEntity item,
       bool isEnd, bool isFirst,
-      {bool isGroup = false, bool groupFinished = false}) {
+      {bool isGroup = false, bool groupFinished = false,int groupId}) {
     ActivityQuestionnaireEntity data = _data;
     var timeText = "";
     var img = "assets/images/not_open.png";
@@ -633,7 +634,7 @@ class _ActivityResearch extends State<ActivityResearch>
           return;
         }
         var url =
-            "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market&packageStatus=${status}&activityTaskId=${activityTaskId}";
+            "${UrlProvider.mHost(Environment.instance)}mpost/#/questionnaire?activityPackageId=${data.activityPackageId}&resourceId=$resourceID&questionnaireId=${item.questionnaireId}&sort=${item.sort}&type=market&packageStatus=${status}&activityTaskId=${activityTaskId}&groupId=$groupId";
         MedcloudsNativeApi.instance().openWebPage(url);
       }),
       child: all,
