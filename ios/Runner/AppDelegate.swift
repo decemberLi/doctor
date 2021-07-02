@@ -313,15 +313,15 @@ extension AppDelegate {
                 return
             }
             let json = a.compactMap { item in
-                let path = dir + UUID().uuidString
+                let path = dir + "/" + UUID().uuidString + ".png"
                 do {
                     try item.pngData()?.write(to: URL(fileURLWithPath: path))
                 }catch {
                     return nil
                 }
-                return path
+                return "\"\(path)\""
             }.joined(separator: ",")
-            self.naviChannel.invokeMethod("uploadFile", arguments: json) { result in
+            self.naviChannel.invokeMethod("uploadFile", arguments: "[\(json)]") { result in
                 if let all = result as? String {
                     finish?(all)
                 }else{

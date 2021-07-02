@@ -231,6 +231,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
         guard let data = body.data(using: .utf8) else {return}
         guard let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [AnyHashable:Any] else {return}
         guard let dispatchType = json["dispatchType"] as? String else {return}
+        print("json is \(json)")
         let vc = AppDelegate.shared?.rootVC
         let naviChannel = FlutterMethodChannel(name: "com.emedclouds-channel/navigation", binaryMessenger: vc as! FlutterBinaryMessenger)
         if dispatchType == "ticket" {
@@ -268,13 +269,19 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
             }
             
         }else if dispatchType == "openGallery" {
-            let bizType = json["bizType"] as? String ?? ""
             func callError(){
                 let params = #"{"bizType":"\#(bizType)","param":{"code":-2,"content":"参数错误"}}"#
                 inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler:nil)
             }
-            guard let maxCount = json["maxCount"] as? Int,
-                  let enableCapture = json["enableCapture"] as? Bool else {
+            
+            let bizType = json["bizType"] as? String ?? ""
+            guard let param = json["param"] as? [AnyHashable:Any] else{
+                callError()
+                return
+            }
+            
+            guard let maxCount = param["maxCount"] as? Int,
+                  let enableCapture = param["enableCapture"] as? Bool else {
                 callError()
                 return
             }
