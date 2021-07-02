@@ -191,7 +191,9 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
   Widget build(BuildContext context) {
     List<Widget> showList = [];
     bool canSave = true;
-    var showArray = ["patientCode",...data.showFields];
+    var showArray = data.showFields;
+    showArray.remove("patientCode");
+    showArray = ["patientCode",...showArray];
     for (int i = 0; i < showArray.length; i++) {
       var item = showArray[i];
       Widget one;

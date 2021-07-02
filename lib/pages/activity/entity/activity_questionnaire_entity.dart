@@ -17,11 +17,12 @@ class ActivityQuestionnaireEntity {
       ..activityTaskId = json["activityTaskId"] as int
       ..resourceId = json["resourceId"] as int
       ..contentType = json["contentType"] as String
-      ..questionnaires = (json["questionnaires"] as List)
-          .map((e) => ActivityQuestionnairesSubEntity.fromJson(e))
-          .toList()
       ..illnessCase = ActivityIllnessCaseEntity.fromJson(json["illnessCase"]);
-
+    if (json["questionnaires"] != null) {
+      result.questionnaires = (json["questionnaires"] as List)
+        .map((e) => ActivityQuestionnairesSubEntity.fromJson(e))
+        .toList();
+    }
     if (json["questionnaireGroups"] != null){
       result.questionnaireGroups = (json["questionnaireGroups"] as List)
           .map((e) => ActivityQuestionnairesGroup.fromJson(e))

@@ -21,6 +21,7 @@ import 'package:doctor/http/activity.dart';
 import 'package:dio/dio.dart';
 
 import 'activity_case_detail.dart';
+import 'activity_constants.dart';
 import 'entity/activity_entity.dart';
 import 'entity/activity_questionnaire_entity.dart';
 
@@ -41,6 +42,7 @@ class _ActivityResearch extends State<ActivityResearch>
   bool collapsed = true;
   int activityTaskId;
   String status;
+  String activetyType = "";
   bool disable = false;
 
   _ActivityResearch(this.activityTaskId);
@@ -79,6 +81,7 @@ class _ActivityResearch extends State<ActivityResearch>
       var parentData = ActivityDetailEntity(result);
       status = parentData.status;
       disable = parentData.disable;
+      activetyType = parentData.activityType;
       Map<String, dynamic> json = await API.shared.activity
           .activityQuestionnaireList(widget.activityPackageId,
               activityTaskId: activityTaskId);
@@ -118,10 +121,15 @@ class _ActivityResearch extends State<ActivityResearch>
   }
 
   Widget plans(ActivityQuestionnaireEntity data) {
+    print("the data is not null plans ${data.contentType}");
     var template = data;
-    if (template == null || template.questionnaires == null) return Container();
+    if (template == null) return Container();
     List<Widget> sources = [];
     if (template.contentType == "QUESTIONNAIRE_GROUP") {
+      print("show group item");
+      if (template.questionnaireGroups == null) {
+        return Container();
+      }
       for (int i = 0; i < template.questionnaireGroups.length; i++) {
         var item = template.questionnaireGroups[i];
         var cell = buildGroupItem(template.resourceId, item,
@@ -129,6 +137,9 @@ class _ActivityResearch extends State<ActivityResearch>
         sources.add(cell);
       }
     } else {
+      if (template.questionnaires == null) {
+        return Container();
+      }
       for (int i = 0; i < template.questionnaires.length; i++) {
         var item = template.questionnaires[i];
         var cell = buildPlanItem(template.resourceId, item,
@@ -152,7 +163,7 @@ class _ActivityResearch extends State<ActivityResearch>
             Container(
               margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: Text(
-                '执行医学调研',
+                '执行${activityName(activetyType)}',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
@@ -176,13 +187,28 @@ class _ActivityResearch extends State<ActivityResearch>
     var img = "assets/images/progress.png";
     var canEdit = _data.activityTaskId == null;
     var itemCanEdit = true;
-    _data.questionnaires.forEach((element) {
-      print("the status is - ${element.status}");
-      itemCanEdit = itemCanEdit &&
-          (element.status == "NOT_OPEN" ||
-              element.status == "PROCEEDING" ||
-              element.status == null);
-    });
+    if (_data.contentType == "QUESTIONNAIRE_GROUP"){
+      try {
+        _data.questionnaireGroups.first.questionnaires.forEach((element) {
+          print("the status is - ${element.status}");
+          itemCanEdit = itemCanEdit &&
+              (element.status == "NOT_OPEN" ||
+                  element.status == "PROCEEDING" ||
+                  element.status == null);
+        });
+      }catch(e){
+
+      }
+    }else{
+      _data.questionnaires.forEach((element) {
+        print("the status is - ${element.status}");
+        itemCanEdit = itemCanEdit &&
+            (element.status == "NOT_OPEN" ||
+                element.status == "PROCEEDING" ||
+                element.status == null);
+      });
+    }
+
     canEdit = canEdit || itemCanEdit;
     print("can edit is --- $canEdit");
     if (!canEdit) {
@@ -696,7 +722,7 @@ class _ActivityResearch extends State<ActivityResearch>
     return Scaffold(
       backgroundColor: Color(0xffF3F5F8),
       appBar: AppBar(
-        title: Text("医学调研详情"),
+        title: Text("${activityName(activetyType)}详情"),
       ),
       body: buildContent(),
     );
