@@ -205,7 +205,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
       } else if (item == "patientCode") {
         one = buildItem(
             "患者编码", buildText(_codeController, 20, TextInputType.text,editAble: false,hintText: "自动生成"));
-        canSave = canSave && _codeController.text.length > 0;
+        // canSave = canSave && _codeController.text.length > 0;
       } else if (item == "age") {
         one =
             buildItem("年龄", buildText(_ageController, 5, TextInputType.number));
