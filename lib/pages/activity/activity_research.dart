@@ -135,7 +135,7 @@ class _ActivityResearch extends State<ActivityResearch>
       for (int i = 0; i < template.questionnaireGroups.length; i++) {
         var item = template.questionnaireGroups[i];
         var cell = buildGroupItem(template.resourceId, item,
-            i == template.questionnaireGroups.length - 1);
+            i == template.questionnaireGroups.length - 1,i == 0);
         sources.add(cell);
       }
     } else {
@@ -315,7 +315,7 @@ class _ActivityResearch extends State<ActivityResearch>
   }
 
   Widget buildGroupItem(
-      int resourceID, ActivityQuestionnairesGroup item, bool isLast) {
+      int resourceID, ActivityQuestionnairesGroup item, bool isLast , bool isFirst) {
     var borderColor = Color(0xff888888);
     var textColor = Color(0xff888888);
     var groupFinished = false;
@@ -335,7 +335,7 @@ class _ActivityResearch extends State<ActivityResearch>
           resourceID,
           one,
           isLast,
-          i == 0,
+          i == 0 && isFirst,
           isGroup: true,
           groupFinished: groupFinished,
           groupId: item.groupId,
