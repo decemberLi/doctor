@@ -88,7 +88,7 @@ class _ActivityResearch extends State<ActivityResearch>
       _data = ActivityQuestionnaireEntity.fromJson(json);
       error = null;
       expandedGroup.clear();
-      if (_data.questionnaireGroups != null){
+      if (_data.questionnaireGroups != null) {
         _data.questionnaireGroups.forEach((element) {
           if (element.status == "PROCEEDING") {
             expandedGroup.add(element.groupId);
@@ -189,7 +189,7 @@ class _ActivityResearch extends State<ActivityResearch>
     var img = "assets/images/progress.png";
     var canEdit = _data.activityTaskId == null;
     var itemCanEdit = true;
-    if (_data.contentType == "QUESTIONNAIRE_GROUP"){
+    if (_data.contentType == "QUESTIONNAIRE_GROUP") {
       try {
         _data.questionnaireGroups.first.questionnaires.forEach((element) {
           print("the status is - ${element.status}");
@@ -198,10 +198,8 @@ class _ActivityResearch extends State<ActivityResearch>
                   element.status == "PROCEEDING" ||
                   element.status == null);
         });
-      }catch(e){
-
-      }
-    }else{
+      } catch (e) {}
+    } else {
       _data.questionnaires.forEach((element) {
         print("the status is - ${element.status}");
         itemCanEdit = itemCanEdit &&
@@ -249,26 +247,25 @@ class _ActivityResearch extends State<ActivityResearch>
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
               ),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
-                decoration: BoxDecoration(
-                  color: statusColor,
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                ),
-                child: Row(
-                  children: [
-                    Image.asset(img),
-                    Padding(padding: EdgeInsets.only(right: 4)),
-                    Text(
-                      statusText,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
+                  margin: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                  padding: EdgeInsets.symmetric(vertical: 1, horizontal: 7),
+                  decoration: BoxDecoration(
+                    color: statusColor,
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                  ),
+                  child: Row(
+                    children: [
+                      Image.asset(img),
+                      Padding(padding: EdgeInsets.only(right: 4)),
+                      Text(
+                        statusText,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              ),
+                    ],
+                  )),
             ],
           ),
           Container(
@@ -331,7 +328,7 @@ class _ActivityResearch extends State<ActivityResearch>
     }
     List<Widget> sources = [];
     bool isExpanded = expandedGroup.contains(item.groupId);
-    if (isExpanded){
+    if (isExpanded) {
       for (int i = 0; i < item.questionnaires.length; i++) {
         var one = item.questionnaires[i];
         var cell = buildPlanItem(
@@ -345,27 +342,29 @@ class _ActivityResearch extends State<ActivityResearch>
         );
         sources.add(cell);
       }
-    }else{
+    } else {
       var container = Container(
         height: 10,
         margin: EdgeInsets.only(left: 25),
-        decoration: isLast ? null : BoxDecoration(
-          border: Border(
-            left: BorderSide(
-              color: borderColor,
-            ),
-          ),
-        ),
+        decoration: isLast
+            ? null
+            : BoxDecoration(
+                border: Border(
+                  left: BorderSide(
+                    color: borderColor,
+                  ),
+                ),
+              ),
       );
       sources.add(container);
     }
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         setState(() {
-          if (expandedGroup.contains(item.groupId)){
+          if (expandedGroup.contains(item.groupId)) {
             expandedGroup.remove(item.groupId);
-          }else{
+          } else {
             expandedGroup.add(item.groupId);
           }
         });
@@ -376,31 +375,39 @@ class _ActivityResearch extends State<ActivityResearch>
           children: [
             Row(
               children: [
-                Container(
-                  width: 50,
-                  alignment: Alignment.center,
-                  child: Text(
-                    "${item.schedule}%",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: borderColor,
-                    ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 50,
+                        alignment: Alignment.center,
+                        child: Text(
+                          "${item.schedule}%",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: borderColor,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: Text(
+                          "${item.groupName}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 14),
+                        ),
+                      ),
+                      Text(
+                        "（${item.completeNum}/${item.totalNum}份问卷）",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: textColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  "${item.groupName}",
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-                ),
-                Text(
-                  "（${item.completeNum}/${item.totalNum}份问卷）",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: textColor,
-                  ),
-                ),
-                Spacer(),
                 Icon(isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
               ],
             ),
@@ -414,7 +421,7 @@ class _ActivityResearch extends State<ActivityResearch>
 
   Widget buildPlanItem(int resourceID, ActivityQuestionnairesSubEntity item,
       bool isEnd, bool isFirst,
-      {bool isGroup = false, bool groupFinished = false,int groupId}) {
+      {bool isGroup = false, bool groupFinished = false, int groupId}) {
     ActivityQuestionnaireEntity data = _data;
     var timeText = "";
     var img = "assets/images/not_open.png";
@@ -442,10 +449,10 @@ class _ActivityResearch extends State<ActivityResearch>
       var now = DateTime.now().millisecondsSinceEpoch;
       if (item.openTime != null && now < item.openTime) {
         if (!isFirst) {
-          timeText = "${normalDateFormate(item.openTime)}开启填写";
+          timeText = "${normalDateFormate(item.openTime)}开启";
         }
       } else if (item.endTime != null) {
-        timeText = "${normalDateFormate(item.openTime)}截止填写";
+        timeText = "${normalDateFormate(item.openTime)}截止";
       }
       if (item.expire) {
         statusText = "已过期";
@@ -454,7 +461,7 @@ class _ActivityResearch extends State<ActivityResearch>
         img = "assets/images/expire.png";
       }
     }
-    if (isGroup && groupFinished){
+    if (isGroup && groupFinished) {
       borderColor = Color(0xff52C41A);
     }
 
@@ -617,7 +624,7 @@ class _ActivityResearch extends State<ActivityResearch>
       child: Column(
         children: [
           head,
-          paddingContainer(bottom,bottom:isGroup ? 5:20),
+          paddingContainer(bottom, bottom: isGroup ? 5 : 20),
         ],
       ),
     );
