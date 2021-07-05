@@ -267,7 +267,7 @@ class _MessageListPageState extends State<MessageListPage> {
         'from': 'MESSAGE_CENTER'
       });
     } else if (type == 'ACTIVITY') {
-      if (entity.params['activityType'] == 'CASE_COLLECTION' || entity.params['activityType'] == 'RWS') {
+      if (entity.params['activityType'] == 'CASE_COLLECTION') {
         // go 病例驳回 资料详情
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ActivityResourceDetailPage(
@@ -277,7 +277,7 @@ class _MessageListPageState extends State<MessageListPage> {
             rejectReason: entity.params['rejectReason'],
           );
         }));
-      } else if (entity.params['activityType'] == 'MEDICAL_SURVEY') {
+      } else if (entity.params['activityType'] == 'MEDICAL_SURVEY' || entity.params['activityType'] == 'RWS') {
         // go 医学调研驳回 资料详情
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return ActivityResearch(
