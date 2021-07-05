@@ -153,7 +153,7 @@ class RootWidget extends StatelessWidget {
               },
             );
           } else if (type == 'REJECT_ACTIVITY_TASK') {
-            if (obj['activityType'] == 'CASE_COLLECTION' || obj['activityType'] == 'RWS') {
+            if (obj['activityType'] == 'CASE_COLLECTION') {
               // 病例驳回 || RWS 驳回 go 资料详情
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return ActivityResourceDetailPage(
@@ -163,7 +163,7 @@ class RootWidget extends StatelessWidget {
                   rejectReason: obj['rejectReason'],
                 );
               }));
-            } else if (obj['activityType'] == 'MEDICAL_SURVEY') {
+            } else if (obj['activityType'] == 'MEDICAL_SURVEY' || obj['activityType'] == 'RWS') {
               // go 医学调研驳回 资料详情
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return ActivityResearch(obj['activityPackageId'], activityTaskId: obj['activityTaskId'],);
