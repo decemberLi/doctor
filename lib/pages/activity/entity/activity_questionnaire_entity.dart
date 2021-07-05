@@ -82,7 +82,7 @@ class ActivityQuestionnairesGroup {
       ..groupId = json["groupId"] as int
       ..groupName = json["groupName"] as String
       ..schedule = json["schedule"] as int
-      ..totalNum = json["schedule"] as int
+      ..totalNum = json["totalNum"] as int
       ..completeNum = json["completeNum"] as int
       ..status = json["status"] as String
       ..sort = json["sort"] as int
