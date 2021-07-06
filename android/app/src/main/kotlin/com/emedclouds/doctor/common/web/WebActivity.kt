@@ -7,13 +7,11 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
 import android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
@@ -22,6 +20,7 @@ import com.emedclouds.doctor.common.web.api.BaseApi
 import com.emedclouds.doctor.common.web.api.GalleryApi
 import com.emedclouds.doctor.common.web.api.JsApiCaller
 import com.emedclouds.doctor.common.web.api.NativeApiProvider
+import com.emedclouds.doctor.toast.CustomToast
 import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.widgets.CommonInputDialog
 import com.emedclouds.doctor.widgets.OnTextInputCallback
@@ -157,11 +156,11 @@ open class WebActivity : ComponentActivity() {
                                 override fun onInputFinish(text: String, action: String): Boolean {
                                     if (action == ACTION_PUBLISH) {
                                         if (TextUtils.isEmpty(text) || text.trim().isEmpty()) {
-                                            toast(requiredMessage)
+                                            CustomToast.toast(applicationContext, requiredMessage)
                                             return false
                                         }
                                         if (text.length > 150) {
-                                            toast("字数超过限制")
+                                            CustomToast.toast(applicationContext, "字数超过限制")
                                             return false
                                         }
                                     }
@@ -194,12 +193,6 @@ open class WebActivity : ComponentActivity() {
         if (this::mPermissionCallback.isInitialized) {
             mPermissionCallback.permissionCallback(requestCode, permissions, grantResults)
         }
-    }
-
-    private fun toast(text: String) {
-        val toast = Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.CENTER, 0, 0)
-        toast.show()
     }
 
     @NonNull

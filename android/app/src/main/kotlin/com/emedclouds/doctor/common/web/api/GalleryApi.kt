@@ -1,10 +1,10 @@
 package com.emedclouds.doctor.common.web.api
 
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.emedclouds.doctor.common.gallery.GalleryHelper
 import com.emedclouds.doctor.common.web.WebActivity
+import com.emedclouds.doctor.toast.CustomToast
 import com.emedclouds.doctor.utils.*
 import com.google.gson.Gson
 import com.kaopiz.kprogresshud.KProgressHUD
@@ -118,13 +118,14 @@ class GalleryApi(val activity: WebActivity,
             if (mCaptureAble && checkCameraPermission(activity)) {
                 openGallery()
             } else {
-                Toast.makeText(activity, " 缺少相机权限 ", Toast.LENGTH_SHORT).show()
+                CustomToast.toast(activity.applicationContext, " 缺少相机权限 ")
             }
         } else if (requestCode == REQUEST_CODE_EXTERNAL_STORAGE_PERMISSION) {
             if (mCaptureAble && checkExternalPermission(activity)) {
                 openGallery()
             } else {
-                Toast.makeText(activity, " 缺少相册权限 ", Toast.LENGTH_SHORT).show()
+
+                CustomToast.toast(activity.applicationContext, " 缺少相册权限 ")
             }
         }
     }
