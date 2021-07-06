@@ -322,7 +322,7 @@ extension AppDelegate {
                 return "\"\(path)\""
             }.joined(separator: ",")
             var hud : MBProgressHUD? = nil
-            if let showView = self.rootVC?.view {
+            if let showView = self.window {
                 hud = MBProgressHUD.showWhiteAdded(to: showView, animated: true)
             }
             self.naviChannel.invokeMethod("uploadFile", arguments: "[\(json)]") { result in
