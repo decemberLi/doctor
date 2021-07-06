@@ -370,49 +370,51 @@ class _ActivityResearch extends State<ActivityResearch>
         });
       },
       child: Container(
-        margin: EdgeInsets.fromLTRB(0, 0, 25, 0),
         child: Column(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 50,
-                        alignment: Alignment.center,
-                        height: 21,
-                        child: Text(
-                          "${item.schedule}%",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: borderColor,
+            Container(
+              padding: EdgeInsets.only(right: 25),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 50,
+                          alignment: Alignment.center,
+                          height: 21,
+                          child: Text(
+                            "${item.schedule}%",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: borderColor,
+                            ),
                           ),
                         ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          "${item.groupName}",
+                        Flexible(
+                          child: Text(
+                            "${item.groupName}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500, fontSize: 14),
+                          ),
+                        ),
+                        Text(
+                          "（${item.completeNum}/${item.totalNum}份问卷）",
                           style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 14),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: textColor,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "（${item.completeNum}/${item.totalNum}份问卷）",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: textColor,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Icon(isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-              ],
+                  Icon(isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                ],
+              ),
             ),
             ...sources,
             Padding(padding: EdgeInsets.only(bottom: 5)),
