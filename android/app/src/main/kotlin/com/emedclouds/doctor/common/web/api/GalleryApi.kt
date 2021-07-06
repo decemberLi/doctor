@@ -1,6 +1,8 @@
 package com.emedclouds.doctor.common.web.api
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.emedclouds.doctor.common.gallery.GalleryHelper
 import com.emedclouds.doctor.common.web.WebActivity
@@ -42,11 +44,12 @@ class GalleryApi(val activity: WebActivity,
             return
         }
         activity.runOnUiThread {
-            if (mCaptureAble && (!checkCameraPermission(activity))) {
-                requestCameraPermission(activity, REQUEST_CODE_CAMERA_PERMISSION)
-            }
             if (checkExternalPermission(activity)) {
-                openGallery()
+                if (mCaptureAble && (!checkCameraPermission(activity))) {
+                    requestCameraPermission(activity, REQUEST_CODE_CAMERA_PERMISSION)
+                } else {
+                    openGallery()
+                }
             } else {
                 requestExternalStoragePermission(activity, REQUEST_CODE_EXTERNAL_STORAGE_PERMISSION)
             }
@@ -54,7 +57,7 @@ class GalleryApi(val activity: WebActivity,
                 override fun success(param: String) {
                     try {
                         successCallJavaScript(bizType, JSONArray(param))
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         error(-1, "${e.message}")
                     }
                 }
@@ -114,18 +117,31 @@ class GalleryApi(val activity: WebActivity,
     }
 
     override fun permissionCallback(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == REQUEST_CODE_CAMERA_PERMISSION) {
-            if (mCaptureAble && checkCameraPermission(activity)) {
+        if (requestCode == REQUEST_CODE_CAMERA_PERMISSION || requestCode == REQUEST_CODE_EXTERNAL_STORAGE_PERMISSION) {
+            if (requestCode == REQUEST_CODE_CAMERA_PERMISSION && mCaptureAble) {
+                for (i in grantResults) {
+                    if (i != PackageManager.PERMISSION_GRANTED) {
+                        CustomToast.toast(activity.applicationContext, " 缺少相机权限 ")
+                        return
+                    }
+                }
+                if (checkExternalPermission(activity)) {
+                    openGallery()
+                }
+            } else if (requestCode == REQUEST_CODE_EXTERNAL_STORAGE_PERMISSION) {
+                for (i in grantResults) {
+                    if (i != PackageManager.PERMISSION_GRANTED) {
+                        CustomToast.toast(activity.applicationContext, " 缺少存储权限 ")
+                        return
+                    }
+                }
+                if (mCaptureAble) {
+                    if (!checkCameraPermission(activity)) {
+                        requestCameraPermission(activity, REQUEST_CODE_CAMERA_PERMISSION)
+                        return
+                    }
+                }
                 openGallery()
-            } else {
-                CustomToast.toast(activity.applicationContext, " 缺少相机权限 ")
-            }
-        } else if (requestCode == REQUEST_CODE_EXTERNAL_STORAGE_PERMISSION) {
-            if (mCaptureAble && checkExternalPermission(activity)) {
-                openGallery()
-            } else {
-
-                CustomToast.toast(activity.applicationContext, " 缺少相册权限 ")
             }
         }
     }
