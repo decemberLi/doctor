@@ -2,7 +2,7 @@ import UIKit
 import Flutter
 import UserNotificationsUI
 import TZImagePickerController
-
+import MBProgressHUD
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
     static var shared : AppDelegate?
@@ -321,14 +321,18 @@ extension AppDelegate {
                 }
                 return "\"\(path)\""
             }.joined(separator: ",")
+            var hud : MBProgressHUD? = nil
+            if let showView = self.rootVC?.view {
+                hud = MBProgressHUD.showWhiteAdded(to: showView, animated: true)
+            }
             self.naviChannel.invokeMethod("uploadFile", arguments: "[\(json)]") { result in
                 if let all = result as? String {
                     finish?(all)
                 }else{
                     finish?("")
                 }
+                hud?.hide(animated: true)
             }
-            
         }
         vc.modalPresentationStyle = .fullScreen
         rootVC?.present(vc, animated: true, completion: nil)
