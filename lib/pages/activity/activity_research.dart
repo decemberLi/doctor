@@ -374,13 +374,16 @@ class _ActivityResearch extends State<ActivityResearch>
         child: Column(
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                         width: 50,
                         alignment: Alignment.center,
+                        height: 21,
                         child: Text(
                           "${item.schedule}%",
                           style: TextStyle(
