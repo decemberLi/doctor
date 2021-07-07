@@ -157,7 +157,7 @@ class _LearnListPageState extends State<LearnListPage>
         backgroundColor: ThemeColor.colorFFF3F5F8,
         title: Container(
           alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(left: 20),
+          padding: EdgeInsets.only(left: 16, right: 6),
           child: Theme(
             data: ThemeData(
               ///默认显示的背景颜色
