@@ -10,6 +10,9 @@ import 'package:doctor/pages/activity/activity_detail.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/login/login_by_chaptcha.dart';
 import 'package:doctor/pages/message/message_list_page.dart';
+import 'package:doctor/pages/user/setting/update/app_repository.dart';
+import 'package:doctor/pages/user/setting/update/app_update.dart';
+import 'package:doctor/pages/user/setting/update/app_update_info.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/cache_learn_detail_video_helper.dart';
 import 'package:doctor/provider/provider_manager.dart';
@@ -21,6 +24,7 @@ import 'package:doctor/utils/constants.dart';
 import 'package:doctor/utils/image_picker_helper.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:event_bus/event_bus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -34,6 +38,7 @@ import 'package:doctor/pages/activity/activity_research.dart';
 
 import 'model/ucenter/doctor_detail_info_entity.dart';
 import 'utils/app_utils.dart';
+import './widgets/YYYEasyLoading.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final EventBus eventBus = EventBus();
@@ -213,6 +218,34 @@ class RootWidget extends StatelessWidget {
         if (outLoginCodes.contains(errorCode) ||
             authFailCodes.contains(errorCode)) {
           SessionManager.shared.session = null;
+        }else if (errorCode == "00010012") {
+          var context = NavigationService().navigatorKey.currentContext;
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return CupertinoAlertDialog(
+                  title: Text("${data["errorMsg"]}"),
+                  actions: [
+                    TextButton(
+                      child: Text("取消"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    TextButton(
+                      child: Text("去更新"),
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        EasyLoading.instance.flash(() async{
+                          AppUpdateInfo updateInfo = await AppRepository.checkVersion();
+                          AppUpdateHelper.update(context, updateInfo);
+                        });
+                      },
+                    ),
+                  ],
+                );
+              });
         }
         if (userAuthCode.contains(errorCode)) {
           throw data;

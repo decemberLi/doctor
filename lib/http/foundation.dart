@@ -44,6 +44,14 @@ class Foundation extends SubAPI {
           'platform': Platform.isAndroid ? 'ANDROID' : 'IOS',
         },
       );
+  appVersionCheck() async => await normalPost(
+    "/app-upgrade/last-version",
+    params: {
+      'appType': 'DOCTOR',
+      'appVersoin': await PlatformUtils.getAppVersion(),
+      'platform': Platform.isAndroid ? 'ANDROID' : 'IOS',
+    },
+  );
 
   /// 下拉基础信息
   getSelectInfo(params) {

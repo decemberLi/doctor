@@ -189,6 +189,22 @@ class AppUpdateHelper {
             }));
   }
 
+  static void update(BuildContext context, AppUpdateInfo updateInfo) async {
+    if (Platform.isAndroid) {
+      print('download ... ');
+      ConnectivityResult connectivityResult =
+          await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.wifi) {
+        _downloadApp(context, updateInfo);
+      } else if (await _showNetDialog(context, updateInfo)) {
+        _downloadApp(context, updateInfo);
+      }
+      return;
+    } else {
+      _goAppStore();
+    }
+  }
+
   static Future<bool> _showNetDialog(
       BuildContext context, AppUpdateInfo updateInfo) {
     /// 显示完善信息弹窗
@@ -245,10 +261,9 @@ class AppUpdateHelper {
       if (await canLaunch(url)) {
         await launch(url);
       }
-    }catch (e){
+    } catch (e) {
       EasyLoading.showToast("升级失败");
     }
-
   }
 
   static needCheckUpdate() async {
@@ -285,7 +300,8 @@ class AppUpdateDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Stack(
-                clipBehavior: Clip.none, children: [
+                clipBehavior: Clip.none,
+                children: [
                   Image.asset('assets/images/app_update_top.png'),
                   Positioned(
                     right: 21,
@@ -358,7 +374,6 @@ class AppUpdateDialog extends StatelessWidget {
                         onPressed: _doUpdate ??
                             () {
                               print('立即升级');
-
                             },
                       ),
                     )

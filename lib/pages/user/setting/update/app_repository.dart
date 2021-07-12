@@ -24,4 +24,19 @@ class AppRepository {
     return null;
   }
 
+  static Future<AppUpdateInfo> checkVersion() async {
+    var response = await API.shared.foundation.appVersionCheck();
+    if(response == null || response.length == 0){
+      print('无升级版本');
+      return null;
+    }
+
+    var result = AppUpdateInfo.fromJson(response);
+    if (result.appVersion != await PlatformUtils.getAppVersion()) {
+      debugPrint('发现新版本===>${result.appVersion}');
+      return result;
+    }
+    debugPrint('没有发现新版本');
+    return null;
+  }
 }
