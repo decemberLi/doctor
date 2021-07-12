@@ -135,7 +135,7 @@ class _ActivityResearch extends State<ActivityResearch>
       for (int i = 0; i < template.questionnaireGroups.length; i++) {
         var item = template.questionnaireGroups[i];
         var cell = buildGroupItem(template.resourceId, item,
-            i == template.questionnaireGroups.length - 1,i == 0);
+            i == template.questionnaireGroups.length - 1, i == 0);
         sources.add(cell);
       }
     } else {
@@ -266,56 +266,99 @@ class _ActivityResearch extends State<ActivityResearch>
                       ),
                     ],
                   )),
+              Spacer(),
+              canEdit
+                  ? Container()
+                  : GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => ActivityCaseDetail(
+                            item,
+                            widget.activityPackageId,
+                            false,
+                            activityTaskId: activityTaskId,
+                          ),
+                        ));
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            "查看病例信息",
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Color(0xff888888),
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_right,
+                          ),
+                        ],
+                      ),
+                    ),
             ],
           ),
-          Container(
-            margin: EdgeInsets.fromLTRB(25, 0, 0, 0),
-            padding: EdgeInsets.fromLTRB(25, 5, 0, 20),
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: borderColor,
-                ),
-              ),
-            ),
-            child: GestureDetector(
-              onTap: () async {
-                var taskId = await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => ActivityCaseDetail(
-                    item,
-                    widget.activityPackageId,
-                    canEdit,
-                    activityTaskId: activityTaskId,
+          canEdit
+              ? Container(
+                  margin: EdgeInsets.fromLTRB(25, 0, 0, 0),
+                  padding: EdgeInsets.fromLTRB(25, 5, 0, 20),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: borderColor,
+                      ),
+                    ),
                   ),
-                ));
-                if (taskId != null) {
-                  activityTaskId = taskId;
-                }
-                freshData();
-              },
-              child: Container(
-                margin: EdgeInsets.only(top: 12),
-                alignment: Alignment.center,
-                height: 30,
-                width: double.infinity,
-                decoration: DashedDecoration(dashedColor: Color(0xff9BCDF4)),
-                child: Text(
-                  buttonText,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xff489DFE),
+                  child: GestureDetector(
+                    onTap: () async {
+                      var taskId =
+                          await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => ActivityCaseDetail(
+                          item,
+                          widget.activityPackageId,
+                          canEdit,
+                          activityTaskId: activityTaskId,
+                        ),
+                      ));
+                      if (taskId != null) {
+                        activityTaskId = taskId;
+                      }
+                      freshData();
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(top: 12),
+                      alignment: Alignment.center,
+                      height: 30,
+                      width: double.infinity,
+                      decoration:
+                          DashedDecoration(dashedColor: Color(0xff9BCDF4)),
+                      child: Text(
+                        buttonText,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xff489DFE),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(
+                  height: 10,
+                  margin: EdgeInsets.only(left: 25),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: borderColor,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget buildGroupItem(
-      int resourceID, ActivityQuestionnairesGroup item, bool isLast , bool isFirst) {
+  Widget buildGroupItem(int resourceID, ActivityQuestionnairesGroup item,
+      bool isLast, bool isFirst) {
     var borderColor = Color(0xff888888);
     var textColor = Color(0xff888888);
     var groupFinished = false;
@@ -412,7 +455,8 @@ class _ActivityResearch extends State<ActivityResearch>
                       ],
                     ),
                   ),
-                  Icon(isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                  Icon(
+                      isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
                 ],
               ),
             ),
