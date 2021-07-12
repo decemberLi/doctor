@@ -58,11 +58,10 @@ class _ActivityState extends State<ActivityDetail> {
       _page = 1;
       if (allPage == _page) {
         _refreshController.loadNoData();
-      }else{
+      } else {
         _refreshController.loadComplete();
       }
       _list = list;
-
     } on DioError catch (e) {
       setState(() {
         _error = "${e.message}";
@@ -165,8 +164,9 @@ class _ActivityState extends State<ActivityDetail> {
       }
       return [];
     }
-    Color _statusColor(String status,bool disable) {
-      if(disable){
+
+    Color _statusColor(String status, bool disable) {
+      if (disable) {
         return ThemeColor.colorFFD9D5D5;
       }
       if (status == STATUS_WAIT) {
@@ -254,7 +254,9 @@ class _ActivityState extends State<ActivityDetail> {
       Color color = Color(0xff444444);
       String text = "";
       print("$status --  status is ");
-      if (schedule != null && schedule < 100) {
+      if (status == "INVALID") {
+        text = "已作废";
+      }else if (schedule != null && schedule < 100) {
         text = "完成度$schedule%";
       } else if (status == "WAIT_VERIFY") {
         text = "待审核";
@@ -301,7 +303,25 @@ class _ActivityState extends State<ActivityDetail> {
       return GestureDetector(
         child: content,
         onTap: () async {
-          if (_data.activityType == TYPE_CASE_COLLECTION) {
+          if (status == "已作废") {
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text("作废理由"),
+                    content: Text(rejectReason),
+                    actions: [
+                      TextButton(
+                        child: Text("知道了"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
+                  );
+                });
+          } else if (_data.activityType == TYPE_CASE_COLLECTION) {
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
               return ActivityResourceDetailPage(
                 _data.activityPackageId,
@@ -333,7 +353,8 @@ class _ActivityState extends State<ActivityDetail> {
         Map<String, dynamic> illnessCase = item["illnessCase"];
         desc = "病例${i + 1}:";
         var needLine = false;
-        if (illnessCase["patientName"] != null && (illnessCase["patientName"] as String).length > 0) {
+        if (illnessCase["patientName"] != null &&
+            (illnessCase["patientName"] as String).length > 0) {
           desc += "${illnessCase["patientName"]}";
           needLine = true;
         }
@@ -426,7 +447,7 @@ class _ActivityState extends State<ActivityDetail> {
           ),
         )
       ];
-    }else if (_data.status == "WAIT_START") {
+    } else if (_data.status == "WAIT_START") {
       bottoms = [
         Container(
           padding: EdgeInsets.only(bottom: 53),
@@ -454,7 +475,7 @@ class _ActivityState extends State<ActivityDetail> {
       if (widget.type == TYPE_CASE_COLLECTION) {
         last = "剩余病例数";
         title = "填写病例信息";
-      } else if(widget.type == TYPE_MEDICAL_SURVEY) {
+      } else if (widget.type == TYPE_MEDICAL_SURVEY) {
         last = "剩余调研数";
         title = "填写医学调研";
       } else {
@@ -462,7 +483,7 @@ class _ActivityState extends State<ActivityDetail> {
         title = "填写RWS";
       }
       bottoms = [
-        if(widget.type == TYPE_MEDICAL_SURVEY)
+        if (widget.type == TYPE_MEDICAL_SURVEY)
           Container(
             padding: EdgeInsets.symmetric(vertical: 5),
             child: Text(
