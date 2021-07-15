@@ -187,29 +187,7 @@ class _ActivityResearch extends State<ActivityResearch>
     var statusColor = Color(0xff489DFE);
     var borderColor = Color(0xff888888);
     var img = "assets/images/progress.png";
-    var canEdit = _data.activityTaskId == null;
-    var itemCanEdit = true;
-    if (_data.contentType == "QUESTIONNAIRE_GROUP") {
-      try {
-        _data.questionnaireGroups.first.questionnaires.forEach((element) {
-          print("the status is - ${element.status}");
-          itemCanEdit = itemCanEdit &&
-              (element.status == "NOT_OPEN" ||
-                  element.status == "PROCEEDING" ||
-                  element.status == null);
-        });
-      } catch (e) {}
-    } else {
-      _data.questionnaires.forEach((element) {
-        print("the status is - ${element.status}");
-        itemCanEdit = itemCanEdit &&
-            (element.status == "NOT_OPEN" ||
-                element.status == "PROCEEDING" ||
-                element.status == null);
-      });
-    }
-
-    canEdit = canEdit || itemCanEdit;
+    var canEdit = _data.activityTaskId == null || _data.updatePatient;
     print("can edit is --- $canEdit");
     if (!canEdit) {
       buttonText = "查看病例信息";

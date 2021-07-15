@@ -5,6 +5,7 @@ class ActivityQuestionnaireEntity {
   int activityTaskId;
   int resourceId;
   String contentType;
+  bool updatePatient;
   List<ActivityQuestionnairesSubEntity> questionnaires;
   List<ActivityQuestionnairesGroup> questionnaireGroups;
   ActivityIllnessCaseEntity illnessCase;
@@ -17,6 +18,7 @@ class ActivityQuestionnaireEntity {
       ..activityTaskId = json["activityTaskId"] as int
       ..resourceId = json["resourceId"] as int
       ..contentType = json["contentType"] as String
+      ..updatePatient = json["updatePatient"] as bool
       ..illnessCase = ActivityIllnessCaseEntity.fromJson(json["illnessCase"]);
     if (json["questionnaires"] != null) {
       result.questionnaires = (json["questionnaires"] as List)
