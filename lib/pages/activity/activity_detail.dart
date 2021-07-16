@@ -303,7 +303,7 @@ class _ActivityState extends State<ActivityDetail> {
       return GestureDetector(
         child: content,
         onTap: () async {
-          if (status == "已作废") {
+          if (status == "INVALID") {
             showDialog(
                 context: context,
                 barrierDismissible: false,
