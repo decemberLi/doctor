@@ -321,6 +321,7 @@ class _ActivityState extends State<ActivityDetail> {
                     ],
                   );
                 });
+            return;
           } else if (_data.activityType == TYPE_CASE_COLLECTION) {
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
               return ActivityResourceDetailPage(
