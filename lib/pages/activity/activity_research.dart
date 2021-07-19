@@ -267,8 +267,9 @@ class _ActivityResearch extends State<ActivityResearch>
                               color: Color(0xff888888),
                             ),
                           ),
-                          Icon(
-                            Icons.arrow_right,
+                          Container(
+                            margin: EdgeInsets.only(left: 5),
+                            child: Image.asset("assets/images/right.png"),
                           ),
                         ],
                       ),
