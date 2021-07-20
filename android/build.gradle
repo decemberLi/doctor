@@ -15,7 +15,6 @@ buildscript {
         maven { url 'https://maven.aliyun.com/repository/public/' }
         maven{url "https://jitpack.io"}
         maven{url "http://download.flutter.io"}
-        maven { url 'https://dl.bintray.com/umsdk/release' }
         jcenter()
         google()
     }
@@ -31,7 +30,6 @@ allprojects {
         maven { url 'https://maven.aliyun.com/repository/public/' }
         maven{url "https://jitpack.io"}
         maven{url "http://download.flutter.io"}
-        maven { url 'https://dl.bintray.com/umsdk/release' }
         jcenter()
         google()
     }
