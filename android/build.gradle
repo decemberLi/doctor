@@ -12,11 +12,12 @@ buildscript {
         camerax_version = "1.0.0-beta07"
     }
     repositories {
+        jcenter()
+        google()
         maven { url 'https://maven.aliyun.com/repository/public/' }
         maven{url "https://jitpack.io"}
         maven{url "http://download.flutter.io"}
-        jcenter()
-        google()
+        maven { url 'https://repo1.maven.org/maven2/' }
     }
 
     dependencies {
@@ -27,11 +28,12 @@ buildscript {
 
 allprojects {
     repositories {
+        jcenter()
+        google()
         maven { url 'https://maven.aliyun.com/repository/public/' }
         maven{url "https://jitpack.io"}
         maven{url "http://download.flutter.io"}
-        jcenter()
-        google()
+        maven{ url 'https://repo1.maven.org/maven2/' }
     }
 }
 
