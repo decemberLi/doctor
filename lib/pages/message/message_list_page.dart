@@ -235,33 +235,33 @@ class _MessageListPageState extends State<MessageListPage> {
       if (doctorData?.identityStatus == 'PASS') {
         if (doctorData?.authStatus == 'WAIT_VERIFY' ||
             doctorData.authStatus == 'FAIL') {
-          Navigator.pushNamed(context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+          Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
         } else if (doctorData.authStatus == 'VERIFYING') {
           Navigator.pushNamed(
-              context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+              context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
         } else if (doctorData.authStatus == 'PASS') {
           Navigator.pushNamed(
-              context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+              context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
         }
       } else {
         Navigator.pushNamed(
-            context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+            context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE);
       }
     } else if (type == MessageType.TYPE_LEAN_PLAN) {
       if (entity.params == null || entity.params['learnPlanId'] == null) {
         return;
       }
-      Navigator.pushNamed(context, RouteManager.LEARN_DETAIL, arguments: {
+      Navigator.pushNamed(context, RouteManagerOld.LEARN_DETAIL, arguments: {
         'learnPlanId': entity.params['learnPlanId'],
       });
     } else if (type == MessageType.TYPE_PRESCRIPTION) {
       if (entity.params == null || entity.params['prescriptionNo'] == null) {
         return;
       }
-      Navigator.pushNamed(context, RouteManager.PRESCRIPTION_DETAIL,
+      Navigator.pushNamed(context, RouteManagerOld.PRESCRIPTION_DETAIL,
           arguments: entity.params['prescriptionNo']);
     } else if (type == MessageType.TYPE_INTERACTIVE) {
-      Navigator.of(context).pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
+      Navigator.of(context).pushNamed(RouteManagerOld.RESOURCE_DETAIL, arguments: {
         "resourceId": entity.params['resourceId'],
         "learnPlanId": entity.params['learnPlanId'],
         'from': 'MESSAGE_CENTER'

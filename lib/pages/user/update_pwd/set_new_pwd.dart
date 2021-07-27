@@ -37,7 +37,7 @@ class _SetNewPwdState extends State<SetNewPwdPage> {
             Timer(timeout, () {
               EasyLoading.showToast('密码设置成功');
               Navigator.popUntil(
-                  context, ModalRoute.withName(RouteManager.HOME));
+                  context, ModalRoute.withName(RouteManagerOld.HOME));
             });
           }
         });

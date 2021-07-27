@@ -208,7 +208,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
         //头部
         GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
+            Navigator.pushNamed(context, RouteManagerOld.USERINFO_DETAIL,
                 arguments: {'doctorData': doctorData.toJson()});
           },
           child: Container(
@@ -286,24 +286,24 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                       doctorData.authStatus == 'FAIL') {
                                     Navigator.pushNamed(
                                         context,
-                                        RouteManager
+                                        RouteManagerOld
                                             .DOCTOR_AUTHENTICATION_PAGE);
                                   } else if (doctorData.authStatus ==
                                       'VERIFYING') {
                                     Navigator.pushNamed(
                                         context,
-                                        RouteManager
+                                        RouteManagerOld
                                             .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
                                   } else if (doctorData.authStatus == 'PASS') {
                                     Navigator.pushNamed(
                                         context,
-                                        RouteManager
+                                        RouteManagerOld
                                             .DOCTOR_AUTH_STATUS_PASS_PAGE);
                                   }
                                 } else {
                                   Navigator.pushNamed(
                                       context,
-                                      RouteManager
+                                      RouteManagerOld
                                           .DOCTOR_AUTHENTICATION_INFO_PAGE);
                                 }
                               },
@@ -387,13 +387,13 @@ class _UserPageState extends State<UserPage> with RouteAware {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               messageItem('我的收藏', 'assets/images/fav.png', () {
-                Navigator.pushNamed(context, RouteManager.COLLECT_DETAIL);
+                Navigator.pushNamed(context, RouteManagerOld.COLLECT_DETAIL);
               }, num: "$facNum"),
               messageItem('设置', 'assets/images/setting.png', () {
-                Navigator.pushNamed(context, RouteManager.SETTING);
+                Navigator.pushNamed(context, RouteManagerOld.SETTING);
               }),
               messageItem('关于我们', 'assets/images/aboutus.png', () {
-                Navigator.pushNamed(context, RouteManager.ABOUT_US);
+                Navigator.pushNamed(context, RouteManagerOld.ABOUT_US);
               }),
             ],
           ),

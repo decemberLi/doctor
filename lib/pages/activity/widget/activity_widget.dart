@@ -154,10 +154,10 @@ class ActivityWidget extends StatelessWidget {
               if (model.data.authStatus == 'WAIT_VERIFY' ||
                   model.data.authStatus == 'FAIL') {
                 Navigator.pushNamed(
-                    context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+                    context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
               } else if (model.data.authStatus == 'VERIFYING') {
                 Navigator.pushNamed(
-                    context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                    context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
               } else if (model.data.authStatus == 'PASS') {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return ActivityDetail(
@@ -166,7 +166,7 @@ class ActivityWidget extends StatelessWidget {
               }
             } else {
               Navigator.pushNamed(
-                  context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+                  context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE);
             }
             await model.queryDoctorInfo();
           },

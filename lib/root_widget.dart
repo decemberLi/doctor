@@ -54,11 +54,11 @@ class RootWidget extends StatelessWidget {
       debugPrint("RootWidget -> isLogin: ${SessionManager.shared.isLogin}");
       if (SessionManager.shared.isLogin) {
         Navigator.of(context)
-            .pushNamedAndRemoveUntil(RouteManager.HOME, (route) => false);
+            .pushNamedAndRemoveUntil(RouteManagerOld.HOME, (route) => false);
       } else {
         var name = ModalRoute.of(context)?.settings?.name ?? "";
         await Navigator.of(context).pushNamedAndRemoveUntil(
-            RouteManager.LOGIN_CAPTCHA, (route) => false);
+            RouteManagerOld.LOGIN_CAPTCHA, (route) => false);
       }
     });
     MedcloudsNativeApi.instance().addProcessor("receiveToken", (args) async {
@@ -115,11 +115,11 @@ class RootWidget extends StatelessWidget {
             if (authStatus == "FAIL") {
               print("the obj is ---- fail");
               Navigator.of(context)
-                  .pushNamed(RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+                  .pushNamed(RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
             } else {
               print("the obj is ---- success");
               Navigator.of(context)
-                  .pushNamed(RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+                  .pushNamed(RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
             }
             print("the obj is ---- end");
           } else if (type == "ASSIGN_STUDY_PLAN") {
@@ -128,7 +128,7 @@ class RootWidget extends StatelessWidget {
               if (model.data.authStatus == 'PASS') {
                 var learnPlanId = obj["learnPlanId"];
                 Navigator.of(context).pushNamed(
-                  RouteManager.LEARN_DETAIL,
+                  RouteManagerOld.LEARN_DETAIL,
                   arguments: {
                     'learnPlanId': learnPlanId,
                   },
@@ -136,13 +136,13 @@ class RootWidget extends StatelessWidget {
               } else {
                 eventBus.fire(EventHomeTab.createWorkTopEvent());
                 Navigator.of(context)
-                    .popUntil(ModalRoute.withName(RouteManager.HOME));
+                    .popUntil(ModalRoute.withName(RouteManagerOld.HOME));
               }
             } else {
               // 学习计划详情
               var learnPlanId = obj["learnPlanId"];
               Navigator.of(context).pushNamed(
-                RouteManager.LEARN_DETAIL,
+                RouteManagerOld.LEARN_DETAIL,
                 arguments: {
                   'learnPlanId': learnPlanId,
                 },
@@ -152,7 +152,7 @@ class RootWidget extends StatelessWidget {
             // 学习计划详情
             var learnPlanId = obj["learnPlanId"];
             Navigator.of(context).pushNamed(
-              RouteManager.LEARN_DETAIL,
+              RouteManagerOld.LEARN_DETAIL,
               arguments: {
                 'learnPlanId': learnPlanId,
               },
@@ -312,12 +312,12 @@ class RootWidget extends StatelessWidget {
           const Locale('zh'),
         ],
         navigatorKey: NavigationService().navigatorKey,
-        routes: RouteManager.routes,
+        routes: RouteManagerOld.routes,
         initialRoute: showGuide['showGuide']
-            ? RouteManager.GUIDE
+            ? RouteManagerOld.GUIDE
             : SessionManager.shared.isLogin
-                ? RouteManager.HOME
-                : RouteManager.LOGIN_CAPTCHA,
+                ? RouteManagerOld.HOME
+                : RouteManagerOld.LOGIN_CAPTCHA,
         builder: (BuildContext context, Widget child) {
           /// 确保 loading 组件能覆盖在其他组件之上.
           return FlutterEasyLoading(

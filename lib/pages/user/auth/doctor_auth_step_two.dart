@@ -130,7 +130,7 @@ class DoctorAuthenticationStepTwoPageState
                                         model.setIsCommitting(false);
                                         await Navigator.pushNamed(
                                             context,
-                                            RouteManager
+                                            RouteManagerOld
                                                 .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
                                       }, onError: (error) {
                                     model.setIsCommitting(false);

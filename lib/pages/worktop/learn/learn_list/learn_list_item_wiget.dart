@@ -386,17 +386,17 @@ class LearnListItemWiget extends StatelessWidget {
             if (model?.data?.authStatus == 'WAIT_VERIFY' ||
                 model?.data?.authStatus == 'FAIL') {
               Navigator.pushNamed(
-                  context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+                  context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
             } else if (model?.data?.authStatus == 'VERIFYING') {
               Navigator.pushNamed(
-                  context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                  context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
             } else if (model?.data?.authStatus == 'PASS') {
               Navigator.pushNamed(
-                  context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+                  context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
             }
           } else {
             Navigator.pushNamed(
-                context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+                context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE);
           }
         }else if (this.gotoDetail != null){
           this.gotoDetail();

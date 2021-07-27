@@ -196,7 +196,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                   shadowColor: Color(0x00000000),
                   onPressed: () {
                     Navigator.of(context).pushNamed(
-                        RouteManager.LOOK_LECTURE_VIDEOS,
+                        RouteManagerOld.LOOK_LECTURE_VIDEOS,
                         arguments: {
                           "learnPlanId": data.learnPlanId,
                           "resourceId": data.resources[0].resourceId,
@@ -288,7 +288,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         "您有一个未完成的讲课邀请任务是否立即查看详情",
         () {
           Navigator.of(context).pushNamed(
-            RouteManager.LEARN_DETAIL,
+            RouteManagerOld.LEARN_DETAIL,
             arguments: {
               'learnPlanId': videoData.learnPlanId,
             },
@@ -519,7 +519,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.of(context).pushNamed(
-                        RouteManager.LOOK_LECTURE_VIDEOS,
+                        RouteManagerOld.LOOK_LECTURE_VIDEOS,
                         arguments: {
                           "learnPlanId": data.learnPlanId,
                           "resourceId": data.resources[0].resourceId,

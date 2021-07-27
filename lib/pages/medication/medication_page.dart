@@ -74,7 +74,7 @@ class _MedicationPageState extends State<MedicationPage>
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).pushNamed(
-                    RouteManager.MEDICATION_DETAIL,
+                    RouteManagerOld.MEDICATION_DETAIL,
                     arguments: item.drugId,
                   );
                 },

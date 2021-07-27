@@ -217,7 +217,7 @@ class _HomePageState extends State<HomePage>
                   ),
                   onPressed: () async {
                     await Navigator.pushNamed(
-                        context, RouteManager.USERINFO_DETAIL,
+                        context, RouteManagerOld.USERINFO_DETAIL,
                         arguments: {
                           'doctorData': model.data.toJson(),
                           'openType': 'SURE_INFO',
@@ -279,13 +279,13 @@ class _HomePageState extends State<HomePage>
               ),
               onPressed: () async {
                 //关闭对话框并返回true
-                String path = RouteManager.USERINFO_DETAIL;
+                String path = RouteManagerOld.USERINFO_DETAIL;
                 Map arguments = {
                   'doctorData': model.data.toJson(),
                   'qualification': true,
                 };
                 if (model.data?.authStatus == 'VERIFYING') {
-                  path = RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE;
+                  path = RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE;
                 }
                 await Navigator.pushNamed(
                   context,

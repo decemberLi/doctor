@@ -90,7 +90,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
           ),
           onTap: () {
             eventBus.fire(EventVideoPause());
-            Navigator.pushNamed(context, RouteManager.DOCTOR_LIST2,
+            Navigator.pushNamed(context, RouteManagerOld.DOCTOR_LIST2,
                 arguments: 'OPEN_CLASS');
           },
         )
@@ -140,7 +140,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
         ],
       ),
       onTap: () {
-        RouteManager.openDoctorsDetail(entity?.id);
+        RouteManagerOld.openDoctorsDetail(entity?.id);
       },
     );
   }
@@ -308,7 +308,7 @@ class EnterpriseOpenClassWidgetState extends State<EnterpriseOpenClassWidget>
       ),
       onTap: () {
         _pausePlaying();
-        RouteManager.openDoctorsDetail(entity?.id);
+        RouteManagerOld.openDoctorsDetail(entity?.id);
       },
     );
   }

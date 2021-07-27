@@ -56,7 +56,7 @@ class RpList extends StatelessWidget {
               }
               var addList = await Navigator.pushNamed(
                 context,
-                RouteManager.MEDICATION_LIST,
+                RouteManagerOld.MEDICATION_LIST,
                 arguments: list,
               );
               // print(list);

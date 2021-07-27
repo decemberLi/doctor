@@ -70,9 +70,9 @@ class _GuidePageState extends State<GuidePage> {
                 ),
                 onPressed: () {
                   String session = SessionManager.shared.session;
-                  String nextRoute = RouteManager.HOME;
+                  String nextRoute = RouteManagerOld.HOME;
                   if (session == null) {
-                    nextRoute = RouteManager.LOGIN_CAPTCHA;
+                    nextRoute = RouteManagerOld.LOGIN_CAPTCHA;
                   }
                   // 跳转
                   Navigator.of(context).pushReplacementNamed(nextRoute);

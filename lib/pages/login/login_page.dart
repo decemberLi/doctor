@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                       type: AceButtonType.secondary,
                       textColor: Colors.white,
                       onPressed: () => {
-                        Navigator.pushNamed(context, RouteManager.LOGIN_CAPTCHA)
+                        Navigator.pushNamed(context, RouteManagerOld.LOGIN_CAPTCHA)
                       },
                     ),
                     AceButton(
@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                       textColor: Colors.white,
                       text: '使用密码登录',
                       onPressed: () => {
-                        Navigator.pushNamed(context, RouteManager.LOGIN_PWD,arguments: {})
+                        Navigator.pushNamed(context, RouteManagerOld.LOGIN_PWD,arguments: {})
                       },
                     ),
                   ],

@@ -52,7 +52,7 @@ class HotPostWidget extends StatelessWidget {
       ),
       onTap: () {
         eventBus.fire(EventVideoPause());
-        RouteManager.openDoctorsDetail(entity?.id);
+        RouteManagerOld.openDoctorsDetail(entity?.id);
       },
     );
   }

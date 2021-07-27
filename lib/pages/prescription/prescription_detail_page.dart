@@ -73,7 +73,7 @@ class _PrescriptionDetailPageState extends State<PrescriptionDetailPage> {
                         var check = await API.shared.dtp.checkPrescriptionBeforeBind(prescriptionNo);
                         if (check) {
                           var res = await Navigator.of(context).pushNamed(
-                            RouteManager.PATIENT,
+                            RouteManagerOld.PATIENT,
                             arguments: prescriptionNo,
                           );
                           if (res != null) {
