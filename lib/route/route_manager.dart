@@ -88,7 +88,10 @@ class RouteManagerOld {
     FIND_PWD: (context) => FindPassword(),
     HOME: (context) => HomePage(),
     LEARN_LIST: (context) => LearnListPage('LEARNING'),
-    LEARN_DETAIL: (context) => LearnDetailPage(),
+    LEARN_DETAIL: (context) {
+      dynamic arguments = ModalRoute.of(context).settings.arguments;
+      return LearnDetailPage(arguments['learnPlanId']);
+    },
     LOOK_LECTURE_VIDEOS: (context) => LookLectureVideosPage(),
     RESOURCE_DETAIL: (context) {
       dynamic obj = ModalRoute.of(context).settings.arguments;

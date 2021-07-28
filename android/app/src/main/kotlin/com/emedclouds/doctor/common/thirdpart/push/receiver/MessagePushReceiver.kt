@@ -37,7 +37,7 @@ class MessagePushReceiver : BroadcastReceiver() {
                 ChannelManager.instance.callFlutter("uploadDeviceInfo", json.toString(), object : MethodChannelResultAdapter() {})
                 return
             } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent?.action)) {
-                Log.d(TAG, "onReceive: ${intent?.getBundleExtra("extras").toString()}")
+                Log.d(TAG, "onReceive: ${intent?.getBundleExtra("url").toString()}")
                 intent?.extras?.apply {
                     val extraStr = getString(JPushInterface.EXTRA_EXTRA)
                     val content = getString(JPushInterface.EXTRA_MESSAGE)!!
@@ -55,7 +55,7 @@ class MessagePushReceiver : BroadcastReceiver() {
         val jumpIntent = Intent(context, MainActivity::class.java)
 //        jumpIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK // or Intent.FLAG_ACTIVITY_CLEAR_TASK
         if (extraStr != null) {
-            jumpIntent.putExtra("extras", JSONObject(extraStr).getString("extras"))
+            jumpIntent.putExtra("extras", extraStr?:"")
         }
         val pendingIntent = PendingIntent.getActivity(context, 0, jumpIntent, FLAG_UPDATE_CURRENT)
         val builder = NotificationCompat.Builder(context!!, "1")

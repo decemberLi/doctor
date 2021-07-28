@@ -6,7 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/http/activity.dart';
 import 'package:http_manager/api.dart';
-
+import 'package:yyy_route_annotation/yyy_route_annotation.dart';
+@RoutePage()
 class ActivityListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ActivityListPageState();

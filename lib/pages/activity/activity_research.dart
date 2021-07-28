@@ -19,12 +19,14 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
 import 'package:doctor/http/activity.dart';
 import 'package:dio/dio.dart';
+import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
 import 'activity_case_detail.dart';
 import 'activity_constants.dart';
 import 'entity/activity_entity.dart';
 import 'entity/activity_questionnaire_entity.dart';
 
+@RoutePage(name: "medical_survey_page")
 class ActivityResearch extends StatefulWidget {
   final int activityPackageId;
   final int activityTaskId;

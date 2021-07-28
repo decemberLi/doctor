@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
+import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
 class _ImageResource {
   // 0 is local path, 1 is url
@@ -128,6 +129,7 @@ class _ImageResourceModel extends ChangeNotifier {
   bool canEdit() => status == VERIFY_STATUS_REJECT || taskId == null;
 }
 
+@RoutePage(name: "case_collection_page")
 class ActivityResourceDetailPage extends StatefulWidget {
   final String _titleText;
   final String status;

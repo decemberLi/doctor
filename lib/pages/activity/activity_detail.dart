@@ -15,9 +15,11 @@ import 'package:http_manager/api.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:doctor/http/activity.dart';
 import "package:dio/dio.dart";
+import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
 import 'activity_constants.dart';
 
+@RoutePage(needLogin: true, needAuth: true, name: "activity_detail_page")
 class ActivityDetail extends StatefulWidget {
   final int activityPackageId;
   final String type;

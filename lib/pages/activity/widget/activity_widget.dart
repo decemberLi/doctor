@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
 class ActivityWidget extends StatelessWidget {
   final ActivityEntity _data;
@@ -159,10 +160,11 @@ class ActivityWidget extends StatelessWidget {
                 Navigator.pushNamed(
                     context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
               } else if (model.data.authStatus == 'PASS') {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return ActivityDetail(
-                      _data.activityPackageId, _data.activityType);
-                }));
+                RouteManager.push(context, "yyy://page/activity_detail_page?activity_package_id=${_data.activityPackageId}&type=${_data.activityType}");
+                // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                //   return ActivityDetail(
+                //       _data.activityPackageId, _data.activityType);
+                // }));
               }
             } else {
               Navigator.pushNamed(

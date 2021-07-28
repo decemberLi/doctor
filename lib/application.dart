@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
 import 'common/env/environment.dart';
 import 'root_widget.dart';
@@ -48,6 +49,14 @@ class ApplicationInitialize {
       print('url -> $url');
 
       return MedcloudsNativeApi.instance().openWebPage(url);
+    });
+    RouteManager.commonAuthInterceptor((context) async {
+      // TODO Logic
+      return true;
+    });
+    RouteManager.commonLoginInterceptor((context) async {
+      // TODO Logic
+      return true;
     });
     runApp(RootWidget({'showGuide': showGuide}));
   }
