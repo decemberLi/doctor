@@ -108,7 +108,9 @@ dependencies:
   webview_flutter: 2.0.4
   cached_network_image: ^3.0.0
   yyy_route_annotation:
-    path: /Users/liuchangqing/Documents/github-workspace/yyy_route_annotation
+    git:
+      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/yyy_route.git
+#   path: /Users/liuchangqing/Documents/github-workspace/yyy_route_annotation
 
 dependency_overrides:
   photo_manager:
