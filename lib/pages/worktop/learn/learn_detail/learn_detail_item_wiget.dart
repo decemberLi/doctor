@@ -259,7 +259,7 @@ class PlanDetailList extends StatelessWidget {
               return;
             }
             final result = await Navigator.of(context)
-                .pushNamed(RouteManager.RESOURCE_DETAIL, arguments: {
+                .pushNamed(RouteManagerOld.RESOURCE_DETAIL, arguments: {
               "learnPlanId": data.learnPlanId,
               "resourceId": item.resourceId,
               "taskTemplate": data.taskTemplate,

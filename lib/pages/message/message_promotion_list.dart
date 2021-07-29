@@ -129,7 +129,7 @@ class _MessagePromotionListState extends State<MessagePromotionList> with RouteA
                             return;
                           }
                           Navigator.pushNamed(
-                              context, RouteManager.LEARN_DETAIL,
+                              context, RouteManagerOld.LEARN_DETAIL,
                               arguments: {
                                 'learnPlanId': data.params['learnPlanId'],
                               });
@@ -147,7 +147,7 @@ class _MessagePromotionListState extends State<MessagePromotionList> with RouteA
                             item.readed = true;
                           });
                           Navigator.of(context).pushNamed(
-                              RouteManager.RESOURCE_DETAIL,
+                              RouteManagerOld.RESOURCE_DETAIL,
                               arguments: {
                                 "resourceId": data.params['resourceId'],
                                 "learnPlanId": data.params['learnPlanId'],

@@ -121,7 +121,7 @@ class _LearnListPageState extends State<LearnListPage>
             },
             () async {
               await Navigator.of(context).pushNamed(
-                RouteManager.LEARN_DETAIL,
+                RouteManagerOld.LEARN_DETAIL,
                 arguments: {
                   'learnPlanId': item.learnPlanId,
                   'listStatus': widget.learnStatus,

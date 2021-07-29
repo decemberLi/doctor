@@ -103,7 +103,7 @@ class _WorktopPageState extends State<WorktopPage>
                       await CachedLearnDetailVideoHelper.getCachedVideoInfo(
                           userId);
                   await Navigator.of(context).pushNamed(
-                    RouteManager.LEARN_DETAIL,
+                    RouteManagerOld.LEARN_DETAIL,
                     arguments: {
                       'learnPlanId': videoInfo.learnPlanId,
                     },
@@ -226,7 +226,7 @@ class _WorktopPageState extends State<WorktopPage>
                   },
                   () async {
                     await Navigator.of(context).pushNamed(
-                      RouteManager.LEARN_DETAIL,
+                      RouteManagerOld.LEARN_DETAIL,
                       arguments: {
                         'learnPlanId': item.learnPlanId,
                         'listStatus': 'LEARNING',
@@ -396,7 +396,7 @@ class _WorktopPageState extends State<WorktopPage>
         ],
       ),
       onTap: () {
-        Navigator.pushNamed(context, RouteManager.USERINFO_DETAIL,
+        Navigator.pushNamed(context, RouteManagerOld.USERINFO_DETAIL,
             arguments: {'doctorData': doctorInfoEntity.toJson()});
       },
     );
@@ -643,7 +643,7 @@ class _WorktopPageState extends State<WorktopPage>
   }
 
   _goLearnPlanPage(int index) async {
-    await Navigator.pushNamed(context, RouteManager.LEARN_PAGE, arguments: {
+    await Navigator.pushNamed(context, RouteManagerOld.LEARN_PAGE, arguments: {
       'index': index,
     });
     _model.refresh();
@@ -673,17 +673,17 @@ class _WorktopPageState extends State<WorktopPage>
             if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' ||
                 doctorInfoEntity.authStatus == 'FAIL') {
               Navigator.pushNamed(
-                  context, RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+                  context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
             } else if (doctorInfoEntity.authStatus == 'VERIFYING') {
               Navigator.pushNamed(
-                  context, RouteManager.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                  context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
             } else if (doctorInfoEntity.authStatus == 'PASS') {
               Navigator.pushNamed(
-                  context, RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+                  context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
             }
           } else {
             Navigator.pushNamed(
-                context, RouteManager.DOCTOR_AUTHENTICATION_INFO_PAGE);
+                context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE);
           }
         },
         child: RichText(

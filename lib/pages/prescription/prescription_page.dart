@@ -187,7 +187,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
             onPressed: () {
               if (model.validateData()) {
                 Navigator.of(context)
-                    .pushNamed(RouteManager.PRESCRIPTION_PREVIEW);
+                    .pushNamed(RouteManagerOld.PRESCRIPTION_PREVIEW);
               }
             },
           ),
@@ -215,7 +215,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
           if (widget.showActicons)
             TextButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(RouteManager.PRESCRIPTION_LIST,
+                Navigator.of(context).pushNamed(RouteManagerOld.PRESCRIPTION_LIST,
                     arguments: {'from': FROM_PRESCRIPTION_HISTORY});
               },
               child: Text(
@@ -260,7 +260,7 @@ class _PrescriptionPageState extends State<PrescriptionPage>
                           ),
                           onTap: () async {
                             var item = await Navigator.of(context).pushNamed(
-                                RouteManager.PRESCRIPTION_LIST,
+                                RouteManagerOld.PRESCRIPTION_LIST,
                                 arguments: {'from': FROM_PRESCRIPTION_QUICKLY});
                             if (item != null) {
                               model.echoByHistoryPatient(item);

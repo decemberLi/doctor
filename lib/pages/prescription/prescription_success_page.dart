@@ -60,8 +60,8 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                 model.resetData();
                 Navigator.pushNamedAndRemoveUntil(
                     context,
-                    RouteManager.SET_NEW_PWD,
-                    ModalRoute.withName(RouteManager.HOME));
+                    RouteManagerOld.SET_NEW_PWD,
+                    ModalRoute.withName(RouteManagerOld.HOME));
               },
             ),
           ],
@@ -128,7 +128,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                               height: 36,
                               onPressed: () {
                                 Navigator.of(context).pushNamed(
-                                  RouteManager.PRESCRIPTION_DETAIL,
+                                  RouteManagerOld.PRESCRIPTION_DETAIL,
                                   arguments: prescriptionNo,
                                 );
                               },
@@ -180,7 +180,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
                           await API.shared.dtp.checkPrescriptionBeforeBind(prescriptionNo);
                       if (check) {
                         Navigator.of(context).pushNamed(
-                          RouteManager.PATIENT,
+                          RouteManagerOld.PATIENT,
                           arguments: prescriptionNo,
                         );
                       }
@@ -203,7 +203,7 @@ class _PrescriptionSuccessPageState extends State<PrescriptionSuccessPage> {
           //第二次点击返回直接退出页面
           // Navigator.pop(context);
           model.resetData();
-          Navigator.popUntil(context, ModalRoute.withName(RouteManager.HOME));
+          Navigator.popUntil(context, ModalRoute.withName(RouteManagerOld.HOME));
         } else {
           backfocus = backfocus + 1;
           var sp = await SharedPreferences.getInstance();

@@ -139,7 +139,7 @@ class _PatientListPageState extends State<PatientListPage>
                           }
                         } else {
                           Navigator.of(context).pushNamed(
-                              RouteManager.PATIENT_DETAIL,
+                              RouteManagerOld.PATIENT_DETAIL,
                               arguments: item.patientUserId);
                         }
                       },

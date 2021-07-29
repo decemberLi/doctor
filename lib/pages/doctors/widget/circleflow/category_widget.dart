@@ -73,7 +73,7 @@ class CategoryWidget extends StatelessWidget {
       ),
       onTap: () {
         eventBus.fire(EventVideoPause());
-        Navigator.pushNamed(context, RouteManager.DOCTOR_LIST1, arguments: jsonEncode({
+        Navigator.pushNamed(context, RouteManagerOld.DOCTOR_LIST1, arguments: jsonEncode({
           'title': each.text,
           'code': each.code,
         }));

@@ -236,7 +236,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
                                         fontSize: 12)),
                                 onTap: () {
                                   Navigator.pushNamed(
-                                      context, RouteManager.FIND_PWD);
+                                      context, RouteManagerOld.FIND_PWD);
                                 },
                               ),
                             ],

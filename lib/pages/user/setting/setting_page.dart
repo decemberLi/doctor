@@ -138,7 +138,7 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ),
       onTap: () {
-        Navigator.pushNamed(context, RouteManager.MODIFY_PWD);
+        Navigator.pushNamed(context, RouteManagerOld.MODIFY_PWD);
       },
     );
   }

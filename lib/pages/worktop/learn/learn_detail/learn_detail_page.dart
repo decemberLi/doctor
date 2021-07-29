@@ -29,6 +29,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
 // * @Desc: 计划详情页  */
 /// 科室会议
@@ -46,8 +47,10 @@ const String TYPE_SURVEY = 'SURVEY';
 /// 讲课类型
 const String TYPE_DOCTOR_LECTURE = 'DOCTOR_LECTURE';
 
+@RoutePage(name: "learn_detail_page")
 class LearnDetailPage extends StatefulWidget {
-  LearnDetailPage({Key key}) : super(key: key);
+  int learnPlanId;
+  LearnDetailPage(this.learnPlanId, {Key key}) : super(key: key);
 
   @override
   _LearnDetailPageState createState() => _LearnDetailPageState();
@@ -196,7 +199,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                   shadowColor: Color(0x00000000),
                   onPressed: () {
                     Navigator.of(context).pushNamed(
-                        RouteManager.LOOK_LECTURE_VIDEOS,
+                        RouteManagerOld.LOOK_LECTURE_VIDEOS,
                         arguments: {
                           "learnPlanId": data.learnPlanId,
                           "resourceId": data.resources[0].resourceId,
@@ -229,7 +232,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     }
   }
 
-  _submit(model, arguments, data) async {
+  _submit(model, data) async {
     // EasyLoading.showToast('暂未开放'),
     if (data.learnProgress == 0) {
       String _text = '当前学习计划尚未学习，请在学习后提交';
@@ -288,7 +291,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         "您有一个未完成的讲课邀请任务是否立即查看详情",
         () {
           Navigator.of(context).pushNamed(
-            RouteManager.LEARN_DETAIL,
+            RouteManagerOld.LEARN_DETAIL,
             arguments: {
               'learnPlanId': videoData.learnPlanId,
             },
@@ -487,11 +490,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   checkVideo() async {
-    dynamic arguments = ModalRoute.of(context).settings.arguments;
-    var learnPlanId = arguments['learnPlanId'];
     bool has = await CachedLearnDetailVideoHelper.hasCachedVideo(
         userInfo.doctorUserId,
-        learnPlanId: learnPlanId);
+        learnPlanId: widget.learnPlanId);
     var data = await CachedLearnDetailVideoHelper.getCachedVideoInfo(userInfo.doctorUserId);
     setState(() {
       hasVideo = has;
@@ -502,7 +503,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   Widget _renderUploadButton(
-      LearnDetailViewModel model, arguments, LearnDetailItem data) {
+      LearnDetailViewModel model, LearnDetailItem data) {
     if (data.taskTemplate == 'DOCTOR_LECTURE' && hasVideo) {
       return Container();
     } else if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
@@ -519,7 +520,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.of(context).pushNamed(
-                        RouteManager.LOOK_LECTURE_VIDEOS,
+                        RouteManagerOld.LOOK_LECTURE_VIDEOS,
                         arguments: {
                           "learnPlanId": data.learnPlanId,
                           "resourceId": data.resources[0].resourceId,
@@ -571,7 +572,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 if (data.taskTemplate == 'DOCTOR_LECTURE') {
                   _gotoRecord(data);
                 } else {
-                  _submit(model, arguments, data);
+                  _submit(model, data);
                 }
               },
             ),
@@ -585,7 +586,6 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   }
 
   Widget buildDetail(LearnDetailViewModel model) {
-    dynamic arguments = ModalRoute.of(context).settings.arguments;
     if (model.isBusy) {
       return Scaffold(
         appBar: AppBar(
@@ -797,7 +797,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                       _renderLookRecording(data),
                       if (data.status != 'SUBMIT_LEARN' &&
                           data.status != 'ACCEPTED')
-                        _renderUploadButton(model, arguments, data),
+                        _renderUploadButton(model, data),
                     ],
                   ),
                 )
@@ -899,9 +899,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic arguments = ModalRoute.of(context).settings.arguments;
     if (_model == null){
-      _model = LearnDetailViewModel(arguments['learnPlanId']);
+      _model = LearnDetailViewModel(widget.learnPlanId);
     }
     return WillPopScope(
         child: ProviderWidget<LearnDetailViewModel>(
@@ -911,7 +910,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             if (model.data?.taskTemplate == 'MEDICAL_SURVEY') {
               return ResearchDetail();
             } else {
-              updateCheck(model, arguments['learnPlanId']);
+              updateCheck(model, widget.learnPlanId);
               return buildDetail(model);
             }
           },

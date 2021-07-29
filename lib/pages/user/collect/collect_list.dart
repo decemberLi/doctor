@@ -358,7 +358,7 @@ class _ClooectStudyCell extends StatelessWidget {
       child: TextButton(
         onPressed: () {
           Navigator.of(context).pushNamed(
-            RouteManager.RESOURCE_DETAIL,
+            RouteManagerOld.RESOURCE_DETAIL,
             arguments: {
               "resourceId": data.resourceId,
               "favoriteId": data.favoriteId,
@@ -541,7 +541,7 @@ class _DoctorTimeLineCell extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 12),
       child: TextButton(
         onPressed: () {
-          RouteManager.openDoctorsDetail(data.postId);
+          RouteManagerOld.openDoctorsDetail(data.postId);
         },
         child: Container(
           decoration: BoxDecoration(

@@ -152,7 +152,7 @@ class _VideoDetailState extends State<VideoDetail> {
             padding: commonPadding,
             alignment: Alignment.centerLeft,
             child: Text(
-              widget.data.title,
+              widget.data.title?? widget.data.resourceName,
               style: boldTextStyle,
             ),
           ),

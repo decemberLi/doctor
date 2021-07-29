@@ -161,7 +161,7 @@ class DoctorsListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        RouteManager.openDoctorsDetail(data.postId, );
+        RouteManagerOld.openDoctorsDetail(data.postId, );
         data.read = true;
         if(this.onClick != null) {
           this.onClick();

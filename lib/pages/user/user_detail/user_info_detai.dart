@@ -206,7 +206,7 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
           }
           //姓名、个人简介、擅长疾病填写
           if (edit == 'edit') {
-            Navigator.pushNamed(context, RouteManager.EDIT_DOCTOR_PAGE,
+            Navigator.pushNamed(context, RouteManagerOld.EDIT_DOCTOR_PAGE,
                 arguments: {
                   'lable': lable,
                   'value': value,

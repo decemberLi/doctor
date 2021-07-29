@@ -107,7 +107,7 @@ class _PrescriptionListPageState extends State<PrescriptionListPage> {
                         return;
                       }
                       Navigator.of(context).pushNamed(
-                        RouteManager.PRESCRIPTION_DETAIL,
+                        RouteManagerOld.PRESCRIPTION_DETAIL,
                         arguments: item.prescriptionNo,
                       );
                     },

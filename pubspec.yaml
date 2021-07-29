@@ -107,6 +107,10 @@ dependencies:
   qr_code_scanner: ^0.4.0
   webview_flutter: 2.0.4
   cached_network_image: ^3.0.0
+  yyy_route_annotation:
+    git:
+      url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/yyy_route.git
+#   path: /Users/liuchangqing/Documents/github-workspace/yyy_route_annotation
 
 dependency_overrides:
   photo_manager:
@@ -117,8 +121,11 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.0.1
+#  build_runner: ^2.0.1
   json_serializable: ^4.1.1
+  build_runner: any
+  build_test: any
+  build_web_compilers: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

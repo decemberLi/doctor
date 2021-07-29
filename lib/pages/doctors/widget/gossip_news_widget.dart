@@ -299,7 +299,7 @@ class GossipNewsPageState extends State<GossipNewsPage> {
 
   void onItemClicked(DoctorsViewMode model, itemData) {
     model.markToNative(itemData);
-    RouteManager.openDoctorsDetail(itemData?.postId);
+    RouteManagerOld.openDoctorsDetail(itemData?.postId);
   }
 
 }

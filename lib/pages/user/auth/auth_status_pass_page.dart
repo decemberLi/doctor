@@ -7,7 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
+import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
+@RoutePage(name: "auth_status_pass_page")
 class AuthStatusPassPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

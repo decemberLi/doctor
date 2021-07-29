@@ -16,10 +16,10 @@ class QualificationMessageProcessor
   Future process(BuildContext context, QualificationMessageEntity param) {
     if (param.authStatus == "FAIL") {
       return Navigator.of(context)
-          .pushNamed(RouteManager.DOCTOR_AUTHENTICATION_PAGE);
+          .pushNamed(RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
     } else {
       return Navigator.of(context)
-          .pushNamed(RouteManager.DOCTOR_AUTH_STATUS_PASS_PAGE);
+          .pushNamed(RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
     }
   }
 

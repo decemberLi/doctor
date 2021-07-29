@@ -21,7 +21,7 @@ class PrescriptionCreateBtn extends StatelessWidget {
           onPressed: () {
             model.savePrescription((String prescriptionNo) async {
               await Navigator.of(context).pushNamed(
-                RouteManager.PRESCRIPTION_SUCCESS,
+                RouteManagerOld.PRESCRIPTION_SUCCESS,
                 arguments: prescriptionNo,
               );
               model.resetData();

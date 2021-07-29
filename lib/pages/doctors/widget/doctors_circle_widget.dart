@@ -28,10 +28,10 @@ typedef OnScrollerCallback = void Function(double offset);
 openBannerDetail(BuildContext context, data) {
   print("On banner clicked -> [${data?.toJson()}]");
   if (data.bannerType == 'RELEVANCY_POST') {
-    RouteManager.openDoctorsDetail(int.parse(data?.relatedContent),
+    RouteManagerOld.openDoctorsDetail(int.parse(data?.relatedContent),
         from: "msg");
   } else if (data.bannerType == 'ACTIVITY') {
-    RouteManager.openWebPage(data?.relatedContent);
+    RouteManagerOld.openWebPage(data?.relatedContent);
   }
 }
 
@@ -210,7 +210,7 @@ class DoctorPageState
   void onItemClicked(DoctorsViewMode model, itemData) {
     model.markToNative(itemData);
     eventBus.fire(EventVideoPause());
-    RouteManager.openDoctorsDetail(itemData?.postId);
+    RouteManagerOld.openDoctorsDetail(itemData?.postId);
   }
 
   @override

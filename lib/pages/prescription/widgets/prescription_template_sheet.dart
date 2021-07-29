@@ -169,7 +169,7 @@ class _PrescriptionTemplateListState extends State<PrescriptionTemplateList> {
       PrescriptionTemplateModel item,
       String action) async {
     await Navigator.of(context).pushNamed(
-      RouteManager.PRESCRIPTION_TEMPLATE_ADD,
+      RouteManagerOld.PRESCRIPTION_TEMPLATE_ADD,
       arguments: {
         'action': action,
         'data': item,

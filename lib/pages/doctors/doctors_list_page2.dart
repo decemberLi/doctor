@@ -165,7 +165,7 @@ class DoctorsListCell2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        RouteManager.openDoctorsDetail(data.postId, );
+        RouteManagerOld.openDoctorsDetail(data.postId, );
         data.read = true;
         if (onClick != null) {
           onClick();

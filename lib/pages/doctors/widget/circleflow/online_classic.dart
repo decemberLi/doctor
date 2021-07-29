@@ -68,7 +68,7 @@ class OnlineClassicWidget extends StatelessWidget {
           ),
           onTap: () {
             eventBus.fire(EventVideoPause());
-            Navigator.pushNamed(context, RouteManager.DOCTOR_LIST2,
+            Navigator.pushNamed(context, RouteManagerOld.DOCTOR_LIST2,
                 arguments: 'VIDEO_ZONE');
           },
         )
@@ -124,7 +124,7 @@ class OnlineClassicWidget extends StatelessWidget {
       ),
       onTap: () {
         eventBus.fire(EventVideoPause());
-        RouteManager.openDoctorsDetail(entity?.id, from: 'msg');
+        RouteManagerOld.openDoctorsDetail(entity?.id, from: 'msg');
       },
     );
   }

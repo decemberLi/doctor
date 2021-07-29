@@ -15,12 +15,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
 import 'crude_progress_widget.dart';
 
 typedef OnItemCallback = Function(FacePhoto model, int index);
 typedef OnRemoveImageCallback = void Function(int index);
 
+@RoutePage(name: "qualification_check_fail_page")
 class DoctorAuthenticationStepTwoPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => DoctorAuthenticationStepTwoPageState();
@@ -130,7 +132,7 @@ class DoctorAuthenticationStepTwoPageState
                                         model.setIsCommitting(false);
                                         await Navigator.pushNamed(
                                             context,
-                                            RouteManager
+                                            RouteManagerOld
                                                 .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
                                       }, onError: (error) {
                                     model.setIsCommitting(false);

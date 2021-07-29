@@ -297,7 +297,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                         ),
                         onTap: ()async  {
                           var phone = await Navigator.of(context)
-                              .pushNamed(RouteManager.LOGIN_PWD, arguments: {
+                              .pushNamed(RouteManagerOld.LOGIN_PWD, arguments: {
                                 "phoneNumber": _phoneController.text
                           });
                           // 不为空设置手机号码

@@ -119,7 +119,7 @@ class _LikeMessagePageState
   }
 
   void onItemClicked(itemData) {
-    RouteManager.openDoctorsDetail(itemData?.postId,from: 'msg');
+    RouteManagerOld.openDoctorsDetail(itemData?.postId,from: 'msg');
     _model.messageClicked(itemData?.messageId);
   }
 }

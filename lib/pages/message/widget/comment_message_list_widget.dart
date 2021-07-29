@@ -134,7 +134,7 @@ class _CommentMessagePageState extends State<CommentMessagePage> {
   }
 
   void onItemClicked(itemData) {
-    RouteManager.openDoctorsDetail(itemData?.postId, from: "msg");
+    RouteManagerOld.openDoctorsDetail(itemData?.postId, from: "msg");
     _model.messageClicked(itemData.messageId);
   }
 }
