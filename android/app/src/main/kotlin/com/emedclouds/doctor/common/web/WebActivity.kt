@@ -1,9 +1,11 @@
 package com.emedclouds.doctor.common.web
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -15,16 +17,23 @@ import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.emedclouds.doctor.R
 import com.emedclouds.doctor.common.web.api.BaseApi
 import com.emedclouds.doctor.common.web.api.GalleryApi
 import com.emedclouds.doctor.common.web.api.JsApiCaller
 import com.emedclouds.doctor.common.web.api.NativeApiProvider
+import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.toast.CustomToast
 import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.widgets.CommonInputDialog
 import com.emedclouds.doctor.widgets.OnTextInputCallback
 import com.emedclouds.doctor.widgets.OnTextInputCallback.Companion.ACTION_PUBLISH
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.tencent.smtt.export.external.interfaces.*
 import com.tencent.smtt.sdk.WebChromeClient
 import com.tencent.smtt.sdk.WebView
@@ -32,6 +41,7 @@ import com.tencent.smtt.sdk.WebViewClient
 import kotlinx.android.synthetic.main.activity_web_doctor_detail_layout.*
 import kotlinx.android.synthetic.main.activity_web_layout.*
 import org.json.JSONObject
+import java.io.File
 import java.net.URLEncoder
 
 open class WebActivity : ComponentActivity() {
@@ -134,7 +144,6 @@ open class WebActivity : ComponentActivity() {
                             override fun needBack(): Boolean {
                                 return hookBackBtn
                             }
-
                         }
                     }
                 })
@@ -175,10 +184,83 @@ open class WebActivity : ComponentActivity() {
                         }
                     }
                 })
-        val api = GalleryApi(this, apiCaller);
+        val api = GalleryApi(this, apiCaller)
         mGalleryResultCallback = api
         mPermissionCallback = api
         ApiManager.instance.addApi("openGallery", mGalleryResultCallback as GalleryApi)
+        ApiManager.instance.addApi("configTitleRightBtn", object : BaseApi(apiCaller) {
+            override fun doAction(bizType: String, param: String?) {
+                if (TextUtils.isEmpty(param)) {
+                    return
+                }
+                val json = JSONObject(param)
+                val isShow = json.getBoolean("isShow")
+                val imageUrl = json.getString("imageUrl")
+                runOnUiThread {
+                    iconRightBtn.apply {
+                        visibility = if (isShow) {
+                            setOnClickListener {
+                                successCallJavaScript(bizType, "ACTION_SHARE")
+                            }
+                            if(!TextUtils.isEmpty(imageUrl)){
+                                Glide.with(this@WebActivity).load(imageUrl)
+                                        .into(iconRightBtn)
+                            }
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        }
+                    }
+                }
+            }
+        })
+        ApiManager.instance.addApi("shareImage", object : BaseApi(apiCaller) {
+            @SuppressLint("CheckResult")
+            override fun doAction(bizType: String, param: String?) {
+                if(TextUtils.isEmpty(param)){
+                    return
+                }
+                val json = JSONObject(param)
+                val imageUrl = json.getString("imgUrl")
+                val url = json.getString("url")
+                val jsonArray = json.getJSONArray("platform")
+                val platforms =ArrayList<String>()
+                for(index in 0 .. jsonArray.length()-1 step 1){
+                    platforms.add(jsonArray.getString(index))
+                }
+                val kProgressHUD = KProgressHUD.create(this@WebActivity)
+                        .setLabel("加载中...")
+                        .setCancellable(false)
+                        .setAnimationSpeed(2)
+                        .setDimAmount(0.5f)
+                        .show()
+                Glide.with(applicationContext)
+                        .downloadOnly()
+                        .load(Uri.parse(imageUrl))
+                        .listener(object : RequestListener<File> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<File>?, isFirstResource: Boolean): Boolean {
+                                if(kProgressHUD.isShowing){
+                                    kProgressHUD.dismiss()
+                                }
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: File?, model: Any?, target: Target<File>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                if(kProgressHUD.isShowing){
+                                    kProgressHUD.dismiss()
+                                }
+                                if (resource == null) {
+                                    return false
+                                }
+                                runOnUiThread {
+                                    ShareActivity.openShare(this@WebActivity, resource.absolutePath, url, platforms)
+                                }
+                                return false
+                            }
+                        })
+                        .preload()
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

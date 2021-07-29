@@ -17,6 +17,7 @@ import com.emedclouds.doctor.common.web.WebActivity
 import com.emedclouds.doctor.common.web.pluginwebview.X5WebViewPlugin
 import com.emedclouds.doctor.pages.ShareActivity
 import com.emedclouds.doctor.pages.learningplan.LessonRecordActivity
+import com.emedclouds.doctor.share.platform.Platform
 import com.emedclouds.doctor.utils.*
 import com.emedclouds.doctor.utils.OnFlutterCall.Companion.CHANNEL_RESULT_OK
 import com.tencent.ocr.sdk.common.CustomConfigUi
@@ -45,7 +46,7 @@ class MainActivity : FlutterActivity() {
                 }
 
                 val jsonObject = JSONObject(arguments)
-                ShareActivity.openShare(this@MainActivity, jsonObject.getString("path"), jsonObject.getString("url"))
+                ShareActivity.openShare(this@MainActivity, jsonObject.getString("path"), jsonObject.getString("url"), Platform.allPlatform)
                 return CHANNEL_RESULT_OK
             }
         })

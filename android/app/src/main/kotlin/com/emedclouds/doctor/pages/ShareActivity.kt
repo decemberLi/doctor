@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.emedclouds.doctor.R
 import com.emedclouds.doctor.share.params.WeChatParams
+import com.emedclouds.doctor.share.platform.Platform
 import com.emedclouds.doctor.share.platform.WeChat
 import com.emedclouds.doctor.toast.CustomToast
 import com.emedclouds.doctor.utils.FileUtil
@@ -38,13 +39,17 @@ class ShareActivity : ComponentActivity() {
         const val tag = "ShareActivity"
         const val PATH = "keyPath"
         const val URL = "keyUrl"
-        fun openShare(activity: Activity, path: String, url: String) {
+        const val PLATFORMS = "platforms"
+
+        fun openShare(activity: Activity, path: String, url: String, platforms: ArrayList<String>) {
             val intent = Intent(activity, ShareActivity::class.java)
             intent.putExtra(PATH, path)
             intent.putExtra(URL, url)
+            intent.putStringArrayListExtra(PLATFORMS, platforms)
             activity.startActivity(intent)
         }
     }
+
     lateinit var path: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,54 +58,85 @@ class ShareActivity : ComponentActivity() {
             finish()
             return
         }
-        path = intent.getStringExtra(PATH)
+        path = intent.getStringExtra(PATH)!!
         val url = intent.getStringExtra(URL)
-        if (path == null || url == null) {
+        if (url == null) {
             finish()
             return
         }
         setContentView(R.layout.activity_share_layout)
         val imageView = findViewById<ImageView>(R.id.share_pic)
+        val platforms: ArrayList<String> = intent.getSerializableExtra(PLATFORMS) as ArrayList<String>
         Glide.with(this)
                 .load(Uri.fromFile(File(path)))
                 .skipMemoryCache(false)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(imageView)
-        findViewById<LinearLayout>(R.id.share_to_wechat).setOnClickListener {
-            val shareParam = WeChatParams.Builder()
-                    .setImagePath(path)
-                    .setScene(SendMessageToWX.Req.WXSceneSession)
-                    .setShareType(WeChatParams.SHARE_IMAGE)
-                    .build()
-            WeChat(this@ShareActivity).share(shareParam)
-            finish()
-        }
-
-        findViewById<LinearLayout>(R.id.share_to_moment).setOnClickListener {
-            val shareParam = WeChatParams.Builder()
-                    .setImagePath(path)
-                    .setScene(SendMessageToWX.Req.WXSceneTimeline)
-                    .setShareType(WeChatParams.SHARE_IMAGE)
-                    .build()
-            WeChat(this@ShareActivity).share(shareParam)
-            finish()
-        }
-
-        findViewById<LinearLayout>(R.id.share_copylink).setOnClickListener {
-            val manager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val plainText = ClipData.newPlainText(null, url)
-            manager.setPrimaryClip(plainText)
-            CustomToast.show(this@ShareActivity, R.string.copy_success)
-        }
-
-        findViewById<LinearLayout>(R.id.share_save_img).setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(
-                        "android.permission.READ_EXTERNAL_STORAGE",
-                        "android.permission.WRITE_EXTERNAL_STORAGE"
-                ), 10)
+        findViewById<LinearLayout>(R.id.share_to_wechat).apply {
+            visibility = if (platforms.contains(Platform.platformWeChat)) {
+                setOnClickListener {
+                    val shareParam = WeChatParams.Builder()
+                            .setImagePath(path)
+                            .setScene(SendMessageToWX.Req.WXSceneSession)
+                            .setShareType(WeChatParams.SHARE_IMAGE)
+                            .build()
+                    WeChat(this@ShareActivity).share(shareParam)
+                    finish()
+                }
+                View.VISIBLE
             } else {
-                saveImage(path)
+                View.GONE
+            }
+
+        }
+
+        findViewById<LinearLayout>(R.id.share_to_moment).apply {
+            visibility = if (platforms.contains(Platform.platformMoments)) {
+                setOnClickListener {
+                    val shareParam = WeChatParams.Builder()
+                            .setImagePath(path)
+                            .setScene(SendMessageToWX.Req.WXSceneTimeline)
+                            .setShareType(WeChatParams.SHARE_IMAGE)
+                            .build()
+                    WeChat(this@ShareActivity).share(shareParam)
+                    finish()
+                }
+                View.VISIBLE
+            } else {
+                View.GONE
+            } 
+        }
+
+        findViewById<LinearLayout>(R.id.share_copylink).apply {
+            visibility = if (platforms.contains(Platform.platformClipboard)) {
+                setOnClickListener {
+                    val manager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val plainText = ClipData.newPlainText(null, url)
+                    manager.setPrimaryClip(plainText)
+                    CustomToast.show(this@ShareActivity, R.string.copy_success)
+                }
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+        }
+
+        findViewById<LinearLayout>(R.id.share_save_img).apply {
+            visibility = if (platforms.contains(Platform.platformDownloadImage)) {
+                setOnClickListener {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(arrayOf(
+                                "android.permission.READ_EXTERNAL_STORAGE",
+                                "android.permission.WRITE_EXTERNAL_STORAGE"
+                        ), 10)
+                    } else {
+                        saveImage(path)
+                    }
+                }
+                View.VISIBLE
+            } else {
+                View.GONE
             }
         }
         findViewById<View>(R.id.share_cancel).setOnClickListener {

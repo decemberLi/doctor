@@ -10,6 +10,7 @@
         android:id="@+id/mTitleContainer"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:elevation="2dp"
         tools:ignore="UselessLeaf">
 
         <ImageView
@@ -35,6 +36,15 @@
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_17" />
 
+        <ImageView
+            android:id="@+id/iconRightBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="18dp"
+            android:padding="10dp"
+            android:src="@drawable/icon_webview_title_right" />
+
     </FrameLayout>
 
     <FrameLayout
@@ -54,12 +64,12 @@
 
         <LinearLayout
             android:id="@+id/mEmptyView"
-            android:gravity="center"
-            android:visibility="gone"
-            android:background="@color/white"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -67,9 +77,9 @@
                 android:src="@drawable/empty" />
 
             <TextView
-                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="网络错误，请点击重试" />
         </LinearLayout>
 
