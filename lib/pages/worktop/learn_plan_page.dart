@@ -5,6 +5,7 @@ import 'package:doctor/pages/worktop/learn/learn_list/learn_list_view.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/constants.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/manager.dart';
 
@@ -61,13 +62,26 @@ class _LearnPlanPageState extends State<LearnPlanPage>
             },
             child: Container(
               height: 20,
-              padding: EdgeInsets.symmetric(vertical: 1, horizontal: 4),
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(left: 6, right: 6,bottom: 1),
               decoration: BoxDecoration(
                   color: ThemeColor.color5d9df7,
                   borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Text(
-                '活动入口',
-                style: TextStyle(color: Colors.white, fontSize: 12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        '活动入口',
+                        textAlign: TextAlign.center,
+                        softWrap: false,
+                        style: TextStyle(color: Colors.white, fontSize: 10),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
           )
