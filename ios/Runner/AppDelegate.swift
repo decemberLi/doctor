@@ -397,10 +397,14 @@ extension AppDelegate : JPUSHRegisterDelegate {
             notiInfo = info
             return
         }
-        
-        guard let value = info["extras"] as? String else {
+        guard let data = try? JSONSerialization.data(withJSONObject: info, options: .fragmentsAllowed) else{
             return
         }
+        
+        guard let value = String(data: data, encoding: .utf8) else {
+            return
+        }
+        
         naviChannel.invokeMethod("receiveNotification", arguments: value)
         
     }
