@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
             android:layout_marginRight="18dp"
+            android:visibility="invisible"
             android:padding="10dp"
             android:src="@drawable/icon_webview_title_right" />
 
