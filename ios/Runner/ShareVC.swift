@@ -17,7 +17,9 @@ class ShareVC: UIViewController {
     @IBOutlet var sheetCorner : UIView!
     @IBOutlet var buttonBG : UIStackView!
     var data : [String:Any] = [:]
-    
+    var channels = ["微信","朋友圈","复制链接","保存图片"]
+    fileprivate let formateName = ["weChat":"微信","Monments":"朋友圈","clipboard":"复制链接","saveImage":"保存图片"]
+    fileprivate let channelsTags = ["weChat":1000,"Monments":1001,"clipboard":1002,"saveImage":1003]
     override func viewDidLoad() {
         super.viewDidLoad()
         sheetCorner.clipsToBounds = true
@@ -29,16 +31,17 @@ class ShareVC: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let names = ["微信","朋友圈","复制链接","保存图片"]
-        for (index,name) in names.enumerated() {
+        for oldName in channels {
+            let name = formateName[oldName] ?? oldName
             let bg = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 60))
             bg.snp.makeConstraints { (maker) in
                 maker.width.equalTo(50)
             }
             let content = UIView()
             let btn = UIButton()
-            btn.tag = index
+            btn.tag = channelsTags[oldName] ?? 0
             btn.addTarget(self, action: #selector(onBTN(sender:)), for: .touchUpInside)
+            
             btn.setImage(UIImage(named: name), for: .normal)
             content.addSubview(btn)
             let lbl = UILabel()
@@ -96,13 +99,13 @@ class ShareVC: UIViewController {
     }
     
     @objc func onBTN(sender : UIButton){
-        if sender.tag == 0{
+        if sender.tag == 1000{
             shareToWx()
-        }else if sender.tag == 1 {
+        }else if sender.tag == 1001 {
             shareToPYQ()
-        }else if sender.tag == 2 {
+        }else if sender.tag == 1002 {
             copyToPasboard()
-        }else if sender.tag == 3 {
+        }else if sender.tag == 1003 {
             download()
         }
     }

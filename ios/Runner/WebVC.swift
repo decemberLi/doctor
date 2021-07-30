@@ -8,6 +8,7 @@
 import UIKit
 import WebKit
 import MBProgressHUD
+import Kingfisher
 
 class WebVC: UIViewController {
     var webview : WKWebView!
@@ -20,6 +21,7 @@ class WebVC: UIViewController {
     @IBOutlet var textColorBG : UIView!
     @IBOutlet var textAllBG : UIView!
     @IBOutlet var errorView : UIView!
+    @IBOutlet var rightBTN : UIButton!
     
     var initData : [String:Any]?
     
@@ -146,7 +148,7 @@ class WebVC: UIViewController {
     
 }
 
-private extension WebVC {
+fileprivate extension WebVC {
     func showCommentBox(old:[AnyHashable:Any]) {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardChanged(_:)), name: UIApplication.keyboardWillChangeFrameNotification, object: nil)
         textView.becomeFirstResponder()
@@ -186,8 +188,7 @@ private extension WebVC {
         let id = putParam["id"] as? Int ?? -1
         var text = textView.text ?? ""
         text = text.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-        let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":{"id":\#(id),"text":"\#(text)","action":"publish"}}}"#
-        webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+        callJS(bizType: bizType, code: 0, content: #"{"id":\#(id),"text":"\#(text)","action":"publish"}"#)
         textView.text = ""
         updateText()
         
@@ -199,15 +200,13 @@ private extension WebVC {
         let putParam = putData["param"] as? [AnyHashable:Any] ?? [:]
         let id = putParam["id"] as? Int ?? -1
         let text = textView.text ?? ""
-        let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":{"id":\#(id),"text":"\#(text)","action":"cancel"}}}"#
-        webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+        callJS(bizType: bizType, content: #"{"id":\#(id),"text":"\#(text)","action":"cancel"}"#)
         
     }
     
     @IBAction func onBack(){
         if needHook == 1{
-            let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":{}}}"#
-            webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+            callJS(bizType: bizType, content: #"{"code":0,"content":{}}"#)
         }else{
             navigationController?.popViewController(animated: true)
         }
@@ -221,10 +220,16 @@ private extension WebVC {
             webview.load(request)
         }
     }
+    
+    func callJS(bizType:String,code:Int=0,content:String){
+        let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":\#(content)}}"#
+        webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler:nil)
+    }
 }
 
 private class MessageHander : NSObject,WKScriptMessageHandler {
     weak var inVC : WebVC?
+    fileprivate var bizType : String = ""
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == "jsCall" else {return}
         guard let body = message.body as? String else {return}
@@ -238,8 +243,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
             naviChannel.invokeMethod("getTicket", arguments: nil) { (result) in
                 guard let ticket = result as? String else {return}
                 let bizType = json["bizType"] as? String ?? ""
-                let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":"\#(ticket)"}}"#
-                self.inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+                self.inVC?.callJS(bizType: bizType, content: #""\#(ticket)""#)
             }
             
         }else if dispatchType == "closeWindow" {
@@ -256,9 +260,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
                 guard let self = self else {return}
                 let status = result ?? 0
                 let bizType = json["bizType"] as? String ?? ""
-                let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":\#(status)}}"#
-                //                print("the params is -- \(params)")
-                self.inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler: nil)
+                self.inVC?.callJS(bizType: bizType, content: "\(status)")
             }
         }else if dispatchType == "hookBackBtn" {
             let bizType = json["bizType"] as? String ?? ""
@@ -270,8 +272,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
             
         }else if dispatchType == "openGallery" {
             func callError(){
-                let params = #"{"bizType":"\#(bizType)","param":{"code":-2,"content":"参数错误"}}"#
-                inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler:nil)
+                inVC?.callJS(bizType: bizType, code: -2, content: #""参数错误""#)
             }
             
             let bizType = json["bizType"] as? String ?? ""
@@ -290,11 +291,72 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
                 return
             }
             AppDelegate.shared?.openAlbum(max: maxCount, allowTakePicture: enableCapture, finish: { result in
-                let params = #"{"bizType":"\#(bizType)","param":{"code":0,"content":\#(result)}}"#
-                self.inVC?.webview.evaluateJavaScript("nativeCall('\(params)')", completionHandler:nil)
+                self.inVC?.callJS(bizType: bizType, content: "\(result)")
             })
+        }else if dispatchType == "shareImage" {
+//            let bizType = json["bizType"] as? String ?? ""
+            guard let param = json["param"] as? [AnyHashable:Any] else{
+                return
+            }
+            guard let view = self.inVC?.view else {
+                return
+            }
+            let sharevc = ShareVC()
+            let imgUrl = param["imgUrl"] as? String ?? ""
+            if let url = URL(string: imgUrl) {
+                let hud  = MBProgressHUD.showWhiteAdded(to: view, animated: true)
+                DispatchQueue.global().async {
+                    defer {
+                        DispatchQueue.main.async {
+                            hud.hide(animated: false)
+                        }
+                    }
+                    guard let imgData = try? Data(contentsOf: url) else {
+                        return
+                    }
+                    let path = NSHomeDirectory() + "/Documents/share_image"
+                    try? imgData.write(to: URL(fileURLWithPath: path))
+                    var data = ["path":path]
+                    DispatchQueue.main.async {
+                        let channels : [String] = param["platform"] as? [String] ?? []
+                        if let url = param["url"] as? String {
+                            data["url"] = url
+                        }
+                        sharevc.data = data
+                        sharevc.channels = channels
+                        sharevc.modalPresentationStyle = .overFullScreen
+                        self.inVC?.present(sharevc, animated: true, completion: nil)
+                    }
+                }
+            }
+            
+        }else if dispatchType == "configTitleRightBtn" {
+            let bizType = json["bizType"] as? String ?? ""
+            guard let param = json["param"] as? [AnyHashable:Any] else{
+                return
+            }
+            self.bizType = bizType
+            let isShow = param["isShow"] as? Int ?? 0
+            if isShow == 1 {
+                if let btn = inVC?.rightBTN {
+                    btn.addTarget(self, action: #selector(onRight), for: .touchUpInside)
+                    if let img = param["imageUrl"] as? String {
+                        btn.kf.setImage(with: URL(string: img), for: .normal)
+                    }else{
+                        btn.setImage(UIImage(named: "帮助"), for: .normal)
+                    }
+                    inVC?.rightBTN.isHidden = false
+                }
+            }else{
+                inVC?.rightBTN.isHidden = true
+            }
         }
     }
+    
+    @objc func onRight(){
+        inVC?.callJS(bizType: bizType, content: "\"\"")
+    }
+    
 }
 
 extension WebVC : WKUIDelegate {

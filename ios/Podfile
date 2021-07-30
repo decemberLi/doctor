@@ -43,6 +43,7 @@ target 'Runner' do
   pod 'JCore', '2.4.0-noidfa'
   pod 'JPush', '3.3.6'
   pod 'TZImagePickerController' , '3.6.0'
+  pod 'Kingfisher'
 end
 
 post_install do |installer|
