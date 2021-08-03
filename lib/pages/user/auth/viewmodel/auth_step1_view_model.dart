@@ -11,6 +11,7 @@ import 'package:doctor/utils/upload_file_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
 
 import '../entity/auth_basic_info.dart';
 
@@ -112,18 +113,20 @@ class AuthenticationViewModel extends ViewStateModel {
     debugPrint("commitAuthenticationData");
     var completer = Completer();
     if (checkDataIntegrity()) {
-      await API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
-        (value) {
-          _isCommitting = false;
-          debugPrint("$value");
-          completer.complete(value);
-        },
-        onError: (error, msg) {
-          _isCommitting = false;
-          debugPrint("errorCode: $error");
-          completer.completeError(error);
-        },
-      );
+      EasyLoading.instance.flash(() async{
+        await API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
+              (value) {
+            _isCommitting = false;
+            debugPrint("$value");
+            completer.complete(value);
+          },
+          onError: (error, msg) {
+            _isCommitting = false;
+            debugPrint("errorCode: $error");
+            completer.completeError(error);
+          },
+        );
+      });
     }
 
     return completer.future;
