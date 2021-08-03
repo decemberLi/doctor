@@ -45,7 +45,7 @@ import './widgets/YYYEasyLoading.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 final EventBus eventBus = EventBus();
-Set<String> userAuthCode = {'00010009', '00010010'};
+Set<String> userAuthCode = {'00010009', '00010010', '00010014'};
 String windowDeviceToken = "";
 
 @RouteMain()
