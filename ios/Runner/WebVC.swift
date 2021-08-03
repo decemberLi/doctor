@@ -344,7 +344,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
                     if let img = param["imageUrl"] as? String {
                         btn.kf.setImage(with: URL(string: img), for: .normal)
                     }else{
-                        btn.setImage(UIImage(named: "帮助"), for: .normal)
+                        btn.setImage(UIImage(named: "share"), for: .normal)
                     }
                     inVC?.rightBTN.isHidden = false
                 }
