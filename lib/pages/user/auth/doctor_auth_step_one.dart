@@ -112,6 +112,8 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                   return;
                                 }
                                 if (model.canNext) {
+                                  _idNotMatchErrorMsg = '';
+                                  _bankCardCheckErrorMsg = '';
                                   model
                                       .commitAuthenticationData()
                                       .then((data) async {
