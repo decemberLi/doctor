@@ -57,7 +57,7 @@ class YWebViewHelper {
                     CookieManager.getInstance().setCookie("m-dev.e-medclouds.com", "appVersion=${BuildConfig.VERSION_NAME}")
                     mixedContentMode = WebSettings.LOAD_DEFAULT
                 }
-                userAgentString = String.format("$userAgentString Medclouds-doctor")
+                userAgentString = String.format("$userAgentString Medclouds-doctor/${BuildConfig.VERSION_NAME}")
             }
         }
 
