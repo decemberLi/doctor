@@ -65,7 +65,8 @@ class WebVC: UIViewController {
             webConfig.websiteDataStore.httpCookieStore.setCookie(cookie, completionHandler: nil)
         }
         webview = WKWebView(frame: .zero, configuration: webConfig)
-        webview.customUserAgent = "Medclouds-doctor"
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "2.4"
+        webview.customUserAgent = "Medclouds-doctor/\(version)"
         view.insertSubview(webview, belowSubview: progressView)
         webview.snp.makeConstraints { (maker) in
             maker.left.right.equalToSuperview()
