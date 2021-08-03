@@ -31,6 +31,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   final FocusNode _mobileFocusNode = FocusNode();
   final FocusNode _bankCardFocusNode = FocusNode();
   String _idNotMatchErrorMsg;
+  String _bankCardCheckErrorMsg;
 
   @override
   Widget build(BuildContext context) {
@@ -137,6 +138,10 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                       } else if ('00010009' == errorCode) {
                                         showNoticeDialog(errorMsg,
                                             number: model.customServicePhone);
+                                      } else if ('00010014' == errorCode) {
+                                        setState(() {
+                                          _bankCardCheckErrorMsg = errorMsg;
+                                        });
                                       }
                                     } else if (error?.error != null &&
                                         error.error is String) {
@@ -291,38 +296,60 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   }
 
   Widget _bankCardWidget(AuthenticationViewModel model) {
-    var bankWidget = Row(
-      mainAxisSize: MainAxisSize.min,
+    var bankWidget = Stack(
       children: [
-        Text("银行卡号：", style: _style, textAlign: TextAlign.center),
-        Expanded(
-            child: TextField(
-          controller: _bankCardController,
-          maxLength: 20,
-          decoration: InputDecoration(
-            hintText: '请输入',
-            hintStyle: TextStyle(fontSize: 14, color: ThemeColor.colorFF999999),
-            counterText: '',
-            focusedBorder: _noneBorder,
-            enabledBorder: _noneBorder,
-            border: _noneBorder,
-          ),
-          focusNode: _bankCardFocusNode,
-          obscureText: false,
-          keyboardType: TextInputType.number,
-          style: _style,
-          onChanged: (value) {
-            model.setBankCard(_bankCardController.text);
-          },
-        )),
-        GestureDetector(
-          child: Image.asset(
-            "assets/images/img_scanner.png",
-            width: 18,
-            height: 17,
-          ),
-          onTap: bankOrc,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("银行卡号：", style: _style, textAlign: TextAlign.center),
+            Expanded(
+              child: TextField(
+                controller: _bankCardController,
+                maxLength: 20,
+                decoration: InputDecoration(
+                  hintText: '请输入',
+                  hintStyle:
+                      TextStyle(fontSize: 14, color: ThemeColor.colorFF999999),
+                  counterText: '',
+                  focusedBorder: _noneBorder,
+                  enabledBorder: _noneBorder,
+                  border: _noneBorder,
+                ),
+                focusNode: _bankCardFocusNode,
+                obscureText: false,
+                keyboardType: TextInputType.number,
+                style: _style,
+                onChanged: (value) {
+                  model.setBankCard(_bankCardController.text);
+                },
+              ),
+            ),
+            GestureDetector(
+              child: Image.asset(
+                "assets/images/img_scanner.png",
+                width: 18,
+                height: 17,
+              ),
+              onTap: bankOrc,
+            ),
+          ],
         ),
+        Positioned(
+          bottom: 0,
+          child: Row(
+            children: [
+              if (!TextUtil.isEmpty(_bankCardCheckErrorMsg))
+                Container(
+                  margin: EdgeInsets.only(top: 0),
+                  child: Text(
+                    _bankCardCheckErrorMsg,
+                    style:
+                        TextStyle(fontSize: 10, color: const Color(0xFFF57575)),
+                  ),
+                )
+            ],
+          ),
+        )
       ],
     );
     if (model.isScanBankCard) {
