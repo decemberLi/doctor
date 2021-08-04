@@ -195,7 +195,7 @@ open class WebActivity : ComponentActivity() {
                 }
                 val json = JSONObject(param)
                 val isShow = json.getBoolean("isShow")
-                val imageUrl = json.getString("imageUrl")
+                val imageUrl = json.optString("imageUrl")
                 runOnUiThread {
                     iconRightBtn.apply {
                         visibility = if (isShow) {

@@ -148,8 +148,8 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                         });
                                       }
                                     } else if (error?.error != null &&
-                                        error.error is String) {
-                                      EasyLoading.showToast(error?.error);
+                                        error.error.msg is String) {
+                                      EasyLoading.showToast(error.error.msg);
                                     }
                                   });
                                 }
