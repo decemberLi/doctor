@@ -342,7 +342,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
                 if let btn = inVC?.rightBTN {
                     btn.addTarget(self, action: #selector(onRight), for: .touchUpInside)
                     if let img = param["imageUrl"] as? String {
-                        btn.kf.setImage(with: URL(string: img), for: .normal)
+                        btn.kf.setImage(with: URL(string: img), for: .normal, placeholder:UIImage(named: "share"))
                     }else{
                         btn.setImage(UIImage(named: "share"), for: .normal)
                     }
