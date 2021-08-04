@@ -19,7 +19,7 @@ class ShareVC: UIViewController {
     var data : [String:Any] = [:]
     var channels = ["微信","朋友圈","复制链接","保存图片"]
     fileprivate let formateName = ["weChat":"微信","Monments":"朋友圈","clipboard":"复制链接","saveImage":"保存图片"]
-    fileprivate let channelsTags = ["weChat":1000,"Monments":1001,"clipboard":1002,"saveImage":1003]
+    fileprivate let channelsTags = ["微信":1000,"朋友圈":1001,"复制链接":1002,"保存图片":1003]
     override func viewDidLoad() {
         super.viewDidLoad()
         sheetCorner.clipsToBounds = true
@@ -39,7 +39,7 @@ class ShareVC: UIViewController {
             }
             let content = UIView()
             let btn = UIButton()
-            btn.tag = channelsTags[oldName] ?? 0
+            btn.tag = channelsTags[name] ?? 0
             btn.addTarget(self, action: #selector(onBTN(sender:)), for: .touchUpInside)
             
             btn.setImage(UIImage(named: name), for: .normal)
