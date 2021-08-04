@@ -21,7 +21,11 @@ import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.modelmsg.WXVideoObject;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -108,7 +112,18 @@ public class WeChatParams extends ShareParams {
     private SendMessageToWX.Req buildImageReq(@NonNull Builder builder) {
         Bitmap bitmap = getBitmap(builder);
         WXImageObject imgObj = new WXImageObject(bitmap);
-        imgObj.setImagePath(builder.mImagePath);
+        File file = new File(builder.mImagePath);
+        byte[] bytes = new byte[(int)file.length()];
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+            fis.read(bytes);
+            imgObj.imageData = bytes;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            IOUtils.closeQuietly(fis);
+        }
 
         WXMediaMessage msg = new WXMediaMessage();
         msg.mediaObject = imgObj;
