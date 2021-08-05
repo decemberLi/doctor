@@ -34,7 +34,7 @@
                 </progressView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BJS-YQ-1J9">
                     <rect key="frame" x="0.0" y="0.0" width="414" height="88"/>
-                    <color key="backgroundColor" red="0.28235294119999998" green="0.61568627450000002" blue="0.99607843139999996" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J6r-r2-uX8">
                     <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -44,7 +44,7 @@
                             <constraints>
                                 <constraint firstAttribute="width" constant="44" id="U5z-Yj-FBV"/>
                             </constraints>
-                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <state key="normal" image="返回"/>
                             <connections>
                                 <action selector="onBack" destination="-1" eventType="touchUpInside" id="uur-5I-mwp"/>
@@ -53,7 +53,7 @@
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5NG-cg-o5V">
                             <rect key="frame" x="44" y="11.5" width="326" height="21"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
-                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="trt-vk-vjC">
