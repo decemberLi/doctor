@@ -129,7 +129,7 @@ class RootWidget extends StatelessWidget {
       options.headers["_ticketObject"] = SessionManager.shared.session;
       options.headers["_appVersion"] = await PlatformUtils.getAppVersion();
       options.headers["_appVersionCode"] = await PlatformUtils.getBuildNum();
-      options.headers["_greyVersion"] = "1.9.5";
+      options.headers["_greyVersion"] = await PlatformUtils.getAppVersion();
       options.headers["_requestId"] = DateTime.now().millisecondsSinceEpoch;
       if (Platform.isAndroid) {
         options.headers['_platform'] = "Android";
