@@ -77,8 +77,10 @@ import MBProgressHUD
             }else if call.method == "login" {
                 guard let value = call.arguments as? String else {return}
                 MobClick.profileSignIn(withPUID: value)
+                result(true)
             }else if call.method == "logout" {
                 MobClick.profileSignOff()
+                result(true)
             }else if call.method == "ocrIdCardBackSide" {
                 OCRManager.shared()?.startProcessOcrBack{ obj in
                     self.naviChannel.invokeMethod("ocrIdCardBackSide", arguments: obj)
@@ -106,6 +108,7 @@ import MBProgressHUD
             }else if call.method == "keepOn" {
                 let b = call.arguments as? String ?? "0"
                 UIApplication.shared.isIdleTimerDisabled = b == "1"
+                result(true)
             }
         }
         vc.setFlutterViewDidRenderCallback {
