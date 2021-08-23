@@ -47,13 +47,10 @@ class _FindPasswordState extends State<FindPassword> {
             'newPassword': newPassword,
             'system': 'DOCTOR',
           });
-          if (response is! DioError) {
-            // SessionManager.loginOutHandler();
-            Timer(Duration(seconds: 1), () {
-              EasyLoading.showToast('修改密码成功，请重新登录');
-              Navigator.pop(context);
-            });
-          }
+          Timer(Duration(seconds: 1), () {
+            EasyLoading.showToast('修改密码成功，请重新登录');
+            Navigator.pop(context);
+          });
         },text: '密码修改中...');
       }
     }
@@ -65,16 +62,18 @@ class _FindPasswordState extends State<FindPassword> {
     if (RegexUtil.isMobileSimple(_mobile)) {
       //获取验证码
       EasyLoading.show(status: "发送中...");
-      var params = {'phone': _mobile, 'system': 'DOCTOR', 'type': 'FORGET_PASSWORD'};
-      API.shared.foundation.sendSMS(params)
-          .then((response) {
-            EasyLoading.dismiss();
-        if (response is! DioError) {
-          setState(() {
-            _maxCount = 60;
-          });
-          startCountTimer();
-        }
+      EasyLoading.instance.flash(() async{
+        var params = {'phone': _mobile, 'system': 'DOCTOR', 'type': 'FORGET_PASSWORD'};
+        await API.shared.foundation.sendSMS(params)
+            .then((response) {
+          EasyLoading.dismiss();
+          if (response is! DioError) {
+            setState(() {
+              _maxCount = 60;
+            });
+            startCountTimer();
+          }
+        });
       });
     } else {
       EasyLoading.showToast('请输入正确的手机号');
