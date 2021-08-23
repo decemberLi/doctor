@@ -482,7 +482,7 @@ class _ActivityResearch extends State<ActivityResearch>
           timeText = "${normalDateFormate(item.openTime)}开启";
         }
       } else if (item.endTime != null) {
-        timeText = "${normalDateFormate(item.openTime)}截止";
+        timeText = "${normalDateFormate(item.endTime)}截止";
       }
       if (item.expire) {
         statusText = "已过期";
