@@ -535,13 +535,13 @@ class _ResearchDetailState extends State<ResearchDetail>
                   fontSize: 14,
                 ),
               ),
-              Text(
-                item.summary,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Color(0xff444444),
-                ),
-              ),
+              // Text(
+              //   item.summary,
+              //   style: TextStyle(
+              //     fontSize: 12,
+              //     color: Color(0xff444444),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -581,7 +581,7 @@ class _ResearchDetailState extends State<ResearchDetail>
                 ),
               ),
               Text(
-                "填写问卷${item.sort}",
+                "问卷${item.sort}",
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
               ),
               statusWidget,
