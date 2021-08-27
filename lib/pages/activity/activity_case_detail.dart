@@ -33,6 +33,11 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
   TextEditingController _codeController = TextEditingController();
   TextEditingController _ageController = TextEditingController();
   TextEditingController _hospitalController = TextEditingController();
+  TextEditingController _fillingDateController = TextEditingController();
+  TextEditingController _weightController = TextEditingController();
+  TextEditingController _heightController = TextEditingController();
+  TextEditingController _brithdayController = TextEditingController();
+  TextEditingController _nationController = TextEditingController();
 
   ActivityCaseDetailState(this.data) {
     print("init data is ${data.toJson()}");
@@ -40,6 +45,27 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     _ageController.text = data.age == null ? "" : "${data.age}";
     _hospitalController.text = data.hospital;
     _codeController.text = data.patientCode;
+    _fillingDateController.text =  data.fillingDate.toString();
+    _brithdayController.text = data.birthDay.toString();
+    _weightController.text = data.weight.toString();
+    _heightController.text = data.height.toString();
+    _nationController.text = data.nation;
+
+    _fillingDateController.addListener(() {
+      setState(() {});
+    });
+    _brithdayController.addListener(() {
+      setState(() {});
+    });
+    _weightController.addListener(() {
+      setState(() {});
+    });
+    _heightController.addListener(() {
+      setState(() {});
+    });
+    _nationController.addListener(() {
+      setState(() {});
+    });
 
     _nameController.addListener(() {
       setState(() {});
@@ -208,7 +234,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         // canSave = canSave && _codeController.text.length > 0;
       } else if (item == "age") {
         one =
-            buildItem("年龄", buildText(_ageController, 5, TextInputType.number));
+            buildItem("年龄", buildText(_ageController, 5, TextInputType.numberWithOptions(decimal: true)));
         canSave = canSave && _ageController.text.length > 0;
       } else if (item == "sex") {
         one = buildItem("性别", buildPicker());
@@ -217,6 +243,22 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         one = buildItem(
             "就诊医院", buildText(_hospitalController, 30, TextInputType.text));
         canSave = canSave && _hospitalController.text.length > 0;
+      }else if (item == "height" ) {
+        one = buildItem(
+            "身高", buildText(_heightController, 30, TextInputType.numberWithOptions(decimal: true)));
+        canSave = canSave && _heightController.text.length > 0;
+      }else if (item == "weight" ) {
+        one = buildItem(
+            "体重", buildText(_weightController, 30, TextInputType.numberWithOptions(decimal: true)));
+        canSave = canSave && _weightController.text.length > 0;
+      }else if (item == "birthday" ) {
+        one = buildItem(
+            "生日", buildPicker());
+        canSave = canSave && _brithdayController.text.length > 0;
+      }else if (item == "fillingDate" ) {
+        one = buildItem(
+            "填写日期", buildPicker());
+        canSave = canSave && _fillingDateController.text.length > 0;
       }
       if (one != null) {
         showList.add(one);

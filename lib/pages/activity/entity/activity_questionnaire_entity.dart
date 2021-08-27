@@ -101,6 +101,11 @@ class ActivityIllnessCaseEntity {
   int age;
   int sex;
   String hospital;
+  int fillingDate;
+  int birthDay;
+  String nation;
+  int height;
+  int weight;
   String status;
   int schedule;
   int completeTime;
@@ -117,7 +122,12 @@ class ActivityIllnessCaseEntity {
       ..hospital = json["hospital"]
       ..status = json["status"]
       ..schedule = json["schedule"]
-      ..completeTime = json["completeTime"];
+      ..completeTime = json["completeTime"]
+      ..fillingDate = json["fillingDate"]
+      ..birthDay = json["birthDay"]
+      ..nation = json["nation"]
+      ..height = json["height"]
+      ..weight = json["weight"];
   }
 
   Map<String, dynamic> toJson() {
@@ -131,6 +141,11 @@ class ActivityIllnessCaseEntity {
       "status": status,
       "schedule": schedule,
       "completeTime": completeTime,
+      "fillingDate" : fillingDate,
+      "birthDay" : birthDay,
+      "nation" : nation,
+      "height" : height,
+      "weight" : weight,
     };
   }
 }
