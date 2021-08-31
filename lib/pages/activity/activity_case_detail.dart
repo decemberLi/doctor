@@ -127,6 +127,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         if (!widget.canSubmit) {
           return;
         }
+        DateTime last = DateTime.now();
         DateTime result = await showDatePicker(
           context: context,
           initialDate: time,
@@ -294,7 +295,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
             buildText(_weightController, 30,
                 TextInputType.numberWithOptions(decimal: true)));
         canSave = canSave && _weightController.text.length > 0;
-      } else if (item == "birthday") {
+      } else if (item == "birthDay") {
         one = buildItem(
             "生日",
             buildDatePicker(
@@ -309,6 +310,9 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
           data.fillingDate = result.millisecondsSinceEpoch;
         },));
         canSave = canSave && data.fillingDate != null;
+      }else if (item == "nation") {
+        one = buildItem("民族", buildText(_nationController, 30, TextInputType.text));
+        canSave = canSave && _nationController.text.length > 0;
       }
       if (one != null) {
         showList.add(one);
