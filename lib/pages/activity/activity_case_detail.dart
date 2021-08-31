@@ -17,8 +17,7 @@ class ActivityCaseDetail extends StatefulWidget {
   final int activityTaskId;
   final bool canSubmit;
 
-  ActivityCaseDetail(
-      this.data, this.activityPackageId, this.canSubmit,
+  ActivityCaseDetail(this.data, this.activityPackageId, this.canSubmit,
       {this.activityTaskId});
 
   @override
@@ -45,7 +44,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     _ageController.text = data.age == null ? "" : "${data.age}";
     _hospitalController.text = data.hospital;
     _codeController.text = data.patientCode;
-    _fillingDateController.text =  data.fillingDate.toString();
+    _fillingDateController.text = data.fillingDate.toString();
     _brithdayController.text = data.birthDay.toString();
     _weightController.text = data.weight.toString();
     _heightController.text = data.height.toString();
@@ -82,7 +81,8 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
   }
 
   Widget buildText(TextEditingController controller, int maxLength,
-      TextInputType keyboardType, {bool editAble = true,String hintText = "请输入"}) {
+      TextInputType keyboardType,
+      {bool editAble = true, String hintText = "请输入"}) {
     var noneBorder = UnderlineInputBorder(
       borderSide: BorderSide(width: 0, color: Colors.transparent),
     );
@@ -109,6 +109,46 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
           enabledBorder: noneBorder,
           disabledBorder: noneBorder,
           counterText: "",
+        ),
+      ),
+    );
+  }
+
+  Widget buildDatePicker(int date, Function onchange) {
+    var sex = "请选择";
+    var textStyle = TextStyle(
+      fontSize: 12,
+      color: Color(0xff888888),
+    );
+    DateTime time = null;
+    if (date > 0) {
+      time = DateTime.fromMillisecondsSinceEpoch(date);
+      sex = time.toString();
+      textStyle = TextStyle(
+        fontSize: 16,
+        color: Colors.black,
+      );
+    }
+
+    return GestureDetector(
+      onTap: () {
+        if (!widget.canSubmit) {
+          return;
+        }
+        showDatePicker(
+          context: context,
+          initialDate: time,
+          firstDate: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+          lastDate: null,
+        );
+      },
+      child: Container(
+        height: 50,
+        alignment: AlignmentDirectional.centerEnd,
+        child: Text(
+          sex,
+          textAlign: TextAlign.end,
+          style: textStyle,
         ),
       ),
     );
@@ -219,7 +259,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     bool canSave = true;
     var showArray = data.showFields;
     showArray.remove("patientCode");
-    showArray = ["patientCode",...showArray];
+    showArray = ["patientCode", ...showArray];
     for (int i = 0; i < showArray.length; i++) {
       var item = showArray[i];
       Widget one;
@@ -230,11 +270,15 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         canSave = canSave && _nameController.text.length > 0;
       } else if (item == "patientCode") {
         one = buildItem(
-            "患者编码", buildText(_codeController, 20, TextInputType.text,editAble: false,hintText: "自动生成"));
+            "患者编码",
+            buildText(_codeController, 20, TextInputType.text,
+                editAble: false, hintText: "自动生成"));
         // canSave = canSave && _codeController.text.length > 0;
       } else if (item == "age") {
-        one =
-            buildItem("年龄", buildText(_ageController, 5, TextInputType.numberWithOptions(decimal: true)));
+        one = buildItem(
+            "年龄",
+            buildText(_ageController, 5,
+                TextInputType.numberWithOptions(decimal: true)));
         canSave = canSave && _ageController.text.length > 0;
       } else if (item == "sex") {
         one = buildItem("性别", buildPicker());
@@ -243,21 +287,28 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         one = buildItem(
             "就诊医院", buildText(_hospitalController, 30, TextInputType.text));
         canSave = canSave && _hospitalController.text.length > 0;
-      }else if (item == "height" ) {
+      } else if (item == "height") {
         one = buildItem(
-            "身高", buildText(_heightController, 30, TextInputType.numberWithOptions(decimal: true)));
+            "身高",
+            buildText(_heightController, 30,
+                TextInputType.numberWithOptions(decimal: true)));
         canSave = canSave && _heightController.text.length > 0;
-      }else if (item == "weight" ) {
+      } else if (item == "weight") {
         one = buildItem(
-            "体重", buildText(_weightController, 30, TextInputType.numberWithOptions(decimal: true)));
+            "体重",
+            buildText(_weightController, 30,
+                TextInputType.numberWithOptions(decimal: true)));
         canSave = canSave && _weightController.text.length > 0;
-      }else if (item == "birthday" ) {
+      } else if (item == "birthday") {
         one = buildItem(
-            "生日", buildPicker());
+            "生日",
+            buildDatePicker(
+              data.birthDay,
+              () {},
+            ));
         canSave = canSave && _brithdayController.text.length > 0;
-      }else if (item == "fillingDate" ) {
-        one = buildItem(
-            "填写日期", buildPicker());
+      } else if (item == "fillingDate") {
+        one = buildItem("填写日期", buildDatePicker(data.fillingDate,(){},));
         canSave = canSave && _fillingDateController.text.length > 0;
       }
       if (one != null) {
@@ -287,14 +338,16 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
           ),
         ),
         // Expanded(child: Container()),
-        Container(height: 20,),
+        Container(
+          height: 20,
+        ),
         if (widget.canSubmit)
           GestureDetector(
             onTap: () async {
               if (!canSave) {
                 return;
               }
-              if (EasyLoading.isShow){
+              if (EasyLoading.isShow) {
                 return;
               }
               EasyLoading.instance.flash(() async {
@@ -320,7 +373,8 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
 
                 data.patientCode = _codeController.text;
                 print("the data is ${data.toJson()}");
-                var result = await API.shared.activity.activityIllnessCaseSaveWithJson(
+                var result =
+                    await API.shared.activity.activityIllnessCaseSaveWithJson(
                   widget.activityPackageId,
                   data.toJson(),
                   activityTaskId: widget.activityTaskId,
