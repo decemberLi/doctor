@@ -232,6 +232,9 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
     weak var inVC : WebVC?
     fileprivate var bizType : String = ""
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        func callError(){
+            inVC?.callJS(bizType: bizType, code: -2, content: #""参数错误""#)
+        }
         guard message.name == "jsCall" else {return}
         guard let body = message.body as? String else {return}
         guard let data = body.data(using: .utf8) else {return}
@@ -250,8 +253,14 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
         }else if dispatchType == "closeWindow" {
             inVC?.navigationController?.popViewController(animated: true)
         }else if dispatchType == "setTitle" {
-            let param = json["param"] as? String
-            inVC?.titleLbl.text = param
+            let bizType = json["bizType"] as? String ?? ""
+            guard let param = json["param"] as? [AnyHashable:Any] else{
+                callError()
+                return
+            }
+            self.bizType = bizType
+            let titleString = param["titleText"] as? String ?? "详情"
+            self.inVC?.titleLbl.text = titleString
         }else if dispatchType == "showInputBar" {
             let old = inVC?.commentData ?? [:]
             inVC?.commentData = json
@@ -272,9 +281,7 @@ private class MessageHander : NSObject,WKScriptMessageHandler {
             }
             
         }else if dispatchType == "openGallery" {
-            func callError(){
-                inVC?.callJS(bizType: bizType, code: -2, content: #""参数错误""#)
-            }
+            
             
             let bizType = json["bizType"] as? String ?? ""
             guard let param = json["param"] as? [AnyHashable:Any] else{
