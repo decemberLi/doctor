@@ -102,7 +102,7 @@ open class WebActivity : ComponentActivity() {
         ApiManager.instance.addApi("setTitle",
                 object : BaseApi(apiCaller) {
                     override fun doAction(bizType: String, param: String?) {
-                        populateTitleText(param)
+                        populateTitleText(JSONObject(param).getString("titleText"))
                         successCallJavaScript(bizType, "OK")
                     }
                 })
