@@ -127,12 +127,12 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         if (!widget.canSubmit) {
           return;
         }
-        DateTime last = DateTime.now();
+        DateTime last = DateTime(DateTime.now().year,12,31);
         DateTime result = await showDatePicker(
           context: context,
           initialDate: time,
           firstDate: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
-          lastDate: DateTime.now(),
+          lastDate: last,
         );
         if (result != null){
           onchange(result);
