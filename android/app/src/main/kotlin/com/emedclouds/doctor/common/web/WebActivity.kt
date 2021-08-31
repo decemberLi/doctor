@@ -102,6 +102,7 @@ open class WebActivity : ComponentActivity() {
         ApiManager.instance.addApi("setTitle",
                 object : BaseApi(apiCaller) {
                     override fun doAction(bizType: String, param: String?) {
+                        populateTitleText(param)
                         successCallJavaScript(bizType, "OK")
                     }
                 })
@@ -435,11 +436,7 @@ open class WebActivity : ComponentActivity() {
 
         override fun onReceivedTitle(p0: WebView?, p1: String?) {
             super.onReceivedTitle(p0, p1)
-            if (TextUtils.isEmpty(p1)) {
-                return
-            }
-            Log.e(TAG, "onShowCustomView: $p1")
-            tvTitle.text = p1
+            populateTitleText(p1)
         }
 
         override fun onProgressChanged(p0: WebView?, p1: Int) {
@@ -467,6 +464,14 @@ open class WebActivity : ComponentActivity() {
             super.onHideCustomView()
         }
 
+    }
+
+    private fun populateTitleText(titleText: String?) {
+        if (TextUtils.isEmpty(titleText)) {
+            return
+        }
+        Log.e(TAG, "populateTitleText: $titleText")
+        tvTitle.text = titleText
     }
 
     interface OnBackBtnListener {
