@@ -32,10 +32,8 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
   TextEditingController _codeController = TextEditingController();
   TextEditingController _ageController = TextEditingController();
   TextEditingController _hospitalController = TextEditingController();
-  TextEditingController _fillingDateController = TextEditingController();
   TextEditingController _weightController = TextEditingController();
   TextEditingController _heightController = TextEditingController();
-  TextEditingController _brithdayController = TextEditingController();
   TextEditingController _nationController = TextEditingController();
 
   ActivityCaseDetailState(this.data) {
@@ -44,18 +42,10 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     _ageController.text = data.age == null ? "" : "${data.age}";
     _hospitalController.text = data.hospital;
     _codeController.text = data.patientCode;
-    _fillingDateController.text = data.fillingDate.toString();
-    _brithdayController.text = data.birthDay.toString();
-    _weightController.text = data.weight.toString();
-    _heightController.text = data.height.toString();
+    _weightController.text = data.weight == null ? "" : data.weight.toString();
+    _heightController.text = data.height == null ? "" : data.height.toString();
     _nationController.text = data.nation;
 
-    _fillingDateController.addListener(() {
-      setState(() {});
-    });
-    _brithdayController.addListener(() {
-      setState(() {});
-    });
     _weightController.addListener(() {
       setState(() {});
     });
@@ -114,16 +104,16 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     );
   }
 
-  Widget buildDatePicker(int date, Function onchange) {
+  Widget buildDatePicker(int date, void Function(DateTime result) onchange) {
     var sex = "请选择";
     var textStyle = TextStyle(
       fontSize: 12,
       color: Color(0xff888888),
     );
-    DateTime time = null;
-    if (date > 0) {
+    DateTime time = DateTime.now();
+    if (date != null && date > 0) {
       time = DateTime.fromMillisecondsSinceEpoch(date);
-      sex = time.toString();
+      sex = "${time.year}-${time.month}-${time.day}";
       textStyle = TextStyle(
         fontSize: 16,
         color: Colors.black,
@@ -131,16 +121,19 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     }
 
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         if (!widget.canSubmit) {
           return;
         }
-        showDatePicker(
+        DateTime result = await showDatePicker(
           context: context,
           initialDate: time,
           firstDate: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
-          lastDate: null,
+          lastDate: DateTime.now(),
         );
+        if (result != null){
+          onchange(result);
+        }
       },
       child: Container(
         height: 50,
@@ -304,12 +297,16 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
             "生日",
             buildDatePicker(
               data.birthDay,
-              () {},
+              (result) {
+                data.birthDay = result.millisecondsSinceEpoch;
+              },
             ));
-        canSave = canSave && _brithdayController.text.length > 0;
+        canSave = canSave && data.birthDay != null;
       } else if (item == "fillingDate") {
-        one = buildItem("填写日期", buildDatePicker(data.fillingDate,(){},));
-        canSave = canSave && _fillingDateController.text.length > 0;
+        one = buildItem("填写日期", buildDatePicker(data.fillingDate,(result){
+          data.fillingDate = result.millisecondsSinceEpoch;
+        },));
+        canSave = canSave && data.fillingDate != null;
       }
       if (one != null) {
         showList.add(one);
