@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:doctor/http/server.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/theme/theme.dart';
@@ -350,7 +352,9 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
               EasyLoading.instance.flash(() async {
                 data.hospital = _hospitalController.text;
                 data.patientName = _nameController.text;
-
+                data.weight = double.parse(_weightController.text ?? "");
+                data.height = double.parse(_heightController.text ?? "");
+                data.nation = _nationController.text;
                 if (_ageController.text != null &&
                     _ageController.text.length > 0) {
                   try {

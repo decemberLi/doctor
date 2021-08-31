@@ -104,8 +104,8 @@ class ActivityIllnessCaseEntity {
   int fillingDate;
   int birthDay;
   String nation;
-  int height;
-  int weight;
+  double height;
+  double weight;
   String status;
   int schedule;
   int completeTime;
