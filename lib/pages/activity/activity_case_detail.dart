@@ -106,13 +106,14 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     );
   }
 
-  Widget buildDatePicker(int date, void Function(DateTime result) onchange) {
+  Widget buildDatePicker(int date, void Function(DateTime result) onchange,
+      {DateTime defaultTime}) {
     var sex = "请选择";
     var textStyle = TextStyle(
       fontSize: 12,
       color: Color(0xff888888),
     );
-    DateTime time = DateTime.now();
+    DateTime time = defaultTime ?? DateTime.now();
     if (date != null && date > 0) {
       time = DateTime.fromMillisecondsSinceEpoch(date);
       sex = "${time.year}-${time.month}-${time.day}";
@@ -127,14 +128,14 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         if (!widget.canSubmit) {
           return;
         }
-        DateTime last = DateTime(DateTime.now().year,12,31);
+        DateTime last = DateTime(DateTime.now().year, 12, 31);
         DateTime result = await showDatePicker(
           context: context,
           initialDate: time,
           firstDate: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
           lastDate: last,
         );
-        if (result != null){
+        if (result != null) {
           onchange(result);
         }
       },
@@ -303,15 +304,22 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
               (result) {
                 data.birthDay = result.millisecondsSinceEpoch;
               },
+              defaultTime: DateTime(2000, 1, 1),
             ));
         canSave = canSave && data.birthDay != null;
       } else if (item == "fillingDate") {
-        one = buildItem("填写日期", buildDatePicker(data.fillingDate,(result){
-          data.fillingDate = result.millisecondsSinceEpoch;
-        },));
+        one = buildItem(
+            "填写日期",
+            buildDatePicker(
+              data.fillingDate,
+              (result) {
+                data.fillingDate = result.millisecondsSinceEpoch;
+              },
+            ));
         canSave = canSave && data.fillingDate != null;
-      }else if (item == "nation") {
-        one = buildItem("民族", buildText(_nationController, 30, TextInputType.text));
+      } else if (item == "nation") {
+        one = buildItem(
+            "民族", buildText(_nationController, 30, TextInputType.text));
         canSave = canSave && _nationController.text.length > 0;
       }
       if (one != null) {
@@ -359,9 +367,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
                 try {
                   data.weight = double.parse(_weightController.text ?? "");
                   data.height = double.parse(_heightController.text ?? "");
-                }catch(e){
-
-                }
+                } catch (e) {}
 
                 data.nation = _nationController.text;
                 if (_ageController.text != null &&
