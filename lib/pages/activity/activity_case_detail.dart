@@ -297,7 +297,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         canSave = canSave && _weightController.text.length > 0;
       } else if (item == "birthDay") {
         one = buildItem(
-            "生日",
+            "出生日期",
             buildDatePicker(
               data.birthDay,
               (result) {
