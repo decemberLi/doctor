@@ -286,14 +286,14 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         canSave = canSave && _hospitalController.text.length > 0;
       } else if (item == "height") {
         one = buildItem(
-            "身高",
-            buildText(_heightController, 30,
+            "身高(cm)",
+            buildText(_heightController, 6,
                 TextInputType.numberWithOptions(decimal: true)));
         canSave = canSave && _heightController.text.length > 0;
       } else if (item == "weight") {
         one = buildItem(
-            "体重",
-            buildText(_weightController, 30,
+            "体重(kg)",
+            buildText(_weightController, 6,
                 TextInputType.numberWithOptions(decimal: true)));
         canSave = canSave && _weightController.text.length > 0;
       } else if (item == "birthDay") {
