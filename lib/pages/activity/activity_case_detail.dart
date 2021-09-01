@@ -323,6 +323,9 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
               data.birthDay,
               (result) {
                 data.birthDay = result.millisecondsSinceEpoch;
+                setState(() {
+
+                });
               },
               defaultTime: DateTime(2000, 1, 1),
             ));
@@ -334,6 +337,9 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
               data.fillingDate,
               (result) {
                 data.fillingDate = result.millisecondsSinceEpoch;
+                setState(() {
+
+                });
               },
             ));
         canSave = canSave && data.fillingDate != null;
