@@ -356,8 +356,13 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
               EasyLoading.instance.flash(() async {
                 data.hospital = _hospitalController.text;
                 data.patientName = _nameController.text;
-                data.weight = double.parse(_weightController.text ?? "");
-                data.height = double.parse(_heightController.text ?? "");
+                try {
+                  data.weight = double.parse(_weightController.text ?? "");
+                  data.height = double.parse(_heightController.text ?? "");
+                }catch(e){
+
+                }
+
                 data.nation = _nationController.text;
                 if (_ageController.text != null &&
                     _ageController.text.length > 0) {
