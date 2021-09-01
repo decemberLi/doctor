@@ -36,7 +36,6 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
   TextEditingController _hospitalController = TextEditingController();
   TextEditingController _weightController = TextEditingController();
   TextEditingController _heightController = TextEditingController();
-  TextEditingController _nationController = TextEditingController();
 
   ActivityCaseDetailState(this.data) {
     print("init data is ${data.toJson()}");
@@ -46,15 +45,11 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     _codeController.text = data.patientCode;
     _weightController.text = data.weight == null ? "" : data.weight.toString();
     _heightController.text = data.height == null ? "" : data.height.toString();
-    _nationController.text = data.nation;
 
     _weightController.addListener(() {
       setState(() {});
     });
     _heightController.addListener(() {
-      setState(() {});
-    });
-    _nationController.addListener(() {
       setState(() {});
     });
 
@@ -114,7 +109,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
       color: Color(0xff888888),
     );
     DateTime time = defaultTime ?? DateTime.now();
-    if (date != null && date > 0) {
+    if (date != null) {
       time = DateTime.fromMillisecondsSinceEpoch(date);
       sex = "${time.year}-${time.month}-${time.day}";
       textStyle = TextStyle(
@@ -132,7 +127,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         DateTime result = await showDatePicker(
           context: context,
           initialDate: time,
-          firstDate: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+          firstDate: DateTime(1900, 1, 1),
           lastDate: last,
         );
         if (result != null) {
@@ -151,19 +146,15 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     );
   }
 
-  Widget buildPicker() {
+  Widget buildPicker(
+      String text, List<String> list,String title, void Function(String value) onChange) {
     var sex = "请选择";
     var textStyle = TextStyle(
       fontSize: 12,
       color: Color(0xff888888),
     );
-    if (data?.sex != null) {
-      var sexValue = data?.sex;
-      if (sexValue == 0) {
-        sex = "女";
-      } else {
-        sex = "男";
-      }
+    if (text != null) {
+      sex = text;
       textStyle = TextStyle(
         fontSize: 16,
         color: Colors.black,
@@ -175,22 +166,29 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
         if (!widget.canSubmit) {
           return;
         }
-        var listData = [
-          PickerItem(
-            text: Text('女'),
-            value: 0,
-          ),
-          PickerItem(
-            text: Text('男'),
-            value: 1,
-          ),
-        ];
+        var listData = list
+            .asMap()
+            .map(
+              (key, value) => MapEntry(
+                key,
+                PickerItem(
+                  text: Text(value),
+                  value: key,
+                ),
+              ),
+            )
+            .values
+            .toList();
+        var selected = list.indexOf(text);
+        if (selected < 0){
+          selected = 0;
+        }
         var picker = Picker(
             title: Text(
-              '选择性别',
+              title,
               style: TextStyle(fontSize: 18),
             ),
-            selecteds: [data?.sex ?? 0],
+            selecteds: [selected],
             height: 200,
             columnPadding: EdgeInsets.all(30),
             itemExtent: 40,
@@ -202,10 +200,8 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
                 TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
             confirmTextStyle:
                 TextStyle(color: ThemeColor.primaryColor, fontSize: 18),
-            onConfirm: (picker, list) {
-              setState(() {
-                data.sex = listData[list.first].value;
-              });
+            onConfirm: (picker, resultList) {
+              onChange(list[resultList.first]);
             });
         picker.showModal(context);
       },
@@ -278,7 +274,31 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
                 TextInputType.numberWithOptions(decimal: true)));
         canSave = canSave && _ageController.text.length > 0;
       } else if (item == "sex") {
-        one = buildItem("性别", buildPicker());
+        String sex = null;
+        if (data?.sex != null) {
+          var sexValue = data?.sex;
+          if (sexValue == 0) {
+            sex = "女";
+          } else {
+            sex = "男";
+          }
+        }
+        one = buildItem(
+          "性别",
+          buildPicker(
+            sex,
+            ["男", "女"],
+            '选择性别',
+            (value) {
+              if (value == "男") {
+                data.sex = 1;
+              } else {
+                data.sex = 0;
+              }
+              setState(() {});
+            },
+          ),
+        );
         canSave = canSave && data.sex != null;
       } else if (item == "hospital") {
         one = buildItem(
@@ -318,9 +338,20 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
             ));
         canSave = canSave && data.fillingDate != null;
       } else if (item == "nation") {
+        var nation = data.nation;
         one = buildItem(
-            "民族", buildText(_nationController, 30, TextInputType.text));
-        canSave = canSave && _nationController.text.length > 0;
+          "民族",
+          buildPicker(
+            nation,
+            notionList,
+            '选择民族',
+            (value) {
+              data.nation = value;
+              setState(() {});
+            },
+          ),
+        );
+        canSave = canSave && data.nation != null;
       }
       if (one != null) {
         showList.add(one);
@@ -369,7 +400,6 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
                   data.height = double.parse(_heightController.text ?? "");
                 } catch (e) {}
 
-                data.nation = _nationController.text;
                 if (_ageController.text != null &&
                     _ageController.text.length > 0) {
                   try {
@@ -443,3 +473,62 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
     );
   }
 }
+
+const notionList = [
+  "汉族",
+  "满族",
+  "蒙古族",
+  "回族",
+  "藏族",
+  "维吾尔族",
+  "苗族",
+  "彝族",
+  "壮族",
+  "布依族",
+  "侗族",
+  "瑶族",
+  "白族",
+  "土家族",
+  "哈尼族",
+  "哈萨克族",
+  "傣族",
+  "黎族",
+  "傈僳族",
+  "佤族",
+  "畲族",
+  "高山族",
+  "拉祜族",
+  "水族",
+  "东乡族",
+  "纳西族",
+  "景颇族",
+  "柯尔克孜族",
+  "土族",
+  "达斡尔族",
+  "仫佬族",
+  "羌族",
+  "布朗族",
+  "撒拉族",
+  "毛南族",
+  "仡佬族",
+  "锡伯族",
+  "阿昌族",
+  "普米族",
+  "朝鲜族",
+  "塔吉克族",
+  "怒族",
+  "乌孜别克族",
+  "俄罗斯族",
+  "鄂温克族",
+  "德昂族",
+  "保安族",
+  "裕固族",
+  "京族",
+  "塔塔尔族",
+  "独龙族",
+  "鄂伦春族",
+  "赫哲族",
+  "门巴族",
+  "珞巴族",
+  "基诺族",
+];
