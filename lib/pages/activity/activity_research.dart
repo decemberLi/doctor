@@ -187,7 +187,7 @@ class _ActivityResearch extends State<ActivityResearch>
     var buttonText = "点击此处去填写";
     var statusText = "待完成";
     var statusColor = Color(0xff489DFE);
-    var borderColor = Color(0xff888888);
+    var borderColor = Color(0xffaaaaaa);
     var img = "assets/images/progress.png";
     var canEdit = _data.activityTaskId == null || _data.updatePatient;
     print("can edit is --- $canEdit");
@@ -217,7 +217,6 @@ class _ActivityResearch extends State<ActivityResearch>
                   "${item.schedule}%",
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w600,
                     color: borderColor,
                   ),
                 ),
@@ -340,7 +339,7 @@ class _ActivityResearch extends State<ActivityResearch>
 
   Widget buildGroupItem(int resourceID, ActivityQuestionnairesGroup item,
       bool isLast, bool isFirst) {
-    var borderColor = Color(0xff888888);
+    var borderColor = Color(0xffaaaaaa);
     var textColor = Color(0xff888888);
     var groupFinished = false;
     if (item.status == "COMPLETE" || item.status == "PASS") {
@@ -413,7 +412,6 @@ class _ActivityResearch extends State<ActivityResearch>
                             "${item.schedule}%",
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight: FontWeight.w600,
                               color: borderColor,
                             ),
                           ),
@@ -458,7 +456,7 @@ class _ActivityResearch extends State<ActivityResearch>
     var img = "assets/images/not_open.png";
     var statusText = "未开启";
     var statusColor = Color(0xffDEDEE1);
-    var borderColor = Color(0xff888888);
+    var borderColor = Color(0xffaaaaaa);
     if (item.status == "COMPLETE" || item.status == "WAIT_VERIFY") {
       timeText = "${normalDateFormate(item.submitTime)}完成";
       statusText = "已完成";
@@ -469,12 +467,12 @@ class _ActivityResearch extends State<ActivityResearch>
       if (item.status == "PROCEEDING" || item.status == "REJECT") {
         statusText = "待完成";
         statusColor = Color(0xff489DFE);
-        borderColor = Color(0xff888888);
+        borderColor = Color(0xffaaaaaa);
         img = "assets/images/progress.png";
       } else {
         statusText = "未开启";
         statusColor = Color(0xffDEDEE1);
-        borderColor = Color(0xff888888);
+        borderColor = Color(0xffaaaaaa);
         img = "assets/images/not_open.png";
       }
       var now = DateTime.now().millisecondsSinceEpoch;
@@ -488,7 +486,7 @@ class _ActivityResearch extends State<ActivityResearch>
       if (item.expire) {
         statusText = "已过期";
         statusColor = Color(0xffDEDEE1);
-        borderColor = Color(0xff888888);
+        borderColor = Color(0xffaaaaaa);
         img = "assets/images/expire.png";
       }
     }
@@ -629,7 +627,6 @@ class _ActivityResearch extends State<ActivityResearch>
               "${item.schedule}%",
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w600,
                 color: borderColor,
               ),
             ),
