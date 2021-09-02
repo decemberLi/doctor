@@ -284,6 +284,7 @@ class _ActivityResearch extends State<ActivityResearch>
                   decoration: BoxDecoration(
                     border: Border(
                       left: BorderSide(
+                        width: 0.5,
                         color: borderColor,
                       ),
                     ),
@@ -327,6 +328,7 @@ class _ActivityResearch extends State<ActivityResearch>
                   decoration: BoxDecoration(
                     border: Border(
                       left: BorderSide(
+                        width: 0.5,
                         color: borderColor,
                       ),
                     ),
@@ -588,6 +590,7 @@ class _ActivityResearch extends State<ActivityResearch>
             : BoxDecoration(
                 border: Border(
                   left: BorderSide(
+                    width: 0.5,
                     color: borderColor,
                   ),
                 ),
