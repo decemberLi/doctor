@@ -436,8 +436,9 @@ class _ActivityResearch extends State<ActivityResearch>
                       ],
                     ),
                   ),
-                  Icon(
-                      isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                  isExpanded ? Image.asset("assets/images/up.png") : Image.asset("assets/images/down.png"),
+                  // Icon(
+                  //     isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
                 ],
               ),
             ),
