@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage>
   final List<Widget> _children = [
     WorktopPage(),
     // PrescriptionPage(),
-    DoctorsHome(),
+    // DoctorsHome(),
     MessagePage(),
     UserPage(),
     // TestPage()
@@ -111,19 +111,19 @@ class _HomePageState extends State<HomePage>
   }
 
   void onTabTapped(int index) async {
-    if (index == 1) {
-      if (isDoctors) {
-        eventBus.fire(_outScreenViewModel.event);
-      }
-      isDoctors = true;
-    } else {
-      isDoctors = false;
-    }
-    eventBus.fire(EventTabIndex(index, null));
+    // if (index == 1) {
+    //   if (isDoctors) {
+    //     eventBus.fire(_outScreenViewModel.event);
+    //   }
+    //   isDoctors = true;
+    // } else {
+    //   isDoctors = false;
+    // }
+    // eventBus.fire(EventTabIndex(index, null));
     if (index == _currentIndex) {
       return;
     }
-    if (index == 3) {
+    if (index == 2) {
       eventBus.fire(KEY_UPDATE_USER_INFO);
     }
     if (index == 0) {
@@ -143,9 +143,9 @@ class _HomePageState extends State<HomePage>
     // }
     setState(() {
       _currentIndex = index;
-      if (index == 2) {
-        _refreshMessageCenterData();
-      }
+      // if (index == 1) {
+      //   _refreshMessageCenterData();
+      // }
     });
   }
 
@@ -391,7 +391,7 @@ class _HomePageState extends State<HomePage>
               //   ),
               //   label: '开处方',
               // ),
-              _buildDoctorsTabBarItem(value),
+              // _buildDoctorsTabBarItem(value),
               new BottomNavigationBarItem(
                 icon: _messageIcon(false),
                 activeIcon: _messageIcon(true),

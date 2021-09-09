@@ -15,7 +15,7 @@ import '../../doctors/tab_indicator.dart';
 
 /// 渲染列表
 class CollectDetailList extends StatelessWidget {
-  final _list = ["学术推广", "医生圈"];
+  // final _list = ["学术推广", "医生圈"];
 
   @override
   Widget build(BuildContext context) {
@@ -36,85 +36,26 @@ class CollectDetailList extends StatelessWidget {
         title: Text("我的收藏"),
         elevation: 0,
       ),
-      body: Container(
-          child: Column(
-        children: [
-          Container(
-            width: width,
-            height: 40,
-            child: TabBar(
-              isScrollable: true,
-              indicatorSize: TabBarIndicatorSize.label,
-              tabs: _list
-                  .map(
-                    (e) => Row(
-                      children: [
-                        Text(e),
-                      ],
-                    ),
-                  )
-                  .toList(),
-              indicator: LinearGradientTabIndicatorDecoration(
-                  borderSide: BorderSide(width: 4.0, color: Colors.white),
-                  insets: EdgeInsets.only(left: 7, right: 7)),
-              labelStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: ThemeColor.colorFF222222,
-                  fontSize: 16),
-              unselectedLabelStyle: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  color: ThemeColor.colorFF444444,
-                  fontSize: 16),
-            ),
-          ),
-          Container(
-            height: 0.5,
-            color: Color(0xffeeeeee),
-          ),
-          Expanded(
-              child: Container(
-            child: TabBarView(children: [
-              _SubCollectList<CollectResources>(
-                getData: (pageNum) async {
-                  List<CollectResources> list = [];
-                  try {
-                    var data = await API.shared.server.favoriteList(pageNum);
-                    list = data['records']
-                        .map<CollectResources>(
-                            (item) => CollectResources.fromJson(item))
-                        .toList();
-                  } catch (e) {
-                    print(e);
-                  }
+      body: _SubCollectList<CollectResources>(
+        getData: (pageNum) async {
+          List<CollectResources> list = [];
+          try {
+            var data = await API.shared.server.favoriteList(pageNum);
+            list = data['records']
+                .map<CollectResources>(
+                    (item) => CollectResources.fromJson(item))
+                .toList();
+          } catch (e) {
+            print(e);
+          }
 
-                  return list;
-                },
-                itemBuilder: studyCell,
-                emptyMsg: "暂无收藏",
-              ),
-              _SubCollectList<CollectTimeLineResources>(
-                getData: (pageNum) async {
-                  List<CollectTimeLineResources> list = [];
-                  try {
-                    var data = await API.shared.dtp.favoriteList(pageNum);
-                    list = data['records']
-                        .map<CollectTimeLineResources>(
-                            (item) => CollectTimeLineResources.fromJson(item))
-                        .toList();
-                  } catch (e) {
-                    print(e);
-                  }
-                  return list;
-                },
-                itemBuilder: timeLineCell,
-                emptyMsg: "暂无收藏",
-              ),
-            ]),
-          ))
-        ],
-      )),
+          return list;
+        },
+        itemBuilder: studyCell,
+        emptyMsg: "暂无收藏",
+      ),
     );
-    return DefaultTabController(length: _list.length, child: content);
+    return content;
   }
 }
 

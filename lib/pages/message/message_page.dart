@@ -138,7 +138,10 @@ class _MessagePageState extends State<MessagePage> with RouteAware {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                _buildInteractionMessageWidget(likeCount, commentCount),
+                // _buildInteractionMessageWidget(likeCount, commentCount),
+                Container(
+                  height: 20,
+                ),
                 Container(
                   padding: EdgeInsets.only(bottom: 5),
                   decoration: BoxDecoration(

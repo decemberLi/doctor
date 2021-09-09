@@ -81,21 +81,21 @@ class AuthStatusVerifyingPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Container(width: 24),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 26),
-                            child: AceButton(
-                              width: double.infinity,
-                              type: AceButtonType.primary,
-                              text: "去逛逛",
-                              onPressed: () async {
-                                eventBus.fire(EventHomeTab.createDoctorCircleEvent());
-                                Navigator.popUntil(context,  ModalRoute.withName(RouteManagerOld.HOME));
-                              },
-                            ),
-                          ),
-                        ),
+                        // Container(width: 24),
+                        // Expanded(
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.symmetric(vertical: 26),
+                        //     child: AceButton(
+                        //       width: double.infinity,
+                        //       type: AceButtonType.primary,
+                        //       text: "去逛逛",
+                        //       onPressed: () async {
+                        //         eventBus.fire(EventHomeTab.createDoctorCircleEvent());
+                        //         Navigator.popUntil(context,  ModalRoute.withName(RouteManagerOld.HOME));
+                        //       },
+                        //     ),
+                        //   ),
+                        // ),
                         Container(width: 24),
                       ],
                     ),

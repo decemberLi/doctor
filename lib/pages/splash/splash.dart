@@ -11,8 +11,6 @@ class GuidePage extends StatefulWidget {
   static const List<String> images = <String>[
     'guidance1.png',
     'guidance2.png',
-    'guidance3.png',
-    'guidance4.png',
   ];
 
   @override
