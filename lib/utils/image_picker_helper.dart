@@ -96,7 +96,7 @@ class ImageHelper {
         DeviceOrientation.landscapeRight,
       ]);
       var assetEntity =
-          await CameraPicker.pickFromCamera(context,shouldLockPortrait: false);
+          await CameraPicker.pickFromCamera(context,shouldLockPortrait: false,imageFormatGroup: ImageFormatGroup.bgra8888);
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
@@ -127,7 +127,7 @@ class ImageHelper {
     var originFile ;
     var thumbData ;
     if (0 == source && await PermissionHelper.checkCameraPermission(context)) {
-      var assetEntity = await CameraPicker.pickFromCamera(context);
+      var assetEntity = await CameraPicker.pickFromCamera(context,imageFormatGroup:ImageFormatGroup.bgra8888);
       originFile = await assetEntity.file;
       thumbData = await assetEntity.thumbData;
     } else if (source == 1 &&
