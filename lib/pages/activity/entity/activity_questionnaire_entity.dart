@@ -22,10 +22,10 @@ class ActivityQuestionnaireEntity {
       ..illnessCase = ActivityIllnessCaseEntity.fromJson(json["illnessCase"]);
     if (json["questionnaires"] != null) {
       result.questionnaires = (json["questionnaires"] as List)
-        .map((e) => ActivityQuestionnairesSubEntity.fromJson(e))
-        .toList();
+          .map((e) => ActivityQuestionnairesSubEntity.fromJson(e))
+          .toList();
     }
-    if (json["questionnaireGroups"] != null){
+    if (json["questionnaireGroups"] != null) {
       result.questionnaireGroups = (json["questionnaireGroups"] as List)
           .map((e) => ActivityQuestionnairesGroup.fromJson(e))
           .toList();
@@ -47,6 +47,7 @@ class ActivityQuestionnairesSubEntity {
   int endTime;
   String rejectReason;
   bool expire;
+  bool allowShare;
 
   ActivityQuestionnairesSubEntity();
 
@@ -63,7 +64,8 @@ class ActivityQuestionnairesSubEntity {
       ..rejectReason = json["rejectReason"] as String
       ..openTime = json["openTime"] as int
       ..endTime = json["endTime"] as int
-      ..expire = json['expire'] as bool;
+      ..expire = json['expire'] as bool
+      ..allowShare = json["allowShare"] as bool;
   }
 }
 
@@ -141,11 +143,11 @@ class ActivityIllnessCaseEntity {
       "status": status,
       "schedule": schedule,
       "completeTime": completeTime,
-      "fillingDate" : fillingDate,
-      "birthDay" : birthDay,
-      "nation" : nation,
-      "height" : height,
-      "weight" : weight,
+      "fillingDate": fillingDate,
+      "birthDay": birthDay,
+      "nation": nation,
+      "height": height,
+      "weight": weight,
     };
   }
 }

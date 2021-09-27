@@ -1,18 +1,11 @@
-import 'dart:io';
-import 'dart:math';
-
-import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/utils/data_format_util.dart';
 import 'package:doctor/utils/debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/common/env/environment.dart';
 import 'package:doctor/common/env/url_provider.dart';
-import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
-import 'package:doctor/pages/worktop/learn/research_detail/case_detail.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/constants.dart';
-import 'package:doctor/utils/time_text.dart';
 import 'package:doctor/widgets/dashed_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -436,7 +429,9 @@ class _ActivityResearch extends State<ActivityResearch>
                       ],
                     ),
                   ),
-                  isExpanded ? Image.asset("assets/images/up.png") : Image.asset("assets/images/down.png"),
+                  isExpanded
+                      ? Image.asset("assets/images/up.png")
+                      : Image.asset("assets/images/down.png"),
                   // Icon(
                   //     isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
                 ],
@@ -537,29 +532,7 @@ class _ActivityResearch extends State<ActivityResearch>
                   fontSize: 14,
                 ),
               ),
-              // Text(
-              //   item.summary,
-              //   style: TextStyle(
-              //     fontSize: 12,
-              //     color: Color(0xff444444),
-              //   ),
-              // ),
             ],
-          ),
-        ),
-        Positioned(
-          left: -52,
-          top: -28,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 6),
-            child: Transform(
-              //对齐方式
-              alignment: Alignment.topRight,
-              //设置扭转值
-              transform: Matrix4.rotationZ(-0.9),
-              //设置被旋转的容器
-              child: typeDecoratedBox("MEDICAL_TEMPLATE"),
-            ),
           ),
         ),
       ],
@@ -608,6 +581,19 @@ class _ActivityResearch extends State<ActivityResearch>
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
             ),
             statusWidget,
+            if (item.allowShare ?? false)
+              Row(
+                children: [
+                  Container(width: 4,),
+                  Image.asset(
+                    "assets/images/share_arrow.png",
+                    width: 12,
+                    height: 12,
+                  ),
+                  Container(width: 4,),
+                  Text("可分享",style: TextStyle(fontSize: 10,color: Color(0xff888888)),),
+                ],
+              ),
             Spacer(),
             Text(
               timeText,
@@ -639,6 +625,19 @@ class _ActivityResearch extends State<ActivityResearch>
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
           ),
           statusWidget,
+          if (item.allowShare ?? false)
+            Row(
+              children: [
+                Container(width: 4,),
+                Image.asset(
+                  "assets/images/share_arrow.png",
+                  width: 12,
+                  height: 12,
+                ),
+                Container(width: 4,),
+                Text("可分享",style: TextStyle(fontSize: 10,color: Color(0xff888888)),),
+              ],
+            ),
           Spacer(),
           Text(
             timeText,
