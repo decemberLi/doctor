@@ -355,7 +355,7 @@ class _ResourceDetailPageState extends State<ResourceDetailPage>
   }
 
   //发送反馈
-  void sendFeedback(content, {String level = '其他'}) {
+  void sendFeedback(content, {String level = 'other'}) {
     //上传反馈 测试使用
     // setState(() {
     //   successFeedback = true;
