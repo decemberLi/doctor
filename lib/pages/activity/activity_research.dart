@@ -455,7 +455,7 @@ class _ActivityResearch extends State<ActivityResearch>
     var statusColor = Color(0xffDEDEE1);
     var borderColor = Color(0xffaaaaaa);
     if (item.status == "COMPLETE" || item.status == "WAIT_VERIFY") {
-      timeText = "${normalDateFormate(item.submitTime)}完成";
+      timeText = "${slashNormalDateFormate(item.submitTime)}完成";
       statusText = "已完成";
       statusColor = Color(0xff52C41A);
       borderColor = Color(0xff52C41A);
@@ -475,10 +475,10 @@ class _ActivityResearch extends State<ActivityResearch>
       var now = DateTime.now().millisecondsSinceEpoch;
       if (item.openTime != null && now < item.openTime) {
         if (!isFirst) {
-          timeText = "${normalDateFormate(item.openTime)}开启";
+          timeText = "${slashNormalDateFormate(item.openTime)}开启";
         }
       } else if (item.endTime != null) {
-        timeText = "${normalDateFormate(item.endTime)}截止";
+        timeText = "${slashNormalDateFormate(item.endTime)}截止";
       }
       if (item.expire) {
         statusText = "已过期";
