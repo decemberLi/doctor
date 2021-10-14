@@ -404,7 +404,7 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
                 try {
                   data.weight = double.parse(_weightController.text ?? "");
                 } catch (e) {}
-                
+
                 try {
                   data.height = double.parse(_heightController.text ?? "");
                 }catch(e){}
