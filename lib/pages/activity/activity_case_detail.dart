@@ -403,8 +403,11 @@ class ActivityCaseDetailState extends State<ActivityCaseDetail> {
                 data.patientName = _nameController.text;
                 try {
                   data.weight = double.parse(_weightController.text ?? "");
-                  data.height = double.parse(_heightController.text ?? "");
                 } catch (e) {}
+                
+                try {
+                  data.height = double.parse(_heightController.text ?? "");
+                }catch(e){}
 
                 if (_ageController.text != null &&
                     _ageController.text.length > 0) {
