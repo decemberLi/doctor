@@ -47,6 +47,10 @@ const String TYPE_SURVEY = 'SURVEY';
 /// 讲课类型
 const String TYPE_DOCTOR_LECTURE = 'DOCTOR_LECTURE';
 
+///
+const String TYPE_PRODUCT_PROFESSIONAL_SHARE = "PRODUCT_PROFESSIONAL_SHARE";
+const String TYPE_PRODUCT_DOCTOR_EDUCATION = "PRODUCT_DOCTOR_EDUCATION";
+
 @RoutePage(name: "learn_detail_page")
 class LearnDetailPage extends StatefulWidget {
   int learnPlanId;
@@ -220,6 +224,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     switch (type) {
       case TYPE_DEPART:
       case TYPE_SALON:
+      case TYPE_PRODUCT_DOCTOR_EDUCATION:
+      case TYPE_PRODUCT_PROFESSIONAL_SHARE:
         return '会议详情';
       case TYPE_VISIT:
         return '拜访详情';

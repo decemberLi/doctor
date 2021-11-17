@@ -19,6 +19,8 @@ const Map<String, String> TASK_TEMPLATE = {
   'DOCTOR_LECTURE': '讲课邀请',
   'VISIT': '拜访',
   'MEDICAL_SURVEY':'医学调研',
+  "PRODUCT_PROFESSIONAL_SHARE":"会议",
+  "PRODUCT_DOCTOR_EDUCATION":"会议",
 };
 
 // 资源类型
@@ -36,7 +38,7 @@ const TASK_TYPE_MAP = [
   },
   {
     'text': '会议',
-    'taskTemplate': ['SALON', 'DEPART'],
+    'taskTemplate': ['SALON', 'DEPART','PRODUCT_PROFESSIONAL_SHARE',"PRODUCT_DOCTOR_EDUCATION"],
   },
   {
     'text': '拜访',
