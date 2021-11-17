@@ -152,4 +152,6 @@ class MedcloudsNativeApi {
       (await _channel.invokeMethod('isKeptOn')) as bool;
 
   Future keepOn(bool on) => _channel.invokeMethod('keepOn', "${on ? "1" : "0"}");
+
+  Future fetchConfig(String configKey) => _channel.invokeMethod('getConfigValue', configKey);
 }
