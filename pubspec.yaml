@@ -103,7 +103,7 @@ dependencies:
   http_manager:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/http_manager.git
-      ref: 1.0.7
+      ref: c6619812f80f99455074f5c1177a723d2b98dc4c
   qr_code_scanner: ^0.4.0
   webview_flutter: 2.0.4
   cached_network_image: ^3.0.0
@@ -111,6 +111,7 @@ dependencies:
     git:
       url: git@codeup.aliyun.com:5f45ce70d24814603933bc3a/e-medclouds-web-group/yyy_route.git
   flutter_spinkit: 5.0.0
+  dio: ^4.0.0
 #   path: /Users/liuchangqing/Documents/github-workspace/yyy_route_annotation
 
 dependency_overrides:

@@ -5,6 +5,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:doctor/common/event/event_home_tab.dart';
 import 'package:doctor/http/foundationSystem.dart';
+import 'package:doctor/http/interceptors/interceprots.dart';
 import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/activity_detail.dart';
@@ -39,6 +40,7 @@ import 'package:doctor/http/foundationSystem.dart';
 import 'package:doctor/pages/activity/activity_research.dart';
 import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
+import 'http/interceptors/error/http_error_interceptors.dart';
 import 'model/ucenter/doctor_detail_info_entity.dart';
 import 'utils/app_utils.dart';
 import './widgets/YYYEasyLoading.dart';
@@ -123,71 +125,12 @@ class RootWidget extends StatelessWidget {
       CachedLearnDetailVideoHelper.cleanVideoCache(userId);
       return;
     });
-    HttpManager.shared.onRequest = (options) async {
-      debugPrint("$options");
-      debugPrint("ticket:${SessionManager.shared.session}");
-      options.headers["_ticketObject"] = SessionManager.shared.session;
-      options.headers["_appVersion"] = await PlatformUtils.getAppVersion();
-      options.headers["_appVersionCode"] = await PlatformUtils.getBuildNum();
-      options.headers["_greyVersion"] = await PlatformUtils.getAppVersion();
-      options.headers["_requestId"] = DateTime.now().millisecondsSinceEpoch;
-      if (Platform.isAndroid) {
-        options.headers['_platform'] = "Android";
-      } else if (Platform.isIOS) {
-        options.headers['_platform'] = "iOS";
-      }
-      debugPrint('Request headers -> ${options.headers}');
-
-      return options;
-    };
-    HttpManager.shared.onResponse = (response) {
-      debugPrint("url - ${response.realUri} data - ${response.data}");
-      Map<String, dynamic> data = response.data;
-      String status = data["status"];
-      print("the status is $status");
-      if (status.toUpperCase() == "ERROR") {
-        String errorCode = data["errorCode"];
-        if (outLoginCodes.contains(errorCode) ||
-            authFailCodes.contains(errorCode)) {
-          SessionManager.shared.session = null;
-        } else if (errorCode == "00010012") {
-          var context = NavigationService().navigatorKey.currentContext;
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) {
-                return CupertinoAlertDialog(
-                  title: Text("${data["errorMsg"]}"),
-                  actions: [
-                    TextButton(
-                      child: Text("取消"),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    TextButton(
-                      child: Text("去更新"),
-                      onPressed: () async {
-                        Navigator.pop(context);
-                        EasyLoading.instance.flash(() async {
-                          AppUpdateInfo updateInfo =
-                              await AppRepository.checkVersion();
-                          AppUpdateHelper.update(context, updateInfo);
-                        });
-                      },
-                    ),
-                  ],
-                );
-              });
-        }
-        if (userAuthCode.contains(errorCode)) {
-          throw data;
-        }
-        throw NetError(data["errorMsg"] ?? "请求错误");
-      }
-      response.data = response.data["content"] ?? response.data;
-      return response;
-    };
+    HttpManager.shared.addInterceptors([
+      // SocketErrorInterceptor(),
+      CommonReqHeaderInterceptor(),
+      CommonRespInterceptor(),
+      XLogInterceptor(),
+    ]);
   }
 
   @override
