@@ -85,7 +85,8 @@ class LearnListItemWiget extends StatelessWidget {
 
   String timeRender() {
     if (this.item.taskTemplate == 'SALON' ||
-        this.item.taskTemplate == 'DEPART') {
+        this.item.taskTemplate == 'DEPART'|| this.item.taskTemplate == "PRODUCT_PROFESSIONAL_SHARE" ||
+        this.item.taskTemplate == "PRODUCT_DOCTOR_EDUCATION") {
       DateTime now = DateTime.now();
       if (now.millisecondsSinceEpoch < this.item.meetingStartTime) {
         Duration duration =

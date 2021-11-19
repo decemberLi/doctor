@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 /// 渲染列表
 class PlanDetailList extends StatelessWidget {
   final data;
+
   PlanDetailList(this.data);
 
   Widget typeDecoratedBox(String type) {
@@ -248,8 +249,10 @@ class PlanDetailList extends StatelessWidget {
       tiles.add(new GestureDetector(
           onTap: () async {
             //是会议类型
-            bool isMeetingType =
-                data.taskTemplate == 'SALON' || data.taskTemplate == 'DEPART';
+            bool isMeetingType = data.taskTemplate == 'SALON' ||
+                data.taskTemplate == 'DEPART' ||
+                data.taskTemplate == "PRODUCT_PROFESSIONAL_SHARE" ||
+                data.taskTemplate == "PRODUCT_DOCTOR_EDUCATION";
             num nowDate = DateTime.now().millisecondsSinceEpoch;
             // 如果是会议类型，未到会议开始时间不能跳转资源页面
             if (isMeetingType &&
@@ -263,8 +266,8 @@ class PlanDetailList extends StatelessWidget {
               "learnPlanId": data.learnPlanId,
               "resourceId": item.resourceId,
               "taskTemplate": data.taskTemplate,
-              "meetingStartTime": isMeetingType?data.meetingStartTime:null,
-              "meetingEndTime": isMeetingType?data.meetingEndTime:null,
+              "meetingStartTime": isMeetingType ? data.meetingStartTime : null,
+              "meetingEndTime": isMeetingType ? data.meetingEndTime : null,
               "taskDetailId": data.taskDetailId,
             });
             if (data.taskTemplate != 'DOCTOR_LECTURE') {
@@ -328,10 +331,10 @@ class PlanDetailList extends StatelessWidget {
                                     if (item.thumbnailUrl != null)
                                       Container(
                                           margin: EdgeInsets.only(left: 12),
-                                          child: Stack(
-                                              alignment: Alignment
-                                                  .center, //指定未定位或部分定位widget的对齐方式
-                                              children: <Widget>[
+                                          child:
+                                              Stack(alignment: Alignment.center,
+                                                  //指定未定位或部分定位widget的对齐方式
+                                                  children: <Widget>[
                                                 Image.network(item.thumbnailUrl,
                                                     width: 90,
                                                     height: 50,

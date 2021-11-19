@@ -54,6 +54,7 @@ const String TYPE_PRODUCT_DOCTOR_EDUCATION = "PRODUCT_DOCTOR_EDUCATION";
 @RoutePage(name: "learn_detail_page")
 class LearnDetailPage extends StatefulWidget {
   int learnPlanId;
+
   LearnDetailPage(this.learnPlanId, {Key key}) : super(key: key);
 
   @override
@@ -72,7 +73,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     updateDoctorInfo();
   }
 
-  updateDoctorInfo() async{
+  updateDoctorInfo() async {
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     if (model?.data != null) {
@@ -389,9 +390,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           info.videoTitle = obj['title'] ?? data.taskName;
           info.duration = int.parse("${obj['duration'] ?? 0}");
           info.presenter = userInfo?.doctorName ?? '';
-          if (Platform.isAndroid){
+          if (Platform.isAndroid) {
             info.path = obj["path"];
-          }else{
+          } else {
             String path = obj["path"];
             var prefix = await getApplicationDocumentsDirectory();
             path = path.replaceAll(prefix.path, "");
@@ -414,7 +415,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
   _doUpload(CachedVideoInfo data) async {
     print("do upload");
     var path = data.path;
-    if (Platform.isIOS){
+    if (Platform.isIOS) {
       var prefix = await getApplicationDocumentsDirectory();
       path = prefix.path + path;
     }
@@ -499,17 +500,17 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     bool has = await CachedLearnDetailVideoHelper.hasCachedVideo(
         userInfo.doctorUserId,
         learnPlanId: widget.learnPlanId);
-    var data = await CachedLearnDetailVideoHelper.getCachedVideoInfo(userInfo.doctorUserId);
+    var data = await CachedLearnDetailVideoHelper.getCachedVideoInfo(
+        userInfo.doctorUserId);
     setState(() {
       hasVideo = has;
-      if (has){
+      if (has) {
         videoDuration = data.duration;
       }
     });
   }
 
-  Widget _renderUploadButton(
-      LearnDetailViewModel model, LearnDetailItem data) {
+  Widget _renderUploadButton(LearnDetailViewModel model, LearnDetailItem data) {
     if (data.taskTemplate == 'DOCTOR_LECTURE' && hasVideo) {
       return Container();
     } else if (data.reLearn && data.taskTemplate == 'DOCTOR_LECTURE') {
@@ -634,182 +635,201 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
         children: [
           Expanded(
             child: Container(
-            color: ThemeColor.colorFFF3F5F8,
-            alignment: Alignment.topCenter,
-            child: Flex(
-              direction: Axis.vertical,
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Flexible(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              if ( //data.taskTemplate == 'DOCTOR_LECTURE' &&
-                              data.reLearnReason != null &&
-                                  data.status != 'SUBMIT_LEARN' &&
-                                  data.status != 'ACCEPTED')
+              color: ThemeColor.colorFFF3F5F8,
+              alignment: Alignment.topCenter,
+              child: Flex(
+                direction: Axis.vertical,
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Flexible(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                if ( //data.taskTemplate == 'DOCTOR_LECTURE' &&
+                                data.reLearnReason != null &&
+                                    data.status != 'SUBMIT_LEARN' &&
+                                    data.status != 'ACCEPTED')
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                                    padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                  '${data.representName}推广员给您留言了：',
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 18,
+                                                    color: ThemeColor
+                                                        .colorFFfece35,
+                                                  )),
+                                            ]),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                '${data.reLearnReason}',
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 14,
+                                                  color:
+                                                      ThemeColor.colorFFfece35,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
                                 Container(
-                                  alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                                  padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                                  margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                                  // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
+                                        BorderRadius.all(Radius.circular(8)),
                                   ),
                                   child: Column(
                                     children: [
-                                      Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                          children: [
-                                            Text('${data.representName}推广员给您留言了：',
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 18,
-                                                  color: ThemeColor.colorFFfece35,
-                                                )),
-                                          ]),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              '${data.reLearnReason}',
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 14,
-                                                color: ThemeColor.colorFFfece35,
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin:
+                                            EdgeInsets.fromLTRB(30, 0, 30, 0),
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 14, 0, 0),
+                                        child: GestureDetector(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text('学习计划信息',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 18,
+                                                        color: ThemeColor
+                                                            .primaryColor,
+                                                      )),
+                                                  // 新
+                                                  if (data.taskTemplate ==
+                                                          'SALON' ||
+                                                      data.taskTemplate ==
+                                                          'DEPART' ||
+                                                      data.taskTemplate ==
+                                                          "PRODUCT_PROFESSIONAL_SHARE" ||
+                                                      data.taskTemplate ==
+                                                          "PRODUCT_DOCTOR_EDUCATION")
+                                                    _meetingStatus(
+                                                        data.meetingStartTime,
+                                                        data.meetingEndTime)
+                                                ],
                                               ),
-                                            ),
+                                              Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      model.collapsed
+                                                          ? Icons
+                                                              .keyboard_arrow_down
+                                                          : Icons
+                                                              .keyboard_arrow_up,
+                                                      color: ThemeColor
+                                                          .primaryColor,
+                                                    ),
+                                                  ]),
+                                            ],
                                           ),
-                                        ],
-                                      )
+                                          onTap: () {
+                                            model.toggleCollapsed();
+                                          },
+                                        ),
+                                      ),
+                                      ...learnListFields.map((e) {
+                                        if (model.collapsed &&
+                                            e['notCollapse'] == null) {
+                                          return Container();
+                                        }
+                                        return _buildListItem(
+                                            label: e['label'],
+                                            value: dataMap[e['field']],
+                                            format: e['format']);
+                                      }).toList(),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin:
+                                            EdgeInsets.fromLTRB(30, 10, 30, 10),
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                        child: Column(children: [
+                                          _buildLookCourse(data),
+                                        ]),
+                                      ),
                                     ],
                                   ),
                                 ),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                                // padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                                      padding: EdgeInsets.fromLTRB(0, 14, 0, 0),
-                                      child: GestureDetector(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text('学习计划信息',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: 18,
-                                                      color:
-                                                      ThemeColor.primaryColor,
-                                                    )),
-                                                // 新
-                                                if (data.taskTemplate == 'SALON' ||
-                                                    data.taskTemplate == 'DEPART')
-                                                  _meetingStatus(
-                                                      data.meetingStartTime,
-                                                      data.meetingEndTime)
-                                              ],
-                                            ),
-                                            Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    model.collapsed
-                                                        ? Icons.keyboard_arrow_down
-                                                        : Icons.keyboard_arrow_up,
-                                                    color: ThemeColor.primaryColor,
-                                                  ),
-                                                ]),
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          model.toggleCollapsed();
-                                        },
-                                      ),
+                                Container(
+                                    alignment: Alignment.centerLeft,
+                                    margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                                    padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
                                     ),
-                                    ...learnListFields.map((e) {
-                                      if (model.collapsed &&
-                                          e['notCollapse'] == null) {
-                                        return Container();
-                                      }
-                                      return _buildListItem(
-                                          label: e['label'],
-                                          value: dataMap[e['field']],
-                                          format: e['format']);
-                                    }).toList(),
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      margin: EdgeInsets.fromLTRB(30, 10, 30, 10),
-                                      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                      child: Column(children: [
-                                        _buildLookCourse(data),
-                                      ]),
-                                    ),
-                                  ],
+                                    child: Text('资料列表',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18,
+                                          color: ThemeColor.primaryColor,
+                                        ))),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                                  child: PlanDetailList(data),
                                 ),
-                              ),
-                              Container(
-                                  alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                                  padding: EdgeInsets.fromLTRB(16, 14, 0, 14),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
-                                  ),
-                                  child: Text('资料列表',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                        color: ThemeColor.primaryColor,
-                                      ))),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                                child: PlanDetailList(data),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      _renderLookRecording(data),
-                      if (data.status != 'SUBMIT_LEARN' &&
-                          data.status != 'ACCEPTED')
-                        _renderUploadButton(model, data),
-                    ],
-                  ),
-                )
-              ],
+                        _renderLookRecording(data),
+                        if (data.status != 'SUBMIT_LEARN' &&
+                            data.status != 'ACCEPTED')
+                          _renderUploadButton(model, data),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
           ),
           if (data.taskTemplate == 'DOCTOR_LECTURE' && hasVideo)
             _buildVideoBottom(),
@@ -818,9 +838,9 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     );
   }
 
-  Widget _buildVideoBottom(){
-    var second = videoDuration%60;
-    var secondString = second.toString().padLeft(2,'0');
+  Widget _buildVideoBottom() {
+    var second = videoDuration % 60;
+    var secondString = second.toString().padLeft(2, '0');
     return Container(
       height: 60,
       color: Color(0xff444444),
@@ -829,23 +849,28 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
           Container(
             width: 18,
           ),
-          Expanded(child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "当前有一个未上传的讲课视频",
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-              Text("时长${(videoDuration/60).floor()}:$secondString",style: TextStyle(color: Color(0xff489DFE), fontSize: 12),),
-            ],
-          ),),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "当前有一个未上传的讲课视频",
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+                Text(
+                  "时长${(videoDuration / 60).floor()}:$secondString",
+                  style: TextStyle(color: Color(0xff489DFE), fontSize: 12),
+                ),
+              ],
+            ),
+          ),
           GestureDetector(
             onTap: () async {
               _showUploadVideoAlert(
                 "确定删除已录制的讲课视频吗？",
                 "录制时长${(videoDuration / 60).floor()}:$secondString",
-                    () {
+                () {
                   CachedLearnDetailVideoHelper.cleanVideoCache(
                       userInfo.doctorUserId);
                   setState(() {
@@ -868,8 +893,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             onTap: () {
               EasyLoading.instance.flash(() async {
                 var data =
-                await CachedLearnDetailVideoHelper.getCachedVideoInfo(
-                    userInfo.doctorUserId);
+                    await CachedLearnDetailVideoHelper.getCachedVideoInfo(
+                        userInfo.doctorUserId);
                 await _doUpload(data);
               });
             },
@@ -905,7 +930,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_model == null){
+    if (_model == null) {
       _model = LearnDetailViewModel(widget.learnPlanId);
     }
     return WillPopScope(
