@@ -41,7 +41,7 @@ abstract class SubAPI {
       }
     } catch (err) {
       print(err);
-      ApiHost.instance.enableCNHost = false;
+      ApiHost.instance.enableCNHost = true;
     }
     return await doNormalPost(path, params);
   }
