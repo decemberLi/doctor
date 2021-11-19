@@ -25,12 +25,9 @@ import com.tencent.ocr.sdk.common.ISDKKitResultListener
 import com.tencent.ocr.sdk.common.OcrSDKKit
 import com.tencent.ocr.sdk.common.OcrType
 import com.umeng.analytics.MobclickAgent
-import com.umeng.cconfig.UMRemoteConfig
-import com.umeng.cconfig.listener.OnConfigStatusChangedListener
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.common.MethodChannel
-import org.json.JSONArray
 import org.json.JSONObject
 
 
@@ -249,23 +246,6 @@ class MainActivity : FlutterActivity() {
                     activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 }
                 return true
-            }
-        })
-        ChannelManager.instance.on("getConfigValue", object : OnFlutterCall {
-            override fun call(arguments: String?, channel: MethodChannel): Any {
-                val config = UMRemoteConfig.getInstance().getConfigValue(arguments)
-                com.umeng.cconfig.a.c.a(context).apply {
-                    edit().remove("cconfig_sp_last_request_time").apply()
-                }
-                UMRemoteConfig.getInstance().setOnNewConfigfecthed(object : OnConfigStatusChangedListener {
-                    override fun onFetchComplete() {
-                    }
-
-                    override fun onActiveComplete() {
-                    }
-                })
-                UMRemoteConfig.getInstance().activeFetchConfig()
-                return config ?: ""
             }
         })
 //        CommonWebActivity.start(this@MainActivity, "", "http://192.168.1.27:9000/#/detail?id=283")

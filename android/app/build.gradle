@@ -156,10 +156,9 @@ dependencies {
     implementation "com.tencent.bugly:crashreport:$bugly_version"
     implementation "com.tencent.bugly:nativecrashreport:$bugly_native_sdk_version"
     // umeng 统计
-    implementation "com.umeng.umsdk:common:9.4.4"
+    implementation "com.umeng.umsdk:common:9.4.0"
     implementation "com.umeng.umsdk:asms:1.2.3"
     implementation "com.umeng.umsdk:apm:1.4.0"
-    implementation 'com.umeng.umsdk:abtest:1.0.0'
     // push
     implementation 'cn.jiguang.sdk:jpush:3.8.6'
     implementation 'cn.jiguang.sdk:jcore:2.6.0'
