@@ -313,7 +313,8 @@ class LearnListItemWiget extends StatelessWidget {
             children: [
               resourceTypeListWiget,
               if (this.item.taskTemplate == 'SALON' ||
-                  this.item.taskTemplate == 'DEPART')
+                  this.item.taskTemplate == 'DEPART' || this.item.taskTemplate == "PRODUCT_PROFESSIONAL_SHARE" ||
+                  this.item.taskTemplate == "PRODUCT_DOCTOR_EDUCATION")
                 _meetingStatus(
                     this.item.meetingEndTime, this.item.meetingStartTime),
             ]),
