@@ -37,4 +37,12 @@ class Developer extends SubAPI {
       'type': 'doctor',
     },
   );
+  
+  serviceEnable() async => normalPost('/dict/list-data-dict',params: {
+    'pn': 1,
+    'ps': 10,
+    'code': 'service_enable',
+    'type': 'doctor',
+  });
+  
 }
