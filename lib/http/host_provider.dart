@@ -28,18 +28,16 @@ class ApiHost {
 
   String get apiHost {
     if (enableCNHost) {
-      String host() {
-        switch (_environment.env) {
-          case AppEnvironment.ENV_DEV:
-            return 'http://gateway-dev.e-medclouds.com.cn';
-          case AppEnvironment.ENV_QA:
-            return 'http://gateway-dev.e-medclouds.com';
-          case AppEnvironment.ENV_PROD:
-            return 'https://gateway.e-medclouds.com.cn';
-        }
-        throw AssertionError(
-            'AppEnvironment config info error, env -> ${_environment.env}');
+      switch (_environment.env) {
+        case AppEnvironment.ENV_DEV:
+          return 'http://gateway-dev.e-medclouds.com.cn';
+        case AppEnvironment.ENV_QA:
+          return 'http://gateway-dev.e-medclouds.com.cn';
+        case AppEnvironment.ENV_PROD:
+          return 'https://gateway.e-medclouds.com.cn';
       }
+      throw AssertionError(
+          'AppEnvironment config info error, env -> ${_environment.env}');
     }
 
     return host();
