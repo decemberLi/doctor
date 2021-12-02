@@ -1,3 +1,4 @@
+import 'package:doctor/common/constants.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:flutter/cupertino.dart';
@@ -108,7 +109,7 @@ class _LoginFooterState extends State<LoginFooter> {
                         recognizer: _tap1
                           ..onTap = () {
                             MedcloudsNativeApi.instance().openWebPage(
-                                'https://static.e-medclouds.com/web/other/protocols/doctor_license_app.html',
+                                userAgreement,
                                 title: '易学术服务协议');
                           },
                       ),
@@ -121,7 +122,7 @@ class _LoginFooterState extends State<LoginFooter> {
                         recognizer: _tap2
                           ..onTap = () {
                             MedcloudsNativeApi.instance().openWebPage(
-                                'https://static.e-medclouds.com/web/other/protocols/doctor_privacy_app.html',
+                                privacyAgreement,
                                 title: '易学术隐私协议');
                           },
                       ),

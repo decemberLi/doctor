@@ -1,5 +1,6 @@
 import 'package:doctor/http/foundation.dart';
 import 'package:doctor/pages/user/setting/DevSetting.dart';
+import 'package:doctor/pages/user/setting/service_aggrement_page.dart';
 import 'package:doctor/pages/user/setting/update/app_update.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -38,7 +39,18 @@ class _SettingPageState extends State<SettingPage> {
       ),
       body: Column(
         children: [
-          _buildModifyPwdWidget(),
+          GestureDetector(
+            child: _buildItemWidget('修改登录密码'),
+            onTap: () {
+              Navigator.pushNamed(context, RouteManagerOld.MODIFY_PWD);
+            },
+          ),
+          GestureDetector(
+            child: _buildItemWidget('服务协议'),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ServiceAgreementPage()));
+            },
+          ),
           Container(
             margin: EdgeInsets.only(left: 16, right: 16, top: 12),
             decoration: BoxDecoration(
@@ -106,40 +118,35 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  _buildModifyPwdWidget() {
-    return GestureDetector(
-      child: Container(
-        height: 50,
-        padding: EdgeInsets.only(right: 18),
-        margin: EdgeInsets.only(left: 16, right: 16, top: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(
-            Radius.circular(6),
-          ),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-                child: Container(
-              margin: EdgeInsets.only(left: 24),
-              child: Text(
-                '修改登录密码',
-                style: TextStyle(color: ThemeColor.colorFF222222, fontSize: 14),
-                textAlign: TextAlign.left,
-              ),
-            )),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: ThemeColor.colorFF000000,
-              size: 12,
-            )
-          ],
+  _buildItemWidget(String text) {
+    return Container(
+      height: 50,
+      padding: EdgeInsets.only(right: 18),
+      margin: EdgeInsets.only(left: 16, right: 16, top: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(
+          Radius.circular(6),
         ),
       ),
-      onTap: () {
-        Navigator.pushNamed(context, RouteManagerOld.MODIFY_PWD);
-      },
+      child: Row(
+        children: [
+          Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: 24),
+                child: Text(
+                  text,
+                  style: TextStyle(color: ThemeColor.colorFF222222, fontSize: 14),
+                  textAlign: TextAlign.left,
+                ),
+              )),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: ThemeColor.colorFF000000,
+            size: 12,
+          )
+        ],
+      ),
     );
   }
 

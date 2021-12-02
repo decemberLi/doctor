@@ -391,8 +391,10 @@ class AppUpdateDialog extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
+                  print('----------------------------');
                   //关闭对话框并返回true
                   if (_updateInfo.forceUpgrade) {
+                    print('----------------------------${_updateInfo.forceUpgrade}');
                     exit(0);
                   }
                   _record();
