@@ -25,6 +25,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../root_widget.dart';
 import 'doctors/doctors_home.dart';
 import 'doctors/model/in_screen_event_model.dart';
+import 'user/setting/service_aggrement_page.dart';
 
 /// 首页
 class HomePage extends StatefulWidget {
@@ -321,6 +322,7 @@ class _HomePageState extends State<HomePage>
         onTabTapped(event.index);
       }
     });
+    agreementDialog(context);
   }
 
   @override

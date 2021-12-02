@@ -668,7 +668,7 @@ class _WorktopPageState extends State<WorktopPage>
       child: GestureDetector(
         onTap: () {
           print(
-              "the identityStatus is ${doctorInfoEntity?.identityStatus} - ${doctorInfoEntity?.authStatus} ");
+              "the identityStatus is ${doctorInfoEntity?.identityStatus} , auth status is ${doctorInfoEntity?.authStatus} ");
           if (doctorInfoEntity?.identityStatus == 'PASS') {
             if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' ||
                 doctorInfoEntity.authStatus == 'FAIL') {

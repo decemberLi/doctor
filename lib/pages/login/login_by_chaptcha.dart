@@ -9,6 +9,7 @@ import 'package:doctor/http/Sso.dart';
 import 'package:doctor/http/foundation.dart';
 import 'package:doctor/pages/login/login_footer.dart';
 import 'package:doctor/pages/login/model/login_info.dart';
+import 'package:doctor/pages/user/setting/service_aggrement_page.dart';
 import 'package:doctor/provider/GlobalData.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -147,6 +148,7 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
     );
     getLastPhone();
     super.initState();
+    agreementDialog(context);
   }
 
   getLastPhone() async {
