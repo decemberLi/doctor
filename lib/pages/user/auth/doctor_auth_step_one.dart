@@ -39,7 +39,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    var content = WillPopScope(
       child: GestureDetector(
         child: Scaffold(
           backgroundColor: ThemeColor.colorFFF3F5F8,
@@ -120,6 +120,9 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                     _idNotMatchErrorMsg = '';
                                     _bankCardCheckErrorMsg = '';
                                   });
+                                  if(!TextUtil.isEmpty(widget.channel)){
+                                    _model.setChannel(widget.channel);
+                                  }
                                   model
                                       .commitAuthenticationData()
                                       .then((data) async {
@@ -180,6 +183,13 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             context: context, content: '您还未完成医师身份认证，确定退出吗');
       },
     );
+    return content;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _model.refreshData(_phoneNumberController,_bankCardController);
   }
 
   void _unFocus() {

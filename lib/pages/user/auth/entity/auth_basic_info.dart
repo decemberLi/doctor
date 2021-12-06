@@ -17,6 +17,7 @@ class AuthBasicInfoEntity {
   FacePhoto idCardLicenseFront; // 身份证-正面照URL
   FacePhoto idCardLicenseBehind; // 身份证-反面照URL
   FacePhoto bankCardCertificates; // 银行卡图片
+  String channel;
 
   AuthBasicInfoEntity();
 

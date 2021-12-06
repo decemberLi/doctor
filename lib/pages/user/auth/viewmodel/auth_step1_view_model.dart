@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:common_utils/common_utils.dart';
+import 'package:dio/dio.dart';
 import 'package:doctor/http/developer.dart';
 import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/model/face_photo.dart';
@@ -113,9 +114,9 @@ class AuthenticationViewModel extends ViewStateModel {
     debugPrint("commitAuthenticationData");
     var completer = Completer();
     if (checkDataIntegrity()) {
-      EasyLoading.instance.flash(() async{
+      EasyLoading.instance.flash(() async {
         await API.shared.ucenter.postDoctorIdentityInfo(data.toJson()).then(
-              (value) {
+          (value) {
             _isCommitting = false;
             debugPrint("$value");
             completer.complete(value);
@@ -227,5 +228,33 @@ class AuthenticationViewModel extends ViewStateModel {
     img.name = entity.ossFileName;
     img.ossId = entity.ossId;
     return img;
+  }
+
+  refreshData(
+    TextEditingController phoneController,
+    TextEditingController bankCardController,
+  ) async {
+    var result = await API.shared.ucenter.queryDoctorVerifyInfo();
+    if (result is DioError) {
+      return;
+    }
+    _entity = AuthBasicInfoEntity.fromJson(result);
+    if (_entity.idCardLicenseFront != null) {
+      _showIdCardInfo = true;
+    }
+    if (!TextUtil.isEmpty(_entity.bankCard)) {
+      _isScanBankCard = true;
+    }
+    phoneController.text =_entity.bankSignMobile??'';
+    checkDataIntegrity();
+    notifyListeners();
+  }
+
+  void setChannel(String channel) {
+    if(!TextUtil.isEmpty(_entity.channel)){
+      return;
+    }
+    // 默认渠道
+    _entity.channel = channel;
   }
 }

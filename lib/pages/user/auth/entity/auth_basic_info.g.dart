@@ -18,6 +18,7 @@ AuthBasicInfoEntity _$AuthenticationBasicInfoEntityFromJson(
     ..identityValidityEnd = json['identityValidityEnd'] as String
     ..bankCard = json['bankCard'] as String
     ..bankSignMobile = json['bankSignMobile'] as String
+    ..channel = json['channel'] as String
     ..idCardLicenseFront = json['idCardLicenseFront'] == null
         ? null
         : FacePhoto.fromJson(json['idCardLicenseFront'] as Map<String, dynamic>)
@@ -46,4 +47,5 @@ Map<String, dynamic> _$AuthenticationBasicInfoEntityToJson(
       'idCardLicenseFront': instance.idCardLicenseFront,
       'idCardLicenseBehind': instance.idCardLicenseBehind,
       'bankCardCertificates': instance.bankCardCertificates,
+      'channel': instance.channel,
     };
