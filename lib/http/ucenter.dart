@@ -47,11 +47,6 @@ class UCenter extends SubAPI {
 
   changePassword(params) async => normalPost('/user/change-pwd',params: params);
 
-  // 获取基本信息
-  getBasicData() async{
-    return normalPost('/personal/query-doctor-detail');
-  }
-
 // 患者和收藏数量
   getBasicNum() async{
     return normalPost('/personal/query-favorite-and-patient-number',);

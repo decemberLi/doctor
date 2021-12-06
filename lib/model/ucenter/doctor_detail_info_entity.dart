@@ -1,6 +1,8 @@
 import 'package:doctor/model/face_photo.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'auth_platform.dart';
+
 part 'doctor_detail_info_entity.g.dart';
 
 @JsonSerializable()
@@ -63,6 +65,8 @@ class DoctorDetailInfoEntity {
   /// 医生头像
   FacePhoto fullFacePhoto;
 
+  /// 认证渠道
+  List<AuthPlatform> authPlatform;
 
   String headPicUrl;
 

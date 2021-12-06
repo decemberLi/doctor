@@ -31,7 +31,10 @@ DoctorDetailInfoEntity _$DoctorDetailInfoEntityFromJson(
       identityStatus:json['identityStatus'] as String,
   )..fullFacePhoto = json['fullFacePhoto'] == null
       ? null
-      : FacePhoto.fromJson(json['fullFacePhoto'] as Map<String, dynamic>);
+      : FacePhoto.fromJson(json['fullFacePhoto'] as Map<String, dynamic>)
+  ..authPlatform = json['verifyInfo'] == null
+      ? null
+      : (json['verifyInfo'] as List).map((e) => AuthPlatform.fromJson(e));
 }
 
 Map<String, dynamic> _$DoctorDetailInfoEntityToJson(
@@ -58,4 +61,5 @@ Map<String, dynamic> _$DoctorDetailInfoEntityToJson(
       'fullFacePhoto': instance.fullFacePhoto?.toJson() ?? null,
       'headPicUrl': instance.headPicUrl,
       'identityStatus':instance.identityStatus,
+      'authPlatform':instance.authPlatform??[]
     };

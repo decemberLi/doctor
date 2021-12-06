@@ -3,6 +3,8 @@ import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/pages/user/user_detail/user_info_detai.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
@@ -10,6 +12,7 @@ import 'package:doctor/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/http/ucenter.dart';
 import 'package:http_manager/manager.dart';
+import 'package:provider/provider.dart';
 
 import '../../root_widget.dart';
 
@@ -19,7 +22,6 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> with RouteAware {
-  DoctorDetailInfoEntity doctorData;
   var numData;
   dynamic doctorStatus = {
     'WAIT_VERIFY': '未认证',
@@ -38,12 +40,8 @@ class _UserPageState extends State<UserPage> with RouteAware {
   //authStatus:认证状态(WAIT_VERIFY-待认证、VERIFYING-认证中、FAIL-认证失败、PASS-认证通过）
   _doctorInfo() async {
     try {
-      var basicData = await API.shared.ucenter.getBasicData();
-      if (basicData is! DioError) {
-        setState(() {
-          doctorData = DoctorDetailInfoEntity.fromJson(basicData);
-        });
-      }
+      UserInfoViewModel model = Provider.of<UserInfoViewModel>(context, listen: false);
+      model.queryDoctorInfo();
       var basicNumData = await API.shared.ucenter.getBasicNum();
       if (basicNumData is! DioError) {
         setState(() {
@@ -203,202 +201,210 @@ class _UserPageState extends State<UserPage> with RouteAware {
       favoriteFoundationNum = numData["favoriteFoundationNum"] as int;
     } catch (e) {}
     var facNum = favoriteServerNum + favoriteFoundationNum;
-    var content = Column(
-      children: [
-        //头部
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, RouteManagerOld.USERINFO_DETAIL,
-                arguments: {'doctorData': doctorData.toJson()});
-          },
-          child: Container(
-            padding: EdgeInsets.only(top: 100, left: 16, bottom: 26),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-              fit: BoxFit.cover,
-              image: AssetImage("assets/images/common_statck_bg.png"),
-            )),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  width: 62,
-                  height: 62,
-                  child: doctorData?.fullFacePhoto == null
-                      ? Image.asset(
-                          "assets/images/doctorHeader.png",
-                          width: 35,
-                          height: 35,
-                        )
-                      : Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.fitWidth,
-                              image: NetworkImage(
-                                  '${doctorData?.fullFacePhoto?.url}?status=${doctorData?.fullFacePhoto?.ossId}'),
-                            ),
+    var content = Consumer<UserInfoViewModel>(
+      builder: (_, userInfoModel, __) {
+        DoctorDetailInfoEntity doctorData = userInfoModel.data;
+        if (doctorData == null) {
+          userInfoModel.queryDoctorInfo();
+        }
+        return Column(
+          children: [
+            //头部
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, RouteManagerOld.USERINFO_DETAIL,
+                    arguments: {'doctorData': doctorData.toJson()});
+              },
+              child: Container(
+                padding: EdgeInsets.only(top: 100, left: 16, bottom: 26),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage("assets/images/common_statck_bg.png"),
+                    )),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      width: 62,
+                      height: 62,
+                      child: doctorData?.fullFacePhoto == null
+                          ? Image.asset(
+                        "assets/images/doctorHeader.png",
+                        width: 35,
+                        height: 35,
+                      )
+                          : Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.fitWidth,
+                            image: NetworkImage(
+                                '${doctorData?.fullFacePhoto?.url}?status=${doctorData?.fullFacePhoto?.ossId}'),
                           ),
                         ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0x2f000000),
-                        offset: Offset(0, 2),
-                        blurRadius: 10,
                       ),
-                    ],
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(left: 23, right: 16),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x2f000000),
+                            offset: Offset(0, 2),
+                            blurRadius: 10,
+                          ),
+                        ],
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(left: 23, right: 16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Flexible(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    doctorData?.doctorName ?? "",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (doctorData?.identityStatus == 'PASS') {
+                                      if (doctorData?.authStatus == 'WAIT_VERIFY' ||
+                                          doctorData.authStatus == 'FAIL') {
+                                        Navigator.pushNamed(
+                                            context,
+                                            RouteManagerOld
+                                                .DOCTOR_AUTHENTICATION_PAGE);
+                                      } else if (doctorData.authStatus ==
+                                          'VERIFYING') {
+                                        Navigator.pushNamed(
+                                            context,
+                                            RouteManagerOld
+                                                .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                                      } else if (doctorData.authStatus == 'PASS') {
+                                        Navigator.pushNamed(
+                                            context,
+                                            RouteManagerOld
+                                                .DOCTOR_AUTH_STATUS_PASS_PAGE);
+                                      }
+                                    } else {
+                                      // Navigator.pushNamed(
+                                      //     context,
+                                      //     RouteManagerOld
+                                      //         .DOCTOR_AUTHENTICATION_INFO_PAGE);
+                                    }
+                                  },
+                                  child: Container(
+                                    width: 65,
+                                    height: 20,
+                                    margin: EdgeInsets.only(left: 5),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: doctorData?.authStatus == 'PASS'
+                                          ? Color(0xFFFAAD14)
+                                          : Color(0xFFB9B9B9),
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(28),
+                                        bottomRight: Radius.circular(28),
+                                        topRight: Radius.circular(28),
+                                      ),
+                                    ),
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        children: [
+                                          if (doctorData?.authStatus == 'PASS')
+                                            WidgetSpan(
+                                              child: Image.asset(
+                                                "assets/images/rz.png",
+                                                width: 14,
+                                                height: 14,
+                                              ),
+                                            ),
+                                          TextSpan(
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white,
+                                            ),
+                                            text: doctorData?.authStatus == 'PASS'
+                                                ? '已认证'
+                                                : '未认证',
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              width: Adapt.screenW() * 0.6,
+                              padding: EdgeInsets.only(top: 8, bottom: 8),
                               child: Text(
-                                doctorData?.doctorName ?? "",
-                                maxLines: 1,
+                                "${doctorData?.hospitalName ?? ''}",
+                                softWrap: true,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                if (doctorData?.identityStatus == 'PASS') {
-                                  if (doctorData?.authStatus == 'WAIT_VERIFY' ||
-                                      doctorData.authStatus == 'FAIL') {
-                                    Navigator.pushNamed(
-                                        context,
-                                        RouteManagerOld
-                                            .DOCTOR_AUTHENTICATION_PAGE);
-                                  } else if (doctorData.authStatus ==
-                                      'VERIFYING') {
-                                    Navigator.pushNamed(
-                                        context,
-                                        RouteManagerOld
-                                            .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-                                  } else if (doctorData.authStatus == 'PASS') {
-                                    Navigator.pushNamed(
-                                        context,
-                                        RouteManagerOld
-                                            .DOCTOR_AUTH_STATUS_PASS_PAGE);
-                                  }
-                                } else {
-                                  Navigator.pushNamed(
-                                      context,
-                                      RouteManagerOld
-                                          .DOCTOR_AUTHENTICATION_INFO_PAGE);
-                                }
-                              },
-                              child: Container(
-                                width: 65,
-                                height: 20,
-                                margin: EdgeInsets.only(left: 5),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: doctorData?.authStatus == 'PASS'
-                                      ? Color(0xFFFAAD14)
-                                      : Color(0xFFB9B9B9),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(28),
-                                    bottomRight: Radius.circular(28),
-                                    topRight: Radius.circular(28),
-                                  ),
-                                ),
-                                child: RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    children: [
-                                      if (doctorData?.authStatus == 'PASS')
-                                        WidgetSpan(
-                                          child: Image.asset(
-                                            "assets/images/rz.png",
-                                            width: 14,
-                                            height: 14,
-                                          ),
-                                        ),
-                                      TextSpan(
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white,
-                                        ),
-                                        text: doctorData?.authStatus == 'PASS'
-                                            ? '已认证'
-                                            : '未认证',
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                            Container(
+                              child: Text(
+                                '${doctorData?.departmentsName} ${doctorData?.jobGradeName}',
+                                style: TextStyle(color: Colors.white, fontSize: 12),
                               ),
                             ),
                           ],
                         ),
-                        Container(
-                          width: Adapt.screenW() * 0.6,
-                          padding: EdgeInsets.only(top: 8, bottom: 8),
-                          child: Text(
-                            "${doctorData?.hospitalName ?? ''}",
-                            softWrap: true,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          child: Text(
-                            '${doctorData?.departmentsName} ${doctorData?.jobGradeName}',
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-        Container(
-          height: 10,
-        ),
-        // 跳转页面
-        Container(
-          color: Colors.white,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              messageItem('我的收藏', 'assets/images/fav.png', () {
-                Navigator.pushNamed(context, RouteManagerOld.COLLECT_DETAIL);
-              }, num: "$facNum"),
-              messageItem('设置', 'assets/images/setting.png', () {
-                Navigator.pushNamed(context, RouteManagerOld.SETTING);
-              }),
-              messageItem('关于我们', 'assets/images/aboutus.png', () {
-                Navigator.pushNamed(context, RouteManagerOld.ABOUT_US);
-              }),
-            ],
-          ),
-        ),
-      ],
+            Container(
+              height: 10,
+            ),
+            // 跳转页面
+            Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  messageItem('我的收藏', 'assets/images/fav.png', () {
+                    Navigator.pushNamed(context, RouteManagerOld.COLLECT_DETAIL);
+                  }, num: "$facNum"),
+                  messageItem('设置', 'assets/images/setting.png', () {
+                    Navigator.pushNamed(context, RouteManagerOld.SETTING);
+                  }),
+                  messageItem('关于我们', 'assets/images/aboutus.png', () {
+                    Navigator.pushNamed(context, RouteManagerOld.ABOUT_US);
+                  }),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
     return Container(
       child: content,

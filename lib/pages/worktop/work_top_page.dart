@@ -31,14 +31,14 @@ class WorktopPage extends StatefulWidget {
 
 class _WorktopPageState extends State<WorktopPage>
     with AutomaticKeepAliveClientMixin, RouteAware {
-  final WorkTopViewModel _model = WorkTopViewModel();
+  final WorkTopViewModel userInfoModel = WorkTopViewModel();
 
   @override
   bool get wantKeepAlive => true;
   bool isShowed = false;
 
   init() async {
-    await _model.initData();
+    await userInfoModel.initData();
   }
 
   @override
@@ -121,7 +121,7 @@ class _WorktopPageState extends State<WorktopPage>
   @override
   void dispose() {
     print('work_top_dispose');
-    _model.dispose();
+    userInfoModel.dispose();
     routeObserver.unsubscribe(this);
     super.dispose();
   }
@@ -137,7 +137,7 @@ class _WorktopPageState extends State<WorktopPage>
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     await model.queryDoctorInfo();
-    _model.initData();
+    userInfoModel.initData();
     super.didPopNext();
   }
 
@@ -164,7 +164,7 @@ class _WorktopPageState extends State<WorktopPage>
           Positioned(
             child: SafeArea(
               child: ChangeNotifierProvider<WorkTopViewModel>.value(
-                value: _model,
+                value: userInfoModel,
                 child: Consumer<WorkTopViewModel>(
                   builder: (context, model, child) {
                     WorktopPageEntity entity =
@@ -222,7 +222,7 @@ class _WorktopPageState extends State<WorktopPage>
                   item,
                   'LEARNING',
                   () {
-                    _model.initData();
+                    userInfoModel.initData();
                   },
                   () async {
                     await Navigator.of(context).pushNamed(
@@ -298,7 +298,8 @@ class _WorktopPageState extends State<WorktopPage>
     );
   }
 
-  doctorAvatarWidget(DoctorDetailInfoEntity doctorInfoEntity) {
+  doctorAvatarWidget(UserInfoViewModel userModel) {
+    DoctorDetailInfoEntity doctorInfoEntity = userModel.data;
     // 医生个人信息部分
     var doctorName = doctorInfoEntity?.doctorName ?? '';
     if (doctorInfoEntity?.basicInfoAuthStatus == 'NOT_COMPLETE') {
@@ -366,7 +367,7 @@ class _WorktopPageState extends State<WorktopPage>
                         ),
                       ),
                       if (doctorInfoEntity != null)
-                        _buildAuthStatusWidget(doctorInfoEntity),
+                        _buildAuthStatusWidget(userModel),
                     ],
                   ),
                   Padding(
@@ -522,11 +523,11 @@ class _WorktopPageState extends State<WorktopPage>
           Padding(
             padding: EdgeInsets.only(left: 24),
             child: Consumer<UserInfoViewModel>(
-              builder: (_, model, __) {
-                if (model.data == null) {
-                  model.queryDoctorInfo();
+              builder: (_, userModel, __) {
+                if (userModel.data == null) {
+                  userModel.queryDoctorInfo();
                 }
-                return doctorAvatarWidget(model.data);
+                return doctorAvatarWidget(userModel);
               },
             ),
           ),
@@ -646,10 +647,11 @@ class _WorktopPageState extends State<WorktopPage>
     await Navigator.pushNamed(context, RouteManagerOld.LEARN_PAGE, arguments: {
       'index': index,
     });
-    _model.refresh();
+    userInfoModel.refresh();
   }
 
-  _buildAuthStatusWidget(DoctorDetailInfoEntity doctorInfoEntity) {
+  _buildAuthStatusWidget(UserInfoViewModel userModel) {
+    DoctorDetailInfoEntity doctorInfoEntity = userModel.data;
     return Container(
       width: 65,
       height: 20,
@@ -669,7 +671,7 @@ class _WorktopPageState extends State<WorktopPage>
         onTap: () {
           print(
               "the identityStatus is ${doctorInfoEntity?.identityStatus} , auth status is ${doctorInfoEntity?.authStatus} ");
-          if (doctorInfoEntity?.identityStatus == 'PASS') {
+          if (userModel.isAuthPassed()) {
             if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' ||
                 doctorInfoEntity.authStatus == 'FAIL') {
               Navigator.pushNamed(
