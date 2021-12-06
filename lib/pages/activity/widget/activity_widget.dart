@@ -1,6 +1,6 @@
+
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
-import 'package:doctor/pages/activity/activity_detail.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -151,7 +151,8 @@ class ActivityWidget extends StatelessWidget {
             ),
           ),
           onTap: () async {
-            if (model?.data?.identityStatus == 'PASS') {
+            debugPrint('Need Channel [${_data.remitChannel}], Auth Status ${model?.isIdentityAuthPassedByChannel(_data.remitChannel)}');
+            if (model?.isIdentityAuthPassedByChannel(_data.remitChannel)??false) {
               if (model.data.authStatus == 'WAIT_VERIFY' ||
                   model.data.authStatus == 'FAIL') {
                 Navigator.pushNamed(
@@ -168,7 +169,7 @@ class ActivityWidget extends StatelessWidget {
               }
             } else {
               Navigator.pushNamed(
-                  context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE);
+                  context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE,arguments: _data.remitChannel);
             }
             await model.queryDoctorInfo();
           },

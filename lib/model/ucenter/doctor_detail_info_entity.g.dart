@@ -8,6 +8,7 @@ part of 'doctor_detail_info_entity.dart';
 
 DoctorDetailInfoEntity _$DoctorDetailInfoEntityFromJson(
     Map<String, dynamic> json) {
+  print('----------------------${json['verifyInfo']}');
   return DoctorDetailInfoEntity(
     doctorName: json['doctorName'] as String,
     doctorMobile: json['doctorMobile'] as String,
@@ -34,7 +35,7 @@ DoctorDetailInfoEntity _$DoctorDetailInfoEntityFromJson(
       : FacePhoto.fromJson(json['fullFacePhoto'] as Map<String, dynamic>)
   ..authPlatform = json['verifyInfo'] == null
       ? null
-      : (json['verifyInfo'] as List).map((e) => AuthPlatform.fromJson(e));
+      : (json['verifyInfo'] as List).map((e) => AuthPlatform.fromJson(e)).toList();
 }
 
 Map<String, dynamic> _$DoctorDetailInfoEntityToJson(

@@ -1,5 +1,6 @@
 import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/model/biz/learn_plan_statistical_entity.dart';
+import 'package:doctor/model/ucenter/auth_platform.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
 import 'package:doctor/pages/activity/widget/activity_widget.dart';
@@ -671,7 +672,7 @@ class _WorktopPageState extends State<WorktopPage>
         onTap: () {
           print(
               "the identityStatus is ${doctorInfoEntity?.identityStatus} , auth status is ${doctorInfoEntity?.authStatus} ");
-          if (userModel.isAuthPassed()) {
+          if (userModel.isIdentityAuthPassed()) {
             if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' ||
                 doctorInfoEntity.authStatus == 'FAIL') {
               Navigator.pushNamed(
@@ -685,7 +686,10 @@ class _WorktopPageState extends State<WorktopPage>
             }
           } else {
             Navigator.pushNamed(
-                context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE);
+              context,
+              RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE,
+              arguments: AuthPlatform.channelGolden,
+            );
           }
         },
         child: RichText(

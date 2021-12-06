@@ -156,7 +156,8 @@ class RouteManagerOld {
       return DoctorsListPage2(obj);
     },
     DOCTOR_AUTHENTICATION_INFO_PAGE:(context){
-      return DoctorAuthenticationPage();
+      dynamic channel = ModalRoute.of(context).settings.arguments;
+      return DoctorAuthenticationPage(channel as String);
     },
     DOCTOR_AUTHENTICATION_PAGE:(context){
       return DoctorAuthenticationStepTwoPage();

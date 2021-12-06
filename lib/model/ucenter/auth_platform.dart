@@ -1,6 +1,9 @@
-import 'package:doctor/pages/user/ucenter_view_model.dart';
+
 
 class AuthPlatform {
+
+  static final String channelGolden = 'GOLDEN';
+  static final String channelCloudAccount = 'CLOUD_ACCOUNT';
   ///
   /// 渠道(GOLDEN-高灯,CLOUD_ACCOUNT-云账户)
   ///
@@ -17,8 +20,8 @@ class AuthPlatform {
     ..channel = json['channel'] as String
     ..identityStatus = json['identityStatus'] as String;
 
-  Map<String, dynamic> toJson(AuthPlatform instance) => <String, dynamic>{
-        'channel': instance.channel,
-        'identityStatus': instance.identityStatus,
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'channel': this.channel,
+        'identityStatus': this.identityStatus,
       };
 }

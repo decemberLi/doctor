@@ -19,6 +19,7 @@ class ActivityEntity {
 
   bool disable;
   String reason;
+  String remitChannel;
 
   ActivityEntity(Map<String,dynamic> json){
     if (json == null){
@@ -33,6 +34,7 @@ class ActivityEntity {
     schedule = json["schedule"] as int;
     disable = json["disable"] as bool;
     reason = json["reason"] as String;
+    remitChannel = json["remitChannel"] as String;
   }
 }
 

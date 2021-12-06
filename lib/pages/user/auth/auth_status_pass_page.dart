@@ -1,4 +1,5 @@
 import 'package:doctor/http/ucenter.dart';
+import 'package:doctor/model/ucenter/auth_platform.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/pdf_Viewer_adapter.dart';
@@ -7,7 +8,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
+import 'package:provider/provider.dart';
 import 'package:yyy_route_annotation/yyy_route_annotation.dart';
+
+import '../ucenter_view_model.dart';
 
 @RoutePage(name: "auth_status_pass_page")
 class AuthStatusPassPage extends StatelessWidget {
@@ -28,7 +32,7 @@ class AuthStatusPassPage extends StatelessWidget {
         Text('您可以开始做医师身份认证学习任务啦', textAlign: TextAlign.center, style: style),
       ],
     );
-
+    UserInfoViewModel userModel = Provider.of<UserInfoViewModel>(context, listen: false);
     return Scaffold(
       backgroundColor: ThemeColor.colorFFF3F5F8,
       appBar: AppBar(
@@ -62,6 +66,7 @@ class AuthStatusPassPage extends StatelessWidget {
                 margin: EdgeInsets.only(top: 28, left: 50, right: 50),
                 child: contentWidget,
               ),
+              if(userModel.isIdentityAuthPassedByChannel(AuthPlatform.channelGolden))
               GestureDetector(
                 child: Container(
                   alignment: Alignment.center,

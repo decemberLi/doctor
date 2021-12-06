@@ -19,6 +19,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'crude_progress_widget.dart';
 
 class DoctorAuthenticationPage extends StatefulWidget {
+  final String channel;
+
+  DoctorAuthenticationPage(this.channel);
+
   @override
   State<StatefulWidget> createState() => _DoctorAuthenticationPageState();
 }
@@ -532,7 +536,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                   TextSpan(
                     children: [
                       TextSpan(
-                          text: "本人已阅读并同意与四川高灯企服科技有限公司签署",
+                          text: agreementText(widget.channel),
                           style: _testStyle(ThemeColor.secondaryGeryColor),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
@@ -557,6 +561,15 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
       ),
     );
   }
+
+  String agreementText(String channel){
+    if(TextUtil.isEmpty(channel) || channel == 'GOLDEN'){
+      return '本人已阅读并同意与四川高灯企服科技有限公司签署';
+    }else{
+      return '我自愿遵守并同意';
+    }
+  }
+
 
   bankOrc() async {
     MedcloudsNativeApi.instance().addProcessor("ocrBankCard", (args) {

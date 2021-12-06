@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:doctor/http/ucenter.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/provider/view_state_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http_manager/manager.dart';
 
 enum AuthStatus {
@@ -34,34 +37,34 @@ class UserInfoViewModel extends ViewStateModel {
   ///
   /// 任何一个渠道身份认证通过，则表示该用户三要素通过
   ///
-  bool isAuthPassed() {
-    data.authPlatform.forEach((element) {
-      if (element.identityStatus == 'PASS') {
+  bool isIdentityAuthPassed() {
+    for( var each in data.authPlatform){
+      if (each.identityStatus == 'PASS') {
         return true;
       }
-    });
-
+    }
     return false;
   }
 
   ///
   /// 获取渠道的认证状态
   ///
-  bool isAuthPassedByChannel(String channel) {
-    return authStatusByChannel(channel) == 'PASS';
+  bool isIdentityAuthPassedByChannel(String channel) {
+    return identityAuthStatusByChannel(channel) == 'PASS';
   }
 
   ///
   /// 通过渠道查询认证状态
   ///
-  String authStatusByChannel(String channel) {
-    data.authPlatform.forEach((element) {
-      if (element.channel == channel) {
-        return element.identityStatus;
+  String identityAuthStatusByChannel(String channel) {
+    for( var each in data.authPlatform){
+      if (each.channel == channel) {
+        return each.identityStatus;
       }
-    });
+    }
 
-    throw 'Unsupported channel , channel name -> $channel';
+    debugPrint('Unsupported channel , channel name -> $channel');
+    return '';
   }
 
 }
