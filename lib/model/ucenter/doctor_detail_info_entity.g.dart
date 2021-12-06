@@ -8,7 +8,6 @@ part of 'doctor_detail_info_entity.dart';
 
 DoctorDetailInfoEntity _$DoctorDetailInfoEntityFromJson(
     Map<String, dynamic> json) {
-  print('----------------------${json['verifyInfo']}');
   return DoctorDetailInfoEntity(
     doctorName: json['doctorName'] as String,
     doctorMobile: json['doctorMobile'] as String,

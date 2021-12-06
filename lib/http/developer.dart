@@ -38,11 +38,11 @@ class Developer extends SubAPI {
     },
   );
   
-  serviceEnable() async => normalPost('/dict/list-data-dict',params: {
+  agreementVersion() async => normalPost('/dict/list-data-dict',params: {
     'pn': 1,
     'ps': 10,
-    'code': 'service_enable',
-    'type': 'doctor',
+    'code': 'agreement_version',
+    'type': 'common',
   });
   
 }

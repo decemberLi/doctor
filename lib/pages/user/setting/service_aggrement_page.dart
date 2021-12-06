@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:doctor/common/constants.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
@@ -6,15 +7,21 @@ import 'package:doctor/widgets/agreement_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:http_manager/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:doctor/http/developer.dart';
 
 var kIsAgree = '_isAgree';
+var kLocalAgreementVersion = '_localAgreementVersion';
 
 agreementDialog(BuildContext context) async {
+  bool isAgreed = false;
+  var remoteVersion = await obtainAgreementVersion();
   var refs = await SharedPreferences.getInstance();
-  bool isAgreed;
+  String localVersion = refs.getString(kLocalAgreementVersion);
   isAgreed = refs.getBool(kIsAgree) ?? false;
-  if (isAgreed) {
+debugPrint('--------------------${(localVersion == remoteVersion) && isAgreed}');
+  if ((localVersion == remoteVersion) && isAgreed) {
     debugPrint('用户已经同意过服务协议');
     return;
   }
@@ -72,6 +79,7 @@ agreementDialog(BuildContext context) async {
     }, () async {
       // appContext.storage.setBool('isAgree', true);
       await refs.setBool(kIsAgree, true);
+      await refs.setString(kLocalAgreementVersion, remoteVersion);
       Navigator.of(context).pop();
     }, cancelText: '不同意', okText: '同意并继续');
     showDialog<void>(
@@ -82,6 +90,16 @@ agreementDialog(BuildContext context) async {
       },
     );
   });
+}
+
+Future<String> obtainAgreementVersion() async {
+  var ret = await await API.shared.developer.agreementVersion();
+  var records = ret["records"] as List;
+  if (records != null && records.isNotEmpty) {
+    var item = records[0];
+    return item["value"];
+  }
+  return '';
 }
 
 class ServiceAgreementPage extends StatelessWidget {
