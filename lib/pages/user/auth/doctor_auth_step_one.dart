@@ -228,8 +228,9 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
       Navigator.pushNamed(
           context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
     } else if (status == 'PASS') {
-      Navigator.pushNamed(
+      await Navigator.pushNamed(
           context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
+      Navigator.pop(context);
     }
   }
 
