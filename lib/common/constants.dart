@@ -2,19 +2,17 @@ import 'package:doctor/http/host_provider.dart';
 
 const String userAgreement = '/web/other/protocols/doctor_license_app.html';
 const String privacyAgreement = '/web/other/protocols/doctor_privacy_app.html';
+const String partnerAgreement = '/web/other/protocols/license_partner.html';
 
-processPrivacyAgreementHost() {
+_host() {
   if (ApiHost.instance.enableCNHost) {
-    return 'https://static.e-medclouds.com.cn$privacyAgreement';
+    return 'https://static.e-medclouds.com.cn';
   }
-
-  return 'https://static.e-medclouds.com$privacyAgreement';
+  return 'https://static.e-medclouds.com';
 }
 
-processUserAgreementHost() {
-  if (ApiHost.instance.enableCNHost) {
-    return 'https://static.e-medclouds.com.cn$userAgreement';
-  }
+processPrivacyAgreementHost() => '${_host()}$privacyAgreement';
 
-  return 'https://static.e-medclouds.com$userAgreement';
-}
+processUserAgreementHost() => '${_host()}$userAgreement';
+
+processPartnerHost() => '${_host()}$partnerAgreement';

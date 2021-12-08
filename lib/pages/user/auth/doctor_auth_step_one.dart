@@ -1,5 +1,6 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
+import 'package:doctor/common/constants.dart';
 import 'package:doctor/pages/qualification/image_choose_widget.dart';
 import 'package:doctor/pages/user/auth/viewmodel/auth_step1_view_model.dart';
 import 'package:doctor/route/fade_route.dart';
@@ -598,7 +599,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   openAgreementUrl(String channel) async {
     if (TextUtil.isEmpty(channel) || channel == 'GOLDEN') {
       MedcloudsNativeApi.instance().openWebPage(
-          'https://static.e-medclouds.com/web/other/protocols/license_partner.html');
+          processPartnerHost());
     } else {
       var ret = await API.shared.sso.cloudAccountAgreement();
       var agreement = CloudAgreement(ret);
