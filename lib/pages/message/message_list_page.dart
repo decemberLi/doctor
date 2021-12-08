@@ -5,6 +5,7 @@ import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/message/model/message_list_entity.dart';
 import 'package:doctor/pages/message/view_model/message_list_view_model.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
@@ -222,10 +223,10 @@ class _MessageListPageState extends State<MessageListPage> {
 
   _openDetail(String type, MessageListEntity entity) async {
     print("the auth is ---- ");
+    // 获取用户当前审核状态
+    UserInfoViewModel userModel =
+    Provider.of<UserInfoViewModel>(context, listen: false);
     if (type == MessageType.TYPE_SYSTEM) {
-      // 获取用户当前审核状态
-      UserInfoViewModel userModel =
-          Provider.of<UserInfoViewModel>(context, listen: false);
       await userModel.queryDoctorInfo();
       if (userModel.data == null) {
         EasyLoading.showToast('获取用户审核状态失败');
@@ -267,24 +268,28 @@ class _MessageListPageState extends State<MessageListPage> {
         'from': 'MESSAGE_CENTER'
       });
     } else if (type == 'ACTIVITY') {
-      if (entity.params['activityType'] == 'CASE_COLLECTION') {
-        // go 病例驳回 资料详情
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ActivityResourceDetailPage(
-            entity.params['activityPackageId'],
-            entity.params['activityTaskId'],
-            status: VERIFY_STATUS_REJECT,
-            rejectReason: entity.params['rejectReason'],
-          );
-        }));
-      } else if (entity.params['activityType'] == 'MEDICAL_SURVEY' || entity.params['activityType'] == 'RWS') {
-        // go 医学调研驳回 资料详情
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ActivityResearch(
-            entity.params['activityPackageId'],
-            activityTaskId: entity.params['activityTaskId'],
-          );
-        }));
+      if(userModel.data.authStatus == 'PASS') {
+        if (entity.params['activityType'] == 'CASE_COLLECTION') {
+          // go 病例驳回 资料详情
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ActivityResourceDetailPage(
+              entity.params['activityPackageId'],
+              entity.params['activityTaskId'],
+              status: VERIFY_STATUS_REJECT,
+              rejectReason: entity.params['rejectReason'],
+            );
+          }));
+        } else if (entity.params['activityType'] == 'MEDICAL_SURVEY' || entity.params['activityType'] == 'RWS') {
+          // go 医学调研驳回 资料详情
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ActivityResearch(
+              entity.params['activityPackageId'],
+              activityTaskId: entity.params['activityTaskId'],
+            );
+          }));
+        }
+      }else{
+        goGoGo(userModel, userModel.data, context);
       }
     } else if (type == 'ASSIGN_STUDY_ACTIVITY') {
       // 指派活动进活动详情页
