@@ -43,4 +43,8 @@ class Sso extends SubAPI {
     return result;
   }
 
+  Future cloudAccountAgreement() async{
+    return await normalPost('/cloud-account/query-cloud-account--agreement');
+  }
+
 }

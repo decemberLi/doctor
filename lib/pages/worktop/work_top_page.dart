@@ -724,7 +724,7 @@ class _WorktopPageState extends State<WorktopPage>
 
 gogogo(
     UserInfoViewModel userModel, DoctorDetailInfoEntity doctorInfoEntity, BuildContext context) {
-  if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY') {
+  if (doctorInfoEntity?.authStatus == 'VERIFYING') {
     if (userModel.isIdentityAuthPassedByChannel(AuthPlatform.channelGolden)) {
       // 资质认证填写
       Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
@@ -745,5 +745,11 @@ gogogo(
         context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
   } else if (doctorInfoEntity.authStatus == 'PASS') {
     Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
+  } else {
+    Navigator.pushNamed(
+      context,
+      RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE,
+      arguments: AuthPlatform.channelGolden,
+    );
   }
 }

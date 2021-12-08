@@ -13,11 +13,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_manager/api.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:doctor/http/Sso.dart';
 
 import '../ucenter_view_model.dart';
 import 'crude_progress_widget.dart';
+import 'entity/cloud_agreement.dart';
 
 class DoctorAuthenticationPage extends StatefulWidget {
   final String channel;
@@ -362,14 +365,15 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                 },
               ),
             ),
-            GestureDetector(
-              child: Image.asset(
-                "assets/images/img_scanner.png",
-                width: 18,
-                height: 17,
+            if (model.isScanBankCardEnable)
+              GestureDetector(
+                child: Image.asset(
+                  "assets/images/img_scanner.png",
+                  width: 18,
+                  height: 17,
+                ),
+                onTap: bankOrc,
               ),
-              onTap: bankOrc,
-            ),
           ],
         ),
         Positioned(
@@ -577,8 +581,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                         style: _testStyle(ThemeColor.primaryColor),
                         recognizer: _agreementTap
                           ..onTap = () {
-                            MedcloudsNativeApi.instance().openWebPage(
-                                'https://static.e-medclouds.com/web/other/protocols/license_partner.html');
+                            openAgreementUrl(widget.channel);
                           },
                       ),
                     ],
@@ -590,6 +593,18 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
         ],
       ),
     );
+  }
+
+  openAgreementUrl(String channel) async {
+    if (TextUtil.isEmpty(channel) || channel == 'GOLDEN') {
+      MedcloudsNativeApi.instance().openWebPage(
+          'https://static.e-medclouds.com/web/other/protocols/license_partner.html');
+    } else {
+      var ret = await API.shared.sso.cloudAccountAgreement();
+      var agreement = CloudAgreement(ret);
+      MedcloudsNativeApi.instance().openWebPage(agreement?.agreement ?? '',
+          title: agreement?.title ?? '');
+    }
   }
 
   String agreementText(String channel) {
