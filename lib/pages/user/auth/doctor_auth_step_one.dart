@@ -16,6 +16,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../ucenter_view_model.dart';
 import 'crude_progress_widget.dart';
 
 class DoctorAuthenticationPage extends StatefulWidget {
@@ -207,11 +208,14 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   }
 
   _goNextStep() async {
-    var result = await Navigator.pushNamed(
-        context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
-    debugPrint("page poped , & value is $result");
-    if (result != null && (result is bool) && result) {
-      Navigator.pop(context);
+    UserInfoViewModel userViewModel = Provider.of<UserInfoViewModel>(context, listen: false);
+    if(userViewModel.data.authStatus == 'WAIT_VERIFY'){
+      var result = await Navigator.pushNamed(
+          context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
+      debugPrint("page poped , & value is $result");
+      if (result != null && (result is bool) && result) {
+        Navigator.pop(context);
+      }
     }
   }
 
