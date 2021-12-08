@@ -49,7 +49,7 @@ debugPrint('--------------------${(localVersion == remoteVersion) && isAgreed}')
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    MedcloudsNativeApi.instance().openWebPage(privacyAgreement);
+                    MedcloudsNativeApi.instance().openWebPage(processPrivacyAgreementHost());
                   },
               ),
               TextSpan(
@@ -69,7 +69,7 @@ debugPrint('--------------------${(localVersion == remoteVersion) && isAgreed}')
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    MedcloudsNativeApi.instance().openWebPage(userAgreement);
+                    MedcloudsNativeApi.instance().openWebPage(processUserAgreementHost());
                   },
               ),
             ],
@@ -116,14 +116,14 @@ class ServiceAgreementPage extends StatelessWidget {
           GestureDetector(
             child: _itemWidget('用户协议'),
             onTap: () {
-              MedcloudsNativeApi.instance().openWebPage(userAgreement);
+              MedcloudsNativeApi.instance().openWebPage(processUserAgreementHost());
             },
           ),
           GestureDetector(
             child: _itemWidget('隐私协议'),
             onTap: () {
               MedcloudsNativeApi.instance().openWebPage(
-                privacyAgreement,
+                processPrivacyAgreementHost(),
               );
             },
           ),

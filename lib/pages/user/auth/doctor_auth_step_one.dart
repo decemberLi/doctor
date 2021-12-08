@@ -208,14 +208,24 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   }
 
   _goNextStep() async {
-    UserInfoViewModel userViewModel = Provider.of<UserInfoViewModel>(context, listen: false);
-    if(userViewModel.data.authStatus == 'WAIT_VERIFY'){
+    UserInfoViewModel userViewModel =
+        Provider.of<UserInfoViewModel>(context, listen: false);
+    String status = userViewModel.data.authStatus;
+    if (status == 'WAIT_VERIFY') {
       var result = await Navigator.pushNamed(
           context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
       debugPrint("page poped , & value is $result");
       if (result != null && (result is bool) && result) {
         Navigator.pop(context);
       }
+    } else if (status == 'FAIL') {
+      Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
+    } else if (status == 'VERIFYING') {
+      Navigator.pushNamed(
+          context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+    } else if (status == 'PASS') {
+      Navigator.pushNamed(
+          context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
     }
   }
 

@@ -109,7 +109,7 @@ class _LoginFooterState extends State<LoginFooter> {
                         recognizer: _tap1
                           ..onTap = () {
                             MedcloudsNativeApi.instance().openWebPage(
-                                userAgreement,
+                                processUserAgreementHost(),
                                 title: '易学术服务协议');
                           },
                       ),
@@ -122,7 +122,7 @@ class _LoginFooterState extends State<LoginFooter> {
                         recognizer: _tap2
                           ..onTap = () {
                             MedcloudsNativeApi.instance().openWebPage(
-                                privacyAgreement,
+                                processPrivacyAgreementHost(),
                                 title: '易学术隐私协议');
                           },
                       ),
