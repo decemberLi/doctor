@@ -74,7 +74,7 @@ class AgreementDialog extends Dialog {
                               child: OutlinedButton(
                                 child: Text(this.entity.okText),
                                 style: OutlinedButton.styleFrom(
-                                  primary: const Color(0xFF000000),
+                                  primary: const Color(0xFFffffff),
                                   backgroundColor: ThemeColor.primaryColor,
                                   side: BorderSide(
                                     color: ThemeColor.primaryColor,
