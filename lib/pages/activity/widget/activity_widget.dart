@@ -152,24 +152,18 @@ class ActivityWidget extends StatelessWidget {
           ),
           onTap: () async {
             debugPrint('Need Channel [${_data.remitChannel}], Auth Status ${model?.isIdentityAuthPassedByChannel(_data.remitChannel)}');
-            if (model?.isIdentityAuthPassedByChannel(_data.remitChannel)??false) {
-              if (model.data.authStatus == 'WAIT_VERIFY' ||
-                  model.data.authStatus == 'FAIL') {
-                Navigator.pushNamed(
-                    context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
-              } else if (model.data.authStatus == 'VERIFYING') {
-                Navigator.pushNamed(
-                    context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-              } else if (model.data.authStatus == 'PASS') {
-                RouteManager.push(context, "yyy://page/activity_detail_page?activity_package_id=${_data.activityPackageId}&type=${_data.activityType}");
-                // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                //   return ActivityDetail(
-                //       _data.activityPackageId, _data.activityType);
-                // }));
-              }
-            } else {
+            if (!model?.isIdentityAuthPassedByChannel(_data.remitChannel)??false) {
               Navigator.pushNamed(
                   context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE,arguments: _data.remitChannel);
+              return;
+            }
+            if (model.data.authStatus == 'WAIT_VERIFY' || model.data.authStatus == 'FAIL') {
+              Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
+            } else if (model.data.authStatus == 'VERIFYING') {
+              Navigator.pushNamed(
+                  context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+            } else if (model.data.authStatus == 'PASS') {
+              RouteManager.push(context, "yyy://page/activity_detail_page?activity_package_id=${_data.activityPackageId}&type=${_data.activityType}");
             }
             await model.queryDoctorInfo();
           },

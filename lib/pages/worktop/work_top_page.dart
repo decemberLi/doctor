@@ -674,26 +674,7 @@ class _WorktopPageState extends State<WorktopPage>
         onTap: () {
           print(
               "the identityStatus is ${doctorInfoEntity?.identityStatus} , auth status is ${doctorInfoEntity?.authStatus} ");
-          gogogo(userModel, doctorInfoEntity, context);
-          // if (userModel.isIdentityAuthPassed()) {
-          //   if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' ||
-          //       doctorInfoEntity.authStatus == 'FAIL') {
-          //     Navigator.pushNamed(
-          //         context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
-          //   } else if (doctorInfoEntity.authStatus == 'VERIFYING') {
-          //     Navigator.pushNamed(
-          //         context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-          //   } else if (doctorInfoEntity.authStatus == 'PASS') {
-          //     Navigator.pushNamed(
-          //         context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
-          //   }
-          // } else {
-          //   Navigator.pushNamed(
-          //     context,
-          //     RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE,
-          //     arguments: AuthPlatform.channelGolden,
-          //   );
-          // }
+          goGoGo(userModel, doctorInfoEntity, context);
         },
         child: RichText(
           textAlign: TextAlign.center,
@@ -722,34 +703,25 @@ class _WorktopPageState extends State<WorktopPage>
   }
 }
 
-gogogo(
-    UserInfoViewModel userModel, DoctorDetailInfoEntity doctorInfoEntity, BuildContext context) {
-  if (doctorInfoEntity?.authStatus == 'VERIFYING') {
-    if (userModel.isIdentityAuthPassedByChannel(AuthPlatform.channelGolden)) {
-      // 资质认证填写
-      Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
-    } else {
-      Navigator.pushNamed(
-        context,
-        RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE,
-        arguments: AuthPlatform.channelGolden,
-      );
-    }
+goGoGo(UserInfoViewModel userModel, DoctorDetailInfoEntity doctorInfoEntity,
+    BuildContext context) {
+  if (!userModel.isIdentityAuthPassedByChannel(AuthPlatform.channelGolden)) {
+    Navigator.pushNamed(
+        context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE,
+        arguments: AuthPlatform.channelGolden);
     return;
   }
-
-  if (doctorInfoEntity.authStatus == 'FAIL') {
+  if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' || doctorInfoEntity.authStatus == 'FAIL') {
     Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
-  } else if (doctorInfoEntity.authStatus == 'VERIFYING') {
+    return;
+  }
+  if (doctorInfoEntity?.authStatus == 'VERIFYING') {
     Navigator.pushNamed(
         context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-  } else if (doctorInfoEntity.authStatus == 'PASS') {
+    return;
+  }
+  if (doctorInfoEntity.authStatus == 'PASS') {
     Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
-  } else {
-    Navigator.pushNamed(
-      context,
-      RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE,
-      arguments: AuthPlatform.channelGolden,
-    );
+    return;
   }
 }

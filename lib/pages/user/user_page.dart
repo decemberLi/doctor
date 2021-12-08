@@ -286,32 +286,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    gogogo(userInfoModel, doctorData, context);
-                                    // if (doctorData?.identityStatus == 'PASS') {
-                                    //   if (doctorData?.authStatus == 'WAIT_VERIFY' ||
-                                    //       doctorData.authStatus == 'FAIL') {
-                                    //     Navigator.pushNamed(
-                                    //         context,
-                                    //         RouteManagerOld
-                                    //             .DOCTOR_AUTHENTICATION_PAGE);
-                                    //   } else if (doctorData.authStatus ==
-                                    //       'VERIFYING') {
-                                    //     Navigator.pushNamed(
-                                    //         context,
-                                    //         RouteManagerOld
-                                    //             .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-                                    //   } else if (doctorData.authStatus == 'PASS') {
-                                    //     Navigator.pushNamed(
-                                    //         context,
-                                    //         RouteManagerOld
-                                    //             .DOCTOR_AUTH_STATUS_PASS_PAGE);
-                                    //   }
-                                    // } else {
-                                    //   // Navigator.pushNamed(
-                                    //   //     context,
-                                    //   //     RouteManagerOld
-                                    //   //         .DOCTOR_AUTHENTICATION_INFO_PAGE);
-                                    // }
+                                    goGoGo(userInfoModel, doctorData, context);
                                   },
                                   child: Container(
                                     width: 65,
