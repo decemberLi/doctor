@@ -17,6 +17,7 @@ class ImageChooseWidget extends StatelessWidget {
   final OnAddImageCallback addImgCallback;
   final OnRemoveImageCallback removeImgCallback;
   final OnAddImageCallback showOriginImgCallback;
+  final bool enableModified;
   final _dashDecoration = DashedDecoration(
     dashedColor: ThemeColor.primaryColor,
     gap: 3,
@@ -31,6 +32,7 @@ class ImageChooseWidget extends StatelessWidget {
     this.addImgCallback,
     this.removeImgCallback,
     this.showOriginImgCallback,
+    this.enableModified = true,
   })  : this.width = width ?? double.infinity,
         this.height = height ?? 85,
         this.cameraWidget = GestureDetector(
@@ -99,22 +101,23 @@ class ImageChooseWidget extends StatelessWidget {
               },
             ),
           ),
-          Positioned(
-            right: -16,
-            top: -16,
-            child: GestureDetector(
-              child: Container(
-                padding:
-                    EdgeInsets.only(left: 10, bottom: 10, top: 10, right: 10),
-                child: Icon(
-                  Icons.remove_circle,
-                  size: 18.0,
-                  color: url == null ? Colors.transparent : Color(0xFFF57575),
+          if (enableModified)
+            Positioned(
+              right: -16,
+              top: -16,
+              child: GestureDetector(
+                child: Container(
+                  padding:
+                      EdgeInsets.only(left: 10, bottom: 10, top: 10, right: 10),
+                  child: Icon(
+                    Icons.remove_circle,
+                    size: 18.0,
+                    color: url == null ? Colors.transparent : Color(0xFFF57575),
+                  ),
                 ),
+                onTap: removeImgCallback,
               ),
-              onTap: removeImgCallback,
-            ),
-          )
+            )
         ],
       ),
     );

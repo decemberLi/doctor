@@ -120,7 +120,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                     _idNotMatchErrorMsg = '';
                                     _bankCardCheckErrorMsg = '';
                                   });
-                                  if(!TextUtil.isEmpty(widget.channel)){
+                                  if (!TextUtil.isEmpty(widget.channel)) {
                                     _model.setChannel(widget.channel);
                                   }
                                   model
@@ -189,7 +189,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
   @override
   void initState() {
     super.initState();
-    _model.refreshData(_phoneNumberController,_bankCardController);
+    _model.refreshData(_phoneNumberController, _bankCardController);
   }
 
   void _unFocus() {
@@ -215,7 +215,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     }
   }
 
-  showNoticeDialog(String content, {String number }) async {
+  showNoticeDialog(String content, {String number}) async {
     _contentTextStyle(color) {
       return TextStyle(fontSize: 14, color: color, height: 1.6);
     }
@@ -292,6 +292,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
         Text("手机号：", style: _style, textAlign: TextAlign.center),
         Expanded(
             child: TextField(
+          enabled: model.isMobileEnable,
           controller: _phoneNumberController,
           maxLength: 11,
           decoration: InputDecoration(
@@ -300,6 +301,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             counterText: '',
             focusedBorder: _noneBorder,
             enabledBorder: _noneBorder,
+            disabledBorder: _noneBorder,
             border: _noneBorder,
           ),
           focusNode: _mobileFocusNode,
@@ -324,6 +326,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             Text("银行卡号：", style: _style, textAlign: TextAlign.center),
             Expanded(
               child: TextField(
+                enabled: model.isScanBankCardEnable,
                 controller: _bankCardController,
                 maxLength: 20,
                 decoration: InputDecoration(
@@ -333,6 +336,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                   counterText: '',
                   focusedBorder: _noneBorder,
                   enabledBorder: _noneBorder,
+                  disabledBorder: _noneBorder,
                   border: _noneBorder,
                 ),
                 focusNode: _bankCardFocusNode,
@@ -426,6 +430,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
               showOriginImgCallback: () {
                 _showOriginImage(data, 0);
               },
+              enableModified: model.isIdCardCanModified,
             )),
             Container(
               width: 10,
@@ -442,6 +447,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
               showOriginImgCallback: () {
                 _showOriginImage(data, 1);
               },
+              enableModified: model.isIdCardCanModified,
             )),
           ],
         ),
@@ -572,14 +578,13 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
     );
   }
 
-  String agreementText(String channel){
-    if(TextUtil.isEmpty(channel) || channel == 'GOLDEN'){
+  String agreementText(String channel) {
+    if (TextUtil.isEmpty(channel) || channel == 'GOLDEN') {
       return '本人已阅读并同意与四川高灯企服科技有限公司签署';
-    }else{
+    } else {
       return '我自愿遵守并同意';
     }
   }
-
 
   bankOrc() async {
     MedcloudsNativeApi.instance().addProcessor("ocrBankCard", (args) {

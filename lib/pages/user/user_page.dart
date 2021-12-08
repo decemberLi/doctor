@@ -5,6 +5,7 @@ import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/user/user_detail/user_info_detai.dart';
+import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/adapt.dart';
@@ -285,31 +286,32 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    if (doctorData?.identityStatus == 'PASS') {
-                                      if (doctorData?.authStatus == 'WAIT_VERIFY' ||
-                                          doctorData.authStatus == 'FAIL') {
-                                        Navigator.pushNamed(
-                                            context,
-                                            RouteManagerOld
-                                                .DOCTOR_AUTHENTICATION_PAGE);
-                                      } else if (doctorData.authStatus ==
-                                          'VERIFYING') {
-                                        Navigator.pushNamed(
-                                            context,
-                                            RouteManagerOld
-                                                .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-                                      } else if (doctorData.authStatus == 'PASS') {
-                                        Navigator.pushNamed(
-                                            context,
-                                            RouteManagerOld
-                                                .DOCTOR_AUTH_STATUS_PASS_PAGE);
-                                      }
-                                    } else {
-                                      // Navigator.pushNamed(
-                                      //     context,
-                                      //     RouteManagerOld
-                                      //         .DOCTOR_AUTHENTICATION_INFO_PAGE);
-                                    }
+                                    gogogo(userInfoModel, doctorData, context);
+                                    // if (doctorData?.identityStatus == 'PASS') {
+                                    //   if (doctorData?.authStatus == 'WAIT_VERIFY' ||
+                                    //       doctorData.authStatus == 'FAIL') {
+                                    //     Navigator.pushNamed(
+                                    //         context,
+                                    //         RouteManagerOld
+                                    //             .DOCTOR_AUTHENTICATION_PAGE);
+                                    //   } else if (doctorData.authStatus ==
+                                    //       'VERIFYING') {
+                                    //     Navigator.pushNamed(
+                                    //         context,
+                                    //         RouteManagerOld
+                                    //             .DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
+                                    //   } else if (doctorData.authStatus == 'PASS') {
+                                    //     Navigator.pushNamed(
+                                    //         context,
+                                    //         RouteManagerOld
+                                    //             .DOCTOR_AUTH_STATUS_PASS_PAGE);
+                                    //   }
+                                    // } else {
+                                    //   // Navigator.pushNamed(
+                                    //   //     context,
+                                    //   //     RouteManagerOld
+                                    //   //         .DOCTOR_AUTHENTICATION_INFO_PAGE);
+                                    // }
                                   },
                                   child: Container(
                                     width: 65,

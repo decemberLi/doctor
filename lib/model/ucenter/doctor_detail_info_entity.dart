@@ -47,6 +47,14 @@ class DoctorDetailInfoEntity {
   String practiceDepartmentCode;
 
   /// 认证状态(WAIT_VERIFY-待认证、VERIFYING-认证中、FAIL-认证失败、PASS-认证通过）
+  /// 第一步：
+  /// 基础信息完善状态(NOT_COMPLETE-未完善,COMPLETED-已完善)
+  ///
+  /// 身份认证状态：
+  /// 认证状态(WAIT_VERIFY-待认证、VERIFYING-认证中、FAIL-认证失败、PASS-认证通过）
+  /// 资质认证状态：
+  /// 认证状态(WAIT_VERIFY-待认证、VERIFYING-认证中、FAIL-认证失败、PASS-认证通过）
+  /// 身份认证结果是同步返回，因此，理论上认证中、认证失败不是持续状态，可能会存在瞬态
   String authStatus;
   String identityStatus;
 

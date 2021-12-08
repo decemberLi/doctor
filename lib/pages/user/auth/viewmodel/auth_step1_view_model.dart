@@ -25,6 +25,9 @@ class AuthenticationViewModel extends ViewStateModel {
   var _customerServicePhone = '13198064238';
   var _isCommitting = false;
   var _isScanBankCard = false;
+  var _isBankCardEnable = true;
+  var _isMobileEnable = true;
+  var _isIdCardCanModified = true;
 
   bool get needShowIdCardInfo => _showIdCardInfo;
 
@@ -39,6 +42,12 @@ class AuthenticationViewModel extends ViewStateModel {
   String get customServicePhone => _customerServicePhone;
 
   bool get isScanBankCard => _isScanBankCard;
+
+  get isMobileEnable => _isMobileEnable;
+
+  get isScanBankCardEnable => _isBankCardEnable;
+
+  bool get isIdCardCanModified => _isIdCardCanModified;
 
   void setIsScanBankCard(bool value) {
     _isScanBankCard = value;
@@ -240,12 +249,17 @@ class AuthenticationViewModel extends ViewStateModel {
     }
     _entity = AuthBasicInfoEntity.fromJson(result);
     if (_entity.idCardLicenseFront != null) {
+      _isIdCardCanModified = false;
       _showIdCardInfo = true;
     }
     if (!TextUtil.isEmpty(_entity.bankCard)) {
       _isScanBankCard = true;
+      _isBankCardEnable = false;
     }
-    phoneController.text =_entity.bankSignMobile??'';
+    if(!TextUtil.isEmpty(_entity.bankSignMobile)) {
+      _isMobileEnable = false;
+      phoneController.text = _entity.bankSignMobile ?? '';
+    }
     checkDataIntegrity();
     notifyListeners();
   }
