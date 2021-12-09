@@ -66,7 +66,7 @@ class AuthStatusPassPage extends StatelessWidget {
                 margin: EdgeInsets.only(top: 28, left: 50, right: 50),
                 child: contentWidget,
               ),
-              if(userModel.isIdentityAuthPassedByChannel(AuthPlatform.channelGolden))
+              if(userModel.isIdentityAuthPassedByChannel(channelGolden))
               GestureDetector(
                 child: Container(
                   alignment: Alignment.center,
