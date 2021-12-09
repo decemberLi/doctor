@@ -20,11 +20,11 @@ agreementDialog(BuildContext context) async {
   var refs = await SharedPreferences.getInstance();
   String localVersion = refs.getString(kLocalAgreementVersion);
   isAgreed = refs.getBool(kIsAgree) ?? false;
-debugPrint('--------------------${(localVersion == remoteVersion) && isAgreed}');
-  // if ((localVersion == remoteVersion) && isAgreed) {
-  //   debugPrint('用户已经同意过服务协议');
-  //   return;
-  // }
+  debugPrint('--------------------${(localVersion == remoteVersion) && isAgreed}');
+  if ((localVersion == remoteVersion) && isAgreed) {
+    debugPrint('用户已经同意过服务协议');
+    return;
+  }
   Future.delayed(Duration.zero, () {
     var data = DialogEntity(
         '用户协议和隐私条款',
