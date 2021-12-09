@@ -286,7 +286,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    goGoGo(userInfoModel, doctorData, context);
+                                    goGoGo(userInfoModel, context);
                                   },
                                   child: Container(
                                     width: 65,

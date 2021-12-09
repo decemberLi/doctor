@@ -674,7 +674,7 @@ class _WorktopPageState extends State<WorktopPage>
         onTap: () {
           print(
               "the identityStatus is ${doctorInfoEntity?.identityStatus} , auth status is ${doctorInfoEntity?.authStatus} ");
-          goGoGo(userModel, doctorInfoEntity, context);
+          goGoGo(userModel, context);
         },
         child: RichText(
           textAlign: TextAlign.center,
@@ -703,24 +703,25 @@ class _WorktopPageState extends State<WorktopPage>
   }
 }
 
-bool goGoGo(UserInfoViewModel userModel, DoctorDetailInfoEntity doctorInfoEntity,
-    BuildContext context) {
-  if (!userModel.isIdentityAuthPassedByChannel(AuthPlatform.channelGolden)) {
+bool goGoGo(UserInfoViewModel userModel, BuildContext context,{String channel = channelGolden}) {
+  DoctorDetailInfoEntity doctorInfo = userModel.data;
+  if (!userModel.isIdentityAuthPassedByChannel(channel)) {
     Navigator.pushNamed(
         context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE,
-        arguments: AuthPlatform.channelGolden);
+        arguments: channel);
     return false;
   }
-  if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' || doctorInfoEntity.authStatus == 'FAIL') {
+  if (doctorInfo?.authStatus == 'WAIT_VERIFY' ||
+      doctorInfo.authStatus == 'FAIL') {
     Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
     return false;
   }
-  if (doctorInfoEntity?.authStatus == 'VERIFYING') {
+  if (doctorInfo?.authStatus == 'VERIFYING') {
     Navigator.pushNamed(
         context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
     return false;
   }
-  if (doctorInfoEntity.authStatus == 'PASS') {
+  if (doctorInfo.authStatus == 'PASS') {
     Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
     return false;
   }

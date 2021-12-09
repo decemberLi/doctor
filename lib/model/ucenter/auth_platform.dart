@@ -1,9 +1,9 @@
 
 
-class AuthPlatform {
+const String channelGolden = 'GOLDEN';
+const String channelCloudAccount = 'CLOUD_ACCOUNT';
 
-  static final String channelGolden = 'GOLDEN';
-  static final String channelCloudAccount = 'CLOUD_ACCOUNT';
+class AuthPlatform {
   ///
   /// 渠道(GOLDEN-高灯,CLOUD_ACCOUNT-云账户)
   ///

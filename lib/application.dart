@@ -50,11 +50,11 @@ class ApplicationInitialize {
 
       return MedcloudsNativeApi.instance().openWebPage(url);
     });
-    RouteManager.commonAuthInterceptor((context) async {
+    RouteManager.commonAuthInterceptor((context, path, args) async {
       // TODO Logic
       return true;
     });
-    RouteManager.commonLoginInterceptor((context) async {
+    RouteManager.commonLoginInterceptor((context, path, args) async {
       // TODO Logic
       return true;
     });

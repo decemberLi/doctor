@@ -17,6 +17,7 @@ import 'package:doctor/pages/user/setting/update/app_update.dart';
 import 'package:doctor/pages/user/setting/update/app_update_info.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/cache_learn_detail_video_helper.dart';
+import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/provider/provider_manager.dart';
 import 'package:doctor/root_widget.all.dart';
 import 'package:doctor/route/navigation_service.dart';
@@ -54,6 +55,8 @@ String windowDeviceToken = "";
 class RootWidget extends StatelessWidget {
   final showGuide;
 
+  List<String> _needInterceptorPage = ['activity_detail_page', ''];
+
   RootWidget(this.showGuide) {
     SessionManager.shared.addListener(() async {
       var context = NavigationService().navigatorKey.currentContext;
@@ -66,6 +69,28 @@ class RootWidget extends StatelessWidget {
         await Navigator.of(context).pushNamedAndRemoveUntil(
             RouteManagerOld.LOGIN_CAPTCHA, (route) => false);
       }
+    });
+    RouteManager.routeInterceptor(
+        (context, path, Map<String, dynamic> params) async {
+      if (!_needInterceptorPage.contains(path)) {
+        debugPrint('routeInterceptor=> path: [$path] need not interceptor.');
+        return Future.value(true);
+      }
+
+      UserInfoViewModel userModel =
+          Provider.of<UserInfoViewModel>(context, listen: false);
+      await userModel.queryDoctorInfo();
+
+      debugPrint(
+          'RouteInterceptor=> path: [$path] need interceptor, AuthStatus:[${userModel.data.authStatus}]');
+      if (userModel.data.authStatus == 'PASS') {
+        return Future.value(true);
+      }
+
+      debugPrint(
+          'RouteInterceptor=> need auth channel: [${params['remitChannel']}]');
+      return Future.value(
+          goGoGo(userModel, context, channel: params['remitChannel']));
     });
     MedcloudsNativeApi.instance().addProcessor("receiveToken", (args) async {
       windowDeviceToken = args;

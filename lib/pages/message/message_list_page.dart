@@ -270,7 +270,7 @@ class _MessageListPageState extends State<MessageListPage> {
         'from': 'MESSAGE_CENTER'
       });
     } else if (type == 'ACTIVITY') {
-      if (!goGoGo(userModel, userModel.data, context)) {
+      if (!goGoGo(userModel, context)) {
         return;
       }
       if (entity.params['activityType'] == 'CASE_COLLECTION') {
