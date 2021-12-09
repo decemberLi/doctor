@@ -83,12 +83,16 @@ class RootWidget extends StatelessWidget {
 
       debugPrint(
           'RouteInterceptor=> path: [$path] need interceptor, AuthStatus:[${userModel.data.authStatus}]');
-      if (userModel.data.authStatus == 'PASS') {
+      var channel = params['remitChannel'];
+      debugPrint(
+          'RouteInterceptor=> path: [$path] need interceptor, channel:[$channel], status:[${userModel.identityAuthStatusByChannel(
+              channel)}]');
+      if (userModel.isIdentityAuthPassedByChannel(channel) && userModel.data.authStatus == 'PASS') {
         return Future.value(true);
       }
 
       debugPrint(
-          'RouteInterceptor=> need auth channel: [${params['remitChannel']}]');
+          'RouteInterceptor=> need auth channel: [$channel]');
       return Future.value(
           goGoGo(userModel, context, channel: params['remitChannel']));
     });
