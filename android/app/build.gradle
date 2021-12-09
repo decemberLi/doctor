@@ -175,7 +175,7 @@ dependencies {
     api 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
     // OCR
-    implementation files('libs/OcrSDKv1.0.5-release.aar')
+    implementation files('libs/OcrSDKv1.0.9-release.aar')
     // OCR SDK 依赖 xlog 组件需要添加引用
     implementation 'com.tencent.mars:mars-xlog:1.2.3'
     // OCR SDK 返回实体对象需要的依赖
