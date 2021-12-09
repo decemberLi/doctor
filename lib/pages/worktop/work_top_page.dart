@@ -703,25 +703,27 @@ class _WorktopPageState extends State<WorktopPage>
   }
 }
 
-goGoGo(UserInfoViewModel userModel, DoctorDetailInfoEntity doctorInfoEntity,
+bool goGoGo(UserInfoViewModel userModel, DoctorDetailInfoEntity doctorInfoEntity,
     BuildContext context) {
   if (!userModel.isIdentityAuthPassedByChannel(AuthPlatform.channelGolden)) {
     Navigator.pushNamed(
         context, RouteManagerOld.DOCTOR_AUTHENTICATION_INFO_PAGE,
         arguments: AuthPlatform.channelGolden);
-    return;
+    return false;
   }
   if (doctorInfoEntity?.authStatus == 'WAIT_VERIFY' || doctorInfoEntity.authStatus == 'FAIL') {
     Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
-    return;
+    return false;
   }
   if (doctorInfoEntity?.authStatus == 'VERIFYING') {
     Navigator.pushNamed(
         context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
-    return;
+    return false;
   }
   if (doctorInfoEntity.authStatus == 'PASS') {
     Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
-    return;
+    return false;
   }
+
+  return true;
 }
