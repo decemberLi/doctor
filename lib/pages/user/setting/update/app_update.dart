@@ -12,6 +12,7 @@ import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/manager.dart';
 import 'package:open_file/open_file.dart';
@@ -395,7 +396,7 @@ class AppUpdateDialog extends StatelessWidget {
                   //关闭对话框并返回true
                   if (_updateInfo.forceUpgrade) {
                     print('----------------------------${_updateInfo.forceUpgrade}');
-                    exit(0);
+                    SystemNavigator.pop();
                   }
                   _record();
                   Navigator.pop(context);
