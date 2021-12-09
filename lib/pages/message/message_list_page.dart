@@ -226,14 +226,14 @@ class _MessageListPageState extends State<MessageListPage> {
     // 获取用户当前审核状态
     UserInfoViewModel userModel =
     Provider.of<UserInfoViewModel>(context, listen: false);
+    await userModel.queryDoctorInfo();
     if (type == MessageType.TYPE_SYSTEM) {
-      await userModel.queryDoctorInfo();
       if (userModel.data == null) {
         EasyLoading.showToast('获取用户审核状态失败');
         return;
       }
       var doctorData = userModel.data;
-      if (doctorData?.identityStatus == 'PASS') {
+      if (userModel.isIdentityAuthPassed()) {
         if (doctorData?.authStatus == 'WAIT_VERIFY' ||
             doctorData.authStatus == 'FAIL') {
           Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTHENTICATION_PAGE);
