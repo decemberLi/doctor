@@ -57,7 +57,7 @@ class AboutUs extends StatelessWidget {
                     padding: EdgeInsets.only(left: 36, right: 36, top: 5),
                     width: double.infinity,
                     child: Text(
-                      '客服电话：17345044368',
+                      '客服电话：028-83112376',
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: 14,
