@@ -153,8 +153,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                           _bankCardCheckErrorMsg = errorMsg;
                                         });
                                       } else if ('00010009' == errorCode) {
-                                        showNoticeDialog(errorMsg,
-                                            number: model.customServicePhone);
+                                        showNoticeDialog(errorMsg);
                                       } else if ('00010014' == errorCode) {
                                         setState(() {
                                           _bankCardCheckErrorMsg = errorMsg;
