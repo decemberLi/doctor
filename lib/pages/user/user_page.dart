@@ -234,14 +234,10 @@ class _UserPageState extends State<UserPage> with RouteAware {
                       child: doctorData?.fullFacePhoto == null
                           ? Image.asset(
                         "assets/images/doctorHeader.png",
-                        width: 35,
-                        height: 35,
                       )
                           : Container(
-                        width: 60,
-                        height: 60,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Colors.transparent,
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             fit: BoxFit.fitWidth,
@@ -251,7 +247,7 @@ class _UserPageState extends State<UserPage> with RouteAware {
                         ),
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Colors.transparent,
                         boxShadow: [
                           BoxShadow(
                             color: Color(0x2f000000),
