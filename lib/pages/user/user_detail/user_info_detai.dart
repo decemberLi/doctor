@@ -155,13 +155,9 @@ class _DoctorUserInfoState extends State<DoctorUserInfo> {
                 alignment: Alignment.centerRight,
                 child: value == null
                     ? Container(
-                        width: 40,
-                        height: 40,
                         alignment: Alignment.center,
                         child: Image.asset(
                           "assets/images/doctorHeader.png",
-                          width: 20,
-                          height: 20,
                         ),
                         decoration: BoxDecoration(
                           color: Colors.white,

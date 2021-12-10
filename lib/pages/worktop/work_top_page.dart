@@ -320,14 +320,9 @@ class _WorktopPageState extends State<WorktopPage>
             child: doctorInfoEntity?.fullFacePhoto == null
                 ? Image.asset(
                     "assets/images/doctorHeader.png",
-                    width: 40,
-                    height: 40,
                   )
                 : Container(
-                    width: 68,
-                    height: 68,
                     decoration: BoxDecoration(
-                      color: Colors.white,
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         fit: BoxFit.fitWidth,
@@ -337,7 +332,7 @@ class _WorktopPageState extends State<WorktopPage>
                     ),
                   ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.transparent,
               boxShadow: [
                 BoxShadow(
                   color: Color(0x2f000000),

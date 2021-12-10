@@ -153,8 +153,7 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                           _bankCardCheckErrorMsg = errorMsg;
                                         });
                                       } else if ('00010009' == errorCode) {
-                                        showNoticeDialog(errorMsg,
-                                            number: model.customServicePhone);
+                                        showNoticeDialog(errorMsg);
                                       } else if ('00010014' == errorCode) {
                                         setState(() {
                                           _bankCardCheckErrorMsg = errorMsg;
@@ -281,9 +280,10 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
             actions: [
               TextButton(
                 child: Container(
+                  alignment: Alignment.center,
                   height: 44,
                   child: Text(
-                    TextUtil.isEmpty(number) ? "继续" : "确定",
+                    "确定",
                     style: _contentTextStyle(ThemeColor.primaryColor),
                   ),
                 ),
