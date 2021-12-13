@@ -14,6 +14,7 @@ var focusableInputBorder = UnderlineInputBorder(
   borderSide: BorderSide(width: 1,color: ThemeColor.primaryColor),
 );
 
+bool isAgree = false;
 class LoginFooter extends StatefulWidget {
   final ValueChanged<bool> onChange;
 
@@ -26,7 +27,6 @@ class LoginFooter extends StatefulWidget {
 class _LoginFooterState extends State<LoginFooter> {
   TapGestureRecognizer _tap1 = TapGestureRecognizer();
   TapGestureRecognizer _tap2 = TapGestureRecognizer();
-  bool _agree = false;
 
   initAgree() async {
     setState(() {
@@ -36,14 +36,14 @@ class _LoginFooterState extends State<LoginFooter> {
 
   saveAgree() {
     setState(() {
-      _agree = !_agree;
+      isAgree = !isAgree;
       this.onChange();
     });
   }
 
   onChange() {
     if (widget.onChange != null) {
-      widget.onChange(_agree);
+      widget.onChange(isAgree);
     }
   }
 
@@ -75,7 +75,7 @@ class _LoginFooterState extends State<LoginFooter> {
               padding: EdgeInsets.only(top: 1,right: 3),
               child: Icon(
                 Icons.check_circle,
-                color: _agree
+                color: isAgree
                     ? ThemeColor.primaryColor
                     : ThemeColor.secondaryGeryColor,
                 size: 15,
