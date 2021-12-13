@@ -4,7 +4,6 @@ import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 const String AGREE_KEY = 'AGREE_KEY';
 
@@ -27,13 +26,10 @@ class LoginFooter extends StatefulWidget {
 class _LoginFooterState extends State<LoginFooter> {
   TapGestureRecognizer _tap1 = TapGestureRecognizer();
   TapGestureRecognizer _tap2 = TapGestureRecognizer();
-  SharedPreferences sp;
   bool _agree = false;
 
   initAgree() async {
-    sp = await SharedPreferences.getInstance();
     setState(() {
-      _agree = sp.getBool(AGREE_KEY) ?? false;
       this.onChange();
     });
   }
@@ -41,7 +37,6 @@ class _LoginFooterState extends State<LoginFooter> {
   saveAgree() {
     setState(() {
       _agree = !_agree;
-      sp.setBool(AGREE_KEY, _agree);
       this.onChange();
     });
   }
