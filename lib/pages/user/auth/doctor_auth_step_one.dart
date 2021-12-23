@@ -156,8 +156,8 @@ class _DoctorAuthenticationPageState extends State<DoctorAuthenticationPage> {
                                         showNoticeDialog(errorMsg);
                                       } else if ('00010014' == errorCode) {
                                         setState(() {
-                                          _bankCardCheckErrorMsg = '';
-                                          _idNotMatchErrorMsg = errorMsg;
+                                          _bankCardCheckErrorMsg = errorMsg;
+                                          _idNotMatchErrorMsg = '';
                                         });
                                       }
                                     } else if (error?.error != null &&
