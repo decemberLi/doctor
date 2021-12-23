@@ -45,12 +45,6 @@ class _SettingPageState extends State<SettingPage> {
               Navigator.pushNamed(context, RouteManagerOld.MODIFY_PWD);
             },
           ),
-          GestureDetector(
-            child: _buildItemWidget('服务协议'),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ServiceAgreementPage()));
-            },
-          ),
           Container(
             margin: EdgeInsets.only(left: 16, right: 16, top: 12),
             decoration: BoxDecoration(

@@ -16,6 +16,7 @@ import 'package:http_manager/manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../root_widget.dart';
+import 'setting/service_aggrement_page.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -368,6 +369,9 @@ class _UserPageState extends State<UserPage> with RouteAware {
                   }, num: "$facNum"),
                   messageItem('设置', 'assets/images/setting.png', () {
                     Navigator.pushNamed(context, RouteManagerOld.SETTING);
+                  }),
+                  messageItem('服务协议', 'assets/images/agreements.png', () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ServiceAgreementPage()));
                   }),
                   messageItem('关于我们', 'assets/images/aboutus.png', () {
                     Navigator.pushNamed(context, RouteManagerOld.ABOUT_US);

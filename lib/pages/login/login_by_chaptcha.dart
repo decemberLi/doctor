@@ -42,15 +42,15 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
   int _maxCount = 0;
   String _mobile, _captcha;
   KeyboardVisibilityController subscribeId;
-  bool _agree = false;
   var _phoneController = TextEditingController();
 
   Future _submit() async {
     final form = _formKey.currentState;
-    if (!_agree) {
+    if (!isAgree) {
       EasyLoading.showToast('请阅读并同意《易学术服务协议》及《易学术隐私协议》');
       return;
     }
+    isAgree = false;
     if (form.validate()) {
       form.save();
       EasyLoading.instance.flash(() async {
@@ -274,14 +274,14 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                   ),
                   LoginFooter(onChange: (bool value) {
                     setState(() {
-                      _agree = value;
+                      isAgree = value;
                     });
                   }),
                   Container(
                     margin: EdgeInsets.only(bottom: 20, top: 10),
                     child: AceButton(
                       text: '登录',
-                      color: _agree
+                      color: isAgree
                           ? null
                           : ThemeColor.primaryColor.withOpacity(0.5),
                       onPressed: _submit,
@@ -298,10 +298,12 @@ class _LoginByCaptchaPageState extends State<LoginByCaptchaPage> {
                               color: ThemeColor.primaryColor, fontSize: 12),
                         ),
                         onTap: ()async  {
+                          isAgree = false;
                           var phone = await Navigator.of(context)
                               .pushNamed(RouteManagerOld.LOGIN_PWD, arguments: {
                                 "phoneNumber": _phoneController.text
                           });
+                          isAgree = false;
                           // 不为空设置手机号码
                           if(!TextUtil.isEmpty(phone)) {
                             _phoneController.text = phone;

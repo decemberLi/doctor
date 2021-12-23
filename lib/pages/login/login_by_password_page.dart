@@ -44,6 +44,7 @@ class _LoginByPasswordPageState extends State<LoginByPasswordPage> {
       EasyLoading.showToast('请阅读并同意《易学术服务协议》及《易学术隐私协议》');
       return;
     }
+    isAgree = false;
     if (form.validate()) {
       form.save();
       EasyLoading.instance.flash(() async {

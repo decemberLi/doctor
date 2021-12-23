@@ -4,7 +4,6 @@ import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 const String AGREE_KEY = 'AGREE_KEY';
 
@@ -15,6 +14,7 @@ var focusableInputBorder = UnderlineInputBorder(
   borderSide: BorderSide(width: 1,color: ThemeColor.primaryColor),
 );
 
+bool isAgree = false;
 class LoginFooter extends StatefulWidget {
   final ValueChanged<bool> onChange;
 
@@ -27,28 +27,23 @@ class LoginFooter extends StatefulWidget {
 class _LoginFooterState extends State<LoginFooter> {
   TapGestureRecognizer _tap1 = TapGestureRecognizer();
   TapGestureRecognizer _tap2 = TapGestureRecognizer();
-  SharedPreferences sp;
-  bool _agree = false;
 
   initAgree() async {
-    sp = await SharedPreferences.getInstance();
     setState(() {
-      _agree = sp.getBool(AGREE_KEY) ?? false;
       this.onChange();
     });
   }
 
   saveAgree() {
     setState(() {
-      _agree = !_agree;
-      sp.setBool(AGREE_KEY, _agree);
+      isAgree = !isAgree;
       this.onChange();
     });
   }
 
   onChange() {
     if (widget.onChange != null) {
-      widget.onChange(_agree);
+      widget.onChange(isAgree);
     }
   }
 
@@ -80,7 +75,7 @@ class _LoginFooterState extends State<LoginFooter> {
               padding: EdgeInsets.only(top: 1,right: 3),
               child: Icon(
                 Icons.check_circle,
-                color: _agree
+                color: isAgree
                     ? ThemeColor.primaryColor
                     : ThemeColor.secondaryGeryColor,
                 size: 15,
