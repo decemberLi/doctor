@@ -1,12 +1,12 @@
 import 'package:doctor/http/server.dart';
+import 'package:doctor/pages/worktop/learn/model/activity_learn_record_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_detail_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_list_model.dart';
 import 'package:doctor/pages/worktop/learn/model/learn_record_model.dart';
 import 'package:doctor/provider/view_state_model.dart';
 import 'package:doctor/provider/view_state_refresh_list_model.dart';
 import 'package:http_manager/manager.dart';
-
-
+import 'package:doctor/http/activity.dart';
 
 class LearnListViewModel extends ViewStateRefreshListModel {
   String learnStatus = 'learning';
@@ -110,6 +110,34 @@ class LearnRecordingModel extends ViewStateModel {
         'resourceId': this.resourceId,
       });
       return LearnRecordingItem.fromJson(data);
+    } catch (e) {
+      return e;
+    }
+  }
+}
+
+class ActivityLearnRecordingModel extends ViewStateModel {
+  int activityTaskId;
+
+  ActivityLearnRecordingModel(this.activityTaskId);
+
+  ActivityVideoLectureDetail data;
+
+  initData() async {
+    setBusy();
+    try {
+      data = (await loadData());
+      setIdle();
+    } catch (e, s) {
+      setError(e, s);
+    }
+  }
+
+  Future<ActivityVideoLectureDetail> loadData() async {
+    try {
+      var data = await API.shared.activity
+          .activityVideoLectureDetail(this.activityTaskId);
+      return ActivityVideoLectureDetail.fromJson(data);
     } catch (e) {
       return e;
     }

@@ -553,7 +553,7 @@ class _ActivityState extends State<ActivityDetail> {
       String desc = "";
       if (widget.type == TYPE_CASE_COLLECTION) {
         desc = "病例${i + 1}:已上传${item["pictureNum"]}张图片";
-      }else if (widget.type == TYPE_VIDEO){
+      }else if (widget.type == TYPE_LECTURE_VIDEO){
         desc = "${item["activityTaskName"]}";
       } else {
         Map<String, dynamic> illnessCase = item["illnessCase"];
@@ -598,7 +598,7 @@ class _ActivityState extends State<ActivityDetail> {
     var title = "病例列表";
     if (_data.activityType == TYPE_MEDICAL_SURVEY) {
       title = "调研列表";
-    }else if (_data.activityType == TYPE_VIDEO){
+    }else if (_data.activityType == TYPE_LECTURE_VIDEO){
       title = "讲课视频列表";
     }
     return card(

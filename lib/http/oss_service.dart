@@ -11,8 +11,18 @@ class OssService {
 
   factory OssService() => _instance;
 
-  static Future<OssFileEntity> upload(path, {bool showLoading = true}) async {
-    return await _instance._upload(path, showLoading: showLoading);
+  static Future<OssFileEntity> upload(
+    path, {
+    bool showLoading = true,
+    ProgressCallback onSendProgress,
+    ProgressCallback onReceiveProgress,
+  }) async {
+    return await _instance._upload(
+      path,
+      showLoading: showLoading,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
   }
 
   static Future getFile(params) async {
@@ -38,19 +48,27 @@ class OssService {
     String loadingText = '上传中...',
     bool showLoading = true,
     bool publicRead = false,
+    ProgressCallback onSendProgress,
+    ProgressCallback onReceiveProgress,
   }) async {
     await _querySignature();
     String originName = path.substring(path.lastIndexOf('/') + 1, path.length);
     String suffix = path.substring(path.lastIndexOf('.') + 1, path.length);
-    var postFileName = '${originName.hashCode}${DateTime.now().millisecondsSinceEpoch}.$suffix';
+    var postFileName =
+        '${originName.hashCode}${DateTime.now().millisecondsSinceEpoch}.$suffix';
 
-    String ossFileName =
-        '${_policy.fileNamePrefix}$postFileName';
+    String ossFileName = '${_policy.fileNamePrefix}$postFileName';
     if (showLoading) {
       EasyLoading.show(status: loadingText);
     }
 
-    await _uploadToOss(path, originName, ossFileName);
+    await _uploadToOss(
+      path,
+      originName,
+      ossFileName,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
     Map<String, dynamic> param = {
       'ossFileName': ossFileName,
       'attachName': postFileName,
@@ -67,7 +85,13 @@ class OssService {
     return entity;
   }
 
-  _uploadToOss(String file, String fileName, String key) async {
+  _uploadToOss(
+    String file,
+    String fileName,
+    String key, {
+    ProgressCallback onSendProgress,
+    ProgressCallback onReceiveProgress,
+  }) async {
     var formData = FormData.fromMap({
       'key': key,
       'OSSAccessKeyId': _policy.accessKeyId,
@@ -77,7 +101,12 @@ class OssService {
     });
 
     print("YYYLog::UploadFile request --> $formData");
-    var response = await _dio.post(_policy.host, data: formData);
+    var response = await _dio.post(
+      _policy.host,
+      data: formData,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
     print("YYYLog::UploadFile response <-- $formData");
     if (response.statusCode == 204) {
       return;

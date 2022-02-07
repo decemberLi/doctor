@@ -155,7 +155,21 @@ class Activity extends SubAPI {
   }
   
   /// 讲课资料查询
-  lectureResourceQuery(int activityPackageId) async{
+  lectureResourceQuery(int activityPackageId) async {
     return await normalPost("/lecture-resource/query");
+  }
+
+  activityVideoLectureDetail(
+      int activityPackageId) async {
+    var params = {};
+    params["activityTaskId"] = activityPackageId;
+    return await normalPost(
+      "/activity-task/lecture-video/detaill",
+      params: params,
+    );
+  }
+
+  doctorLectureSharePic(int activityTaskId) {
+    return normalPost('/doctor-lecture/share-pic',params:{'lectureId':activityTaskId});
   }
 }
