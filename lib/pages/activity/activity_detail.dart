@@ -1,10 +1,21 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:doctor/http/common_service.dart';
+import 'package:doctor/http/oss_service.dart';
+import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/activity/activity_case_detail.dart';
 import 'package:doctor/pages/activity/activity_research.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/pages/worktop/learn/cache_learn_detail_video_helper.dart';
 import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
+import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/data_format_util.dart';
+import 'package:doctor/utils/platform_utils.dart';
 import 'package:doctor/utils/time_text.dart';
 import 'package:doctor/widgets/ace_button.dart';
 import 'package:doctor/widgets/new_text_icon.dart';
@@ -12,12 +23,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:doctor/http/activity.dart';
 import "package:dio/dio.dart";
 import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
 import 'activity_constants.dart';
+import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:http_manager/api.dart';
+import 'package:doctor/http/server.dart';
 
 @RoutePage(needLogin: true, needAuth: true, name: "activity_detail_page")
 class ActivityDetail extends StatefulWidget {
@@ -36,6 +52,7 @@ class _ActivityState extends State<ActivityDetail> {
   bool showInfo = true;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  DoctorDetailInfoEntity userInfo;
   ActivityDetailEntity _data;
   List _list = [];
   bool _isLoading = true;
@@ -47,9 +64,17 @@ class _ActivityState extends State<ActivityDetail> {
     firstGetData();
     super.initState();
   }
-
+  updateDoctorInfo() async {
+    UserInfoViewModel model =
+    Provider.of<UserInfoViewModel>(context, listen: false);
+    if (model?.data != null) {
+      await model.queryDoctorInfo();
+      userInfo = model.data;
+    }
+  }
   void firstGetData() async {
     try {
+      await updateDoctorInfo();
       var result =
           await API.shared.activity.packageDetail(widget.activityPackageId);
       _data = ActivityDetailEntity(result);
@@ -93,6 +118,182 @@ class _ActivityState extends State<ActivityDetail> {
     setState(() {
       _list.addAll(list);
     });
+  }
+
+
+  _showUploadVideoAlert(String title, String desc, Function action,
+      {String cancel = "取消", String done = "确定"}) {
+    showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return WillPopScope(
+          child: CupertinoAlertDialog(
+            content: Container(
+              padding: EdgeInsets.only(top: 12),
+              child: Column(
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xff444444),
+                    ),
+                  ),
+                  Text(
+                    desc,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Color(0xfff57575),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  cancel,
+                  style: TextStyle(
+                    color: ThemeColor.colorFF444444,
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text(
+                  done,
+                  style: TextStyle(
+                    color: ThemeColor.colorFF52C41A,
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.of(context).pop(false);
+                  action();
+                },
+              ),
+            ],
+          ),
+          onWillPop: () async => false,
+        );
+      },
+    );
+  }
+
+  _getHTML(title, context) {
+    String articleHtml =
+        r'<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="renderer" content="webkit"><meta name="force-rendering" content="webkit"><meta name="viewport" content="initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"><style>body{margin:0;background:#f3f5f8;padding:16px 16px 60px}.article{padding:14px 16px 16px;background:#fff;border-radius:8px}.title{color:#222;font-size:16px;text-align:center;font-weight:500;margin-bottom:12px}.ql-editor blockquote,.ql-editor h1,.ql-editor h2,.ql-editor h3,.ql-editor h4,.ql-editor h5,.ql-editor h6,.ql-editor ol,.ql-editor p,.ql-editor pre,.ql-editor ul{margin:0;padding:0;counter-reset:list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9}.ql-editor ol,.ql-editor ul{padding-left:1.5em}.ql-editor ol>li,.ql-editor ul>li{list-style-type:none}.ql-editor ul>li::before{content:"\2022"}.ql-editor ul[data-checked=false],.ql-editor ul[data-checked=true]{pointer-events:none}.ql-editor ul[data-checked=false]>li *,.ql-editor ul[data-checked=true]>li *{pointer-events:all}.ql-editor ul[data-checked=false]>li::before,.ql-editor ul[data-checked=true]>li::before{color:#777;cursor:pointer;pointer-events:all}.ql-editor ul[data-checked=true]>li::before{content:"\2611"}.ql-editor ul[data-checked=false]>li::before{content:"\2610"}.ql-editor li::before{display:inline-block;white-space:nowrap;width:1.2em}.ql-editor li:not(.ql-direction-rtl)::before{margin-left:-1.5em;margin-right:.3em;text-align:right}.ql-editor li.ql-direction-rtl::before{margin-left:.3em;margin-right:-1.5em}.ql-editor ol li:not(.ql-direction-rtl),.ql-editor ul li:not(.ql-direction-rtl){padding-left:1.5em}.ql-editor ol li.ql-direction-rtl,.ql-editor ul li.ql-direction-rtl{padding-right:1.5em}.ql-editor ol li{counter-reset:list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;counter-increment:list-0}.ql-editor ol li:before{content:counter(list-0,decimal) ". "}.ql-editor ol li.ql-indent-1{counter-increment:list-1}.ql-editor ol li.ql-indent-1:before{content:counter(list-1,lower-alpha) ". "}.ql-editor ol li.ql-indent-1{counter-reset:list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9}.ql-editor ol li.ql-indent-2{counter-increment:list-2}.ql-editor ol li.ql-indent-2:before{content:counter(list-2,lower-roman) ". "}.ql-editor ol li.ql-indent-2{counter-reset:list-3 list-4 list-5 list-6 list-7 list-8 list-9}.ql-editor ol li.ql-indent-3{counter-increment:list-3}.ql-editor ol li.ql-indent-3:before{content:counter(list-3,decimal) ". "}.ql-editor ol li.ql-indent-3{counter-reset:list-4 list-5 list-6 list-7 list-8 list-9}.ql-editor ol li.ql-indent-4{counter-increment:list-4}.ql-editor ol li.ql-indent-4:before{content:counter(list-4,lower-alpha) ". "}.ql-editor ol li.ql-indent-4{counter-reset:list-5 list-6 list-7 list-8 list-9}.ql-editor ol li.ql-indent-5{counter-increment:list-5}.ql-editor ol li.ql-indent-5:before{content:counter(list-5,lower-roman) ". "}.ql-editor ol li.ql-indent-5{counter-reset:list-6 list-7 list-8 list-9}.ql-editor ol li.ql-indent-6{counter-increment:list-6}.ql-editor ol li.ql-indent-6:before{content:counter(list-6,decimal) ". "}.ql-editor ol li.ql-indent-6{counter-reset:list-7 list-8 list-9}.ql-editor ol li.ql-indent-7{counter-increment:list-7}.ql-editor ol li.ql-indent-7:before{content:counter(list-7,lower-alpha) ". "}.ql-editor ol li.ql-indent-7{counter-reset:list-8 list-9}.ql-editor ol li.ql-indent-8{counter-increment:list-8}.ql-editor ol li.ql-indent-8:before{content:counter(list-8,lower-roman) ". "}.ql-editor ol li.ql-indent-8{counter-reset:list-9}.ql-editor ol li.ql-indent-9{counter-increment:list-9}.ql-editor ol li.ql-indent-9:before{content:counter(list-9,decimal) ". "}.ql-editor .ql-indent-1:not(.ql-direction-rtl){padding-left:3em}.ql-editor li.ql-indent-1:not(.ql-direction-rtl){padding-left:4.5em}.ql-editor .ql-indent-1.ql-direction-rtl.ql-align-right{padding-right:3em}.ql-editor li.ql-indent-1.ql-direction-rtl.ql-align-right{padding-right:4.5em}.ql-editor .ql-indent-2:not(.ql-direction-rtl){padding-left:6em}.ql-editor li.ql-indent-2:not(.ql-direction-rtl){padding-left:7.5em}.ql-editor .ql-indent-2.ql-direction-rtl.ql-align-right{padding-right:6em}.ql-editor li.ql-indent-2.ql-direction-rtl.ql-align-right{padding-right:7.5em}.ql-editor .ql-indent-3:not(.ql-direction-rtl){padding-left:9em}.ql-editor li.ql-indent-3:not(.ql-direction-rtl){padding-left:10.5em}.ql-editor .ql-indent-3.ql-direction-rtl.ql-align-right{padding-right:9em}.ql-editor li.ql-indent-3.ql-direction-rtl.ql-align-right{padding-right:10.5em}.ql-editor .ql-indent-4:not(.ql-direction-rtl){padding-left:12em}.ql-editor li.ql-indent-4:not(.ql-direction-rtl){padding-left:13.5em}.ql-editor .ql-indent-4.ql-direction-rtl.ql-align-right{padding-right:12em}.ql-editor li.ql-indent-4.ql-direction-rtl.ql-align-right{padding-right:13.5em}.ql-editor .ql-indent-5:not(.ql-direction-rtl){padding-left:15em}.ql-editor li.ql-indent-5:not(.ql-direction-rtl){padding-left:16.5em}.ql-editor .ql-indent-5.ql-direction-rtl.ql-align-right{padding-right:15em}.ql-editor li.ql-indent-5.ql-direction-rtl.ql-align-right{padding-right:16.5em}.ql-editor .ql-indent-6:not(.ql-direction-rtl){padding-left:18em}.ql-editor li.ql-indent-6:not(.ql-direction-rtl){padding-left:19.5em}.ql-editor .ql-indent-6.ql-direction-rtl.ql-align-right{padding-right:18em}.ql-editor li.ql-indent-6.ql-direction-rtl.ql-align-right{padding-right:19.5em}.ql-editor .ql-indent-7:not(.ql-direction-rtl){padding-left:21em}.ql-editor li.ql-indent-7:not(.ql-direction-rtl){padding-left:22.5em}.ql-editor .ql-indent-7.ql-direction-rtl.ql-align-right{padding-right:21em}.ql-editor li.ql-indent-7.ql-direction-rtl.ql-align-right{padding-right:22.5em}.ql-editor .ql-indent-8:not(.ql-direction-rtl){padding-left:24em}.ql-editor li.ql-indent-8:not(.ql-direction-rtl){padding-left:25.5em}.ql-editor .ql-indent-8.ql-direction-rtl.ql-align-right{padding-right:24em}.ql-editor li.ql-indent-8.ql-direction-rtl.ql-align-right{padding-right:25.5em}.ql-editor .ql-indent-9:not(.ql-direction-rtl){padding-left:27em}.ql-editor li.ql-indent-9:not(.ql-direction-rtl){padding-left:28.5em}.ql-editor .ql-indent-9.ql-direction-rtl.ql-align-right{padding-right:27em}.ql-editor li.ql-indent-9.ql-direction-rtl.ql-align-right{padding-right:28.5em}.ql-editor .ql-video{display:block;max-width:100%}.ql-editor .ql-video.ql-align-center{margin:0 auto}.ql-editor .ql-video.ql-align-right{margin:0 0 0 auto}.ql-editor .ql-bg-black{background-color:#000}.ql-editor .ql-bg-red{background-color:#e60000}.ql-editor .ql-bg-orange{background-color:#f90}.ql-editor .ql-bg-yellow{background-color:#ff0}.ql-editor .ql-bg-green{background-color:#008a00}.ql-editor .ql-bg-blue{background-color:#06c}.ql-editor .ql-bg-purple{background-color:#93f}.ql-editor .ql-color-white{color:#fff}.ql-editor .ql-color-red{color:#e60000}.ql-editor .ql-color-orange{color:#f90}.ql-editor .ql-color-yellow{color:#ff0}.ql-editor .ql-color-green{color:#008a00}.ql-editor .ql-color-blue{color:#06c}.ql-editor .ql-color-purple{color:#93f}.ql-editor .ql-font-serif{font-family:Georgia,Times New Roman,serif}.ql-editor .ql-font-monospace{font-family:Monaco,Courier New,monospace}.ql-editor .ql-size-small{font-size:.75em}.ql-editor .ql-size-large{font-size:1.5em}.ql-editor .ql-size-huge{font-size:2.5em}.ql-editor .ql-direction-rtl{direction:rtl;text-align:inherit}.ql-editor .ql-align-center{text-align:center}.ql-editor .ql-align-justify{text-align:justify}.ql-editor .ql-align-right{text-align:right}.ql-editor.ql-blank::before{color:rgba(0,0,0,.6);content:attr(data-placeholder);font-style:italic;left:15px;pointer-events:none;position:absolute;right:15px}.ql-snow .ql-editor h1{font-size:48px}.ql-snow .ql-editor h2{font-size:40px}.ql-snow .ql-editor h3{font-size:38px}.ql-snow .ql-editor h4{font-size:36px}.ql-snow .ql-editor h5{font-size:.83em}.ql-snow .ql-editor h6{font-size:.67em}.ql-snow .ql-editor a{text-decoration:underline}.ql-snow .ql-editor blockquote{border-left:4px solid #ccc;margin-bottom:5px;margin-top:5px;padding-left:16px}.ql-snow .ql-editor code,.ql-snow .ql-editor pre{background-color:#f0f0f0;border-radius:3px}.ql-snow .ql-editor pre{white-space:pre-wrap;margin-bottom:5px;margin-top:5px;padding:5px 10px}.ql-snow .ql-editor code{font-size:85%;padding:2px 4px}.ql-snow .ql-editor pre.ql-syntax{background-color:#23241f;color:#f8f8f2;overflow:visible}.ql-snow .ql-editor img{max-width:100%}</style></head><body><div class="article"><div class="title">ARTICLE_TITLE</div><div class="ql-snow"><div class="ql-editor">ARTICLE_CONTENT</div></div></div></body></html>';
+    return articleHtml
+        .replaceAll(new RegExp('ARTICLE_TITLE'), title)
+        .replaceAll(new RegExp('ARTICLE_CONTENT'), context);
+  }
+
+
+  _gotoRecordPage(result) {
+
+    MedcloudsNativeApi.instance().record(result.toString());
+    MedcloudsNativeApi.instance().addProcessor(
+      "uploadLearnVideo",
+          (args) async {
+        try {
+          var obj = json.decode(args);
+          CachedVideoInfo info = CachedVideoInfo();
+          info.learnPlanId = widget.activityPackageId;
+          info.resourceId = result["attachmentOssId"];
+          info.videoTitle = obj['title'] ?? _data.activityName;
+          info.duration = int.parse("${obj['duration'] ?? 0}");
+          info.presenter = userInfo?.doctorName ?? '';
+          if (Platform.isAndroid) {
+            info.path = obj["path"];
+          } else {
+            String path = obj["path"];
+            var prefix = await getApplicationDocumentsDirectory();
+            path = path.replaceAll(prefix.path, "");
+            info.path = path;
+          }
+          CachedLearnDetailVideoHelper.cacheVideoInfo(
+              userInfo.doctorUserId, info);
+          await _doUpload(info);
+        } catch (e) {
+          print("e is $e");
+          return "网络错误";
+        }
+        return null;
+        //print("the result is ${result}");
+      },
+    );
+  }
+
+  _doUpload(CachedVideoInfo data) async {
+    print("do upload");
+    var path = data.path;
+    if (Platform.isIOS) {
+      var prefix = await getApplicationDocumentsDirectory();
+      path = prefix.path + path;
+    }
+    var entity = await OssService.upload(path, showLoading: false);
+    var result = await API.shared.server.addLectureSubmit(
+      {
+        'learnPlanId': data.learnPlanId,
+        'resourceId': data.resourceId,
+        'videoTitle': data.videoTitle,
+        'duration': data.duration,
+        'presenter': data.presenter,
+        'videoOssId': entity.ossId,
+      },
+    );
+    print("upload finished");
+    CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
+    firstGetData();
+  }
+
+  _gotoRecord() async {
+    if (EasyLoading.isShow) {
+      return;
+    }
+    UserInfoViewModel model =
+    Provider.of<UserInfoViewModel>(context, listen: false);
+    EasyLoading.instance.flash(
+          () async {
+        var appDocDir = await getApplicationDocumentsDirectory();
+        if (Platform.isAndroid) {
+          appDocDir = await getExternalStorageDirectory();
+        }
+        var resourceData = API.shared.activity.lectureResourceQuery(widget.activityPackageId);
+        String picPath = appDocDir.path + "/sharePDF";
+        var map = {
+          "path": picPath,
+          "name": userInfo?.doctorName ?? '',
+          "userID": model.data.doctorUserId,
+          "hospital": model.data.hospitalName,
+          "title": _data.activityName,
+          'type': "pdf",
+        };
+        map["type"] = "pdf";
+        var file = await CommonService.getFile({
+          'ossIds': [resourceData["attachmentOssId"]]
+        });
+        var fileURL = file[0]['tmpUrl'];
+        await Dio().download(fileURL, picPath);
+        var result = json.encode(map);
+        Stream<String> pdfFileStream;
+        pdfFileStream = File(picPath).openRead(0, 4).transform(utf8.decoder);
+        String event = "";
+        try {
+          event = await pdfFileStream.first;
+          if (event.toUpperCase() == '%PDF') {
+            this._gotoRecordPage(result);
+          } else {
+            print("格式为：-  $event");
+            EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
+          }
+        } catch (e) {
+          print("格式为：-  $e");
+          EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
+        }
+      },
+    );
   }
 
   Widget cardTitle(String data) {
@@ -352,6 +553,8 @@ class _ActivityState extends State<ActivityDetail> {
       String desc = "";
       if (widget.type == TYPE_CASE_COLLECTION) {
         desc = "病例${i + 1}:已上传${item["pictureNum"]}张图片";
+      }else if (widget.type == TYPE_VIDEO){
+        desc = "${item["activityTaskName"]}";
       } else {
         Map<String, dynamic> illnessCase = item["illnessCase"];
         desc = "病例${i + 1}:";
@@ -395,6 +598,8 @@ class _ActivityState extends State<ActivityDetail> {
     var title = "病例列表";
     if (_data.activityType == TYPE_MEDICAL_SURVEY) {
       title = "调研列表";
+    }else if (_data.activityType == TYPE_VIDEO){
+      title = "讲课视频列表";
     }
     return card(
       child: Column(

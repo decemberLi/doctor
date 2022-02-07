@@ -28,6 +28,8 @@ class Activity extends SubAPI {
         },
       );
 
+
+
   /// 活动子任务列表
   activityTaskList(int activityPackageId, int pageNumber, {int pageSize = 10}) async =>
       normalPost(
@@ -150,5 +152,10 @@ class Activity extends SubAPI {
       "/activity-task/questionnaire/detail",
       params: params,
     );
+  }
+  
+  /// 讲课资料查询
+  lectureResourceQuery(int activityPackageId) async{
+    return await normalPost("/lecture-resource/query");
   }
 }

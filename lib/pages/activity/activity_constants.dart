@@ -4,6 +4,7 @@ const String TYPE_CASE_COLLECTION = "CASE_COLLECTION";
 /// 医学调研
 const String TYPE_MEDICAL_SURVEY = "MEDICAL_SURVEY";
 const String TYPE_RWS = "RWS";
+const String TYPE_VIDEO = "LECTURE_VIDEO";
 
 /// 未开始
 const String STATUS_WAIT = "WAIT_START";
@@ -21,6 +22,7 @@ const String VERIFY_STATUS_VERIFIED = 'VERIFIED';
 const String VERIFY_STATUS_REJECT = 'REJECT';
 
 
+
 String activityName(String type) {
   if (type == TYPE_RWS) {
     return 'RWS';
@@ -30,6 +32,8 @@ String activityName(String type) {
   }
   if (type == TYPE_MEDICAL_SURVEY) {
     return '医学调研';
+  }else if (type == TYPE_VIDEO) {
+    return "讲课邀请";
   }
   return '';
 }
