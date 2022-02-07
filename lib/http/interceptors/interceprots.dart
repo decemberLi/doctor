@@ -70,7 +70,7 @@ class CommonReqHeaderInterceptor extends InterceptorsWrapper {
       RequestOptions options, RequestInterceptorHandler handler) async {
     options.headers["_ticketObject"] = SessionManager.shared.session;
     options.headers["_appVersion"] = await PlatformUtils.getAppVersion();
-    options.headers["_appVersionCode"] = await PlatformUtils.getBuildNum();
+    options.headers["_appVersionCode"] = "1000";//await PlatformUtils.getBuildNum();
     options.headers["_greyVersion"] = await PlatformUtils.getAppVersion();
     options.headers["_requestId"] = DateTime.now().millisecondsSinceEpoch;
     if (Platform.isAndroid) {

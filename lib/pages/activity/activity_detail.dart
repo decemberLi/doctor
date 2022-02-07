@@ -10,6 +10,7 @@ import 'package:doctor/pages/activity/entity/activity_entity.dart';
 import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/cache_learn_detail_video_helper.dart';
+import 'package:doctor/pages/worktop/learn/lecture_videos/look_activity_lecture_video_page.dart';
 import 'package:doctor/provider/view_state_widget.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
@@ -533,6 +534,10 @@ class _ActivityState extends State<ActivityDetail> {
                 status: status,
                 rejectReason: rejectReason,
               );
+            }));
+          }else if (_data.activityType == TYPE_LECTURE_VIDEO){
+            Navigator.of(context).push(MaterialPageRoute(builder: (c){
+              return LookLectureVideosPage(_data.activityTaskId);
             }));
           } else {
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
