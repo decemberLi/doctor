@@ -32,7 +32,7 @@ String activityName(String type) {
   }
   if (type == TYPE_MEDICAL_SURVEY) {
     return '医学调研';
-  }else if (type == TYPE_VIDEO) {
+  }else if (type == TYPE_LECTURE_VIDEO) {
     return "讲课邀请";
   }
   if (type == TYPE_LECTURE_VIDEO) {
