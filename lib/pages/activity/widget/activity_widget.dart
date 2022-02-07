@@ -1,4 +1,3 @@
-
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
@@ -18,7 +17,7 @@ class ActivityWidget extends StatelessWidget {
   ActivityWidget(this._data);
 
   Color _statusColor(String status, bool disable) {
-    if(disable){
+    if (disable) {
       return ThemeColor.colorFFD9D5D5;
     }
     if (status == STATUS_WAIT) {
@@ -61,38 +60,66 @@ class ActivityWidget extends StatelessWidget {
                         margin: EdgeInsets.only(left: 10))
                   ],
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 6),
-                  padding: EdgeInsets.only(left: 4, right: 4, bottom: 1),
-                  decoration: BoxDecoration(
-                    color: _data.activityType == TYPE_CASE_COLLECTION
-                        ? Color(0xFF91C3FF)
-                        : Color(0xFF52C41A),
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        child: Image.asset(
-                          _data.activityType == TYPE_CASE_COLLECTION
-                              ? 'assets/images/act_img_upload_pic.png'
-                              : 'assets/images/act_img_questions.png',
-                          width: 10,
-                          height: 8,
+                if (isLectureVideo(_data.activityType))
+                  Container(
+                    margin: EdgeInsets.only(top: 6),
+                    padding: EdgeInsets.only(left: 4, right: 4, bottom: 1),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF91C3FF),
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          child: Image.asset(
+                            'assets/images/act_img_upload_pic.png',
+                            width: 10,
+                            height: 8,
+                          ),
+                          margin: EdgeInsets.only(top: 1, right: 2),
                         ),
-                        margin: EdgeInsets.only(top: 1, right: 2),
-                      ),
-                      Text(
-                        _data.activityType == TYPE_CASE_COLLECTION
-                            ? '上传图片'
-                            : '问卷',
-                        style: TextStyle(fontSize: 12, color: Colors.white),
-                      )
-                    ],
+                        Text(
+                          '录制视频',
+                          style: TextStyle(fontSize: 12, color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                if (!isLectureVideo(_data.activityType))
+                  Container(
+                    margin: EdgeInsets.only(top: 6),
+                    padding: EdgeInsets.only(left: 4, right: 4, bottom: 1),
+                    decoration: BoxDecoration(
+                      color: _data.activityType == TYPE_CASE_COLLECTION
+                          ? Color(0xFF91C3FF)
+                          : Color(0xFF52C41A),
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          child: Image.asset(
+                            _data.activityType == TYPE_CASE_COLLECTION
+                                ? 'assets/images/act_img_upload_pic.png'
+                                : 'assets/images/act_img_questions.png',
+                            width: 10,
+                            height: 8,
+                          ),
+                          margin: EdgeInsets.only(top: 1, right: 2),
+                        ),
+                        Text(
+                          _data.activityType == TYPE_CASE_COLLECTION
+                              ? '上传图片'
+                              : '问卷',
+                          style: TextStyle(fontSize: 12, color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ),
                 Container(
                   height: 5,
                   width: double.infinity,
@@ -151,7 +178,8 @@ class ActivityWidget extends StatelessWidget {
             ),
           ),
           onTap: () async {
-            RouteManager.push(context, "yyy://page/activity_detail_page?activity_package_id=${_data.activityPackageId}&type=${_data.activityType}&remitChannel=${_data.remitChannel}");
+            RouteManager.push(context,
+                "yyy://page/activity_detail_page?activity_package_id=${_data.activityPackageId}&type=${_data.activityType}&remitChannel=${_data.remitChannel}");
           },
         );
       },
