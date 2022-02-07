@@ -21,28 +21,6 @@ abstract class SubAPI {
     if (ApiHost.instance.enableCNHost) {
       return await doNormalPost(path, params);
     }
-    try {
-      Response ret = await HttpManager.shared.post(
-        host + '/medclouds-foundation/developer/mobile/dict/list-data-dict',
-        params: {
-          'pn': 1,
-          'ps': 10,
-          'code': 'service_enable',
-          'type': 'doctor',
-        },
-      );
-      if (ret.statusCode == 200 && ret.data != null) {
-        var records = ret.data["records"] as List;
-        if (records != null && records.isNotEmpty) {
-          var item = records[0];
-          var enable = item["value"];
-          ApiHost.instance.enableCNHost = 'true' == enable;
-        }
-      }
-    } catch (err) {
-      print(err);
-      ApiHost.instance.enableCNHost = true;
-    }
     return await doNormalPost(path, params);
   }
 

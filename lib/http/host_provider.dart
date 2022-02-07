@@ -4,7 +4,7 @@ import 'package:doctor/common/env/environment.dart';
 class ApiHost {
   static ApiHost _instance;
   Environment _environment;
-  bool enableCNHost = false;
+  bool enableCNHost = true;
 
   ApiHost._internal(Environment environment) {
     if (Environment.instance.env == null) {
@@ -27,19 +27,6 @@ class ApiHost {
   }
 
   String get apiHost {
-    if (enableCNHost) {
-      switch (_environment.env) {
-        case AppEnvironment.ENV_DEV:
-          return 'http://gateway-dev.e-medclouds.com.cn';
-        case AppEnvironment.ENV_QA:
-          return 'http://gateway-dev.e-medclouds.com.cn';
-        case AppEnvironment.ENV_PROD:
-          return 'https://gateway.e-medclouds.com.cn';
-      }
-      throw AssertionError(
-          'AppEnvironment config info error, env -> ${_environment.env}');
-    }
-
     return host();
   }
 
