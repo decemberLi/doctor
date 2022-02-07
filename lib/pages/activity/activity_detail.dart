@@ -198,10 +198,11 @@ class _ActivityState extends State<ActivityDetail> {
       "uploadLearnVideo",
           (args) async {
         try {
+          print('----------------$args');
           var obj = json.decode(args);
           CachedVideoInfo info = CachedVideoInfo();
           info.learnPlanId = widget.activityPackageId;
-          info.resourceId = result["attachmentOssId"];
+          // info.resourceId = result["attachmentOssId"];
           info.videoTitle = obj['title'] ?? _data.activityName;
           info.duration = int.parse("${obj['duration'] ?? 0}");
           info.presenter = userInfo?.doctorName ?? '';
@@ -537,7 +538,7 @@ class _ActivityState extends State<ActivityDetail> {
             }));
           }else if (_data.activityType == TYPE_LECTURE_VIDEO){
             Navigator.of(context).push(MaterialPageRoute(builder: (c){
-              return LookLectureVideosPage(_data.activityTaskId);
+              return LookLectureVideosPage(taskId);
             }));
           } else {
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {

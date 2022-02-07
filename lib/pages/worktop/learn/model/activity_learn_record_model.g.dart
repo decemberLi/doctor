@@ -16,7 +16,7 @@ ActivityVideoLectureDetail _$LearnRecordingItemFromJson(
     name: json['name'] as String,
     url: json['url'] as String,
     presenter: json['presenter'] as String,
-    status: json['status:'] as String,
+    status: json['status'] as String,
     rejectReason: json['rejectReason'] as String,
     videoUrl: json['videoUrl'] as String,
   );

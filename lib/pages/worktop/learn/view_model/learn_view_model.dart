@@ -11,6 +11,7 @@ import 'package:doctor/http/activity.dart';
 class LearnListViewModel extends ViewStateRefreshListModel {
   String learnStatus = 'learning';
   List taskTemplate = [];
+
   LearnListViewModel(this.learnStatus, this.taskTemplate);
 
   @override
@@ -27,7 +28,8 @@ class LearnListViewModel extends ViewStateRefreshListModel {
         .map<LearnListItem>((item) => LearnListItem.fromJson(item))
         .toList();
   }
-  removeItem(item){
+
+  removeItem(item) {
     list.remove(item);
     notifyListeners();
   }
@@ -135,11 +137,11 @@ class ActivityLearnRecordingModel extends ViewStateModel {
 
   Future<ActivityVideoLectureDetail> loadData() async {
     try {
-      var data = await API.shared.activity
+      var result = await API.shared.activity
           .activityVideoLectureDetail(this.activityTaskId);
-      return ActivityVideoLectureDetail.fromJson(data);
+      return ActivityVideoLectureDetail.fromJson(result);
     } catch (e) {
-      return e;
+      rethrow;
     }
   }
 }

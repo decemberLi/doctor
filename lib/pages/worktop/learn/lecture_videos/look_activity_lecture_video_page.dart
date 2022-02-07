@@ -81,16 +81,21 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
               margin: EdgeInsets.only(left: 16, right: 16, top: 12),
+              // color: Colors.red,
+              width: double.infinity,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
-                  color: Color(0xFEF4D5),
-                  border: Border.all(color: Color(0xFECE35))),
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+                color: Color(0xFFFEF4D5),
+                border: Border.all(color: Color(0xFFFECE35)),
+              ),
               child: Text(
-                "驳回理由：${data.rejectReason}",
+                "驳回理由：${data.rejectReason ?? ''}",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFECE35),
+                  color: Color(0xFFFECE35),
                 ),
               ),
             ),
@@ -147,17 +152,21 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                       if (data.status == 'WAIT_VERIFY')
                         Positioned(
                           child: Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
                             padding: EdgeInsets.symmetric(vertical: 10),
                             margin:
                                 EdgeInsets.only(left: 16, right: 16, top: 12),
                             decoration: BoxDecoration(
-                                color: Color(0xDFDFDF),
-                                border: Border.all(color: Color(0x444444))),
+                                color: Color(0xFFDFDFDF),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                                border: Border.all(color: Color(0xFF444444))),
                             child: Text(
                               "待审核",
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Color(0x444444),
+                                color: Color(0xFF444444),
                               ),
                             ),
                           ),
@@ -165,17 +174,21 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                       if (data.status == 'VERIFIED')
                         Positioned(
                           child: Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
                             padding: EdgeInsets.symmetric(vertical: 10),
                             margin:
                                 EdgeInsets.only(left: 16, right: 16, top: 12),
                             decoration: BoxDecoration(
-                                color: Color(0xE0F4D5),
-                                border: Border.all(color: Color(0x5AC624))),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                                color: Color(0xFFE0F4D5),
+                                border: Border.all(color: Color(0xFF5AC624))),
                             child: Text(
                               "审核通过",
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Color(0x5AC624),
+                                color: Color(0xFF5AC624),
                               ),
                             ),
                           ),
