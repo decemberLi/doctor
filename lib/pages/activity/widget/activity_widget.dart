@@ -74,7 +74,7 @@ class ActivityWidget extends StatelessWidget {
                       children: [
                         Container(
                           child: Image.asset(
-                            'assets/images/act_img_upload_pic.png',
+                            'assets/images/video_record.png',
                             width: 10,
                             height: 8,
                           ),
