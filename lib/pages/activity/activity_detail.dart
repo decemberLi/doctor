@@ -234,14 +234,14 @@ class _ActivityState extends State<ActivityDetail> {
       path = prefix.path + path;
     }
     var entity = await OssService.upload(path, showLoading: false);
-    var result = await API.shared.server.addLectureSubmit(
+    var result = await API.shared.activity.saveVideo(
       {
-        'learnPlanId': data.learnPlanId,
-        'resourceId': data.resourceId,
-        'videoTitle': data.videoTitle,
+        'activityPackageId': _data.activityPackageId,
+        'activityTaskId': _data.activityTaskId,
+        'name': data.videoTitle,
         'duration': data.duration,
         'presenter': data.presenter,
-        'videoOssId': entity.ossId,
+        'ossId': entity.ossId,
       },
     );
     print("upload finished");
@@ -261,7 +261,7 @@ class _ActivityState extends State<ActivityDetail> {
         if (Platform.isAndroid) {
           appDocDir = await getExternalStorageDirectory();
         }
-        var resourceData = API.shared.activity.lectureResourceQuery(widget.activityPackageId);
+        var resourceData = await API.shared.activity.lectureResourceQuery(widget.activityPackageId);
         String picPath = appDocDir.path + "/sharePDF";
         var map = {
           "path": picPath,
@@ -691,7 +691,10 @@ class _ActivityState extends State<ActivityDetail> {
       } else if (widget.type == TYPE_MEDICAL_SURVEY) {
         last = "剩余调研数";
         title = "填写医学调研";
-      } else {
+      } else if (widget.type == TYPE_LECTURE_VIDEO) {
+        last = "剩余讲课视频数";
+        title = "录制讲课视频";
+      }else {
         last = "剩余调研数";
         title = "填写RWS";
       }
@@ -723,7 +726,9 @@ class _ActivityState extends State<ActivityDetail> {
                   return ActivityResourceDetailPage(
                       _data.activityPackageId, null);
                 }));
-              } else {
+              } else if (widget.type == TYPE_LECTURE_VIDEO) {
+                 _gotoRecord();
+              }else {
                 await Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return ActivityResearch(_data.activityPackageId);

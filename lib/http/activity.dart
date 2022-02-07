@@ -156,7 +156,7 @@ class Activity extends SubAPI {
   
   /// 讲课资料查询
   lectureResourceQuery(int activityPackageId) async {
-    return await normalPost("/lecture-resource/query");
+    return await normalPost("/lecture-resource/query",params: {"activityPackageId":"$activityPackageId"});
   }
 
   activityVideoLectureDetail(
@@ -171,5 +171,9 @@ class Activity extends SubAPI {
 
   doctorLectureSharePic(int activityTaskId) {
     return normalPost('/doctor-lecture/share-pic',params:{'lectureId':activityTaskId});
+  }
+
+  saveVideo(dynamic params) async{
+    return await normalPost("/activity-task/lecture-video/save-or-update",params: params);
   }
 }
