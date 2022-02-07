@@ -4,7 +4,6 @@ import 'package:doctor/common/env/environment.dart';
 class ApiHost {
   static ApiHost _instance;
   Environment _environment;
-  bool enableCNHost = true;
 
   ApiHost._internal(Environment environment) {
     if (Environment.instance.env == null) {

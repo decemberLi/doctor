@@ -3,9 +3,6 @@ import 'package:doctor/http/host_provider.dart';
 
 class UrlProvider {
   static _getDotCnIfNeeded(){
-    if(ApiHost.instance.enableCNHost){
-      return '.cn';
-    }
     return '';
   }
 

@@ -5,9 +5,6 @@ const String privacyAgreement = '/web/other/protocols/doctor_privacy_app.html';
 const String partnerAgreement = '/web/other/protocols/license_partner.html';
 
 _host() {
-  if (ApiHost.instance.enableCNHost) {
-    return 'https://static.e-medclouds.com.cn';
-  }
   return 'https://static.e-medclouds.com';
 }
 

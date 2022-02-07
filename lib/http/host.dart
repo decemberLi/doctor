@@ -18,9 +18,6 @@ abstract class SubAPI {
   String _fullURL(String path) => host + middle + path;
 
   Future<dynamic> normalPost(String path, {Map<String, dynamic> params}) async {
-    if (ApiHost.instance.enableCNHost) {
-      return await doNormalPost(path, params);
-    }
     return await doNormalPost(path, params);
   }
 
