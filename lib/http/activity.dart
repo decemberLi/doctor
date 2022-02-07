@@ -151,4 +151,18 @@ class Activity extends SubAPI {
       params: params,
     );
   }
+
+  activityVideoLectureDetail(
+      int activityPackageId) async {
+    var params = {};
+    params["activityTaskId"] = activityPackageId;
+    return await normalPost(
+      "/activity-task/lecture-video/detaill",
+      params: params,
+    );
+  }
+
+  doctorLectureSharePic(int activityTaskId) {
+    return normalPost('/doctor-lecture/share-pic',params:{'lectureId':activityTaskId});
+  }
 }
