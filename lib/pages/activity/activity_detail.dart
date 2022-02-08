@@ -213,8 +213,6 @@ class _ActivityState extends State<ActivityDetail> {
             path = path.replaceAll(prefix.path, "");
             info.path = path;
           }
-          CachedLearnDetailVideoHelper.cacheVideoInfo(
-              userInfo.doctorUserId, info);
           await _doUpload(info);
         } catch (e) {
           print("e is $e");
@@ -245,7 +243,6 @@ class _ActivityState extends State<ActivityDetail> {
       },
     );
     print("upload finished");
-    CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
     firstGetData();
   }
 
