@@ -161,11 +161,11 @@ class Activity extends SubAPI {
 
   activityVideoLectureDetail(
       int activityPackageId) async {
-    var params = {};
-    params["activityTaskId"] = activityPackageId;
     return await normalPost(
-      "/activity-task/lecture-video/detaill",
-      params: params,
+      "/activity-task/lecture-video/detail",
+      params: {
+        "activityTaskId":activityPackageId
+      },
     );
   }
 
