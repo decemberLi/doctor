@@ -13,6 +13,7 @@ class CachedVideoInfo {
   String videoTitle;
   String path;
   String presenter;
+  String type;
 
   CachedVideoInfo();
 
@@ -23,6 +24,7 @@ class CachedVideoInfo {
     this.path = json["path"] as String;
     this.duration = json["duration"] as int;
     this.presenter = json["presenter"] as String;
+    this.type = json["type"] as String;
   }
 
   Map<String, dynamic> get json {
@@ -33,6 +35,7 @@ class CachedVideoInfo {
     result["path"] = this.path;
     result["duration"] = this.duration;
     result["presenter"] = this.presenter;
+    result["type"] = this.type;
     return result;
   }
 }

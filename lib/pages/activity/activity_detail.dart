@@ -73,7 +73,7 @@ class _ActivityState extends State<ActivityDetail> {
       userInfo = model.data;
     }
   }
-  void firstGetData() async {
+  firstGetData() async {
     try {
       await updateDoctorInfo();
       var result =
@@ -189,14 +189,18 @@ class _ActivityState extends State<ActivityDetail> {
         .replaceAll(new RegExp('ARTICLE_TITLE'), title)
         .replaceAll(new RegExp('ARTICLE_CONTENT'), context);
   }
-
-
+  
+  bool _canSend = true;
   _gotoRecordPage(result) {
 
     MedcloudsNativeApi.instance().record(result.toString());
     MedcloudsNativeApi.instance().addProcessor(
       "uploadLearnVideo",
           (args) async {
+        if(!_canSend){
+          return null;
+        }
+        _canSend = false;
         try {
           print('----------------$args');
           var obj = json.decode(args);
@@ -218,9 +222,11 @@ class _ActivityState extends State<ActivityDetail> {
               userInfo.doctorUserId, info);
           await _doUpload(info);
         } catch (e) {
+          _canSend = true;
           print("e is $e");
           return "网络错误";
         }
+        _canSend = true;
         return null;
         //print("the result is ${result}");
       },
@@ -247,7 +253,7 @@ class _ActivityState extends State<ActivityDetail> {
     );
     print("upload finished");
     CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
-    firstGetData();
+    await firstGetData();
   }
 
   _gotoRecord() async {
@@ -267,7 +273,7 @@ class _ActivityState extends State<ActivityDetail> {
         var map = {
           "path": picPath,
           "name": userInfo?.doctorName ?? '',
-          "userID": model.data.doctorUserId,
+          "userID": "-${model.data.doctorUserId}",
           "hospital": model.data.hospitalName,
           "title": _data.activityName,
           'type': "pdf",

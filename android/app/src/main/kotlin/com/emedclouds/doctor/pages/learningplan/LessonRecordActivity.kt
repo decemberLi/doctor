@@ -312,7 +312,7 @@ class LessonRecordActivity : AppCompatActivity() {
     }
 
     private fun doRecord(resultCode: Int, data: Intent) {
-        val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
+        val externalFilesDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "$mUserId")
         mProjection = projectionManager.getMediaProjection(resultCode, data)
         if (!externalFilesDir.exists() && !externalFilesDir.mkdirs()) {
             return
