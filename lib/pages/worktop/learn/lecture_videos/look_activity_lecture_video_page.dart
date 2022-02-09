@@ -302,7 +302,6 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                 var share = json.encode(obj).toString();
                 MedcloudsNativeApi.instance().share(share);
                 print("------");
-                print(result);
               });
             },
           ),

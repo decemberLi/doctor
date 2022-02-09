@@ -170,7 +170,7 @@ class Activity extends SubAPI {
   }
 
   doctorLectureSharePic(int activityTaskId) {
-    return normalPost('/doctor-lecture/share-pic',params:{'lectureId':activityTaskId});
+    return normalPost('/lecture-video/share-pic',params:{'lectureId':activityTaskId});
   }
 
   saveVideo(dynamic params) async{
