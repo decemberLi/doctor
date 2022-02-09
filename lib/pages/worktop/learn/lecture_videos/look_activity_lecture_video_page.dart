@@ -151,6 +151,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                       UploadActivityVideoDetail(data, _controller),
                       if (data.status == 'WAIT_VERIFY')
                         Positioned(
+                          top: 12,
                           child: Container(
                             width: double.infinity,
                             alignment: Alignment.center,
@@ -173,6 +174,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                         ),
                       if (data.status == 'VERIFIED')
                         Positioned(
+                          top: 12,
                           child: Container(
                             width: double.infinity,
                             alignment: Alignment.center,
