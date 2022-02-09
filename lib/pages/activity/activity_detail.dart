@@ -59,6 +59,7 @@ class _ActivityState extends State<ActivityDetail> {
   bool _isLoading = true;
   String _error;
   int _page = 1;
+  int _mClickedTaskId = null;
 
   @override
   void initState() {
@@ -248,7 +249,7 @@ class _ActivityState extends State<ActivityDetail> {
     var result = await API.shared.activity.saveVideo(
       {
         'activityPackageId': _data.activityPackageId,
-        'activityTaskId': _data.activityTaskId,
+        'activityTaskId': _mClickedTaskId,
         'name': data.videoTitle,
         'duration': data.duration,
         'presenter': data.presenter,
@@ -281,6 +282,10 @@ class _ActivityState extends State<ActivityDetail> {
       );
       return;
     }
+    await _gogogogogogo();
+  }
+
+  Future _gogogogogogo() async {
     UserInfoViewModel model =
         Provider.of<UserInfoViewModel>(context, listen: false);
     EasyLoading.instance.flash(
@@ -566,7 +571,10 @@ class _ActivityState extends State<ActivityDetail> {
             }));
           } else if (_data.activityType == TYPE_LECTURE_VIDEO) {
             Navigator.of(context).push(MaterialPageRoute(builder: (c) {
-              return LookLectureVideosPage(taskId);
+              _mClickedTaskId = taskId;
+              return LookLectureVideosPage(taskId,(){
+                _gogogogogogo();
+              });
             }));
           } else {
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
@@ -745,6 +753,7 @@ class _ActivityState extends State<ActivityDetail> {
           child: AceButton(
             text: title,
             onPressed: () async {
+              _mClickedTaskId = null;
               if (_data.waitExecuteTask <= 0) {
                 EasyLoading.showToast("没有剩余调研数");
                 return;
@@ -889,7 +898,7 @@ class _ActivityState extends State<ActivityDetail> {
                 () {
                   CachedLearnDetailVideoHelper.cleanVideoCache(
                       userInfo.doctorUserId,
-                      CachedLearnDetailVideoHelper.typeLearnVideo);
+                      CachedLearnDetailVideoHelper.typeActivityVideo);
                   setState(() {
                     hasVideo = false;
                   });

@@ -2,6 +2,10 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:doctor/http/activity.dart';
+import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
+import 'package:doctor/pages/activity/activity_constants.dart';
+import 'package:doctor/pages/activity/activity_detail.dart';
+import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/lecture_videos/upload_video.dart';
 import 'package:doctor/pages/worktop/learn/model/activity_learn_record_model.dart';
 import 'package:doctor/pages/worktop/learn/view_model/learn_view_model.dart';
@@ -11,20 +15,25 @@ import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
 import 'package:doctor/utils/platform_utils.dart';
 import 'package:doctor/widgets/YYYEasyLoading.dart';
+import 'package:doctor/widgets/ace_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http_manager/api.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+
+import '../cache_learn_detail_video_helper.dart';
 
 /// * @Author: duanruilong  * @Date: 2020-10-30 14:49:43  * @Desc: 查看讲课视频
 
 class LookLectureVideosPage extends StatefulWidget {
   final int activityTaskId;
+  final Function callback;
 
-  LookLectureVideosPage(this.activityTaskId);
+  LookLectureVideosPage(this.activityTaskId,this.callback);
 
   @override
   _LookLearnDetailPageState createState() => _LookLearnDetailPageState();
@@ -141,7 +150,6 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
           body: Container(
             alignment: Alignment.topCenter,
             // color: ThemeColor.colorFFF3F5F8,
-            color: Color.fromRGBO(0, 0, 0, 1),
             // padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: Column(
               children: [
@@ -151,7 +159,6 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                       UploadActivityVideoDetail(data, _controller),
                       if (data.status == 'WAIT_VERIFY')
                         Positioned(
-                          top: 12,
                           child: Container(
                             width: double.infinity,
                             alignment: Alignment.center,
@@ -174,7 +181,6 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                         ),
                       if (data.status == 'VERIFIED')
                         Positioned(
-                          top: 12,
                           child: Container(
                             width: double.infinity,
                             alignment: Alignment.center,
@@ -199,6 +205,50 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                   ),
                 ),
                 Expanded(child: _renderVideoInfo(data, '')),
+                if (data.status == "REJECT")
+                  Container(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: AceButton(
+                      text: "重新录制",
+                      onPressed: () async {
+                        UserInfoViewModel model =
+                            Provider.of<UserInfoViewModel>(context,
+                                listen: false);
+                        await model.queryDoctorInfo();
+                        DoctorDetailInfoEntity userInfo = model.data;
+                        var videoData = await CachedLearnDetailVideoHelper
+                            .getCachedVideoInfo(userInfo.doctorUserId,
+                                CachedLearnDetailVideoHelper.typeActivityVideo);
+                        bool isSamePackage =
+                            await CachedLearnDetailVideoHelper.hasCachedVideo(
+                                userInfo.doctorUserId,
+                                CachedLearnDetailVideoHelper.typeActivityVideo,
+                                id: videoData.learnPlanId);
+                        if (isSamePackage) {
+                          Navigator.pop(context);
+                          return;
+                        } else if (videoData != null) {
+                          {
+                            _showUploadVideoAlert(
+                              "您暂时无法录制新的讲课视频",
+                              "您有一个未完成的讲课邀请任务是否立即查看详情",
+                              () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return ActivityDetail(videoData.learnPlanId,
+                                      TYPE_LECTURE_VIDEO);
+                                }));
+                              },
+                              cancel: "暂不查看",
+                              done: "查看详情",
+                            );
+                          }
+                        } else {
+                          widget.callback();
+                        }
+                      },
+                    ),
+                  ),
               ],
             ),
           ),
@@ -262,6 +312,66 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
             -60,
           ),
           floatingActionButtonAnimator: _NoScalingAnimation(),
+        );
+      },
+    );
+  }
+
+  _showUploadVideoAlert(String title, String desc, Function action,
+      {String cancel = "取消", String done = "确定"}) {
+    showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) {
+        return WillPopScope(
+          child: CupertinoAlertDialog(
+            content: Container(
+              padding: EdgeInsets.only(top: 12),
+              child: Column(
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xff444444),
+                    ),
+                  ),
+                  Text(
+                    desc,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Color(0xfff57575),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  cancel,
+                  style: TextStyle(
+                    color: ThemeColor.colorFF444444,
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text(
+                  done,
+                  style: TextStyle(
+                    color: ThemeColor.colorFF52C41A,
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.of(context).pop(false);
+                  action();
+                },
+              ),
+            ],
+          ),
+          onWillPop: () async => false,
         );
       },
     );
