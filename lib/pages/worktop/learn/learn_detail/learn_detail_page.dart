@@ -291,7 +291,7 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
       return;
     }
     var videoData = await CachedLearnDetailVideoHelper.getCachedVideoInfo(
-        userInfo.doctorUserId);
+        userInfo.doctorUserId,CachedLearnDetailVideoHelper.typeLearnVideo);
     if (videoData != null) {
       _showUploadVideoAlert(
         "您暂时无法录制新的讲课视频",
@@ -399,8 +399,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
             info.path = path;
             print("the path is ${path}");
           }
-          CachedLearnDetailVideoHelper.cacheVideoInfo(
-              userInfo.doctorUserId, info);
+          CachedLearnDetailVideoHelper.cacheVideoInfo(userInfo.doctorUserId,
+              CachedLearnDetailVideoHelper.typeLearnVideo, info);
           await _doUpload(info);
         } catch (e) {
           print("e is $e");
@@ -431,7 +431,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
       },
     );
     print("upload finished");
-    CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
+    CachedLearnDetailVideoHelper.cleanVideoCache(
+        userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeLearnVideo);
     _model.initData();
     _uploadFinish(result["lectureId"]);
   }
@@ -498,10 +499,10 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
 
   checkVideo() async {
     bool has = await CachedLearnDetailVideoHelper.hasCachedVideo(
-        userInfo.doctorUserId,
-        learnPlanId: widget.learnPlanId);
+        userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeLearnVideo,
+        id: widget.learnPlanId);
     var data = await CachedLearnDetailVideoHelper.getCachedVideoInfo(
-        userInfo.doctorUserId);
+        userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeLearnVideo);
     setState(() {
       hasVideo = has;
       if (has) {
@@ -872,7 +873,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
                 "录制时长${(videoDuration / 60).floor()}:$secondString",
                 () {
                   CachedLearnDetailVideoHelper.cleanVideoCache(
-                      userInfo.doctorUserId);
+                      userInfo.doctorUserId,
+                      CachedLearnDetailVideoHelper.typeLearnVideo);
                   setState(() {
                     hasVideo = false;
                   });
@@ -894,7 +896,8 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
               EasyLoading.instance.flash(() async {
                 var data =
                     await CachedLearnDetailVideoHelper.getCachedVideoInfo(
-                        userInfo.doctorUserId);
+                        userInfo.doctorUserId,
+                      CachedLearnDetailVideoHelper.typeLearnVideo);
                 await _doUpload(data);
               });
             },
@@ -919,10 +922,11 @@ class _LearnDetailPageState extends State<LearnDetailPage> {
     var status = model.data?.status;
     if (status == 'SUBMIT_LEARN' || status == 'ACCEPTED') {
       var has = await CachedLearnDetailVideoHelper.hasCachedVideo(
-          userInfo.doctorUserId,
-          learnPlanId: learnPlanId);
+          userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeLearnVideo,
+          id: learnPlanId);
       if (has) {
-        CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
+        CachedLearnDetailVideoHelper.cleanVideoCache(
+            userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeLearnVideo);
       }
     }
     checkVideo();

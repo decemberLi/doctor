@@ -4,6 +4,8 @@ import 'package:doctor/common/event/event_tab_index.dart';
 import 'package:doctor/model/biz/learn_plan_statistical_entity.dart';
 import 'package:doctor/model/ucenter/auth_platform.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
+import 'package:doctor/pages/activity/activity_constants.dart';
+import 'package:doctor/pages/activity/activity_detail.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
 import 'package:doctor/pages/activity/widget/activity_widget.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
@@ -48,14 +50,21 @@ class _WorktopPageState extends State<WorktopPage>
   void initState() {
     this.init();
     super.initState();
-    eventBus.on().listen((event) {
-      if (event is EventTabIndex && event.index == 0) {
-        _showUploadVideoDialogIfNeeded();
-      }
-    });
+    // eventBus.on().listen((event) {
+    //   if (event is EventTabIndex && event.index == 0) {
+    //     _showUploadVideoDialogIfNeeded(
+    //         CachedLearnDetailVideoHelper.typeLearnVideo);
+    //     _showUploadVideoDialogIfNeeded(
+    //         CachedLearnDetailVideoHelper.typeActivityVideo);
+    //   }
+    // });
+    _showUploadVideoDialogIfNeeded(
+        CachedLearnDetailVideoHelper.typeLearnVideo);
+    _showUploadVideoDialogIfNeeded(
+        CachedLearnDetailVideoHelper.typeActivityVideo);
   }
 
-  void _showUploadVideoDialogIfNeeded() async {
+  void _showUploadVideoDialogIfNeeded(String type) async {
     if (isShowed) {
       return;
     }
@@ -63,14 +72,14 @@ class _WorktopPageState extends State<WorktopPage>
         Provider.of<UserInfoViewModel>(context, listen: false);
     await model.queryDoctorInfo();
     var needShow = await CachedLearnDetailVideoHelper.hasCachedVideo(
-        model.data.doctorUserId);
+        model.data.doctorUserId, type);
     if (!needShow) {
       return;
     }
-    _showUploadVideoAlert(model.data.doctorUserId);
+    _showUploadVideoAlert(model.data.doctorUserId, type);
   }
 
-  _showUploadVideoAlert(int userId) {
+  _showUploadVideoAlert(int userId, String type) {
     isShowed = true;
     showCupertinoDialog<bool>(
       context: context,
@@ -104,13 +113,22 @@ class _WorktopPageState extends State<WorktopPage>
                   Navigator.of(context).pop(false);
                   CachedVideoInfo videoInfo =
                       await CachedLearnDetailVideoHelper.getCachedVideoInfo(
-                          userId);
-                  await Navigator.of(context).pushNamed(
-                    RouteManagerOld.LEARN_DETAIL,
-                    arguments: {
-                      'learnPlanId': videoInfo.learnPlanId,
-                    },
-                  );
+                          userId, type);
+                  if (type == CachedLearnDetailVideoHelper.typeLearnVideo) {
+                    await Navigator.of(context).pushNamed(
+                      RouteManagerOld.LEARN_DETAIL,
+                      arguments: {
+                        'learnPlanId': videoInfo.learnPlanId,
+                      },
+                    );
+                  } else if (type ==
+                      CachedLearnDetailVideoHelper.typeActivityVideo) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return ActivityDetail(
+                          videoInfo.learnPlanId, TYPE_LECTURE_VIDEO);
+                    }));
+                  }
                 },
               ),
             ],
@@ -698,7 +716,8 @@ class _WorktopPageState extends State<WorktopPage>
   }
 }
 
-bool goGoGo(UserInfoViewModel userModel, BuildContext context,{String channel = channelGolden}) {
+bool goGoGo(UserInfoViewModel userModel, BuildContext context,
+    {String channel = channelGolden}) {
   DoctorDetailInfoEntity doctorInfo = userModel.data;
   if (!userModel.isIdentityAuthPassedByChannel(channel)) {
     Navigator.pushNamed(

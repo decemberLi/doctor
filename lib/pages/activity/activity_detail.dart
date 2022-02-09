@@ -65,20 +65,25 @@ class _ActivityState extends State<ActivityDetail> {
     firstGetData();
     super.initState();
   }
+
   updateDoctorInfo() async {
     UserInfoViewModel model =
-    Provider.of<UserInfoViewModel>(context, listen: false);
+        Provider.of<UserInfoViewModel>(context, listen: false);
     if (model?.data != null) {
       await model.queryDoctorInfo();
       userInfo = model.data;
     }
   }
+
   firstGetData() async {
     try {
       await updateDoctorInfo();
       var result =
           await API.shared.activity.packageDetail(widget.activityPackageId);
       _data = ActivityDetailEntity(result);
+      if (_data.activityType == TYPE_LECTURE_VIDEO)
+        updateCheck(_data, widget.activityPackageId);
+      print('------------------${widget.activityPackageId}');
       var rawData = await API.shared.activity
           .activityTaskList(widget.activityPackageId, 1);
       var list = rawData["records"];
@@ -120,7 +125,6 @@ class _ActivityState extends State<ActivityDetail> {
       _list.addAll(list);
     });
   }
-
 
   _showUploadVideoAlert(String title, String desc, Function action,
       {String cancel = "取消", String done = "确定"}) {
@@ -189,15 +193,15 @@ class _ActivityState extends State<ActivityDetail> {
         .replaceAll(new RegExp('ARTICLE_TITLE'), title)
         .replaceAll(new RegExp('ARTICLE_CONTENT'), context);
   }
-  
-  bool _canSend = true;
-  _gotoRecordPage(result) {
 
+  bool _canSend = true;
+
+  _gotoRecordPage(result) {
     MedcloudsNativeApi.instance().record(result.toString());
     MedcloudsNativeApi.instance().addProcessor(
       "uploadLearnVideo",
-          (args) async {
-        if(!_canSend){
+      (args) async {
+        if (!_canSend) {
           return null;
         }
         _canSend = false;
@@ -218,8 +222,8 @@ class _ActivityState extends State<ActivityDetail> {
             path = path.replaceAll(prefix.path, "");
             info.path = path;
           }
-          CachedLearnDetailVideoHelper.cacheVideoInfo(
-              userInfo.doctorUserId, info);
+          CachedLearnDetailVideoHelper.cacheVideoInfo(userInfo.doctorUserId,
+              CachedLearnDetailVideoHelper.typeActivityVideo, info);
           await _doUpload(info);
         } catch (e) {
           _canSend = true;
@@ -252,7 +256,8 @@ class _ActivityState extends State<ActivityDetail> {
       },
     );
     print("upload finished");
-    CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId);
+    CachedLearnDetailVideoHelper.cleanVideoCache(
+        userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeActivityVideo);
     await firstGetData();
   }
 
@@ -260,15 +265,32 @@ class _ActivityState extends State<ActivityDetail> {
     if (EasyLoading.isShow) {
       return;
     }
+    var videoData = await CachedLearnDetailVideoHelper.getCachedVideoInfo(
+        userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeActivityVideo);
+    if (videoData != null) {
+      _showUploadVideoAlert(
+        "您暂时无法录制新的讲课视频",
+        "您有一个未完成的讲课邀请任务是否立即查看详情",
+        () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ActivityDetail(videoData.learnPlanId, TYPE_LECTURE_VIDEO);
+          }));
+        },
+        cancel: "暂不查看",
+        done: "查看详情",
+      );
+      return;
+    }
     UserInfoViewModel model =
-    Provider.of<UserInfoViewModel>(context, listen: false);
+        Provider.of<UserInfoViewModel>(context, listen: false);
     EasyLoading.instance.flash(
-          () async {
+      () async {
         var appDocDir = await getApplicationDocumentsDirectory();
         if (Platform.isAndroid) {
           appDocDir = await getExternalStorageDirectory();
         }
-        var resourceData = await API.shared.activity.lectureResourceQuery(widget.activityPackageId);
+        var resourceData = await API.shared.activity
+            .lectureResourceQuery(widget.activityPackageId);
         String picPath = appDocDir.path + "/sharePDF";
         var map = {
           "path": picPath,
@@ -467,7 +489,7 @@ class _ActivityState extends State<ActivityDetail> {
       print("$status --  status is ");
       if (status == "INVALID") {
         text = "已作废";
-      }else if (schedule != null && schedule < 100) {
+      } else if (schedule != null && schedule < 100) {
         text = "完成度$schedule%";
       } else if (status == "WAIT_VERIFY") {
         text = "待审核";
@@ -542,8 +564,8 @@ class _ActivityState extends State<ActivityDetail> {
                 rejectReason: rejectReason,
               );
             }));
-          }else if (_data.activityType == TYPE_LECTURE_VIDEO){
-            Navigator.of(context).push(MaterialPageRoute(builder: (c){
+          } else if (_data.activityType == TYPE_LECTURE_VIDEO) {
+            Navigator.of(context).push(MaterialPageRoute(builder: (c) {
               return LookLectureVideosPage(taskId);
             }));
           } else {
@@ -565,7 +587,7 @@ class _ActivityState extends State<ActivityDetail> {
       String desc = "";
       if (widget.type == TYPE_CASE_COLLECTION) {
         desc = "病例${i + 1}:已上传${item["pictureNum"]}张图片";
-      }else if (widget.type == TYPE_LECTURE_VIDEO){
+      } else if (widget.type == TYPE_LECTURE_VIDEO) {
         desc = "${item["activityTaskName"]}";
       } else {
         Map<String, dynamic> illnessCase = item["illnessCase"];
@@ -610,7 +632,7 @@ class _ActivityState extends State<ActivityDetail> {
     var title = "病例列表";
     if (_data.activityType == TYPE_MEDICAL_SURVEY) {
       title = "调研列表";
-    }else if (_data.activityType == TYPE_LECTURE_VIDEO){
+    } else if (_data.activityType == TYPE_LECTURE_VIDEO) {
       title = "讲课视频列表";
     }
     return card(
@@ -701,7 +723,7 @@ class _ActivityState extends State<ActivityDetail> {
       } else if (widget.type == TYPE_LECTURE_VIDEO) {
         last = "剩余讲课视频数";
         title = "录制讲课视频";
-      }else {
+      } else {
         last = "剩余调研数";
         title = "填写RWS";
       }
@@ -734,8 +756,8 @@ class _ActivityState extends State<ActivityDetail> {
                       _data.activityPackageId, null);
                 }));
               } else if (widget.type == TYPE_LECTURE_VIDEO) {
-                 _gotoRecord();
-              }else {
+                _gotoRecord();
+              } else {
                 await Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return ActivityResearch(_data.activityPackageId);
@@ -793,8 +815,119 @@ class _ActivityState extends State<ActivityDetail> {
             },
           ),
         ),
-        ...bottoms,
+        if (!hasVideo) ...bottoms,
+        _buildVideoBottom(),
       ],
+    );
+  }
+
+  bool hasVideo = false;
+  int videoDuration = 0;
+
+  checkVideo() async {
+    bool has = await CachedLearnDetailVideoHelper.hasCachedVideo(
+        userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeActivityVideo,
+        id: widget.activityPackageId);
+    var data = await CachedLearnDetailVideoHelper.getCachedVideoInfo(
+        userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeActivityVideo);
+    setState(() {
+      hasVideo = has;
+      if (has) {
+        videoDuration = data.duration;
+      }
+    });
+  }
+
+  updateCheck(ActivityDetailEntity entity, dynamic learnPlanId) async {
+    // if (entity.status == "VERIFYED") {
+    //   var has = await CachedLearnDetailVideoHelper.hasCachedVideo(
+    //       userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeActivityVideo,
+    //       id: learnPlanId);
+    //   if (has) {
+    //     CachedLearnDetailVideoHelper.cleanVideoCache(userInfo.doctorUserId,
+    //         CachedLearnDetailVideoHelper.typeActivityVideo);
+    //   }
+    // }
+    checkVideo();
+  }
+
+  Widget _buildVideoBottom() {
+    if (!hasVideo) {
+      return Container();
+    }
+    var second = videoDuration % 60;
+    var secondString = second.toString().padLeft(2, '0');
+    return Container(
+      height: 60,
+      color: Color(0xff444444),
+      child: Row(
+        children: [
+          Container(
+            width: 18,
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "当前有一个未上传的讲课视频",
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+                Text(
+                  "时长${(videoDuration / 60).floor()}:$secondString",
+                  style: TextStyle(color: Color(0xff489DFE), fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              _showUploadVideoAlert(
+                "确定删除已录制的讲课视频吗？",
+                "录制时长${(videoDuration / 60).floor()}:$secondString",
+                () {
+                  CachedLearnDetailVideoHelper.cleanVideoCache(
+                      userInfo.doctorUserId,
+                      CachedLearnDetailVideoHelper.typeLearnVideo);
+                  setState(() {
+                    hasVideo = false;
+                  });
+                },
+              );
+            },
+            child: Container(
+              alignment: Alignment.center,
+              height: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 18),
+              child: Text(
+                "删除",
+                style: TextStyle(color: Color(0xffFECE35), fontSize: 12),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              EasyLoading.instance.flash(() async {
+                var data =
+                    await CachedLearnDetailVideoHelper.getCachedVideoInfo(
+                        userInfo.doctorUserId,
+                        CachedLearnDetailVideoHelper.typeLearnVideo);
+                await _doUpload(data);
+              });
+            },
+            child: Container(
+              alignment: Alignment.center,
+              height: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 18),
+              child: Text(
+                "重新上传",
+                style: TextStyle(color: Color(0xff489DFE), fontSize: 12),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

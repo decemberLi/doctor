@@ -13,7 +13,6 @@ class CachedVideoInfo {
   String videoTitle;
   String path;
   String presenter;
-  String type;
 
   CachedVideoInfo();
 
@@ -24,7 +23,6 @@ class CachedVideoInfo {
     this.path = json["path"] as String;
     this.duration = json["duration"] as int;
     this.presenter = json["presenter"] as String;
-    this.type = json["type"] as String;
   }
 
   Map<String, dynamic> get json {
@@ -35,15 +33,16 @@ class CachedVideoInfo {
     result["path"] = this.path;
     result["duration"] = this.duration;
     result["presenter"] = this.presenter;
-    result["type"] = this.type;
     return result;
   }
 }
 
 class CachedLearnDetailVideoHelper {
   static String _keyVideoInfo = "_keyCachedVideoInfo";
+  static String typeLearnVideo = "_typeLearnVideo";
+  static String typeActivityVideo = "_typeActivityVideo";
 
-  static void cacheVideoInfo(int userId, CachedVideoInfo data) async {
+  static void cacheVideoInfo(int userId,String type, CachedVideoInfo data) async {
     if (TextUtil.isEmpty(data.path) ||
         TextUtil.isEmpty(data.videoTitle) ||
         TextUtil.isEmpty(data.presenter)) {
@@ -52,35 +51,35 @@ class CachedLearnDetailVideoHelper {
     }
 
     var refs = await SharedPreferences.getInstance();
-    refs.setString('$_keyVideoInfo-$userId', json.encode(data.json));
+    refs.setString('$_keyVideoInfo-$type-$userId', json.encode(data.json));
   }
 
-  static void cleanVideoCache(int userId) async {
+  static void cleanVideoCache(int userId, String type) async {
     var refs = await SharedPreferences.getInstance();
-    refs.remove('$_keyVideoInfo-$userId');
+    refs.remove('$_keyVideoInfo-$type-$userId');
   }
 
-  static Future<bool> hasCachedVideo(int userId, {int learnPlanId = -1}) async {
+  static Future<bool> hasCachedVideo(int userId, String type, {int id = -1}) async {
     var refs = await SharedPreferences.getInstance();
-    var cacheStr = refs.getString('$_keyVideoInfo-$userId');
+    var cacheStr = refs.getString('$_keyVideoInfo-$type-$userId');
     if (cacheStr == null || TextUtil.isEmpty(cacheStr)) {
       return false;
     }
     CachedVideoInfo info =
         CachedVideoInfo.fromJson(json.decode(cacheStr) as Map<String, dynamic>);
 
-    if (learnPlanId == -1) {
+    if (id == -1) {
       return true;
     }
-    return learnPlanId == info.learnPlanId;
+    return id == info.learnPlanId;
   }
 
-  static Future<CachedVideoInfo> getCachedVideoInfo(int userId) async {
-    if(!await hasCachedVideo(userId)){
+  static Future<CachedVideoInfo> getCachedVideoInfo(int userId, String type) async {
+    if(!await hasCachedVideo(userId, type)){
       return null;
     }
     var refs = await SharedPreferences.getInstance();
-    return CachedVideoInfo.fromJson(json.decode(refs.getString('$_keyVideoInfo-$userId'))
+    return CachedVideoInfo.fromJson(json.decode(refs.getString('$_keyVideoInfo-$type-$userId'))
         as Map<String, dynamic>);
   }
 }

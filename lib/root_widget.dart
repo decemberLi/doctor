@@ -151,7 +151,8 @@ class RootWidget extends StatelessWidget {
       DoctorDetailInfoEntity userInfo =
           Provider.of<UserInfoViewModel>(context, listen: false).data;
       var userId = userInfo.doctorUserId;
-      CachedLearnDetailVideoHelper.cleanVideoCache(userId);
+      CachedLearnDetailVideoHelper.cleanVideoCache(userId, CachedLearnDetailVideoHelper.typeActivityVideo);
+      CachedLearnDetailVideoHelper.cleanVideoCache(userId, CachedLearnDetailVideoHelper.typeLearnVideo);
       return;
     });
     HttpManager.shared.addInterceptors([
