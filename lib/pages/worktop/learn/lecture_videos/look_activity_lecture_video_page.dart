@@ -223,7 +223,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                             await CachedLearnDetailVideoHelper.hasCachedVideo(
                                 userInfo.doctorUserId,
                                 CachedLearnDetailVideoHelper.typeActivityVideo,
-                                id: videoData.learnPlanId);
+                                id: data.activityPackageId);
                         if (isSamePackage) {
                           Navigator.pop(context);
                           return;
