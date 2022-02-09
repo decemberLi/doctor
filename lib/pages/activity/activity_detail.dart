@@ -300,7 +300,7 @@ class _ActivityState extends State<ActivityDetail> {
         var map = {
           "path": picPath,
           "name": userInfo?.doctorName ?? '',
-          "userID": "-${model.data.doctorUserId}",
+          "userID": "${model.data.doctorUserId}",
           "hospital": model.data.hospitalName,
           "title": _data.activityName,
           'type': "pdf",

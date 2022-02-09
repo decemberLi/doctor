@@ -508,7 +508,7 @@ class LessonRecordActivity : AppCompatActivity() {
                 Toast.makeText(this@LessonRecordActivity, "请输入视频标题", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            val direction = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "record")
+            val direction = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "$mUserId")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 stopRecord()
                 upload(editText, File(direction, "0.mp4").absolutePath, dialog)
