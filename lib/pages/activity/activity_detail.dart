@@ -736,7 +736,7 @@ class _ActivityState extends State<ActivityDetail> {
         title = "填写RWS";
       }
       bottoms = [
-        if (widget.type == TYPE_MEDICAL_SURVEY)
+        if (widget.type == TYPE_MEDICAL_SURVEY || widget.type == TYPE_LECTURE_VIDEO)
           Container(
             padding: EdgeInsets.symmetric(vertical: 5),
             child: Text(
