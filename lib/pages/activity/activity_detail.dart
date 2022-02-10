@@ -921,7 +921,7 @@ class _ActivityState extends State<ActivityDetail> {
                 var data =
                     await CachedLearnDetailVideoHelper.getCachedVideoInfo(
                         userInfo.doctorUserId,
-                        CachedLearnDetailVideoHelper.typeLearnVideo);
+                        CachedLearnDetailVideoHelper.typeActivityVideo);
                 await _doUpload(data);
               });
             },
