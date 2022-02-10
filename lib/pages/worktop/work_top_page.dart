@@ -717,7 +717,7 @@ class _WorktopPageState extends State<WorktopPage>
 }
 
 bool goGoGo(UserInfoViewModel userModel, BuildContext context,
-    {String channel = channelGolden}) {
+    {String channel = channelGolden, bool needInterceptorPassPage = true}) {
   DoctorDetailInfoEntity doctorInfo = userModel.data;
   if (!userModel.isIdentityAuthPassedByChannel(channel)) {
     Navigator.pushNamed(
@@ -735,7 +735,7 @@ bool goGoGo(UserInfoViewModel userModel, BuildContext context,
         context, RouteManagerOld.DOCTOR_AUTH_STATUS_VERIFYING_PAGE);
     return false;
   }
-  if (doctorInfo.authStatus == 'PASS') {
+  if (doctorInfo.authStatus == 'PASS' && needInterceptorPassPage) {
     Navigator.pushNamed(context, RouteManagerOld.DOCTOR_AUTH_STATUS_PASS_PAGE);
     return false;
   }

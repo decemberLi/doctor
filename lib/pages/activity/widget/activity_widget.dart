@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/entity/activity_entity.dart';
@@ -178,6 +180,7 @@ class ActivityWidget extends StatelessWidget {
             ),
           ),
           onTap: () async {
+            print("====================++${_data.activityPackageId}");
             RouteManager.push(context,
                 "yyy://page/activity_detail_page?activity_package_id=${_data.activityPackageId}&type=${_data.activityType}&remitChannel=${_data.remitChannel}");
           },

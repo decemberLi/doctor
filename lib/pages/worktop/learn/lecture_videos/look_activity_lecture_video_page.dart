@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:doctor/http/activity.dart';
+import 'package:doctor/http/common_service.dart';
+import 'package:doctor/http/oss_service.dart';
 import 'package:doctor/model/ucenter/doctor_detail_info_entity.dart';
 import 'package:doctor/pages/activity/activity_constants.dart';
 import 'package:doctor/pages/activity/activity_detail.dart';
+import 'package:doctor/pages/activity/entity/activity_entity.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/lecture_videos/upload_video.dart';
 import 'package:doctor/pages/worktop/learn/model/activity_learn_record_model.dart';
@@ -24,16 +27,18 @@ import 'package:http_manager/api.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:yyy_route_annotation/yyy_route_annotation.dart';
 
 import '../cache_learn_detail_video_helper.dart';
 
 /// * @Author: duanruilong  * @Date: 2020-10-30 14:49:43  * @Desc: 查看讲课视频
 
+@RoutePage(name: "look_lecture_videos_page")
 class LookLectureVideosPage extends StatefulWidget {
   final int activityTaskId;
-  final Function callback;
+  final int activityPackageId;
 
-  LookLectureVideosPage(this.activityTaskId,this.callback);
+  LookLectureVideosPage(this.activityPackageId, this.activityTaskId);
 
   @override
   _LookLearnDetailPageState createState() => _LookLearnDetailPageState();
@@ -41,11 +46,138 @@ class LookLectureVideosPage extends StatefulWidget {
 
 class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
   VideoPlayerController _controller;
+  DoctorDetailInfoEntity userInfo;
+  ActivityDetailEntity _data;
+  updateDoctorInfo() async {
+    UserInfoViewModel model =
+    Provider.of<UserInfoViewModel>(context, listen: false);
+    if (model?.data != null) {
+      await model.queryDoctorInfo();
+      userInfo = model.data;
+    }
+    var result =
+    await API.shared.activity.packageDetail(widget.activityPackageId);
+    _data = ActivityDetailEntity(result);
+  }
 
   @override
   void initState() {
     // 在initState中发出请求
+    updateDoctorInfo();
     super.initState();
+  }
+
+  bool _canSend = true;
+
+  _gotoRecordPage(result) {
+    UserInfoViewModel model =
+    Provider.of<UserInfoViewModel>(context, listen: false);
+    MedcloudsNativeApi.instance().record(result.toString());
+    MedcloudsNativeApi.instance().addProcessor(
+      "uploadLearnVideo",
+          (args) async {
+        if (!_canSend) {
+          return null;
+        }
+        _canSend = false;
+        try {
+          print('----------------$args');
+          var obj = json.decode(args);
+          CachedVideoInfo info = CachedVideoInfo();
+          info.learnPlanId = widget.activityPackageId;
+          // info.resourceId = result["attachmentOssId"];
+          info.videoTitle = obj['title'] ?? _data.activityName;
+          info.duration = int.parse("${obj['duration'] ?? 0}");
+          info.presenter = userInfo?.doctorName ?? '';
+          if (Platform.isAndroid) {
+            info.path = obj["path"];
+          } else {
+            String path = obj["path"];
+            var prefix = await getApplicationDocumentsDirectory();
+            path = path.replaceAll(prefix.path, "");
+            info.path = path;
+          }
+          CachedLearnDetailVideoHelper.cacheVideoInfo(userInfo.doctorUserId,
+              CachedLearnDetailVideoHelper.typeActivityVideo, info);
+          await _doUpload(info);
+        } catch (e) {
+          _canSend = true;
+          print("e is $e");
+          return "网络错误";
+        }
+        _canSend = true;
+        return null;
+        //print("the result is ${result}");
+      },
+    );
+  }
+
+  _doUpload(CachedVideoInfo data) async {
+    print("do upload");
+    var path = data.path;
+    if (Platform.isIOS) {
+      var prefix = await getApplicationDocumentsDirectory();
+      path = prefix.path + path;
+    }
+    var entity = await OssService.upload(path, showLoading: false);
+    var result = await API.shared.activity.saveVideo(
+      {
+        'activityPackageId': widget.activityPackageId,
+        'activityTaskId': widget.activityTaskId,
+        'name': data.videoTitle,
+        'duration': data.duration,
+        'presenter': data.presenter,
+        'ossId': entity.ossId,
+      },
+    );
+    print("upload finished");
+    CachedLearnDetailVideoHelper.cleanVideoCache(
+        userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeActivityVideo);
+  }
+  Future _gogogogogogo() async {
+    UserInfoViewModel model =
+    Provider.of<UserInfoViewModel>(context, listen: false);
+    EasyLoading.instance.flash(
+          () async {
+        var appDocDir = await getApplicationDocumentsDirectory();
+        if (Platform.isAndroid) {
+          appDocDir = await getExternalStorageDirectory();
+        }
+        var resourceData = await API.shared.activity
+            .lectureResourceQuery(widget.activityPackageId);
+        String picPath = appDocDir.path + "/sharePDF";
+        var map = {
+          "path": picPath,
+          "name": userInfo?.doctorName ?? '',
+          "userID": "${model.data.doctorUserId}",
+          "hospital": model.data.hospitalName,
+          "title": _data.activityName,
+          'type': "pdf",
+        };
+        map["type"] = "pdf";
+        var file = await CommonService.getFile({
+          'ossIds': [resourceData["attachmentOssId"]]
+        });
+        var fileURL = file[0]['tmpUrl'];
+        await Dio().download(fileURL, picPath);
+        var result = json.encode(map);
+        Stream<String> pdfFileStream;
+        pdfFileStream = File(picPath).openRead(0, 4).transform(utf8.decoder);
+        String event = "";
+        try {
+          event = await pdfFileStream.first;
+          if (event.toUpperCase() == '%PDF') {
+            this._gotoRecordPage(result);
+          } else {
+            print("格式为：-  $event");
+            EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
+          }
+        } catch (e) {
+          print("格式为：-  $e");
+          EasyLoading.showToast("暂时不支持打开该格式的文件，请到【易学术】小程序上传讲课视频");
+        }
+      },
+    );
   }
 
   /// 渲染视频信息
@@ -157,50 +289,50 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                   child: Stack(
                     children: [
                       UploadActivityVideoDetail(data, _controller),
-                      if (data.status == 'WAIT_VERIFY')
-                        Positioned(
-                          child: Container(
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            margin:
-                                EdgeInsets.only(left: 16, right: 16, top: 12),
-                            decoration: BoxDecoration(
-                                color: Color(0xFFDFDFDF),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
-                                border: Border.all(color: Color(0xFF444444))),
-                            child: Text(
-                              "待审核",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF444444),
-                              ),
-                            ),
-                          ),
-                        ),
-                      if (data.status == 'VERIFIED')
-                        Positioned(
-                          child: Container(
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            margin:
-                                EdgeInsets.only(left: 16, right: 16, top: 12),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
-                                color: Color(0xFFE0F4D5),
-                                border: Border.all(color: Color(0xFF5AC624))),
-                            child: Text(
-                              "审核通过",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF5AC624),
-                              ),
-                            ),
-                          ),
-                        )
+                      // if (data.status == 'WAIT_VERIFY')
+                      //   Positioned(
+                      //     child: Container(
+                      //       width: double.infinity,
+                      //       alignment: Alignment.center,
+                      //       padding: EdgeInsets.symmetric(vertical: 10),
+                      //       margin:
+                      //           EdgeInsets.only(left: 16, right: 16, top: 12),
+                      //       decoration: BoxDecoration(
+                      //           color: Color(0xFFDFDFDF),
+                      //           borderRadius:
+                      //               BorderRadius.all(Radius.circular(4)),
+                      //           border: Border.all(color: Color(0xFF444444))),
+                      //       child: Text(
+                      //         "待审核",
+                      //         style: TextStyle(
+                      //           fontSize: 14,
+                      //           color: Color(0xFF444444),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // if (data.status == 'VERIFIED')
+                      //   Positioned(
+                      //     child: Container(
+                      //       width: double.infinity,
+                      //       alignment: Alignment.center,
+                      //       padding: EdgeInsets.symmetric(vertical: 10),
+                      //       margin:
+                      //           EdgeInsets.only(left: 16, right: 16, top: 12),
+                      //       decoration: BoxDecoration(
+                      //           borderRadius:
+                      //               BorderRadius.all(Radius.circular(4)),
+                      //           color: Color(0xFFE0F4D5),
+                      //           border: Border.all(color: Color(0xFF5AC624))),
+                      //       child: Text(
+                      //         "审核通过",
+                      //         style: TextStyle(
+                      //           fontSize: 14,
+                      //           color: Color(0xFF5AC624),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   )
                     ],
                   ),
                 ),
@@ -244,7 +376,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
                             );
                           }
                         } else {
-                          widget.callback();
+                          _gogogogogogo();
                         }
                       },
                     ),

@@ -12,6 +12,7 @@ import 'package:doctor/pages/user/ucenter_view_model.dart';
 import 'package:doctor/pages/worktop/learn/cache_learn_detail_video_helper.dart';
 import 'package:doctor/pages/worktop/learn/lecture_videos/look_activity_lecture_video_page.dart';
 import 'package:doctor/provider/view_state_widget.dart';
+import 'package:doctor/root_widget.all.dart';
 import 'package:doctor/route/route_manager.dart';
 import 'package:doctor/theme/theme.dart';
 import 'package:doctor/utils/MedcloudsNativeApi.dart';
@@ -59,7 +60,6 @@ class _ActivityState extends State<ActivityDetail> {
   bool _isLoading = true;
   String _error;
   int _page = 1;
-  int _mClickedTaskId = null;
 
   @override
   void initState() {
@@ -249,7 +249,7 @@ class _ActivityState extends State<ActivityDetail> {
     var result = await API.shared.activity.saveVideo(
       {
         'activityPackageId': _data.activityPackageId,
-        'activityTaskId': _mClickedTaskId,
+        'activityTaskId': _data.activityTaskId,
         'name': data.videoTitle,
         'duration': data.duration,
         'presenter': data.presenter,
@@ -570,12 +570,10 @@ class _ActivityState extends State<ActivityDetail> {
               );
             }));
           } else if (_data.activityType == TYPE_LECTURE_VIDEO) {
-            Navigator.of(context).push(MaterialPageRoute(builder: (c) {
-              _mClickedTaskId = taskId;
-              return LookLectureVideosPage(taskId,(){
-                _gogogogogogo();
-              });
-            }));
+            RouteManager.push(context, RoutMapping.look_lecture_videos_page(_data.activityPackageId, taskId));
+            // Navigator.of(context).push(MaterialPageRoute(builder: (c) {
+            //   return LookLectureVideosPage(_data.activityTaskId,taskId);
+            // }));
           } else {
             await Navigator.of(context).push(MaterialPageRoute(builder: (c) {
               return ActivityResearch(
@@ -753,7 +751,6 @@ class _ActivityState extends State<ActivityDetail> {
           child: AceButton(
             text: title,
             onPressed: () async {
-              _mClickedTaskId = null;
               if (_data.waitExecuteTask <= 0) {
                 EasyLoading.showToast("没有剩余调研数");
                 return;

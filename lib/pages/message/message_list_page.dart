@@ -5,6 +5,7 @@ import 'package:doctor/pages/activity/widget/activity_resource_detail.dart';
 import 'package:doctor/pages/message/model/message_list_entity.dart';
 import 'package:doctor/pages/message/view_model/message_list_view_model.dart';
 import 'package:doctor/pages/user/ucenter_view_model.dart';
+import 'package:doctor/pages/worktop/learn/lecture_videos/look_activity_lecture_video_page.dart';
 import 'package:doctor/pages/worktop/work_top_page.dart';
 import 'package:doctor/provider/provider_widget.dart';
 import 'package:doctor/provider/view_state_widget.dart';
@@ -222,7 +223,7 @@ class _MessageListPageState extends State<MessageListPage> {
   }
 
   _openDetail(String type, MessageListEntity entity) async {
-    print("the auth is ---- ");
+    print("the auth is ---- ${entity.toJson()}");
     // 获取用户当前审核状态
     UserInfoViewModel userModel =
         Provider.of<UserInfoViewModel>(context, listen: false);
@@ -270,7 +271,7 @@ class _MessageListPageState extends State<MessageListPage> {
         'from': 'MESSAGE_CENTER'
       });
     } else if (type == 'ACTIVITY') {
-      if (!goGoGo(userModel, context)) {
+      if (!goGoGo(userModel, context,needInterceptorPassPage: false)) {
         return;
       }
       if (entity.params['activityType'] == 'CASE_COLLECTION') {
@@ -290,6 +291,13 @@ class _MessageListPageState extends State<MessageListPage> {
           return ActivityResearch(
             entity.params['activityPackageId'],
             activityTaskId: entity.params['activityTaskId'],
+          );
+        }));
+      } else if (entity.params['activityType'] == "LECTURE_VIDEO") {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return LookLectureVideosPage(
+            entity.params['activityPackageId'],
+            entity.params['activityTaskId'],
           );
         }));
       }

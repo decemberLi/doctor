@@ -7,6 +7,7 @@ import "package:doctor/pages/activity/widget/activity_resource_detail.dart";
 import "package:doctor/pages/user/auth/auth_status_pass_page.dart";
 import "package:doctor/pages/user/auth/doctor_auth_step_two.dart";
 import "package:doctor/pages/worktop/learn/learn_detail/learn_detail_page.dart";
+import 'package:doctor/pages/worktop/learn/lecture_videos/look_activity_lecture_video_page.dart';
 
 // **************************************************************************
 // _RouteMainGenerator
@@ -58,6 +59,18 @@ Map<String, WidgetBuilder> routes() {
         typeConvert(args["type"], String),
       );
     }, true, true),
+    "look_lecture_videos_page": MRouteAware((context) {
+      Map<String, dynamic> args = {};
+      Map<String, dynamic> from =
+          ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+      if (from != null) {
+        args = from;
+      }
+      return LookLectureVideosPage(
+        typeConvert(args["activityPackageId"], int),
+        typeConvert(args["activityTaskId"], int),
+      );
+    }, true, false),
     "qualification_check_fail_page": MRouteAware((context) {
       return DoctorAuthenticationStepTwoPage();
     }, false, false),
@@ -153,6 +166,24 @@ class RoutMapping {
     });
     String paramStr = paramList.join('&');
     return "yyy://page/activity_detail_page?$paramStr";
+  }
+  static look_lecture_videos_page(
+    int activityPackageId,
+    int activityTaskId,
+  ) {
+    Map<String, dynamic> param = <String, dynamic>{
+      "activityPackageId": activityPackageId,
+      "activityTaskId": activityTaskId,
+    };
+
+    List<String> paramList = [];
+    param.forEach((eachKey, eachValue) {
+      if (eachValue != null) {
+        paramList.add('$eachKey=$eachValue');
+      }
+    });
+    String paramStr = paramList.join('&');
+    return "yyy://page/look_lecture_videos_page?$paramStr";
   }
 
   static qualification_check_fail_page() {
