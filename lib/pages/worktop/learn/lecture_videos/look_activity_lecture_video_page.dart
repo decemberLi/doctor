@@ -89,6 +89,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
           info.videoTitle = obj['title'] ?? _data.activityName;
           info.duration = int.parse("${obj['duration'] ?? 0}");
           info.presenter = userInfo?.doctorName ?? '';
+          info.resourceId = widget.activityTaskId;
           if (Platform.isAndroid) {
             info.path = obj["path"];
           } else {

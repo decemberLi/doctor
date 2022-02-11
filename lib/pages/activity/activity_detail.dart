@@ -249,7 +249,7 @@ class _ActivityState extends State<ActivityDetail> {
     var result = await API.shared.activity.saveVideo(
       {
         'activityPackageId': _data.activityPackageId,
-        'activityTaskId': _data.activityTaskId,
+        'activityTaskId': data.resourceId,
         'name': data.videoTitle,
         'duration': data.duration,
         'presenter': data.presenter,
