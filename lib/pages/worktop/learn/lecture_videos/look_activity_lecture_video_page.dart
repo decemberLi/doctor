@@ -37,7 +37,6 @@ import '../cache_learn_detail_video_helper.dart';
 class LookLectureVideosPage extends StatefulWidget {
   final int activityTaskId;
   final int activityPackageId;
-
   LookLectureVideosPage(this.activityPackageId, this.activityTaskId);
 
   @override
@@ -48,6 +47,8 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
   VideoPlayerController _controller;
   DoctorDetailInfoEntity userInfo;
   ActivityDetailEntity _data;
+  ActivityLearnRecordingModel _model ;
+
   updateDoctorInfo() async {
     UserInfoViewModel model =
     Provider.of<UserInfoViewModel>(context, listen: false);
@@ -62,6 +63,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
 
   @override
   void initState() {
+    ActivityLearnRecordingModel(widget.activityTaskId);
     // 在initState中发出请求
     updateDoctorInfo();
     super.initState();
@@ -132,6 +134,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
       },
     );
     print("upload finished");
+    _model.initData();
     CachedLearnDetailVideoHelper.cleanVideoCache(
         userInfo.doctorUserId, CachedLearnDetailVideoHelper.typeActivityVideo);
   }
@@ -265,7 +268,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
   @override
   Widget build(BuildContext context) {
     return ProviderWidget<ActivityLearnRecordingModel>(
-      model: ActivityLearnRecordingModel(widget.activityTaskId),
+      model: _model,
       onModelReady: (model) => model.initData(),
       builder: (context, model, child) {
         if (model.isBusy) {
