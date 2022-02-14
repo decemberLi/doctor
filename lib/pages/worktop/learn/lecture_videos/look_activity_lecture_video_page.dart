@@ -63,7 +63,7 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
 
   @override
   void initState() {
-    ActivityLearnRecordingModel(widget.activityTaskId);
+    _model = ActivityLearnRecordingModel(widget.activityTaskId);
     // 在initState中发出请求
     updateDoctorInfo();
     super.initState();
@@ -72,7 +72,6 @@ class _LookLearnDetailPageState extends State<LookLectureVideosPage> {
   bool _canSend = true;
 
   _gotoRecordPage(result) {
-    UserInfoViewModel model =
     Provider.of<UserInfoViewModel>(context, listen: false);
     MedcloudsNativeApi.instance().record(result.toString());
     MedcloudsNativeApi.instance().addProcessor(
